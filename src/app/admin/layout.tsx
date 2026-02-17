@@ -57,14 +57,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
+  const isLoginPage = pathname === "/admin/login";
 
-  // ถ้าอยู่หน้า login ไม่แสดง layout
-  if (pathname === "/admin/login") {
-    return <>{children}</>;
-  }
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
+    if (isLoginPage) return;
     fetch("/api/auth/me")
       .then((res) => {
         if (!res.ok) throw new Error("Unauthorized");
@@ -74,7 +70,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       .catch(() => {
         // ไม่ redirect เพราะ middleware จะจัดการ
       });
-  }, []);
+  }, [isLoginPage]);
+
+  // ถ้าอยู่หน้า login ไม่แสดง layout
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });

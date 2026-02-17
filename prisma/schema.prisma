@@ -82,6 +82,11 @@ model Slide {
   sortOrder   Int       @default(0)
   imagePath   String?   @db.VarChar(500)
   urlLink     String?   @db.VarChar(500)
+  title       String?   @db.VarChar(255)
+  subtitle    String?   @db.VarChar(255)
+  description String?   @db.Text
+  bgGradient  String?   @db.VarChar(500)
+  ctaText     String?   @db.VarChar(100)
   isActive    Boolean   @default(true)
   createdBy   String?   @db.VarChar(255)
   updatedBy   String?   @db.VarChar(255)

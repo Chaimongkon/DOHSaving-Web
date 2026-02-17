@@ -1,26 +1,21 @@
 .slider {
   position: relative;
   overflow: hidden;
+  max-width: 100%;
 }
 
 .slide {
   position: relative;
-  height: 460px;
-  display: flex !important;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 80px;
   overflow: hidden;
   background: #0f1d36;
 }
 
-.slideBg {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: 0;
+.slideImg {
+  display: block;
+  width: 100%;
+  max-height: 600px;
+  object-fit: contain;
+  object-position: center;
 }
 
 .slideOverlay {
@@ -30,7 +25,10 @@
 }
 
 .content {
-  position: relative;
+  position: absolute;
+  left: 60px;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 2;
   max-width: 600px;
 }
@@ -94,9 +92,11 @@
 }
 
 .visual {
-  position: relative;
+  position: absolute;
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 2;
-  flex-shrink: 0;
 }
 
 .logoRing {
@@ -153,22 +153,21 @@
 }
 
 @media (max-width: 768px) {
-  .slide {
-    height: 340px;
-    padding: 0 24px;
-    justify-content: center;
+  .content {
+    left: 24px;
+    max-width: 70%;
   }
 
   .title {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .subtitle {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .desc {
-    font-size: 13px;
+    font-size: 12px;
     display: none;
   }
 

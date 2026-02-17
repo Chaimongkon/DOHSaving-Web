@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_Thai } from "next/font/google";
 import AntdProvider from "./AntdProvider";
-import { TopBar, Navbar, Footer } from "@/components/layout";
+import SiteShell from "@/components/layout/SiteShell";
 import "./globals.css";
 
 const notoSansThai = Noto_Sans_Thai({
@@ -28,10 +28,7 @@ export default function RootLayout({
     <html lang="th">
       <body className={notoSansThai.variable}>
         <AntdProvider>
-          <TopBar />
-          <Navbar />
-          <main className="main-content">{children}</main>
-          <Footer />
+          <SiteShell>{children}</SiteShell>
         </AntdProvider>
       </body>
     </html>

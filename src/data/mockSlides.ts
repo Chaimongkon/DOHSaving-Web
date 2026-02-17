@@ -7,12 +7,11 @@ export interface SlideData {
   imagePath: string | null;
   urlLink: string | null;
   isActive: boolean;
-  // Frontend-only fields (for display before we have real images)
-  title: string;
-  subtitle: string;
-  description: string;
-  bgGradient: string;
-  ctaText: string;
+  title: string | null;
+  subtitle: string | null;
+  description: string | null;
+  bgGradient: string | null;
+  ctaText: string | null;
 }
 
 export const mockSlides: SlideData[] = [
@@ -27,7 +26,7 @@ export const mockSlides: SlideData[] = [
     description:
       "บริการเงินฝาก สินเชื่อ และสวัสดิการสมาชิก ด้วยระบบที่ทันสมัย โปร่งใส เพื่อคุณภาพชีวิตที่ดีของสมาชิก",
     bgGradient:
-      "linear-gradient(135deg, rgba(15,29,54,0.85) 0%, rgba(26,58,92,0.75) 40%, rgba(232,101,43,0.6) 100%)",
+      "linear-gradient(135deg, rgba(15,29,54,0.85) 0%, rgba(26,58,92,0.75) 40%, rgba(255, 255, 255, 0.6) 100%)",
     ctaText: "สมัครสมาชิก",
   },
   {
@@ -55,7 +54,7 @@ export const mockSlides: SlideData[] = [
     description:
       "เงินกู้ฉุกเฉิน เงินกู้สามัญ และเงินกู้พิเศษ เพื่อตอบสนองทุกความต้องการของสมาชิก",
     bgGradient:
-      "linear-gradient(135deg, rgba(45,24,16,0.85) 0%, rgba(232,101,43,0.7) 40%, rgba(26,58,92,0.8) 100%)",
+      "linear-gradient(135deg, rgba(45,24,16,0.85) 0%, rgba(232,101,43,0.7) 40%, rgba(255, 255, 255, 0.8) 100%)",
     ctaText: "ดูบริการเงินกู้",
   },
   {
@@ -69,7 +68,7 @@ export const mockSlides: SlideData[] = [
     description:
       "สวัสดิการครบวงจร ทั้งสมาชิกสามัญ ประเภท ก ประเภท ข และสมาชิกสมทบ",
     bgGradient:
-      "linear-gradient(135deg, rgba(15,29,54,0.85) 0%, rgba(30,58,47,0.75) 50%, rgba(232,101,43,0.6) 100%)",
+      "linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.75) 50%, rgba(255, 255, 255, 0.6) 100%)",
     ctaText: "ดูสวัสดิการ",
   },
 ];

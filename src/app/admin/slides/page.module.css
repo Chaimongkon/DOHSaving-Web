@@ -109,6 +109,16 @@
   padding: 14px 16px;
 }
 
+.cardTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f1d36;
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .cardUrl {
   font-size: 12px;
   color: #9ca3af;
@@ -199,10 +209,13 @@
 .modal {
   background: #ffffff;
   border-radius: 14px;
-  max-width: 500px;
+  max-width: 580px;
   width: 100%;
+  max-height: 90vh;
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.2);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .modalHeader {
@@ -231,6 +244,8 @@
 
 .modalBody {
   padding: 24px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 /* Form */
@@ -264,6 +279,25 @@
   box-shadow: 0 0 0 3px rgba(232, 101, 43, 0.1);
 }
 
+.formTextarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a2a3a;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.formTextarea:focus {
+  outline: none;
+  border-color: #E8652B;
+  box-shadow: 0 0 0 3px rgba(232, 101, 43, 0.1);
+}
+
 /* Upload area */
 .uploadArea {
   border: 2px dashed #e5e7eb;
@@ -290,6 +324,12 @@
   font-size: 13px;
   color: #9ca3af;
   margin: 0;
+}
+
+.uploadHint {
+  font-size: 11px;
+  color: #c0c7d0;
+  margin: 6px 0 0;
 }
 
 .uploadPreview {

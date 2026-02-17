@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { imagePath, urlLink, sortOrder, isActive } = body;
+    const { imagePath, urlLink, title, subtitle, description, bgGradient, ctaText, sortOrder, isActive } = body;
 
     if (!imagePath) {
       return NextResponse.json(
@@ -42,6 +42,11 @@ export async function POST(req: NextRequest) {
       data: {
         imagePath,
         urlLink: urlLink || null,
+        title: title || null,
+        subtitle: subtitle || null,
+        description: description || null,
+        bgGradient: bgGradient || null,
+        ctaText: ctaText || null,
         sortOrder: sortOrder ?? 0,
         isActive: isActive ?? true,
         createdBy: user.userName,

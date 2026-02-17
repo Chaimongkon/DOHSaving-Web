@@ -17,6 +17,11 @@ interface Slide {
   sortOrder: number;
   imagePath: string | null;
   urlLink: string | null;
+  title: string | null;
+  subtitle: string | null;
+  description: string | null;
+  bgGradient: string | null;
+  ctaText: string | null;
   isActive: boolean;
   createdBy: string | null;
   updatedAt: string;
@@ -25,6 +30,11 @@ interface Slide {
 interface SlideForm {
   imagePath: string;
   urlLink: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  bgGradient: string;
+  ctaText: string;
   sortOrder: number;
   isActive: boolean;
 }
@@ -32,6 +42,11 @@ interface SlideForm {
 const defaultForm: SlideForm = {
   imagePath: "",
   urlLink: "",
+  title: "",
+  subtitle: "",
+  description: "",
+  bgGradient: "linear-gradient(135deg, rgba(15,29,54,0.85) 0%, rgba(26,58,92,0.75) 40%, rgba(232,101,43,0.6) 100%)",
+  ctaText: "",
   sortOrder: 0,
   isActive: true,
 };
@@ -77,6 +92,11 @@ export default function SlidesPage() {
     setForm({
       imagePath: slide.imagePath || "",
       urlLink: slide.urlLink || "",
+      title: slide.title || "",
+      subtitle: slide.subtitle || "",
+      description: slide.description || "",
+      bgGradient: slide.bgGradient || "",
+      ctaText: slide.ctaText || "",
       sortOrder: slide.sortOrder,
       isActive: slide.isActive,
     });
@@ -217,6 +237,7 @@ export default function SlidesPage() {
                 <span className={css.orderBadge}>{slide.sortOrder}</span>
               </div>
               <div className={css.cardBody}>
+                {slide.title && <p className={css.cardTitle}>{slide.title}</p>}
                 <p className={css.cardUrl}>
                   <LinkOutlined /> {slide.urlLink || "ไม่มีลิงก์"}
                 </p>
@@ -279,6 +300,7 @@ export default function SlidesPage() {
                     <p className={css.uploadText}>
                       {uploading ? "กำลังอัพโหลด..." : "คลิกเพื่อเลือกรูปภาพ (JPG, PNG, WebP)"}
                     </p>
+                    <p className={css.uploadHint}>แนะนำ: 1920 x 600 px</p>
                   </div>
                 )}
                 <input
@@ -290,6 +312,57 @@ export default function SlidesPage() {
                 />
               </div>
 
+              {/* Title */}
+              <div className={css.formGroup}>
+                <label className={css.formLabel}>หัวข้อ</label>
+                <input
+                  type="text"
+                  className={css.formInput}
+                  placeholder="เช่น สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด"
+                  value={form.title}
+                  onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
+                />
+              </div>
+
+              {/* Subtitle */}
+              <div className={css.formGroup}>
+                <label className={css.formLabel}>หัวข้อรอง</label>
+                <input
+                  type="text"
+                  className={css.formInput}
+                  placeholder="เช่น DOH Saving & Credit Cooperative, Ltd."
+                  value={form.subtitle}
+                  onChange={(e) => setForm((prev) => ({ ...prev, subtitle: e.target.value }))}
+                />
+              </div>
+
+              {/* Description */}
+              <div className={css.formGroup}>
+                <label className={css.formLabel}>รายละเอียด</label>
+                <textarea
+                  className={css.formTextarea}
+                  placeholder="คำอธิบายสั้นๆ..."
+                  rows={3}
+                  value={form.description}
+                  onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
+                />
+              </div>
+
+              {/* bgGradient */}
+              <div className={css.formGroup}>
+                <label className={css.formLabel}>สีไล่ระดับ (CSS Gradient)</label>
+                <input
+                  type="text"
+                  className={css.formInput}
+                  placeholder="linear-gradient(135deg, rgba(15,29,54,0.85) 0%, ...)"
+                  value={form.bgGradient}
+                  onChange={(e) => setForm((prev) => ({ ...prev, bgGradient: e.target.value }))}
+                />
+                {form.bgGradient && (
+                  <div style={{ marginTop: 8, height: 32, borderRadius: 6, background: form.bgGradient }} />
+                )}
+              </div>
+
               {/* URL Link */}
               <div className={css.formGroup}>
                 <label className={css.formLabel}>ลิงก์ (ไม่บังคับ)</label>
@@ -299,6 +372,18 @@ export default function SlidesPage() {
                   placeholder="https://..."
                   value={form.urlLink}
                   onChange={(e) => setForm((prev) => ({ ...prev, urlLink: e.target.value }))}
+                />
+              </div>
+
+              {/* CTA Text */}
+              <div className={css.formGroup}>
+                <label className={css.formLabel}>ข้อความปุ่ม (ต้องมีลิงก์ด้วย)</label>
+                <input
+                  type="text"
+                  className={css.formInput}
+                  placeholder="เช่น สมัครสมาชิก, ดูอัตราดอกเบี้ย"
+                  value={form.ctaText}
+                  onChange={(e) => setForm((prev) => ({ ...prev, ctaText: e.target.value }))}
                 />
               </div>
 

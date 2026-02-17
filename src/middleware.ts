@@ -1,7 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/lib/auth";
+import { jwtVerify } from "jose";
 
-export function middleware(req: NextRequest) {
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || "dohsaving-secret-key"
+);
+
+async function verifyJwt(token: string) {
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // ป้องกันเฉพาะ /admin routes (ยกเว้น /admin/login)
@@ -12,7 +25,7 @@ export function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/admin/login", req.url));
     }
 
-    const payload = verifyToken(token);
+    const payload = await verifyJwt(token);
     if (!payload) {
       // Token หมดอายุหรือไม่ถูกต้อง
       const response = NextResponse.redirect(new URL("/admin/login", req.url));
@@ -29,7 +42,7 @@ export function middleware(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const payload = verifyToken(token);
+    const payload = await verifyJwt(token);
     if (!payload) {
       return NextResponse.json({ error: "Token expired" }, { status: 401 });
     }
