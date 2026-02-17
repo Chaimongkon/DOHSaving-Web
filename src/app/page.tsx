@@ -13,7 +13,8 @@ import Link from "next/link";
 import HeroSlider from "@/components/home/HeroSlider";
 import AppDownloadBar from "@/components/home/AppDownloadBar";
 import NewsSection from "@/components/home/NewsSection";
-import InterestRateSection from "@/components/home/InterestRateSection";
+import VideoAndRateSection from "@/components/home/VideoAndRateSection";
+import PhotoGallerySection from "@/components/home/PhotoGallerySection";
 
 const quickLinks = [
   {
@@ -72,6 +73,12 @@ export default function HomePage() {
       {/* News Section */}
       <NewsSection />
 
+      {/* Video + Interest Rate (side by side like old site) */}
+      <VideoAndRateSection />
+
+      {/* Photo Gallery */}
+      <PhotoGallerySection />
+
       {/* Quick Links Section */}
       <section className="quick-links-section">
         <div className="quick-links-inner">
@@ -103,9 +110,6 @@ export default function HomePage() {
           </Row>
         </div>
       </section>
-
-      {/* Interest Rates Section */}
-      <InterestRateSection />
     </>
   );
 }
