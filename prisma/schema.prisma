@@ -1,0 +1,484 @@
+// DOHSaving V2 — Prisma Schema
+// Redesigned from db_webdohcoop (21 tables → 26 tables)
+// Changes: removed longblob, normalized naming, added relationships
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// ============================================================
+// 🔐 Authentication & Users
+// ============================================================
+
+model User {
+  id                  Int       @id @default(autoincrement())
+  fullName            String?   @db.VarChar(255)
+  userName            String    @unique @db.VarChar(255)
+  password            String    @db.VarChar(255)
+  userRole            String?   @db.VarChar(50) // admin, editor, viewer
+  isActive            Boolean   @default(true)
+  phone               String?   @db.VarChar(20)
+  department          String?   @db.VarChar(100)
+  avatarPath          String?   @db.VarChar(500)
+  menuPermissions     Json?     // JSON for menu access permissions
+
+  // Security
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  twoFactorEnabled    Boolean   @default(false)
+  twoFactorSecret     String?   @db.VarChar(255)
+
+  // Password management
+  lastPasswordChange  DateTime  @default(now())
+  mustChangePassword  Boolean   @default(false)
+  tempPassword        String?   @db.VarChar(255)
+
+  // Session tracking
+  lastLoginAt         DateTime?
+  loginCount          Int       @default(0)
+  ipAddress           String?   @db.VarChar(45)
+  sessionToken        String?   @db.VarChar(500)
+
+  // Timestamps
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // Relations
+  auditLogs           AuditLog[]
+
+  @@index([userName])
+  @@index([isActive])
+  @@index([department])
+  @@map("users")
+}
+
+// ============================================================
+// 📰 Content Management — News, Slides, Videos, Photos
+// ============================================================
+
+model News {
+  id          Int       @id @default(autoincrement())
+  title       String?   @db.VarChar(255)
+  details     String?   @db.Text
+  imagePath   String?   @db.VarChar(500)
+  pdfPath     String?   @db.VarChar(500)
+  isActive    Boolean   @default(true)
+  createdBy   String?   @db.VarChar(255)
+  updatedBy   String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([title])
+  @@index([createdAt])
+  @@map("news")
+}
+
+model Slide {
+  id          Int       @id @default(autoincrement())
+  sortOrder   Int       @default(0)
+  imagePath   String?   @db.VarChar(500)
+  urlLink     String?   @db.VarChar(500)
+  isActive    Boolean   @default(true)
+  createdBy   String?   @db.VarChar(255)
+  updatedBy   String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([sortOrder])
+  @@map("slides")
+}
+
+model Video {
+  id          Int       @id @default(autoincrement())
+  title       String?   @db.VarChar(255)
+  youtubeUrl  String?   @db.VarChar(500)
+  details     String?   @db.VarChar(500)
+  category    String    @default("general") @db.VarChar(50) // general, election
+  isActive    Boolean   @default(true)
+  createdBy   String?   @db.VarChar(255)
+  updatedBy   String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([category])
+  @@map("videos")
+}
+
+model PhotoAlbum {
+  id             Int       @id @default(autoincrement())
+  title          String?   @db.VarChar(255)
+  coverPath      String?   @db.VarChar(500)
+  imagePaths     Json?     // JSON array of image paths
+  category       String?   @db.VarChar(255)
+  isActive       Boolean   @default(true)
+  createdBy      String?   @db.VarChar(255)
+  updatedBy      String?   @db.VarChar(255)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@map("photo_albums")
+}
+
+model Notification {
+  id          Int       @id @default(autoincrement())
+  imagePath   String?   @db.VarChar(500)
+  urlLink     String?   @db.VarChar(500)
+  isActive    Boolean   @default(false)
+  createdBy   String?   @db.VarChar(255)
+  updatedBy   String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("notifications")
+}
+
+// ============================================================
+// 🏢 Organization
+// ============================================================
+
+model OrganizationalTree {
+  id          Int       @id @default(autoincrement())
+  name        String?   @db.VarChar(255)
+  position    String?   @db.VarChar(255)
+  priority    Int       @default(0)
+  type        String?   @db.VarChar(100) // board, staff, committee
+  imagePath   String?   @db.VarChar(500)
+  isActive    Boolean   @default(true)
+  createdBy   String?   @db.VarChar(255)
+  updatedBy   String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([type])
+  @@index([priority])
+  @@map("organizational_tree")
+}
+
+model CooperativeSociety {
+  id           Int       @id @default(autoincrement())
+  imagePath    String?   @db.VarChar(500)
+  societyType  String?   @db.VarChar(255)
+  isActive     Boolean   @default(true)
+  createdBy    String?   @db.VarChar(255)
+  updatedBy    String?   @db.VarChar(255)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("cooperative_society")
+}
+
+model Contact {
+  id          Int       @id @default(autoincrement())
+  name        String?   @db.VarChar(255)
+  doh         String?   @db.VarChar(255)
+  coop        String?   @db.VarChar(255)
+  mobile      String?   @db.VarChar(255)
+  createdBy   String?   @db.VarChar(255)
+  updatedBy   String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("contacts")
+}
+
+// ============================================================
+// 📋 Services & Downloads
+// ============================================================
+
+model Service {
+  id            Int       @id @default(autoincrement())
+  title         String?   @db.VarChar(255)
+  mainType      String?   @db.VarChar(255)
+  subcategories String?   @db.VarChar(255)
+  imagePath     String?   @db.VarChar(500)
+  urlLink       String?   @db.VarChar(500)
+  isActive      Boolean   @default(true)
+  createdBy     String?   @db.VarChar(255)
+  updatedBy     String?   @db.VarChar(255)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("services")
+}
+
+model Application {
+  id                  Int       @id @default(autoincrement())
+  title               String?   @db.VarChar(255)
+  detail              String?   @db.VarChar(500)
+  imagePath           String?   @db.VarChar(500)
+  applicationMainType String?   @db.VarChar(255)
+  applicationType     String?   @db.VarChar(255)
+  isActive            Boolean   @default(true)
+  createdBy           String?   @db.VarChar(255)
+  updatedBy           String?   @db.VarChar(255)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@map("applications")
+}
+
+model FormDownload {
+  id          Int       @id @default(autoincrement())
+  title       String?   @db.VarChar(255)
+  typeForm    String?   @db.VarChar(255)
+  typeMember  String?   @db.VarChar(255)
+  filePath    String?   @db.VarChar(500)
+  isActive    Boolean   @default(true)
+  createdBy   String?   @db.VarChar(255)
+  updatedBy   String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("form_downloads")
+}
+
+model MemberMedia {
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(500)
+  category    String    @db.VarChar(200)
+  filePath    String?   @db.VarChar(1000)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([category])
+  @@index([createdAt])
+  @@map("member_media")
+}
+
+// ============================================================
+// 📊 Financial Reports
+// ============================================================
+
+model InterestRate {
+  id              Int       @id @default(autoincrement())
+  interestType    String?   @db.VarChar(255)
+  name            String?   @db.VarChar(255)
+  interestDate    DateTime? @db.Date
+  conditions      String?   @db.VarChar(500)
+  interestRate    String?   @db.VarChar(50)
+  interestRateDual String?  @db.VarChar(50)
+  isActive        Boolean   @default(true)
+  createdBy       String?   @db.VarChar(255)
+  updatedBy       String?   @db.VarChar(255)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("interest_rates")
+}
+
+model BusinessReport {
+  id          Int       @id @default(autoincrement())
+  title       String?   @db.VarChar(255)
+  imagePath   String?   @db.VarChar(500)
+  filePath    String?   @db.VarChar(500)
+  isActive    Boolean   @default(true)
+  createdBy   String?   @db.VarChar(255)
+  updatedBy   String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("business_reports")
+}
+
+model AssetLiability {
+  id          Int       @id @default(autoincrement())
+  year        String?   @db.VarChar(10)
+  titleMonth  String?   @db.VarChar(255)
+  filePath    String?   @db.VarChar(500)
+  isActive    Boolean   @default(true)
+  createdBy   String?   @db.VarChar(255)
+  updatedBy   String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("assets_liabilities")
+}
+
+// ============================================================
+// 📜 Regulations & Documents
+// ============================================================
+
+model Regulation {
+  id          Int       @id @default(autoincrement())
+  title       String?   @db.VarChar(255)
+  typeForm    String?   @db.VarChar(255) // statute, regularity, declare
+  typeMember  String?   @db.VarChar(255)
+  filePath    String?   @db.VarChar(500)
+  isActive    Boolean   @default(true)
+  createdBy   String?   @db.VarChar(255)
+  updatedBy   String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("regulations")
+}
+
+// ============================================================
+// 🗳️ Elections
+// ============================================================
+
+model Election {
+  id              Int       @id @default(autoincrement())
+  member          String?   @db.VarChar(255)
+  idCard          String?   @db.VarChar(255)
+  fullName        String?   @db.VarChar(255)
+  department      String?   @db.VarChar(255)
+  fieldNumber     String?   @db.VarChar(50)
+  sequenceNumber  String?   @db.VarChar(50)
+  memberType      String?   @db.VarChar(100)
+  createdBy       String?   @db.VarChar(255)
+  updatedBy       String?   @db.VarChar(255)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([department])
+  @@index([memberType])
+  @@map("elections")
+}
+
+model ElectionDepartment {
+  id              Int       @id @default(autoincrement())
+  departmentName  String?   @db.VarChar(255)
+  filePath        String?   @db.VarChar(500)
+  createdBy       String?   @db.VarChar(255)
+  updatedBy       String?   @db.VarChar(255)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("election_departments")
+}
+
+// ============================================================
+// ❓ Q&A Forum
+// ============================================================
+
+model Question {
+  id            Int       @id @default(autoincrement())
+  title         String    @db.VarChar(255)
+  body          String    @db.Text
+  name          String    @db.VarChar(255)
+  memberNumber  String    @db.VarChar(255)
+  viewCount     Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  answers       Answer[]
+
+  @@map("questions")
+}
+
+model Answer {
+  id          Int       @id @default(autoincrement())
+  questionId  Int
+  name        String?   @db.VarChar(255)
+  body        String    @db.Text
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  question    Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@map("answers")
+}
+
+// ============================================================
+// 📬 Complaints
+// ============================================================
+
+model Complaint {
+  id          Int       @id @default(autoincrement())
+  memberId    String?   @db.VarChar(255)
+  name        String?   @db.VarChar(255)
+  tel         String?   @db.VarChar(20)
+  email       String?   @db.VarChar(255)
+  complaint   String?   @db.Text
+  status      String    @default("pending") @db.VarChar(50) // pending, in_progress, resolved
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status])
+  @@map("complaints")
+}
+
+// ============================================================
+// 🎨 Site Settings & Particles
+// ============================================================
+
+model SiteSetting {
+  id        Int       @id @default(autoincrement())
+  key       String    @unique @db.VarChar(100)
+  value     String?   @db.Text
+  remark    String?   @db.VarChar(255)
+  updatedAt DateTime  @updatedAt
+
+  @@map("site_settings")
+}
+
+model Particle {
+  id          Int       @id @default(autoincrement())
+  category    String    @db.VarChar(255)
+  imagePaths  Json?     // JSON array of image paths
+  isActive    Boolean   @default(true)
+  createdBy   String?   @db.VarChar(255)
+  updatedBy   String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([category])
+  @@index([isActive])
+  @@map("particles")
+}
+
+// ============================================================
+// 📊 Analytics & Logging
+// ============================================================
+
+model VisitLog {
+  id          Int       @id @default(autoincrement())
+  visitDate   DateTime  @default(now())
+  ipAddress   String?   @db.VarChar(45)
+  userAgent   String?   @db.VarChar(500)
+  pageUrl     String?   @db.VarChar(500)
+
+  @@index([visitDate])
+  @@map("visit_logs")
+}
+
+model CookieConsent {
+  id               Int       @id @default(autoincrement())
+  userId           String    @db.VarChar(255)
+  consentStatus    Boolean
+  cookieCategories Json?
+  ipAddress        String    @db.VarChar(45)
+  userAgent        String?   @db.VarChar(255)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@map("cookie_consents")
+}
+
+model AuditLog {
+  id          Int       @id @default(autoincrement())
+  userId      Int?
+  action      String    @db.VarChar(100) // create, update, delete
+  tableName   String    @db.VarChar(100)
+  recordId    Int?
+  oldValues   Json?
+  newValues   Json?
+  ipAddress   String?   @db.VarChar(45)
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([tableName])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

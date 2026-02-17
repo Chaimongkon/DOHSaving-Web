@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <circle cx="60" cy="60" r="56" fill="#16213e" stroke="#E8652B" stroke-width="4"/>
+  <text x="60" y="45" text-anchor="middle" fill="#E8652B" font-size="16" font-weight="bold" font-family="sans-serif">DOH</text>
+  <text x="60" y="65" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="600" font-family="sans-serif">SAVING</text>
+  <text x="60" y="82" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="9" font-family="sans-serif">COOPERATIVE</text>
+</svg>

@@ -1,66 +1,111 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
+import { Card, Row, Col } from "antd";
+import {
+  BankOutlined,
+  TeamOutlined,
+  FileTextOutlined,
+  CustomerServiceOutlined,
+  DollarOutlined,
+  SafetyOutlined,
+} from "@ant-design/icons";
+import Link from "next/link";
+import HeroSlider from "@/components/home/HeroSlider";
+import AppDownloadBar from "@/components/home/AppDownloadBar";
+import NewsSection from "@/components/home/NewsSection";
+import InterestRateSection from "@/components/home/InterestRateSection";
+
+const quickLinks = [
+  {
+    icon: <BankOutlined />,
+    title: "อัตราดอกเบี้ย",
+    desc: "ดอกเบี้ยเงินฝากและเงินกู้ล่าสุด",
+    href: "/interest-rates",
+    color: "#E8652B",
+  },
+  {
+    icon: <DollarOutlined />,
+    title: "เงินกู้",
+    desc: "เงินกู้ฉุกเฉิน สามัญ พิเศษ",
+    href: "/services/general-loan",
+    color: "#1a3a5c",
+  },
+  {
+    icon: <SafetyOutlined />,
+    title: "เงินฝาก",
+    desc: "ออมทรัพย์ ประจำ พิเศษ",
+    href: "/services/savings",
+    color: "#2d6a4f",
+  },
+  {
+    icon: <TeamOutlined />,
+    title: "สวัสดิการ",
+    desc: "สิทธิประโยชน์สมาชิกทุกประเภท",
+    href: "/services/welfare-a",
+    color: "#7c3aed",
+  },
+  {
+    icon: <FileTextOutlined />,
+    title: "ดาวน์โหลดแบบฟอร์ม",
+    desc: "แบบฟอร์มบริการทุกประเภท",
+    href: "/downloads/member-forms",
+    color: "#0369a1",
+  },
+  {
+    icon: <CustomerServiceOutlined />,
+    title: "ติดต่อเรา",
+    desc: "ช่องทางติดต่อสหกรณ์",
+    href: "/contact",
+    color: "#be185d",
+  },
+];
+
+export default function HomePage() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <>
+      {/* Hero Slider */}
+      <HeroSlider />
+
+      {/* App Download Bar */}
+      <AppDownloadBar />
+
+      {/* News Section */}
+      <NewsSection />
+
+      {/* Quick Links Section */}
+      <section className="quick-links-section">
+        <div className="quick-links-inner">
+          <h2 className="section-heading">บริการของเรา</h2>
+          <p className="section-subheading">
+            เข้าถึงบริการต่างๆ ของสหกรณ์ออมทรัพย์กรมทางหลวง ได้อย่างสะดวกรวดเร็ว
           </p>
+          <Row gutter={[24, 24]}>
+            {quickLinks.map((item, i) => (
+              <Col key={i} xs={24} sm={12} md={8}>
+                <Link href={item.href} style={{ display: "block" }}>
+                  <Card hoverable className="quick-link-card">
+                    <div className="quick-link-card-inner">
+                      <div
+                        className="quick-link-icon-wrap"
+                        style={{ background: item.color }}
+                      >
+                        {item.icon}
+                      </div>
+                      <div className="quick-link-text">
+                        <h3 className="quick-link-title">{item.title}</h3>
+                        <p className="quick-link-desc">{item.desc}</p>
+                      </div>
+                    </div>
+                  </Card>
+                </Link>
+              </Col>
+            ))}
+          </Row>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </section>
+
+      {/* Interest Rates Section */}
+      <InterestRateSection />
+    </>
   );
 }

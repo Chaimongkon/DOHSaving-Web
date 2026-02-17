@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 300" width="260" height="300">
+  <rect width="260" height="300" fill="none"/>
+  <!-- Chart background -->
+  <rect x="40" y="50" width="180" height="180" rx="10" fill="#1b2a4a" opacity="0.08"/>
+  <!-- Grid lines -->
+  <line x1="60" y1="80" x2="60" y2="210" stroke="#1b2a4a" stroke-width="1.5" opacity="0.3"/>
+  <line x1="60" y1="210" x2="210" y2="210" stroke="#1b2a4a" stroke-width="1.5" opacity="0.3"/>
+  <line x1="60" y1="170" x2="210" y2="170" stroke="#ddd" stroke-width="0.5" stroke-dasharray="4"/>
+  <line x1="60" y1="130" x2="210" y2="130" stroke="#ddd" stroke-width="0.5" stroke-dasharray="4"/>
+  <line x1="60" y1="90" x2="210" y2="90" stroke="#ddd" stroke-width="0.5" stroke-dasharray="4"/>
+  <!-- Bar chart -->
+  <rect x="75" y="150" width="22" height="60" rx="3" fill="#E8652B" opacity="0.85"/>
+  <rect x="107" y="120" width="22" height="90" rx="3" fill="#E8652B" opacity="0.7"/>
+  <rect x="139" y="100" width="22" height="110" rx="3" fill="#E8652B" opacity="0.85"/>
+  <rect x="171" y="85" width="22" height="125" rx="3" fill="#4CAF50" opacity="0.8"/>
+  <!-- Trend line -->
+  <polyline points="86,145 118,115 150,95 182,78" fill="none" stroke="#FFC107" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="86" cy="145" r="4" fill="#FFC107"/>
+  <circle cx="118" cy="115" r="4" fill="#FFC107"/>
+  <circle cx="150" cy="95" r="4" fill="#FFC107"/>
+  <circle cx="182" cy="78" r="4" fill="#FFC107"/>
+  <!-- Arrow up -->
+  <polygon points="200,60 210,75 205,75 205,95 195,95 195,75 190,75" fill="#4CAF50" opacity="0.7"/>
+</svg>

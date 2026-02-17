@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 300" width="260" height="300">
+  <rect width="260" height="300" fill="none"/>
+  <!-- Tree trunk -->
+  <rect x="118" y="160" width="24" height="100" rx="4" fill="#8B6914"/>
+  <!-- Tree crown -->
+  <ellipse cx="130" cy="130" rx="80" ry="90" fill="#4CAF50" opacity="0.85"/>
+  <ellipse cx="100" cy="110" rx="50" ry="55" fill="#66BB6A" opacity="0.7"/>
+  <ellipse cx="160" cy="115" rx="45" ry="50" fill="#43A047" opacity="0.7"/>
+  <!-- Fruits -->
+  <circle cx="85" cy="90" r="10" fill="#E8652B"/>
+  <circle cx="145" cy="75" r="10" fill="#FFC107"/>
+  <circle cx="170" cy="100" r="10" fill="#E53935"/>
+  <circle cx="110" cy="130" r="10" fill="#FF9800"/>
+  <circle cx="155" cy="145" r="10" fill="#4CAF50"/>
+  <!-- Ground -->
+  <ellipse cx="130" cy="265" rx="100" ry="15" fill="#8BC34A" opacity="0.3"/>
+  <!-- People silhouettes -->
+  <circle cx="70" cy="240" r="8" fill="#1b2a4a" opacity="0.6"/>
+  <rect x="65" y="250" width="10" height="18" rx="3" fill="#1b2a4a" opacity="0.6"/>
+  <circle cx="190" cy="238" r="8" fill="#1b2a4a" opacity="0.6"/>
+  <rect x="185" y="248" width="10" height="18" rx="3" fill="#1b2a4a" opacity="0.6"/>
+  <circle cx="130" cy="235" r="9" fill="#E8652B" opacity="0.7"/>
+  <rect x="124" y="246" width="12" height="20" rx="3" fill="#E8652B" opacity="0.7"/>
+</svg>
