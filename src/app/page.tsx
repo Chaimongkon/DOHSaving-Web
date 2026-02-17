@@ -89,16 +89,16 @@ export default function HomePage() {
                 <div
                   className={css.iconWrap}
                   style={{
-                    background: `linear-gradient(135deg, ${item.color}, ${item.color}cc)`,
-                    boxShadow: `0 6px 20px ${item.color}30`,
+                    background: `linear-gradient(135deg, ${item.color}, ${item.color}aa)`,
+                    boxShadow: `0 8px 24px ${item.color}35`,
                   }}
                 >
                   {item.icon}
                 </div>
                 <h3 className={css.cardTitle}>{item.title}</h3>
                 <p className={css.cardDesc}>{item.desc}</p>
-                <span className={css.arrow}>
-                  <ArrowRightOutlined />
+                <span className={css.cta}>
+                  เข้าใช้บริการ <ArrowRightOutlined className={css.ctaArrow} />
                 </span>
               </Link>
             ))}
