@@ -15,6 +15,7 @@ import AppDownloadBar from "@/components/home/AppDownloadBar";
 import NewsSection from "@/components/home/NewsSection";
 import VideoAndRateSection from "@/components/home/VideoAndRateSection";
 import PhotoGallerySection from "@/components/home/PhotoGallerySection";
+import PromoDialog from "@/components/home/PromoDialog";
 import css from "./page.module.css";
 
 const quickLinks = [
@@ -65,6 +66,9 @@ const quickLinks = [
 export default function HomePage() {
   return (
     <>
+      {/* Promotion Popup */}
+      <PromoDialog />
+
       {/* Hero Slider */}
       <HeroSlider />
 
