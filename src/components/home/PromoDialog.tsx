@@ -1,30 +1,58 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  CloseOutlined,
-  DownloadOutlined,
-  AppleFilled,
-  AndroidFilled,
-  QrcodeOutlined,
-} from "@ant-design/icons";
-import Image from "next/image";
+import { CloseOutlined } from "@ant-design/icons";
 import css from "./PromoDialog.module.css";
+
+interface NotificationData {
+  id: number;
+  imagePath: string | null;
+  urlLink: string | null;
+}
 
 export default function PromoDialog() {
   const [visible, setVisible] = useState(false);
+  const [notifications, setNotifications] = useState<NotificationData[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    // แสดง popup ทุกครั้งที่เปิดหน้าเว็บ/refresh — delay 1.5 วินาที
-    const timer = setTimeout(() => setVisible(true), 1500);
-    return () => clearTimeout(timer);
+    // ดึงข้อมูล popup จาก API
+    fetch("/api/notifications")
+      .then((res) => res.json())
+      .then((data: NotificationData[]) => {
+        if (data.length > 0) {
+          setNotifications(data);
+          // แสดง popup หลังโหลดข้อมูลเสร็จ — delay 1 วินาที
+          setTimeout(() => setVisible(true), 1000);
+        }
+      })
+      .catch(() => {
+        // ถ้า API error ไม่แสดง popup
+      });
   }, []);
 
   const handleClose = () => {
-    setVisible(false);
+    // ถ้ามีหลาย notification — แสดงตัวถัดไป
+    if (currentIndex < notifications.length - 1) {
+      setCurrentIndex((prev) => prev + 1);
+    } else {
+      setVisible(false);
+    }
   };
 
-  if (!visible) return null;
+  if (!visible || notifications.length === 0) return null;
+
+  const current = notifications[currentIndex];
+
+  // Content ภาพ — ถ้ามี urlLink ให้คลิกได้
+  const imageContent = current.imagePath ? (
+    <img
+      src={current.imagePath}
+      alt="ประชาสัมพันธ์"
+      className={css.promoImage}
+      draggable={false}
+    />
+  ) : null;
 
   return (
     <div className={css.overlay} onClick={handleClose}>
@@ -34,77 +62,32 @@ export default function PromoDialog() {
           <CloseOutlined />
         </button>
 
-        {/* Header */}
-        <div className={css.header}>
-          <div className={css.headerLogo}>
-            <Image src="/logo.svg" alt="Logo" width={36} height={36} />
-            <h3 className={css.headerTitle}>สหกรณ์ออมทรัพย์ กรมทางหลวง จำกัด</h3>
-          </div>
-          <span className={css.headerSub}>
-            DEPARTMENT OF HIGHWAY SAVING AND CREDIT CO-OPERATIVE, LTD.
-          </span>
+        {/* Image content */}
+        <div className={css.imageBody}>
+          {current.urlLink ? (
+            <a
+              href={current.urlLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={css.imageLink}
+            >
+              {imageContent}
+            </a>
+          ) : (
+            imageContent
+          )}
         </div>
 
-        {/* Body */}
-        <div className={css.body}>
-          {/* Announcement card */}
-          <div className={css.announcement}>
-            <h4 className={css.announcementTitle}>
-              เรียน สมาชิกสหกรณ์ออมทรัพย์กรมทางหลวง ทุกท่าน
-            </h4>
-            <p className={css.announcementText}>
-              บัดนี้ สหกรณ์ฯ ได้พัฒนา <span className={css.highlight}>แอปพลิเคชั่น ใหม่</span>{" "}
-              ซึ่งจะทำให้สมาชิกสะดวกในการติดตามความเคลื่อนไหวทางการเงิน
-              รวมถึงธุรกรรมต่างๆ โดยแอปพลิเคชั่นจะแสดงผลแบบทันที
-            </p>
-            <p className={css.announcementText} style={{ marginTop: 8 }}>
-              จึงขอประชาสัมพันธ์ให้สมาชิกทุกท่าน{" "}
-              <span className={css.highlight}>ดาวน์โหลดแอปพลิเคชั่น ใหม่</span>{" "}
-              ได้ตั้งแต่บัดนี้เป็นต้นไป
-            </p>
-          </div>
-
-          {/* QR Codes */}
-          <div className={css.qrSection}>
-            <p className={css.qrLabel}>สแกน QR Code เพื่อดาวน์โหลด</p>
-            <div className={css.qrRow}>
-              <div className={css.qrItem}>
-                <div className={css.qrPlaceholder}>
-                  <QrcodeOutlined />
-                </div>
-                <span className={css.qrStoreBadge}>
-                  <AppleFilled /> <span>App Store</span>
-                </span>
-              </div>
-              <div className={css.qrItem}>
-                <div className={css.qrPlaceholder}>
-                  <QrcodeOutlined />
-                </div>
-                <span className={css.qrStoreBadge}>
-                  <AndroidFilled /> <span>Google Play</span>
-                </span>
-              </div>
-              <div className={css.qrItem}>
-                <div className={css.qrPlaceholder}>
-                  <QrcodeOutlined />
-                </div>
-                <span className={css.qrStoreBadge}>
-                  <span>AppGallery</span>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Download button */}
-          <a href="#download-app" className={css.downloadBtn}>
-            <DownloadOutlined /> DOWNLOAD NOW
-          </a>
-        </div>
-
-        {/* Footer close */}
+        {/* Footer — counter + close */}
         <div className={css.footer}>
+          {notifications.length > 1 && (
+            <span className={css.counter}>
+              {currentIndex + 1} / {notifications.length}
+            </span>
+          )}
           <button className={css.footerClose} onClick={handleClose}>
-            <CloseOutlined /> ปิด
+            <CloseOutlined />
+            {currentIndex < notifications.length - 1 ? "ถัดไป" : "ปิด"}
           </button>
         </div>
       </div>
