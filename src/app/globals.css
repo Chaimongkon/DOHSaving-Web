@@ -466,7 +466,31 @@ img {
   font-size: 28px;
   font-weight: 700;
   color: #0f1d36;
-  margin: 0 0 8px 0;
+  margin: 0 0 14px 0;
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.section-heading::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 3px;
+  background: linear-gradient(90deg, #E8652B, #f09060);
+  border-radius: 3px;
+}
+
+/* Left-aligned variant for headings inside specific sections */
+.section-heading--left {
+  text-align: left;
+}
+
+.section-heading--left::after {
+  left: 0;
+  transform: none;
 }
 
 .section-subheading {
@@ -484,49 +508,3 @@ img {
   min-height: calc(100vh - 68px - 34px - 300px);
 }
 
-/* ============================================================
-   Footer
-   ============================================================ */
-
-.footer {
-  background: #0f172a;
-  padding: 48px 24px 24px;
-}
-
-.footer-inner {
-  max-width: 1400px;
-  width: 100%;
-  margin: 0 auto;
-}
-
-.footer-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.footer-link {
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 14px;
-  transition: color 0.2s;
-  display: block;
-}
-
-.footer-link:hover {
-  color: #E8652B;
-}
-
-.footer-social {
-  color: rgba(255, 255, 255, 0.65);
-  transition: color 0.2s;
-  display: inline-flex;
-  align-items: center;
-}
-
-.footer-social:hover {
-  color: #E8652B;
-}
-
-.footer-bottom {
-  text-align: center;
-}

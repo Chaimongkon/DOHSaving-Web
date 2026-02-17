@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, Row, Col } from "antd";
 import {
   BankOutlined,
   TeamOutlined,
@@ -8,6 +7,7 @@ import {
   CustomerServiceOutlined,
   DollarOutlined,
   SafetyOutlined,
+  ArrowRightOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import HeroSlider from "@/components/home/HeroSlider";
@@ -71,6 +71,41 @@ export default function HomePage() {
       {/* App Download Bar */}
       <AppDownloadBar />
 
+      {/* Quick Links / Services Section */}
+      <section className={css.quickLinksSection}>
+        <div className={css.quickLinksInner}>
+          <h2 className="section-heading">บริการของเรา</h2>
+          <p className="section-subheading">
+            เข้าถึงบริการต่างๆ ของสหกรณ์ออมทรัพย์กรมทางหลวง ได้อย่างสะดวกรวดเร็ว
+          </p>
+          <div className={css.grid}>
+            {quickLinks.map((item, i) => (
+              <Link
+                key={i}
+                href={item.href}
+                className={css.card}
+                style={{ "--accent": item.color } as React.CSSProperties}
+              >
+                <div
+                  className={css.iconWrap}
+                  style={{
+                    background: `linear-gradient(135deg, ${item.color}, ${item.color}cc)`,
+                    boxShadow: `0 6px 20px ${item.color}30`,
+                  }}
+                >
+                  {item.icon}
+                </div>
+                <h3 className={css.cardTitle}>{item.title}</h3>
+                <p className={css.cardDesc}>{item.desc}</p>
+                <span className={css.arrow}>
+                  <ArrowRightOutlined />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* News Section */}
       <NewsSection />
 
@@ -79,38 +114,6 @@ export default function HomePage() {
 
       {/* Photo Gallery */}
       <PhotoGallerySection />
-
-      {/* Quick Links Section */}
-      <section className={css.quickLinksSection}>
-        <div className={css.quickLinksInner}>
-          <h2 className="section-heading">บริการของเรา</h2>
-          <p className="section-subheading">
-            เข้าถึงบริการต่างๆ ของสหกรณ์ออมทรัพย์กรมทางหลวง ได้อย่างสะดวกรวดเร็ว
-          </p>
-          <Row gutter={[24, 24]}>
-            {quickLinks.map((item, i) => (
-              <Col key={i} xs={24} sm={12} md={8}>
-                <Link href={item.href} style={{ display: "block" }}>
-                  <Card hoverable className={css.card}>
-                    <div className={css.cardInner}>
-                      <div
-                        className={css.iconWrap}
-                        style={{ background: item.color }}
-                      >
-                        {item.icon}
-                      </div>
-                      <div>
-                        <h3 className={css.cardTitle}>{item.title}</h3>
-                        <p className={css.cardDesc}>{item.desc}</p>
-                      </div>
-                    </div>
-                  </Card>
-                </Link>
-              </Col>
-            ))}
-          </Row>
-        </div>
-      </section>
     </>
   );
 }

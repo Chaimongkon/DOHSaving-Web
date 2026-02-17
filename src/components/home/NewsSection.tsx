@@ -42,7 +42,7 @@ export default function NewsSection() {
       <div className={css.inner}>
         <div className={css.header}>
           <div>
-            <h2 className="section-heading" style={{ textAlign: "left" }}>
+            <h2 className="section-heading section-heading--left">
               ข่าวประชาสัมพันธ์
             </h2>
             <p className="section-subheading" style={{ textAlign: "left", marginBottom: 0 }}>

@@ -18,7 +18,7 @@ export default function VideoAndRateSection() {
         {/* Left: Videos */}
         <div>
           <div className={css.blockHeader}>
-            <h2 className="section-heading" style={{ textAlign: "left", marginBottom: 0 }}>
+            <h2 className="section-heading section-heading--left" style={{ marginBottom: 0 }}>
               วิดีโอสหกรณ์ CO-OP
             </h2>
             <Link href="/videos" className={css.viewAll}>

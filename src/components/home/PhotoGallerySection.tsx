@@ -13,7 +13,7 @@ export default function PhotoGallerySection() {
     <section className={css.section}>
       <div className={css.inner}>
         <div className={css.header}>
-          <h2 className="section-heading" style={{ textAlign: "left" }}>
+          <h2 className="section-heading section-heading--left">
             ภาพกิจกรรมสหกรณ์
           </h2>
           <Link href="/gallery" className={css.viewAll}>

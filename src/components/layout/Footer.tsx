@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { Row, Col, Typography, Space, Divider } from "antd";
 import {
   EnvironmentOutlined,
   PhoneOutlined,
@@ -9,11 +8,12 @@ import {
   MailOutlined,
   FacebookFilled,
   MessageFilled,
+  DownloadOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
-
-const { Title, Text, Paragraph } = Typography;
+import css from "./Footer.module.css";
 
 const quickLinks = [
   { label: "หน้าแรก", href: "/" },
@@ -35,114 +35,120 @@ const serviceLinks = [
 
 export default function Footer() {
   return (
-    <footer className="footer">
-      <div className="footer-inner">
-        <Row gutter={[48, 32]}>
-          {/* Column 1 — About */}
-          <Col xs={24} sm={24} md={8}>
-            <div className="footer-brand">
-              <Image
-                src="/logo.svg"
-                alt="สหกรณ์ออมทรัพย์กรมทางหลวง"
-                width={56}
-                height={56}
-              />
-              <Title level={5} style={{ color: "#fff", margin: 0 }}>
-                สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด
-              </Title>
+    <footer className={css.footer}>
+      <div className={css.top}>
+        {/* Column 1 — Brand + Contact */}
+        <div>
+          <div className={css.brand}>
+            <Image
+              src="/logo.svg"
+              alt="สหกรณ์ออมทรัพย์กรมทางหลวง"
+              width={48}
+              height={48}
+            />
+            <h3 className={css.brandName}>สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด</h3>
+          </div>
+          <p className={css.brandDesc}>
+            บริการเงินฝาก สินเชื่อ และสวัสดิการสมาชิก
+            ด้วยระบบที่ทันสมัยและโปร่งใส ให้บริการมากว่า 50 ปี
+          </p>
+          <div className={css.contactList}>
+            <div className={css.contactItem}>
+              <EnvironmentOutlined className={css.contactIcon} />
+              <span>ถนนศรีอยุธยา แขวงทุ่งพญาไท เขตราชเทวี กทม. 10400</span>
             </div>
-            <Paragraph style={{ color: "rgba(255,255,255,0.7)", marginTop: 16 }}>
-              บริการเงินฝาก สินเชื่อ และสวัสดิการสมาชิก
-              ด้วยระบบที่ทันสมัยและโปร่งใส
-            </Paragraph>
-
-            <Space orientation="vertical" size={4} style={{ marginTop: 8 }}>
-              <Space size={8}>
-                <EnvironmentOutlined style={{ color: "#E8652B" }} />
-                <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: 13 }}>
-                  ถนนศรีอยุธยา แขวงทุ่งพญาไท เขตราชเทวี กทม. 10400
-                </Text>
-              </Space>
-              <Space size={8}>
-                <PhoneOutlined style={{ color: "#E8652B" }} />
-                <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: 13 }}>
-                  02-354-6827
-                </Text>
-              </Space>
-              <Space size={8}>
-                <PrinterOutlined style={{ color: "#E8652B" }} />
-                <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: 13 }}>
-                  02-354-6833
-                </Text>
-              </Space>
-              <Space size={8}>
-                <MailOutlined style={{ color: "#E8652B" }} />
-                <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: 13 }}>
-                  dohsaving@gmail.com
-                </Text>
-              </Space>
-            </Space>
-          </Col>
-
-          {/* Column 2 — Quick Links */}
-          <Col xs={24} sm={12} md={8}>
-            <Title level={5} style={{ color: "#fff", marginBottom: 16 }}>
-              ลิงก์ด่วน
-            </Title>
-            <Space orientation="vertical" size={8}>
-              {quickLinks.map((link) => (
-                <Link key={link.href} href={link.href} className="footer-link">
-                  {link.label}
-                </Link>
-              ))}
-            </Space>
-          </Col>
-
-          {/* Column 3 — Services + Social */}
-          <Col xs={24} sm={12} md={8}>
-            <Title level={5} style={{ color: "#fff", marginBottom: 16 }}>
-              บริการ
-            </Title>
-            <Space orientation="vertical" size={8}>
-              {serviceLinks.map((link) => (
-                <Link key={link.href} href={link.href} className="footer-link">
-                  {link.label}
-                </Link>
-              ))}
-            </Space>
-
-            <div style={{ marginTop: 24 }}>
-              <Title level={5} style={{ color: "#fff", marginBottom: 12 }}>
-                ติดตามเรา
-              </Title>
-              <Space size="middle">
-                <a
-                  href="https://www.facebook.com/DOHSaving"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="footer-social"
-                >
-                  <FacebookFilled style={{ fontSize: 28 }} />
-                </a>
-                <a
-                  href="https://line.me/R/ti/p/@dohsaving"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="footer-social"
-                >
-                  <MessageFilled style={{ fontSize: 28 }} />
-                </a>
-              </Space>
+            <div className={css.contactItem}>
+              <PhoneOutlined className={css.contactIcon} />
+              <span>02-354-6827</span>
             </div>
-          </Col>
-        </Row>
+            <div className={css.contactItem}>
+              <PrinterOutlined className={css.contactIcon} />
+              <span>02-354-6833</span>
+            </div>
+            <div className={css.contactItem}>
+              <MailOutlined className={css.contactIcon} />
+              <span>dohsaving@gmail.com</span>
+            </div>
+          </div>
+        </div>
 
-        <Divider style={{ borderColor: "rgba(255,255,255,0.15)", margin: "32px 0 16px" }} />
+        {/* Column 2 — Quick Links */}
+        <div>
+          <h4 className={css.colTitle}>ลิงก์ด่วน</h4>
+          <div className={css.linkList}>
+            {quickLinks.map((link) => (
+              <Link key={link.href} href={link.href} className={css.link}>
+                <RightOutlined className={css.linkArrow} />
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
 
-        <div className="footer-bottom">
-          <Text style={{ color: "rgba(255,255,255,0.5)", fontSize: 13 }}>
+        {/* Column 3 — Services */}
+        <div>
+          <h4 className={css.colTitle}>บริการ</h4>
+          <div className={css.linkList}>
+            {serviceLinks.map((link) => (
+              <Link key={link.href} href={link.href} className={css.link}>
+                <RightOutlined className={css.linkArrow} />
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Column 4 — Social + App */}
+        <div>
+          <h4 className={css.colTitle}>ติดตามเรา</h4>
+          <div className={css.socialRow}>
+            <a
+              href="https://www.facebook.com/DOHSaving"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${css.socialBtn} ${css.socialFb}`}
+              aria-label="Facebook"
+            >
+              <FacebookFilled />
+            </a>
+            <a
+              href="https://line.me/R/ti/p/@dohsaving"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${css.socialBtn} ${css.socialLine}`}
+              aria-label="LINE"
+            >
+              <MessageFilled />
+            </a>
+          </div>
+
+          <h4 className={css.socialTitle}>ดาวน์โหลดแอป</h4>
+          <a href="#download-app" className={css.appCard}>
+            <div className={css.appIcon}>D</div>
+            <div className={css.appText}>
+              <span className={css.appTextTitle}>
+                <DownloadOutlined /> DOH Saving App
+              </span>
+              ตรวจยอด ทำธุรกรรม ได้ทุกที่ 24 ชม.
+            </div>
+          </a>
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div className={css.bottom}>
+        <div className={css.bottomInner}>
+          <span className={css.copyright}>
             © {new Date().getFullYear()} สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด — สงวนลิขสิทธิ์
-          </Text>
+          </span>
+          <div className={css.bottomLinks}>
+            <Link href="/privacy-policy" className={css.bottomLink}>
+              นโยบายความเป็นส่วนตัว
+            </Link>
+            <Link href="/terms" className={css.bottomLink}>
+              ข้อกำหนดการใช้งาน
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

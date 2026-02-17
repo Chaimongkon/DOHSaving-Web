@@ -1,0 +1,272 @@
+.footer {
+  background: linear-gradient(180deg, #0c1829 0%, #0f1d36 100%);
+  padding: 0;
+  position: relative;
+}
+
+/* Orange accent bar at top */
+.footer::before {
+  content: "";
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, #E8652B 0%, #f09060 50%, #E8652B 100%);
+}
+
+.top {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 24px 40px;
+  display: grid;
+  grid-template-columns: 1.3fr 0.8fr 0.8fr 1fr;
+  gap: 40px;
+}
+
+/* ── Column: Brand / About ── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.brandName {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.brandDesc {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 0 0 20px 0;
+}
+
+/* Contact info */
+.contactList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.contactIcon {
+  color: #E8652B;
+  font-size: 13px;
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ── Column: Links ── */
+.colTitle {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 18px 0;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.colTitle::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 24px;
+  height: 2px;
+  background: #E8652B;
+  border-radius: 2px;
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.link {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  text-decoration: none;
+  padding: 5px 0;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+}
+
+.link:hover {
+  color: #E8652B;
+  padding-left: 6px;
+  gap: 4px;
+}
+
+.linkArrow {
+  font-size: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.link:hover .linkArrow {
+  opacity: 1;
+}
+
+/* ── Column: Social / CTA ── */
+.socialTitle {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 14px 0;
+}
+
+.socialRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.socialBtn {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.socialBtn:hover {
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+
+.socialFb {
+  background: #1877f2;
+}
+
+.socialFb:hover {
+  box-shadow: 0 6px 16px rgba(24, 119, 242, 0.4);
+}
+
+.socialLine {
+  background: #06c755;
+}
+
+.socialLine:hover {
+  box-shadow: 0 6px 16px rgba(6, 199, 85, 0.4);
+}
+
+/* App download mini-card */
+.appCard {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.appCard:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(232, 101, 43, 0.3);
+}
+
+.appIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #E8652B, #f09060);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #ffffff;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.appText {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.appTextTitle {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 13px;
+  display: block;
+}
+
+/* ── Bottom bar ── */
+.bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px 24px;
+}
+
+.bottomInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.copyright {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+}
+
+.bottomLinks {
+  display: flex;
+  gap: 20px;
+}
+
+.bottomLink {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.bottomLink:hover {
+  color: #E8652B;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .top {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+}
+
+@media (max-width: 576px) {
+  .top {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 36px 20px 32px;
+  }
+
+  .bottomInner {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}
