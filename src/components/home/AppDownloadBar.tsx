@@ -6,33 +6,34 @@ import {
   AppleOutlined,
   AndroidOutlined,
 } from "@ant-design/icons";
+import css from "./AppDownloadBar.module.css";
 
 export default function AppDownloadBar() {
   return (
-    <div className="app-bar">
-      <div className="app-bar-inner">
+    <div className={css.bar}>
+      <div className={css.inner}>
         {/* Left: App icon + text */}
-        <div className="app-bar-info">
-          <div className="app-bar-icon">
-            <span className="app-bar-icon-text">D</span>
+        <div className={css.info}>
+          <div className={css.icon}>
+            <span className={css.iconText}>D</span>
           </div>
           <div>
-            <span className="app-bar-name">
-              แอป DOH Saving — <span className="app-bar-name-highlight">ใหม่!</span>
+            <span className={css.name}>
+              แอป DOH Saving — <span className={css.highlight}>ใหม่!</span>
             </span>
-            <span className="app-bar-desc">ตรวจยอด ทำธุรกรรม ได้ทุกที่ 24 ชม.</span>
+            <span className={css.desc}>ตรวจยอด ทำธุรกรรม ได้ทุกที่ 24 ชม.</span>
           </div>
         </div>
 
         {/* Right: Store buttons + CTA */}
-        <div className="app-bar-actions">
-          <a href="#download-ios" className="app-bar-store" aria-label="App Store">
+        <div className={css.actions}>
+          <a href="#download-ios" className={css.store} aria-label="App Store">
             <AppleOutlined />
           </a>
-          <a href="#download-android" className="app-bar-store" aria-label="Google Play">
+          <a href="#download-android" className={css.store} aria-label="Google Play">
             <AndroidOutlined />
           </a>
-          <a href="#download-app" className="app-bar-cta">
+          <a href="#download-app" className={css.cta}>
             <DownloadOutlined />
             <span>ดาวน์โหลดแอป</span>
           </a>

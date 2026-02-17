@@ -15,6 +15,7 @@ import AppDownloadBar from "@/components/home/AppDownloadBar";
 import NewsSection from "@/components/home/NewsSection";
 import VideoAndRateSection from "@/components/home/VideoAndRateSection";
 import PhotoGallerySection from "@/components/home/PhotoGallerySection";
+import css from "./page.module.css";
 
 const quickLinks = [
   {
@@ -80,8 +81,8 @@ export default function HomePage() {
       <PhotoGallerySection />
 
       {/* Quick Links Section */}
-      <section className="quick-links-section">
-        <div className="quick-links-inner">
+      <section className={css.quickLinksSection}>
+        <div className={css.quickLinksInner}>
           <h2 className="section-heading">บริการของเรา</h2>
           <p className="section-subheading">
             เข้าถึงบริการต่างๆ ของสหกรณ์ออมทรัพย์กรมทางหลวง ได้อย่างสะดวกรวดเร็ว
@@ -90,17 +91,17 @@ export default function HomePage() {
             {quickLinks.map((item, i) => (
               <Col key={i} xs={24} sm={12} md={8}>
                 <Link href={item.href} style={{ display: "block" }}>
-                  <Card hoverable className="quick-link-card">
-                    <div className="quick-link-card-inner">
+                  <Card hoverable className={css.card}>
+                    <div className={css.cardInner}>
                       <div
-                        className="quick-link-icon-wrap"
+                        className={css.iconWrap}
                         style={{ background: item.color }}
                       >
                         {item.icon}
                       </div>
-                      <div className="quick-link-text">
-                        <h3 className="quick-link-title">{item.title}</h3>
-                        <p className="quick-link-desc">{item.desc}</p>
+                      <div>
+                        <h3 className={css.cardTitle}>{item.title}</h3>
+                        <p className={css.cardDesc}>{item.desc}</p>
                       </div>
                     </div>
                   </Card>

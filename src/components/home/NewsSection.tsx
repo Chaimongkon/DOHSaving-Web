@@ -4,6 +4,7 @@ import React from "react";
 import { CalendarOutlined, RightOutlined, EyeOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { mockNews, categoryMap } from "@/data/mockNews";
+import css from "./NewsSection.module.css";
 
 // Show latest 4 news
 const latestNews = mockNews
@@ -37,9 +38,9 @@ export default function NewsSection() {
   const rest = latestNews.slice(1);
 
   return (
-    <section className="news-section">
-      <div className="news-section-inner">
-        <div className="news-section-header">
+    <section className={css.section}>
+      <div className={css.inner}>
+        <div className={css.header}>
           <div>
             <h2 className="section-heading" style={{ textAlign: "left" }}>
               ข่าวประชาสัมพันธ์
@@ -48,83 +49,83 @@ export default function NewsSection() {
               ข่าวสารและประกาศล่าสุดจากสหกรณ์
             </p>
           </div>
-          <Link href="/news" className="news-view-all">
+          <Link href="/news" className={css.viewAll}>
             ดูข่าวทั้งหมด <RightOutlined />
           </Link>
         </div>
 
-        <div className="news-featured-layout">
+        <div className={css.featuredLayout}>
           {/* Featured (large) card */}
           {featured && (
-            <Link href={`/news/${featured.id}`} className="news-card news-card--featured">
-              <div className="news-card-thumb news-card-thumb--featured">
+            <Link href={`/news/${featured.id}`} className={`${css.card} ${css.cardFeatured}`}>
+              <div className={`${css.thumb} ${css.thumbFeatured}`}>
                 {featured.imagePath ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={featured.imagePath} alt={featured.title} className="news-card-img" />
+                  <img src={featured.imagePath} alt={featured.title} className={css.img} />
                 ) : (
-                  <div className="news-card-thumb-placeholder" />
+                  <div className={css.thumbPlaceholder} />
                 )}
                 <span
-                  className="news-card-tag"
+                  className={css.tag}
                   style={{ background: categoryMap[featured.category]?.color }}
                 >
                   {categoryMap[featured.category]?.label}
                 </span>
               </div>
-              <div className="news-card-body">
-                <h3 className="news-card-title news-card-title--featured">{featured.title}</h3>
+              <div className={css.body}>
+                <h3 className={`${css.title} ${css.titleFeatured}`}>{featured.title}</h3>
                 {featured.category === "member-approval" && (
-                  <span className="news-card-monthly">{formatMonth(featured.createdAt)}</span>
+                  <span className={css.monthly}>{formatMonth(featured.createdAt)}</span>
                 )}
-                <p className="news-card-excerpt news-card-excerpt--featured">{featured.details}</p>
-                <div className="news-card-meta">
-                  <div className="news-card-meta-left">
-                    <span className="news-card-meta-item">
+                <p className={`${css.excerpt} ${css.excerptFeatured}`}>{featured.details}</p>
+                <div className={css.meta}>
+                  <div className={css.metaLeft}>
+                    <span className={css.metaItem}>
                       <CalendarOutlined /> โพสต์เมื่อวันที่ {formatDate(featured.createdAt)}
                     </span>
-                    <span className="news-card-meta-item">
+                    <span className={css.metaItem}>
                       <EyeOutlined /> {formatViews(featured.viewCount)} ครั้ง
                     </span>
                   </div>
-                  <span className="news-card-readmore">คลิกเพื่ออ่านต่อ</span>
+                  <span className={css.readmore}>คลิกเพื่ออ่านต่อ</span>
                 </div>
               </div>
             </Link>
           )}
 
           {/* Side cards (smaller) */}
-          <div className="news-side-list">
+          <div className={css.sideList}>
             {rest.map((news) => (
-              <Link href={`/news/${news.id}`} key={news.id} className="news-card news-card--side">
-                <div className="news-card-thumb news-card-thumb--side">
+              <Link href={`/news/${news.id}`} key={news.id} className={`${css.card} ${css.cardSide}`}>
+                <div className={`${css.thumb} ${css.thumbSide}`}>
                   {news.imagePath ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={news.imagePath} alt={news.title} className="news-card-img" />
+                    <img src={news.imagePath} alt={news.title} className={css.img} />
                   ) : (
-                    <div className="news-card-thumb-placeholder" />
+                    <div className={css.thumbPlaceholder} />
                   )}
                   <span
-                    className="news-card-tag"
+                    className={css.tag}
                     style={{ background: categoryMap[news.category]?.color }}
                   >
                     {categoryMap[news.category]?.label}
                   </span>
                 </div>
-                <div className="news-card-body">
-                  <h3 className="news-card-title">{news.title}</h3>
+                <div className={css.body}>
+                  <h3 className={css.title}>{news.title}</h3>
                   {news.category === "member-approval" && (
-                    <span className="news-card-monthly news-card-monthly--sm">{formatMonth(news.createdAt)}</span>
+                    <span className={`${css.monthly} ${css.monthlySm}`}>{formatMonth(news.createdAt)}</span>
                   )}
-                  <div className="news-card-meta news-card-meta--side">
-                    <div className="news-card-meta-left">
-                      <span className="news-card-meta-item">
+                  <div className={`${css.meta} ${css.metaSide}`}>
+                    <div className={css.metaLeft}>
+                      <span className={css.metaItem}>
                         <CalendarOutlined /> {formatDate(news.createdAt)}
                       </span>
-                      <span className="news-card-meta-item">
+                      <span className={css.metaItem}>
                         <EyeOutlined /> {formatViews(news.viewCount)}
                       </span>
                     </div>
-                    <span className="news-card-readmore">คลิกเพื่ออ่านต่อ</span>
+                    <span className={css.readmore}>คลิกเพื่ออ่านต่อ</span>
                   </div>
                 </div>
               </Link>

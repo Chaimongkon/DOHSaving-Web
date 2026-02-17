@@ -1,0 +1,126 @@
+.bar {
+  background: linear-gradient(90deg, #0f1d36 0%, #1a2d4a 50%, #0f1d36 100%);
+  padding: 0 32px;
+  border-top: 3px solid #E8652B;
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  gap: 16px;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #E8652B, #f09060);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconText {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.name {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  display: block;
+  line-height: 1.3;
+}
+
+.highlight {
+  color: #E8652B;
+  font-weight: 700;
+}
+
+.desc {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  display: block;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.store {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.store:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  background: #E8652B;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  margin-left: 4px;
+}
+
+.cta:hover {
+  background: #d45a24;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(232, 101, 43, 0.35);
+}
+
+@media (max-width: 576px) {
+  .desc {
+    display: none;
+  }
+
+  .store {
+    display: none;
+  }
+
+  .name {
+    font-size: 12px;
+  }
+
+  .cta {
+    font-size: 12px;
+    padding: 6px 14px;
+  }
+}
