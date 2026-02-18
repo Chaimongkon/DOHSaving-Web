@@ -16,8 +16,15 @@ interface StaffMember {
   name: string;
   position: string;
   imageUrl: string;
+  tier: number;
   order: number;
 }
+
+const TIERS = [
+  { value: 1, label: "ผู้จัดการ / หัวหน้า" },
+  { value: 2, label: "อาวุโส" },
+  { value: 3, label: "เจ้าหน้าที่" },
+];
 
 const DEPARTMENTS = [
   { key: "managers", label: "ผู้จัดการใหญ่และรองผู้จัดการฯ" },
@@ -64,6 +71,7 @@ export default function DepartmentStaffEditor() {
       name: "",
       position: "",
       imageUrl: "",
+      tier: 3,
       order: staff.length + 1,
     };
     setStaff((prev) => [...prev, newMember]);
@@ -121,7 +129,7 @@ export default function DepartmentStaffEditor() {
     }
   }, [staff, activeDept]);
 
-  const sorted = [...staff].sort((a, b) => a.order - b.order);
+  const sorted = [...staff].sort((a, b) => a.tier - b.tier || a.order - b.order);
   const currentLabel = DEPARTMENTS.find((d) => d.key === activeDept)?.label ?? "";
 
   return (
@@ -206,6 +214,15 @@ export default function DepartmentStaffEditor() {
                   onChange={(e) => updateStaff(member.id, "position", e.target.value)}
                   placeholder="ตำแหน่ง"
                 />
+                <select
+                  className={css.cardSelect}
+                  value={member.tier}
+                  onChange={(e) => updateStaff(member.id, "tier", Number(e.target.value))}
+                >
+                  {TIERS.map((t) => (
+                    <option key={t.value} value={t.value}>{t.label}</option>
+                  ))}
+                </select>
                 <input
                   className={css.cardInput}
                   type="number"

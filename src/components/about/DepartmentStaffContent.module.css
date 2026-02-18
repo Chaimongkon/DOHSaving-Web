@@ -104,12 +104,61 @@
   border-radius: 20px;
 }
 
-/* ========== Staff Grid ========== */
-.staffGrid {
+/* ========== ORG CHART ========== */
+.orgChart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* Tier section */
+.tierSection {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  margin-bottom: 8px;
+}
+
+.tierSection.tierVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Connector line between tiers */
+.connector {
+  width: 2px;
+  height: 18px;
+  background: linear-gradient(180deg, #d1d5db, #e5e7eb);
+  margin: 0 auto;
+}
+
+/* Tier label */
+.tierLabel {
+  margin-bottom: 14px;
+}
+
+.tierLabelText {
+  display: inline-block;
+  padding: 6px 20px;
+  border-radius: 20px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Members row — centered flex */
+.membersRow {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 28px;
+  gap: 24px;
+  margin-bottom: 8px;
 }
 
 /* Staff card */
@@ -119,19 +168,11 @@
   align-items: center;
   width: 160px;
   text-align: center;
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.staffCard.cardVisible {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition: transform 0.3s ease;
 }
 
 .staffCard:hover {
   transform: translateY(-4px);
-  transition: transform 0.3s ease;
 }
 
 /* Circular image with gradient ring */
@@ -140,14 +181,12 @@
   height: 130px;
   border-radius: 50%;
   padding: 3px;
-  background: linear-gradient(135deg, #0d9488, #14b8a6, #5eead4);
-  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.2);
   margin-bottom: 12px;
   transition: box-shadow 0.3s;
 }
 
 .staffCard:hover .cardRing {
-  box-shadow: 0 8px 24px rgba(13, 148, 136, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
 }
 
 .cardImageInner {
@@ -298,7 +337,7 @@
     padding: 0;
   }
 
-  .staffCard {
+  .tierSection {
     opacity: 1;
     transform: none;
     break-inside: avoid;
@@ -330,17 +369,17 @@
     display: none;
   }
 
-  .staffGrid {
-    gap: 20px;
+  .membersRow {
+    gap: 14px;
   }
 
   .staffCard {
-    width: 120px;
+    width: 110px;
   }
 
   .cardRing {
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
   }
 
   .cardName {

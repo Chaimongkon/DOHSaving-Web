@@ -11,6 +11,7 @@ export interface StaffMember {
   name: string;
   position: string;
   imageUrl: string;
+  tier: number; // 1=ผู้จัดการ/หัวหน้า, 2=อาวุโส, 3=เจ้าหน้าที่
   order: number;
 }
 

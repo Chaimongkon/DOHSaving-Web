@@ -35,8 +35,21 @@ interface StaffMember {
   name: string;
   position: string;
   imageUrl: string;
+  tier: number;
   order: number;
 }
+
+const TIER_LABELS: Record<number, string> = {
+  1: "ผู้จัดการ / หัวหน้า",
+  2: "อาวุโส",
+  3: "เจ้าหน้าที่",
+};
+
+const TIER_COLORS: Record<number, { bg: string; shadow: string }> = {
+  1: { bg: "linear-gradient(135deg, #0d9488, #0f766e)", shadow: "rgba(13,148,136,0.25)" },
+  2: { bg: "linear-gradient(135deg, #0891b2, #0e7490)", shadow: "rgba(8,145,178,0.25)" },
+  3: { bg: "linear-gradient(135deg, #6366f1, #4f46e5)", shadow: "rgba(99,102,241,0.25)" },
+};
 
 interface Props {
   deptKey: string;
@@ -54,11 +67,24 @@ export default function DepartmentStaffContent({ deptKey, title, breadcrumbLabel
     fetch(`/api/department-staff?dept=${deptKey}`)
       .then((res) => res.json())
       .then((data) =>
-        setStaff((data.staff || []).sort((a: StaffMember, b: StaffMember) => a.order - b.order))
+        setStaff(
+          (data.staff || []).sort(
+            (a: StaffMember, b: StaffMember) => a.tier - b.tier || a.order - b.order
+          )
+        )
       )
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [deptKey]);
+
+  // Group by tier
+  const tiers = staff.reduce<Record<number, StaffMember[]>>((acc, m) => {
+    const t = m.tier || 3;
+    if (!acc[t]) acc[t] = [];
+    acc[t].push(m);
+    return acc;
+  }, {});
+  const tierKeys = Object.keys(tiers).map(Number).sort((a, b) => a - b);
 
   // Scroll animation
   useEffect(() => {
@@ -68,7 +94,7 @@ export default function DepartmentStaffContent({ deptKey, title, breadcrumbLabel
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add(css.cardVisible);
+            entry.target.classList.add(css.tierVisible);
             observer.unobserve(entry.target);
           }
         });
@@ -113,35 +139,60 @@ export default function DepartmentStaffContent({ deptKey, title, breadcrumbLabel
           {loading ? (
             <div className={css.loading}>กำลังโหลด...</div>
           ) : staff.length > 0 ? (
-            <div className={css.staffGrid}>
-              {staff.map((member, i) => (
-                <div
-                  key={member.id}
-                  ref={(el) => { cardsRef.current[i] = el; }}
-                  className={css.staffCard}
-                  style={{ animationDelay: `${i * 80}ms` }}
-                >
-                  <div className={css.cardRing}>
-                    <div className={css.cardImageInner}>
-                      {member.imageUrl ? (
-                        <img
-                          src={member.imageUrl}
-                          alt={member.name}
-                          className={css.cardImg}
-                        />
-                      ) : (
-                        <div className={css.cardImgPlaceholder}>
-                          <UserOutlined />
-                        </div>
-                      )}
+            <div className={css.orgChart}>
+              {tierKeys.map((tierNum, tierIdx) => {
+                const members = tiers[tierNum];
+                const colors = TIER_COLORS[tierNum] || TIER_COLORS[3];
+                return (
+                  <React.Fragment key={tierNum}>
+                    {tierIdx > 0 && <div className={css.connector} />}
+                    <div
+                      ref={(el) => { cardsRef.current[tierIdx] = el; }}
+                      className={css.tierSection}
+                    >
+                      <div className={css.tierLabel}>
+                        <span
+                          className={css.tierLabelText}
+                          style={{ background: colors.bg }}
+                        >
+                          {TIER_LABELS[tierNum] || `ระดับ ${tierNum}`}
+                        </span>
+                      </div>
+                      <div className={css.membersRow}>
+                        {members.map((member) => (
+                          <div key={member.id} className={css.staffCard}>
+                            <div
+                              className={css.cardRing}
+                              style={{
+                                background: colors.bg,
+                                boxShadow: `0 4px 16px ${colors.shadow}`,
+                              }}
+                            >
+                              <div className={css.cardImageInner}>
+                                {member.imageUrl ? (
+                                  <img
+                                    src={member.imageUrl}
+                                    alt={member.name}
+                                    className={css.cardImg}
+                                  />
+                                ) : (
+                                  <div className={css.cardImgPlaceholder}>
+                                    <UserOutlined />
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            <div className={css.cardInfo}>
+                              <h3 className={css.cardName}>{member.name}</h3>
+                              <span className={css.cardPosition}>{member.position}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  <div className={css.cardInfo}>
-                    <h3 className={css.cardName}>{member.name}</h3>
-                    <span className={css.cardPosition}>{member.position}</span>
-                  </div>
-                </div>
-              ))}
+                  </React.Fragment>
+                );
+              })}
             </div>
           ) : (
             <div className={css.empty}>
