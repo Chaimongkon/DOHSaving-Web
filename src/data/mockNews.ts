@@ -3,13 +3,13 @@
 
 export interface NewsData {
   id: number;
-  title: string;
-  details: string;
+  title: string | null;
+  details: string | null;
   imagePath: string | null;
   pdfPath: string | null;
   isActive: boolean;
   createdAt: string;
-  category: "announcement" | "member-approval" | "general";
+  category: string;
   viewCount: number;
 }
 

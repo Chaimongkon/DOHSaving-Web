@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { CalendarOutlined, RightOutlined, EyeOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import { mockNews, categoryMap } from "@/data/mockNews";
+import { mockNews, categoryMap, type NewsData } from "@/data/mockNews";
 import css from "./NewsSection.module.css";
 
-// Show latest 4 news
-const latestNews = mockNews
+// Fallback mock — ใช้ขณะที่ DB ยังไม่มีข้อมูล
+const fallbackNews = mockNews
   .filter((n) => n.isActive)
   .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
   .slice(0, 4);
@@ -34,8 +34,21 @@ function formatViews(count: number) {
 }
 
 export default function NewsSection() {
-  const featured = latestNews[0];
-  const rest = latestNews.slice(1);
+  const [newsList, setNewsList] = useState<NewsData[]>(fallbackNews);
+
+  useEffect(() => {
+    fetch("/api/news?limit=4")
+      .then((res) => res.json())
+      .then((data: NewsData[]) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setNewsList(data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const featured = newsList[0];
+  const rest = newsList.slice(1);
 
   return (
     <section className={css.section}>
@@ -61,7 +74,7 @@ export default function NewsSection() {
               <div className={`${css.thumb} ${css.thumbFeatured}`}>
                 {featured.imagePath ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={featured.imagePath} alt={featured.title} className={css.img} />
+                  <img src={featured.imagePath} alt={featured.title || "ข่าว"} className={css.img} />
                 ) : (
                   <div className={css.thumbPlaceholder} />
                 )}
@@ -100,7 +113,7 @@ export default function NewsSection() {
                 <div className={`${css.thumb} ${css.thumbSide}`}>
                   {news.imagePath ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={news.imagePath} alt={news.title} className={css.img} />
+                    <img src={news.imagePath} alt={news.title || "ข่าว"} className={css.img} />
                   ) : (
                     <div className={css.thumbPlaceholder} />
                   )}

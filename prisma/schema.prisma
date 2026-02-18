@@ -66,6 +66,8 @@ model News {
   details     String?   @db.Text
   imagePath   String?   @db.VarChar(500)
   pdfPath     String?   @db.VarChar(500)
+  category    String    @default("general") @db.VarChar(50)
+  viewCount   Int       @default(0)
   isActive    Boolean   @default(true)
   createdBy   String?   @db.VarChar(255)
   updatedBy   String?   @db.VarChar(255)
@@ -74,6 +76,7 @@ model News {
 
   @@index([title])
   @@index([createdAt])
+  @@index([category])
   @@map("news")
 }
 

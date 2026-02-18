@@ -20,10 +20,13 @@ export async function POST(req: NextRequest) {
     }
 
     // ตรวจสอบประเภทไฟล์
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
+    const allowedTypes = [
+      "image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml",
+      "application/pdf",
+    ];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
-        { error: "รองรับเฉพาะไฟล์ภาพ (jpg, png, webp, gif, svg)" },
+        { error: "รองรับเฉพาะไฟล์ภาพ (jpg, png, webp, gif, svg) และ PDF" },
         { status: 400 }
       );
     }
