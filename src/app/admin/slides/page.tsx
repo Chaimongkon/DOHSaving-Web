@@ -39,6 +39,15 @@ interface SlideForm {
   isActive: boolean;
 }
 
+const gradientPresets = [
+  { label: "ไม่ใช้", value: "" },
+  { label: "น้ำเงินเข้ม", value: "linear-gradient(135deg, rgba(15,29,54,0.85) 0%, rgba(26,58,92,0.75) 40%, rgba(232,101,43,0.6) 100%)" },
+  { label: "น้ำเงิน-ส้ม", value: "linear-gradient(135deg, rgba(26,58,92,0.85) 0%, rgba(15,29,54,0.8) 50%, rgba(45,24,16,0.7) 100%)" },
+  { label: "ส้ม-น้ำเงิน", value: "linear-gradient(135deg, rgba(45,24,16,0.85) 0%, rgba(232,101,43,0.7) 40%, rgba(26,58,92,0.8) 100%)" },
+  { label: "ขาวโปร่ง", value: "linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.2) 100%)" },
+  { label: "ดำโปร่ง", value: "linear-gradient(to right, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)" },
+];
+
 const defaultForm: SlideForm = {
   imagePath: "",
   urlLink: "",
@@ -350,17 +359,32 @@ export default function SlidesPage() {
 
               {/* bgGradient */}
               <div className={css.formGroup}>
-                <label className={css.formLabel}>สีไล่ระดับ (CSS Gradient)</label>
+                <label className={css.formLabel}>สีไล่ระดับ (Gradient)</label>
+                <div className={css.presetRow}>
+                  {gradientPresets.map((p) => (
+                    <button
+                      key={p.label}
+                      type="button"
+                      className={`${css.presetBtn} ${form.bgGradient === p.value ? css.presetActive : ""}`}
+                      onClick={() => setForm((prev) => ({ ...prev, bgGradient: p.value }))}
+                    >
+                      {p.value ? (
+                        <span className={css.presetSwatch} style={{ background: p.value }} />
+                      ) : (
+                        <span className={css.presetSwatch} style={{ background: "#f3f4f6" }}>✕</span>
+                      )}
+                      <span>{p.label}</span>
+                    </button>
+                  ))}
+                </div>
                 <input
                   type="text"
                   className={css.formInput}
-                  placeholder="linear-gradient(135deg, rgba(15,29,54,0.85) 0%, ...)"
+                  placeholder="หรือพิมพ์ CSS gradient เอง..."
                   value={form.bgGradient}
                   onChange={(e) => setForm((prev) => ({ ...prev, bgGradient: e.target.value }))}
+                  style={{ marginTop: 8 }}
                 />
-                {form.bgGradient && (
-                  <div style={{ marginTop: 8, height: 32, borderRadius: 6, background: form.bgGradient }} />
-                )}
               </div>
 
               {/* URL Link */}
@@ -413,6 +437,26 @@ export default function SlidesPage() {
                   </span>
                 </div>
               </div>
+
+              {/* Preview */}
+              {form.imagePath && (
+                <div className={css.formGroup}>
+                  <label className={css.formLabel}>ตัวอย่าง</label>
+                  <div className={css.previewWrap}>
+                    <img src={form.imagePath} alt="Preview" className={css.previewImg} />
+                    {form.bgGradient && (
+                      <div className={css.previewOverlay} style={{ background: form.bgGradient }} />
+                    )}
+                    {form.title && (
+                      <div className={css.previewContent}>
+                        <p className={css.previewTitle}>{form.title}</p>
+                        {form.subtitle && <p className={css.previewSubtitle}>{form.subtitle}</p>}
+                        {form.ctaText && <span className={css.previewCta}>{form.ctaText}</span>}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className={css.modalFooter}>

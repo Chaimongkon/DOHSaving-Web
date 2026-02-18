@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Carousel } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import type { CarouselRef } from "antd/es/carousel";
@@ -16,6 +16,7 @@ const fallbackSlides = mockSlides
 export default function HeroSlider() {
   const carouselRef = useRef<CarouselRef>(null);
   const [slides, setSlides] = useState<SlideData[]>(fallbackSlides);
+  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     fetch("/api/slides")
@@ -27,6 +28,52 @@ export default function HeroSlider() {
       })
       .catch(() => {});
   }, []);
+
+  const handleBeforeChange = useCallback((_from: number, to: number) => {
+    setCurrent(to);
+  }, []);
+
+  // Render slide inner content
+  const renderSlideInner = (slide: SlideData) => (
+    <>
+      {/* Full-width image */}
+      {slide.imagePath && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={slide.imagePath}
+          alt={slide.title || `Slide ${slide.sortOrder}`}
+          className={css.slideImg}
+          draggable={false}
+        />
+      )}
+
+      {/* Gradient overlay */}
+      {slide.bgGradient && (
+        <div
+          className={css.slideOverlay}
+          style={{ background: slide.bgGradient }}
+        />
+      )}
+
+      {/* Content — แสดงเมื่อมี title */}
+      {slide.title && (
+        <div className={css.content}>
+          <h1 className={css.title}>{slide.title}</h1>
+          {slide.subtitle && <p className={css.subtitle}>{slide.subtitle}</p>}
+          {slide.description && <p className={css.desc}>{slide.description}</p>}
+          {slide.ctaText && slide.urlLink && (
+            <Link
+              href={slide.urlLink}
+              className={css.cta}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {slide.ctaText}
+            </Link>
+          )}
+        </div>
+      )}
+    </>
+  );
 
   return (
     <div className={css.slider}>
@@ -46,64 +93,42 @@ export default function HeroSlider() {
         <RightOutlined />
       </button>
 
+      {/* Slide counter */}
+      {slides.length > 1 && (
+        <div className={css.counter}>
+          {current + 1} / {slides.length}
+        </div>
+      )}
+
       <Carousel
         ref={carouselRef}
         autoplay
         autoplaySpeed={5000}
         effect="fade"
         dots
+        pauseOnHover
+        beforeChange={handleBeforeChange}
       >
         {slides.map((slide) => (
           <div key={slide.id}>
-            <div className={css.slide}>
-              {/* Full-width image — แสดงเต็มตามสัดส่วนจริง */}
-              {slide.imagePath && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={slide.imagePath}
-                  alt={slide.title || `Slide ${slide.sortOrder}`}
-                  className={css.slideImg}
-                  draggable={false}
-                />
-              )}
-
-              {/* Gradient overlay */}
-              {slide.bgGradient && (
-                <div
-                  className={css.slideOverlay}
-                  style={{ background: slide.bgGradient }}
-                />
-              )}
-
-              {/* Content — แสดงเมื่อมี title */}
-              {slide.title && (
-                <div className={css.content}>
-                  <span className={css.badge}>สหกรณ์ออมทรัพย์กรมทางหลวง</span>
-                  <h1 className={css.title}>{slide.title}</h1>
-                  {slide.subtitle && <p className={css.subtitle}>{slide.subtitle}</p>}
-                  {slide.description && <p className={css.desc}>{slide.description}</p>}
-                  {slide.ctaText && slide.urlLink && (
-                    <Link href={slide.urlLink} className={css.cta}>
-                      {slide.ctaText}
-                    </Link>
-                  )}
+            {/* ถ้ามี urlLink และไม่มี title — ให้คลิกทั้งภาพ */}
+            {slide.urlLink && !slide.title ? (
+              <Link href={slide.urlLink} className={css.slideLink}>
+                <div className={css.slide}>
+                  {renderSlideInner(slide)}
                 </div>
-              )}
-
-              {/* Right side decorative element — แสดงเมื่อมี title */}
-              {slide.title && (
-                <div className={css.visual}>
-                  <div className={css.logoRing}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/logo.svg"
-                      alt="โลโก้สหกรณ์"
-                      className={css.logoImg}
-                    />
-                  </div>
+              </Link>
+            ) : slide.urlLink && slide.title ? (
+              <Link href={slide.urlLink} className={css.slideLink}>
+                <div className={css.slide}>
+                  {renderSlideInner(slide)}
                 </div>
-              )}
-            </div>
+              </Link>
+            ) : (
+              <div className={css.slide}>
+                {renderSlideInner(slide)}
+              </div>
+            )}
           </div>
         ))}
       </Carousel>
