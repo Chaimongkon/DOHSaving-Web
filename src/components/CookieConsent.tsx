@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { CloseOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
+import { CloseOutlined } from "@ant-design/icons";
 import css from "./CookieConsent.module.css";
 
 interface CookieCategories {
@@ -85,31 +85,38 @@ export default function CookieConsentBanner() {
 
   return (
     <>
-      {/* Banner */}
+      {/* Banner — Floating card */}
       {!settingsOpen && (
         <div className={css.banner}>
-          <div className={css.bannerInner}>
-            <SafetyCertificateOutlined className={css.bannerIcon} />
-            <div className={css.bannerContent}>
+          <div className={css.bannerHeader}>
+            <span className={css.bannerCookie}>🍪</span>
+            <div className={css.bannerHeaderText}>
               <p className={css.bannerTitle}>เว็บไซต์นี้ใช้คุกกี้</p>
+              <p className={css.bannerSubtitle}>เพื่อประสบการณ์ที่ดีที่สุดสำหรับคุณ</p>
+            </div>
+          </div>
+          <div className={css.bannerInner}>
+            <div className={css.bannerContent}>
               <p className={css.bannerText}>
-                เราใช้คุกกี้เพื่อปรับปรุงประสบการณ์การใช้งานเว็บไซต์ วิเคราะห์การเข้าชม
-                และนำเสนอเนื้อหาที่เหมาะสม คุณสามารถเลือกตั้งค่าได้ตามต้องการ{" "}
+                เราใช้คุกกี้เพื่อปรับปรุงการใช้งาน วิเคราะห์การเข้าชม
+                และนำเสนอเนื้อหาที่เหมาะสม{" "}
                 <Link href="/cookie-policy" className={css.bannerLink}>
-                  นโยบายคุกกี้
+                  อ่านนโยบายคุกกี้
                 </Link>
               </p>
             </div>
             <div className={css.bannerActions}>
-              <button className={css.btnSettings} onClick={() => setSettingsOpen(true)}>
-                ตั้งค่า
-              </button>
-              <button className={css.btnReject} onClick={handleRejectAll}>
-                ไม่ยอมรับ
-              </button>
               <button className={css.btnAccept} onClick={handleAcceptAll}>
                 ยอมรับทั้งหมด
               </button>
+              <div className={css.bannerSecondary}>
+                <button className={css.btnReject} onClick={handleRejectAll}>
+                  ไม่ยอมรับ
+                </button>
+                <button className={css.btnSettings} onClick={() => setSettingsOpen(true)}>
+                  ตั้งค่าคุกกี้
+                </button>
+              </div>
             </div>
           </div>
         </div>

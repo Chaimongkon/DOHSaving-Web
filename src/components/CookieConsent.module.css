@@ -2,102 +2,128 @@
    Cookie Consent Banner + Settings Modal
    ============================================================ */
 
-/* Banner — bottom fixed */
+/* Banner — floating card bottom-left */
 .banner {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 24px;
+  left: 24px;
   z-index: 9998;
-  background: #ffffff;
-  border-top: 1px solid #e5e7eb;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
-  animation: slideUp 0.4s ease;
+  width: 420px;
+  max-width: calc(100vw - 48px);
+  background: #0f1d36;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  animation: slideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 @keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  from { opacity: 0; transform: translateY(40px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.bannerInner {
-  max-width: 1200px;
-  margin: 0 auto;
+.bannerHeader {
+  background: linear-gradient(135deg, #E8652B, #f09060);
+  padding: 20px 24px;
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 20px 32px;
+  gap: 14px;
 }
 
-.bannerIcon {
-  font-size: 28px;
-  color: #E8652B;
-  flex-shrink: 0;
+.bannerCookie {
+  font-size: 36px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
-.bannerContent {
+.bannerHeaderText {
   flex: 1;
-  min-width: 0;
 }
 
 .bannerTitle {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
-  color: #0f1d36;
-  margin: 0 0 4px;
+  color: #ffffff;
+  margin: 0 0 2px;
+}
+
+.bannerSubtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+.bannerInner {
+  padding: 20px 24px;
+}
+
+.bannerIcon {
+  display: none;
+}
+
+.bannerContent {
+  margin-bottom: 18px;
 }
 
 .bannerText {
   font-size: 13px;
-  color: #6b7280;
-  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
   margin: 0;
 }
 
 .bannerLink {
-  color: #E8652B;
+  color: #f09060;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .bannerLink:hover {
+  color: #ffffff;
   text-decoration: underline;
 }
 
 .bannerActions {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .btnAccept {
-  padding: 10px 24px;
-  background: #E8652B;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #E8652B, #f09060);
   color: #ffffff;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   font-family: inherit;
   transition: all 0.2s;
   white-space: nowrap;
+  width: 100%;
+  letter-spacing: 0.3px;
 }
 
 .btnAccept:hover {
-  background: #d45a24;
-  box-shadow: 0 4px 12px rgba(232, 101, 43, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(232, 101, 43, 0.4);
+}
+
+.bannerSecondary {
+  display: flex;
+  gap: 8px;
 }
 
 .btnReject {
-  padding: 10px 24px;
-  background: #f3f4f6;
-  color: #6b7280;
+  flex: 1;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 13px;
   font-weight: 600;
-  border: none;
-  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
   cursor: pointer;
   font-family: inherit;
   transition: all 0.2s;
@@ -105,18 +131,20 @@
 }
 
 .btnReject:hover {
-  background: #e5e7eb;
-  color: #374151;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .btnSettings {
-  padding: 10px 20px;
-  background: transparent;
-  color: #E8652B;
+  flex: 1;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 13px;
   font-weight: 600;
-  border: 1px solid #E8652B;
-  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
   cursor: pointer;
   font-family: inherit;
   transition: all 0.2s;
@@ -124,7 +152,9 @@
 }
 
 .btnSettings:hover {
-  background: rgba(232, 101, 43, 0.06);
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* ── Settings Modal ── */
@@ -308,29 +338,29 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
-  .bannerInner {
-    flex-direction: column;
-    align-items: flex-start;
+@media (max-width: 576px) {
+  .banner {
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-width: none;
+  }
+
+  .bannerHeader {
     padding: 16px 20px;
-    gap: 14px;
   }
 
-  .bannerIcon {
-    display: none;
+  .bannerCookie {
+    font-size: 28px;
   }
 
-  .bannerActions {
-    width: 100%;
-    flex-wrap: wrap;
+  .bannerTitle {
+    font-size: 14px;
   }
 
-  .btnAccept,
-  .btnReject,
-  .btnSettings {
-    flex: 1;
-    text-align: center;
-    padding: 10px 12px;
+  .bannerInner {
+    padding: 16px 20px;
   }
 
   .modal {
