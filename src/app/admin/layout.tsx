@@ -10,6 +10,7 @@ import {
   CameraOutlined,
   DollarOutlined,
   TeamOutlined,
+  SafetyCertificateOutlined,
   SettingOutlined,
   LogoutOutlined,
   MenuOutlined,
@@ -47,6 +48,7 @@ const navItems = [
     group: "ระบบ",
     items: [
       { label: "ผู้ใช้งาน", href: "/admin/users", icon: <TeamOutlined /> },
+      { label: "Cookie Consent", href: "/admin/cookie-consent", icon: <SafetyCertificateOutlined /> },
       { label: "ตั้งค่า", href: "/admin/settings", icon: <SettingOutlined /> },
     ],
   },
