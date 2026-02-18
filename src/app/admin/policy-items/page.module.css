@@ -1,0 +1,217 @@
+/* Admin — Policy Items Manager */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.headerLeft h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f1d36;
+  margin: 0;
+}
+
+.headerLeft p {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 4px 0 0;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btnAdd {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  background: linear-gradient(135deg, #E8652B, #d45a24);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.btnAdd:hover {
+  box-shadow: 0 4px 12px rgba(232, 101, 43, 0.3);
+}
+
+.btnSave {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  background: #0f1d36;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.btnSave:hover {
+  background: #1a2d4a;
+}
+
+.btnSave:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Item list */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px 20px;
+  transition: box-shadow 0.2s;
+}
+
+.item:hover {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.itemNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E8652B, #f59e0b);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.itemContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemTextarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #374151;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.15s;
+}
+
+.itemTextarea:focus {
+  outline: none;
+  border-color: #E8652B;
+  box-shadow: 0 0 0 3px rgba(232, 101, 43, 0.08);
+}
+
+.itemActions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 12px;
+  color: #6b7280;
+  transition: all 0.15s;
+}
+
+.iconBtn:hover {
+  border-color: #E8652B;
+  color: #E8652B;
+}
+
+.iconBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.iconBtnDanger:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+/* Empty */
+.empty {
+  text-align: center;
+  padding: 60px 24px;
+  color: #d1d5db;
+}
+
+.emptyIcon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  opacity: 0.3;
+}
+
+.emptyText {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 80px 24px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+/* Status */
+.status {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 16px;
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .item {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .itemActions {
+    flex-direction: row;
+  }
+}

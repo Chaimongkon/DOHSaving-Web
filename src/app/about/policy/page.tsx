@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import InfographicPageLayout from "@/components/about/InfographicPageLayout";
+import PolicyPageContent from "./PolicyPageContent";
 
 export const metadata: Metadata = {
   title: "นโยบายสหกรณ์ | สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
@@ -7,11 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function PolicyPage() {
-  return (
-    <InfographicPageLayout
-      pageKey="policy"
-      breadcrumbLabel="นโยบายสหกรณ์"
-      pageTitle="นโยบายสหกรณ์"
-    />
-  );
+  return <PolicyPageContent />;
 }
