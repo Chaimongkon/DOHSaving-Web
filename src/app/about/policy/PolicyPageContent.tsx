@@ -13,6 +13,16 @@ import {
   AuditOutlined,
   SolutionOutlined,
   PrinterOutlined,
+  RiseOutlined,
+  FileSearchOutlined,
+  ReconciliationOutlined,
+  AlertOutlined,
+  CommentOutlined,
+  GlobalOutlined,
+  UserSwitchOutlined,
+  LaptopOutlined,
+  SmileOutlined,
+  TrophyOutlined,
 } from "@ant-design/icons";
 import css from "./PolicyPageContent.module.css";
 
@@ -31,19 +41,19 @@ interface PolicyItem {
   text: string;
 }
 
-// สีไล่ระดับสำหรับแต่ละข้อ
-const CARD_COLORS = [
-  { bg: "linear-gradient(135deg, #E8652B, #f59e0b)", text: "#ffffff" },
-  { bg: "linear-gradient(135deg, #3b82f6, #06b6d4)", text: "#ffffff" },
-  { bg: "linear-gradient(135deg, #8b5cf6, #a855f7)", text: "#ffffff" },
-  { bg: "linear-gradient(135deg, #10b981, #34d399)", text: "#ffffff" },
-  { bg: "linear-gradient(135deg, #f43f5e, #fb7185)", text: "#ffffff" },
-  { bg: "linear-gradient(135deg, #0ea5e9, #38bdf8)", text: "#ffffff" },
-  { bg: "linear-gradient(135deg, #f59e0b, #fbbf24)", text: "#ffffff" },
-  { bg: "linear-gradient(135deg, #6366f1, #818cf8)", text: "#ffffff" },
-  { bg: "linear-gradient(135deg, #14b8a6, #2dd4bf)", text: "#ffffff" },
-  { bg: "linear-gradient(135deg, #ec4899, #f472b6)", text: "#ffffff" },
-  { bg: "linear-gradient(135deg, #84cc16, #a3e635)", text: "#ffffff" },
+// สี + icon สำหรับแต่ละข้อ
+const CARD_THEMES = [
+  { gradient: "linear-gradient(135deg, #E8652B, #f59e0b)", light: "rgba(232,101,43,0.08)", border: "#E8652B", icon: <RiseOutlined /> },
+  { gradient: "linear-gradient(135deg, #3b82f6, #06b6d4)", light: "rgba(59,130,246,0.08)", border: "#3b82f6", icon: <FileSearchOutlined /> },
+  { gradient: "linear-gradient(135deg, #8b5cf6, #a855f7)", light: "rgba(139,92,246,0.08)", border: "#8b5cf6", icon: <ReconciliationOutlined /> },
+  { gradient: "linear-gradient(135deg, #10b981, #34d399)", light: "rgba(16,185,129,0.08)", border: "#10b981", icon: <AlertOutlined /> },
+  { gradient: "linear-gradient(135deg, #0ea5e9, #38bdf8)", light: "rgba(14,165,233,0.08)", border: "#0ea5e9", icon: <CommentOutlined /> },
+  { gradient: "linear-gradient(135deg, #f59e0b, #fbbf24)", light: "rgba(245,158,11,0.08)", border: "#f59e0b", icon: <GlobalOutlined /> },
+  { gradient: "linear-gradient(135deg, #f43f5e, #fb7185)", light: "rgba(244,63,94,0.08)", border: "#f43f5e", icon: <SafetyCertificateOutlined /> },
+  { gradient: "linear-gradient(135deg, #6366f1, #818cf8)", light: "rgba(99,102,241,0.08)", border: "#6366f1", icon: <UserSwitchOutlined /> },
+  { gradient: "linear-gradient(135deg, #14b8a6, #2dd4bf)", light: "rgba(20,184,166,0.08)", border: "#14b8a6", icon: <LaptopOutlined /> },
+  { gradient: "linear-gradient(135deg, #ec4899, #f472b6)", light: "rgba(236,72,153,0.08)", border: "#ec4899", icon: <SmileOutlined /> },
+  { gradient: "linear-gradient(135deg, #84cc16, #a3e635)", light: "rgba(132,204,22,0.08)", border: "#84cc16", icon: <TrophyOutlined /> },
 ];
 
 export default function PolicyPageContent() {
@@ -116,20 +126,38 @@ export default function PolicyPageContent() {
           ) : items.length > 0 ? (
             <div className={css.grid}>
               {items.map((item, i) => {
-                const color = CARD_COLORS[i % CARD_COLORS.length];
+                const theme = CARD_THEMES[i % CARD_THEMES.length];
                 return (
                   <div
                     key={item.id}
                     ref={(el) => { cardsRef.current[i] = el; }}
                     className={css.card}
-                    style={{ animationDelay: `${i * 80}ms` }}
+                    style={{
+                      animationDelay: `${i * 80}ms`,
+                      borderLeftColor: theme.border,
+                    }}
                   >
+                    {/* Background glow */}
                     <div
-                      className={css.cardNumber}
-                      style={{ background: color.bg, color: color.text }}
-                    >
-                      {i + 1}
+                      className={css.cardGlow}
+                      style={{ background: theme.light }}
+                    />
+                    {/* Number + Icon */}
+                    <div className={css.cardBadge}>
+                      <div
+                        className={css.cardNumber}
+                        style={{ background: theme.gradient }}
+                      >
+                        {i + 1}
+                      </div>
+                      <div
+                        className={css.cardIcon}
+                        style={{ color: theme.border }}
+                      >
+                        {theme.icon}
+                      </div>
                     </div>
+                    {/* Text */}
                     <div className={css.cardText}>
                       {item.text}
                     </div>
