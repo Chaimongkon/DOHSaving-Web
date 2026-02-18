@@ -39,9 +39,9 @@ interface StaffMember {
   order: number;
 }
 
-const TIER_LABELS: Record<number, string> = {
-  1: "ผู้จัดการ / หัวหน้า",
-  2: "อาวุโส",
+const DEFAULT_TIER_LABELS: Record<number, string> = {
+  1: "ผู้จัดการฝ่าย",
+  2: "เจ้าหน้าที่อาวุโส",
   3: "เจ้าหน้าที่",
 };
 
@@ -55,9 +55,11 @@ interface Props {
   deptKey: string;
   title: string;
   breadcrumbLabel: string;
+  tierLabels?: Record<number, string>;
 }
 
-export default function DepartmentStaffContent({ deptKey, title, breadcrumbLabel }: Props) {
+export default function DepartmentStaffContent({ deptKey, title, breadcrumbLabel, tierLabels }: Props) {
+  const TIER_LABELS = tierLabels || DEFAULT_TIER_LABELS;
   const pathname = usePathname();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [loading, setLoading] = useState(true);

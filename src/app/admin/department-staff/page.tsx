@@ -20,11 +20,20 @@ interface StaffMember {
   order: number;
 }
 
-const TIERS = [
-  { value: 1, label: "ผู้จัดการ / หัวหน้า" },
-  { value: 2, label: "อาวุโส" },
+const MANAGER_TIERS = [
+  { value: 1, label: "ผู้จัดการใหญ่" },
+  { value: 2, label: "รองผู้จัดการ" },
+];
+
+const DEPT_TIERS = [
+  { value: 1, label: "ผู้จัดการฝ่าย" },
+  { value: 2, label: "เจ้าหน้าที่อาวุโส" },
   { value: 3, label: "เจ้าหน้าที่" },
 ];
+
+function getTiers(dept: string) {
+  return dept === "managers" ? MANAGER_TIERS : DEPT_TIERS;
+}
 
 const DEPARTMENTS = [
   { key: "managers", label: "ผู้จัดการใหญ่และรองผู้จัดการฯ" },
@@ -219,7 +228,7 @@ export default function DepartmentStaffEditor() {
                   value={member.tier}
                   onChange={(e) => updateStaff(member.id, "tier", Number(e.target.value))}
                 >
-                  {TIERS.map((t) => (
+                  {getTiers(activeDept).map((t) => (
                     <option key={t.value} value={t.value}>{t.label}</option>
                   ))}
                 </select>
