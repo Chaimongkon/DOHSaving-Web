@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AboutPageLayout from "@/components/about/AboutPageLayout";
+import VisionPageContent from "./VisionPageContent";
 
 export const metadata: Metadata = {
   title: "วิสัยทัศน์และพันธกิจ | สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function VisionPage() {
-  return <AboutPageLayout pageKey="vision" breadcrumbLabel="วิสัยทัศน์และพันธกิจ" />;
+  return <VisionPageContent />;
 }
