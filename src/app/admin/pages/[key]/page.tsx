@@ -12,6 +12,9 @@ import "react-quill-new/dist/quill.snow.css";
 const PAGE_LABELS: Record<string, string> = {
   history: "ประวัติสหกรณ์",
   vision: "วิสัยทัศน์และพันธกิจ",
+  "ethics-board": "จรรยาบรรณคณะกรรมการ",
+  "ethics-staff": "จรรยาบรรณเจ้าหน้าที่",
+  policy: "นโยบายสหกรณ์",
   board: "คณะกรรมการ",
   organization: "โครงสร้างองค์กร",
 };

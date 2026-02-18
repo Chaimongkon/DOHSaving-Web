@@ -1,4 +1,4 @@
-/* History Page — Clean Layout */
+/* About Page — Shared Layout */
 
 /* Breadcrumb bar */
 .breadcrumbBar {
@@ -36,6 +36,28 @@
   font-weight: 600;
 }
 
+.printBtn {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.printBtn:hover {
+  color: #E8652B;
+  border-color: #E8652B;
+}
+
 /* Main layout — two columns */
 .wrapper {
   max-width: 1200px;
@@ -52,15 +74,6 @@
   min-width: 0;
 }
 
-.pageTitle {
-  font-size: 26px;
-  font-weight: 700;
-  color: #0f1d36;
-  margin: 0 0 24px;
-  padding-bottom: 14px;
-  border-bottom: 3px solid #E8652B;
-}
-
 .content {
   font-size: 15px;
   line-height: 1.9;
@@ -69,12 +82,12 @@
 
 /* Rich text styling */
 .content h1 {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   color: #0f1d36;
-  margin: 36px 0 14px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #e5e7eb;
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid #E8652B;
 }
 
 .content h2 {
@@ -224,6 +237,25 @@
   color: #9ca3af;
 }
 
+/* Print styles */
+@media print {
+  .breadcrumbBar,
+  .sidebar,
+  .printBtn {
+    display: none !important;
+  }
+
+  .wrapper {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+
+  .content {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .wrapper {
@@ -236,14 +268,14 @@
     position: static;
   }
 
-  .pageTitle {
-    font-size: 22px;
-  }
-
   .content {
     font-size: 14px;
   }
 
-  .content h1 { font-size: 19px; }
+  .content h1 { font-size: 20px; }
   .content h2 { font-size: 17px; }
+
+  .printBtn {
+    display: none;
+  }
 }

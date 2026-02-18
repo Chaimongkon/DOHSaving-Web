@@ -47,7 +47,7 @@ const navItems: NavItem[] = [
       {
         title: "รู้จักสหกรณ์ฯ",
         links: [
-          { label: "ประวัติสหกรณ์", href: "/about" },
+          { label: "ประวัติสหกรณ์", href: "/about/history" },
           { label: "คำนิยม วิสัยทัศน์และพันธกิจ", href: "/about/vision" },
           { label: "จรรยาบรรณคณะกรรมการดำเนินการ", href: "/about/ethics-board" },
           { label: "จรรยาบรรณเจ้าหน้าที่", href: "/about/ethics-staff" },

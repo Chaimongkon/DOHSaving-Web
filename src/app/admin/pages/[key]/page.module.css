@@ -85,6 +85,23 @@
   min-height: 500px;
 }
 
+/* ย่อหน้าใน Quill editor */
+.editorWrap :global(.ql-editor) p {
+  text-indent: 2em;
+  margin-bottom: 8px;
+}
+
+.editorWrap :global(.ql-editor) h1,
+.editorWrap :global(.ql-editor) h2,
+.editorWrap :global(.ql-editor) h3 {
+  text-indent: 0;
+}
+
+.editorWrap :global(.ql-editor) ol,
+.editorWrap :global(.ql-editor) ul {
+  text-indent: 0;
+}
+
 /* Preview area */
 .previewWrap {
   background: #ffffff;
@@ -128,6 +145,7 @@
 }
 
 .previewContent p {
+  text-indent: 2em;
   margin: 0 0 12px;
 }
 
