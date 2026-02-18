@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const news = await prisma.news.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
     });
     return NextResponse.json(news);
   } catch (error) {
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { title, details, imagePath, pdfPath, category, isActive } = body;
+    const { title, details, imagePath, pdfPath, category, isPinned, isActive } = body;
 
     if (!title) {
       return NextResponse.json({ error: "กรุณาระบุหัวข้อข่าว" }, { status: 400 });
@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
         imagePath: imagePath || null,
         pdfPath: pdfPath || null,
         category: category || "general",
+        isPinned: isPinned ?? false,
         isActive: isActive ?? true,
         createdBy: user.userName,
         updatedBy: user.userName,

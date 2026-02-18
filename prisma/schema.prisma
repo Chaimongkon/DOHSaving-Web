@@ -68,6 +68,7 @@ model News {
   pdfPath     String?   @db.VarChar(500)
   category    String    @default("general") @db.VarChar(50)
   viewCount   Int       @default(0)
+  isPinned    Boolean   @default(false)
   isActive    Boolean   @default(true)
   createdBy   String?   @db.VarChar(255)
   updatedBy   String?   @db.VarChar(255)

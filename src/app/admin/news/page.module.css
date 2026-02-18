@@ -529,6 +529,187 @@
   cursor: not-allowed;
 }
 
+/* Pin badge on card */
+.pinBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #f59e0b;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  z-index: 2;
+}
+
+/* Modal tabs */
+.modalTabs {
+  display: flex;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 0 24px;
+}
+
+.modalTabBtn {
+  padding: 10px 18px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-family: inherit;
+  color: #9ca3af;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modalTabBtn:hover {
+  color: #374151;
+}
+
+.modalTabActive {
+  color: #E8652B;
+  border-bottom-color: #E8652B;
+  font-weight: 600;
+}
+
+/* Editor wrap for Quill */
+.editorWrap {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.editorWrap :global(.ql-toolbar) {
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fafafa;
+}
+
+.editorWrap :global(.ql-container) {
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  min-height: 150px;
+}
+
+.editorWrap :global(.ql-editor) {
+  min-height: 150px;
+  line-height: 1.6;
+  color: #1f2937;
+}
+
+.editorWrap :global(.ql-editor.ql-blank::before) {
+  color: #9ca3af;
+  font-style: normal;
+}
+
+/* Preview in modal */
+.previewWrap {
+  padding: 8px 0;
+}
+
+.previewImage {
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.previewImage img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.previewHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.previewTag {
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+
+.previewPin {
+  background: #f59e0b;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.previewTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f1d36;
+  margin: 0 0 14px;
+  line-height: 1.4;
+}
+
+.previewContent {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.7;
+}
+
+.previewContent h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 16px 0 8px;
+}
+
+.previewContent h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 14px 0 6px;
+}
+
+.previewContent p {
+  margin: 0 0 10px;
+}
+
+.previewContent ul,
+.previewContent ol {
+  padding-left: 24px;
+  margin: 0 0 10px;
+}
+
+.previewPdf {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 8px;
+  color: #dc2626;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.previewEmpty {
+  text-align: center;
+  padding: 40px 0;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
 /* Loading */
 .loading {
   text-align: center;

@@ -57,7 +57,7 @@ export async function PUT(
 
   try {
     const body = await req.json();
-    const { title, details, imagePath, pdfPath, category, isActive } = body;
+    const { title, details, imagePath, pdfPath, category, isPinned, isActive } = body;
 
     // ลบไฟล์เก่าถ้าเปลี่ยนภาพหรือ PDF
     if (imagePath !== undefined || pdfPath !== undefined) {
@@ -83,6 +83,7 @@ export async function PUT(
         ...(imagePath !== undefined && { imagePath: imagePath || null }),
         ...(pdfPath !== undefined && { pdfPath: pdfPath || null }),
         ...(category !== undefined && { category }),
+        ...(isPinned !== undefined && { isPinned }),
         ...(isActive !== undefined && { isActive }),
         updatedBy: user.userName,
       },

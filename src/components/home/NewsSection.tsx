@@ -39,9 +39,10 @@ export default function NewsSection() {
   useEffect(() => {
     fetch("/api/news?limit=4")
       .then((res) => res.json())
-      .then((data: NewsData[]) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setNewsList(data);
+      .then((res) => {
+        const items: NewsData[] = res?.data ?? res;
+        if (Array.isArray(items) && items.length > 0) {
+          setNewsList(items);
         }
       })
       .catch(() => {});
@@ -70,7 +71,7 @@ export default function NewsSection() {
         <div className={css.featuredLayout}>
           {/* Featured (large) card */}
           {featured && (
-            <Link href={`/news/${featured.id}`} className={`${css.card} ${css.cardFeatured}`}>
+            <a href={`/news/${featured.id}`} className={`${css.card} ${css.cardFeatured}`}>
               <div className={`${css.thumb} ${css.thumbFeatured}`}>
                 {featured.imagePath ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -103,13 +104,13 @@ export default function NewsSection() {
                   <span className={css.readmore}>คลิกเพื่ออ่านต่อ</span>
                 </div>
               </div>
-            </Link>
+            </a>
           )}
 
           {/* Side cards (smaller) */}
           <div className={css.sideList}>
             {rest.map((news) => (
-              <Link href={`/news/${news.id}`} key={news.id} className={`${css.card} ${css.cardSide}`}>
+              <a href={`/news/${news.id}`} key={news.id} className={`${css.card} ${css.cardSide}`}>
                 <div className={`${css.thumb} ${css.thumbSide}`}>
                   {news.imagePath ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -141,7 +142,7 @@ export default function NewsSection() {
                     <span className={css.readmore}>คลิกเพื่ออ่านต่อ</span>
                   </div>
                 </div>
-              </Link>
+              </a>
             ))}
           </div>
         </div>

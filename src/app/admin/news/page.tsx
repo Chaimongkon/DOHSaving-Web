@@ -10,8 +10,14 @@ import {
   FileTextOutlined,
   FilePdfOutlined,
   EyeOutlined,
+  PushpinOutlined,
+  FormOutlined,
 } from "@ant-design/icons";
+import dynamic from "next/dynamic";
 import css from "./page.module.css";
+import "react-quill-new/dist/quill.snow.css";
+
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 interface News {
   id: number;
@@ -21,6 +27,7 @@ interface News {
   pdfPath: string | null;
   category: string;
   viewCount: number;
+  isPinned: boolean;
   isActive: boolean;
   createdBy: string | null;
   createdAt: string;
@@ -33,6 +40,7 @@ interface NewsForm {
   imagePath: string;
   pdfPath: string;
   category: string;
+  isPinned: boolean;
   isActive: boolean;
 }
 
@@ -42,7 +50,19 @@ const defaultForm: NewsForm = {
   imagePath: "",
   pdfPath: "",
   category: "general",
+  isPinned: false,
   isActive: true,
+};
+
+const quillModules = {
+  toolbar: [
+    [{ header: [2, 3, false] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ color: [] }, { background: [] }],
+    ["link"],
+    ["clean"],
+  ],
 };
 
 const categories = [
@@ -68,6 +88,7 @@ export default function NewsPage() {
   const [uploading, setUploading] = useState(false);
   const [uploadingPdf, setUploadingPdf] = useState(false);
   const [filter, setFilter] = useState("all");
+  const [modalTab, setModalTab] = useState<"edit" | "preview">("edit");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pdfInputRef = useRef<HTMLInputElement>(null);
 
@@ -93,6 +114,7 @@ export default function NewsPage() {
   const openCreate = () => {
     setEditingId(null);
     setForm(defaultForm);
+    setModalTab("edit");
     setModalOpen(true);
   };
 
@@ -104,8 +126,10 @@ export default function NewsPage() {
       imagePath: item.imagePath || "",
       pdfPath: item.pdfPath || "",
       category: item.category,
+      isPinned: item.isPinned ?? false,
       isActive: item.isActive,
     });
+    setModalTab("edit");
     setModalOpen(true);
   };
 
@@ -285,6 +309,9 @@ export default function NewsPage() {
                 <span className={`${css.badge} ${item.isActive ? css.badgeActive : css.badgeInactive}`}>
                   {item.isActive ? "แสดง" : "ซ่อน"}
                 </span>
+                {item.isPinned && (
+                  <span className={css.pinBadge}><PushpinOutlined /> ปักหมุด</span>
+                )}
                 <span
                   className={css.categoryBadge}
                   style={{ background: categoryColors[item.category] || "#6b7280" }}
@@ -329,7 +356,59 @@ export default function NewsPage() {
               </button>
             </div>
 
+            {/* Tab switcher */}
+            <div className={css.modalTabs}>
+              <button
+                className={`${css.modalTabBtn} ${modalTab === "edit" ? css.modalTabActive : ""}`}
+                onClick={() => setModalTab("edit")}
+              >
+                <FormOutlined /> แก้ไข
+              </button>
+              <button
+                className={`${css.modalTabBtn} ${modalTab === "preview" ? css.modalTabActive : ""}`}
+                onClick={() => setModalTab("preview")}
+              >
+                <EyeOutlined /> ตัวอย่าง
+              </button>
+            </div>
+
             <div className={css.modalBody}>
+              {modalTab === "preview" ? (
+                /* Preview tab */
+                <div className={css.previewWrap}>
+                  {form.imagePath && (
+                    <div className={css.previewImage}>
+                      <img src={form.imagePath} alt="Preview" />
+                    </div>
+                  )}
+                  <div className={css.previewHeader}>
+                    <span
+                      className={css.previewTag}
+                      style={{ background: categoryColors[form.category] || "#6b7280" }}
+                    >
+                      {categories.find((c) => c.value === form.category)?.label || form.category}
+                    </span>
+                    {form.isPinned && <span className={css.previewPin}><PushpinOutlined /> ปักหมุด</span>}
+                  </div>
+                  <h2 className={css.previewTitle}>{form.title || "(ยังไม่มีหัวข้อ)"}</h2>
+                  {form.details && (
+                    <div
+                      className={css.previewContent}
+                      dangerouslySetInnerHTML={{ __html: form.details }}
+                    />
+                  )}
+                  {form.pdfPath && (
+                    <div className={css.previewPdf}>
+                      <FilePdfOutlined /> {form.pdfPath.split("/").pop()}
+                    </div>
+                  )}
+                  {!form.title && !form.details && !form.imagePath && (
+                    <p className={css.previewEmpty}>กรุณากรอกข้อมูลในแท็บ &quot;แก้ไข&quot; ก่อน</p>
+                  )}
+                </div>
+              ) : (
+                /* Edit tab */
+                <>
               {/* Title */}
               <div className={css.formGroup}>
                 <label className={css.formLabel}>หัวข้อข่าว *</label>
@@ -342,16 +421,18 @@ export default function NewsPage() {
                 />
               </div>
 
-              {/* Details */}
+              {/* Details — Rich Text Editor */}
               <div className={css.formGroup}>
                 <label className={css.formLabel}>รายละเอียด</label>
-                <textarea
-                  className={css.formTextarea}
-                  placeholder="รายละเอียดข่าว..."
-                  rows={4}
-                  value={form.details}
-                  onChange={(e) => setForm((prev) => ({ ...prev, details: e.target.value }))}
-                />
+                <div className={css.editorWrap}>
+                  <ReactQuill
+                    theme="snow"
+                    value={form.details}
+                    onChange={(val: string) => setForm((prev) => ({ ...prev, details: val }))}
+                    modules={quillModules}
+                    placeholder="พิมพ์รายละเอียดข่าว..."
+                  />
+                </div>
               </div>
 
               {/* Category */}
@@ -425,7 +506,11 @@ export default function NewsPage() {
                 ) : (
                   <div
                     className={css.uploadArea}
-                    onClick={() => pdfInputRef.current?.click()}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      pdfInputRef.current?.click();
+                    }}
                   >
                     <div className={css.uploadIcon}>
                       <FilePdfOutlined />
@@ -438,10 +523,26 @@ export default function NewsPage() {
                 <input
                   ref={pdfInputRef}
                   type="file"
-                  accept=".pdf"
+                  accept="application/pdf,.pdf"
                   style={{ display: "none" }}
                   onChange={handleUploadPdf}
+                  onClick={(e) => e.stopPropagation()}
                 />
+              </div>
+
+              {/* isPinned toggle */}
+              <div className={css.formGroup}>
+                <label className={css.formLabel}>ปักหมุด</label>
+                <div className={css.toggle}>
+                  <button
+                    type="button"
+                    className={`${css.toggleSwitch} ${form.isPinned ? css.toggleOn : css.toggleOff}`}
+                    onClick={() => setForm((prev) => ({ ...prev, isPinned: !prev.isPinned }))}
+                  />
+                  <span className={css.toggleLabel}>
+                    {form.isPinned ? "ปักหมุดอยู่ — แสดงบนสุด" : "ไม่ปักหมุด"}
+                  </span>
+                </div>
               </div>
 
               {/* Active toggle */}
@@ -458,6 +559,8 @@ export default function NewsPage() {
                   </span>
                 </div>
               </div>
+                </>
+              )}
             </div>
 
             <div className={css.modalFooter}>

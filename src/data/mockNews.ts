@@ -8,6 +8,7 @@ export interface NewsData {
   imagePath: string | null;
   pdfPath: string | null;
   isActive: boolean;
+  isPinned?: boolean;
   createdAt: string;
   category: string;
   viewCount: number;
