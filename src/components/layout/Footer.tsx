@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   EnvironmentOutlined,
   PhoneOutlined,
@@ -10,6 +10,8 @@ import {
   MessageFilled,
   DownloadOutlined,
   RightOutlined,
+  EyeOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
@@ -34,6 +36,15 @@ const serviceLinks = [
 ];
 
 export default function Footer() {
+  const [stats, setStats] = useState<{ total: number; today: number } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/visitor-stats")
+      .then((r) => r.json())
+      .then((d) => setStats(d))
+      .catch(() => {});
+  }, []);
+
   return (
     <footer className={css.footer}>
       <div className={css.top}>
@@ -156,6 +167,25 @@ export default function Footer() {
           </a>
         </div>
       </div>
+
+      {/* Visitor stats bar */}
+      {stats && (
+        <div className={css.visitorBar}>
+          <div className={css.visitorInner}>
+            <div className={css.visitorItem}>
+              <EyeOutlined className={css.visitorIcon} />
+              <span>เข้าชมวันนี้</span>
+              <strong className={css.visitorCount}>{stats.today.toLocaleString()}</strong>
+            </div>
+            <div className={css.visitorDivider} />
+            <div className={css.visitorItem}>
+              <TeamOutlined className={css.visitorIcon} />
+              <span>ผู้เข้าชมทั้งหมด</span>
+              <strong className={css.visitorCount}>{stats.total.toLocaleString()}</strong>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Bottom bar */}
       <div className={css.bottom}>

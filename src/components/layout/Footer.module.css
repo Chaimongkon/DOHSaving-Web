@@ -248,6 +248,48 @@
   color: #E8652B;
 }
 
+/* ── Visitor Stats Bar ── */
+.visitorBar {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 14px 40px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.visitorInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
+
+.visitorItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.visitorIcon {
+  font-size: 15px;
+  color: #E8652B;
+}
+
+.visitorCount {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+.visitorDivider {
+  width: 1px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .top {
