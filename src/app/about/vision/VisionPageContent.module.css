@@ -1,4 +1,4 @@
-/* Vision Page — Infographic Layout */
+/* Vision Page — 3-Section Dynamic Design */
 
 /* Breadcrumb bar */
 .breadcrumbBar {
@@ -73,34 +73,316 @@
   min-width: 0;
 }
 
-.pageTitle {
-  font-size: 26px;
-  font-weight: 700;
-  color: #0f1d36;
-  margin: 0 0 28px;
-  padding-bottom: 14px;
-  border-bottom: 3px solid #E8652B;
+/* Page title */
+.pageHeader {
+  text-align: center;
+  margin-bottom: 36px;
 }
 
-/* Infographic gallery */
-.gallery {
+.pageTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f1d36;
+  margin: 0 0 6px;
+  position: relative;
+  display: inline-block;
+}
+
+.pageTitle::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #E8652B, #f59e0b);
+  border-radius: 2px;
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 18px 0 0;
+}
+
+/* Sections */
+.sections {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 28px;
 }
 
-.imageWrap {
-  background: #ffffff;
-  border-radius: 14px;
+/* ========== SECTION: ค่านิยม (Core Values) ========== */
+.coreValuesCard {
+  position: relative;
+  background: linear-gradient(135deg, #ec4899, #f43f5e, #fb7185);
+  border-radius: 20px;
+  padding: 36px 32px;
+  color: #ffffff;
   overflow: hidden;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-.image {
-  width: 100%;
-  height: auto;
-  display: block;
+.coreValuesCard.sectionVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.coreValuesBg {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+.coreValuesBg2 {
+  position: absolute;
+  bottom: -30px;
+  left: -30px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.coreValuesIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.coreValuesLabel {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.8;
+  margin: 0 0 8px;
+}
+
+.coreValuesTitle {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 18px;
+}
+
+.coreValuesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.coreValueItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.coreValueDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+/* ========== SECTION: วิสัยทัศน์ (Vision) ========== */
+.visionCard {
+  position: relative;
+  background: linear-gradient(135deg, #7c3aed, #6366f1, #8b5cf6);
+  border-radius: 20px;
+  padding: 36px 32px;
+  color: #ffffff;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.visionCard.sectionVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.visionBg {
+  position: absolute;
+  top: 50%;
+  right: -50px;
+  transform: translateY(-50%);
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+.visionIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.visionLabel {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.8;
+  margin: 0 0 8px;
+}
+
+.visionTitle {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 18px;
+}
+
+.visionText {
+  font-size: 16px;
+  line-height: 1.8;
+  font-weight: 500;
+  opacity: 0.95;
+  max-width: 600px;
+}
+
+/* ========== SECTION: พันธกิจ (Mission) ========== */
+.missionSection {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.missionSection.sectionVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.missionHeader {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.missionIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  color: #ffffff;
+  font-size: 24px;
+  margin-bottom: 12px;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
+}
+
+.missionLabel {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #9ca3af;
+  margin: 0 0 4px;
+}
+
+.missionTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f1d36;
+  margin: 0;
+}
+
+.missionGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.missionCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.25s;
+}
+
+.missionCard.cardVisible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.missionCard:hover {
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.missionCardVisible:hover {
+  transform: translateY(-2px);
+}
+
+.missionCardFull {
+  grid-column: 1 / -1;
+}
+
+.missionNum {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.missionCardIcon {
+  font-size: 16px;
+  margin-top: 4px;
+  opacity: 0.5;
+}
+
+.missionCardText {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #374151;
+  padding-top: 2px;
 }
 
 /* Sidebar */
@@ -197,13 +479,25 @@
     padding: 0;
   }
 
-  .image {
-    max-width: 100%;
-    page-break-inside: avoid;
+  .coreValuesCard,
+  .visionCard,
+  .missionSection,
+  .missionCard {
+    opacity: 1;
+    transform: none;
+    break-inside: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }
 
 /* Responsive */
+@media (max-width: 900px) {
+  .missionGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 768px) {
   .wrapper {
     grid-template-columns: 1fr;
@@ -221,5 +515,33 @@
 
   .printBtn {
     display: none;
+  }
+
+  .coreValuesCard,
+  .visionCard {
+    padding: 24px 20px;
+  }
+
+  .coreValuesTitle,
+  .visionTitle,
+  .missionTitle {
+    font-size: 18px;
+  }
+
+  .visionText {
+    font-size: 14px;
+  }
+
+  .coreValuesList {
+    gap: 8px;
+  }
+
+  .coreValueItem {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
+  .missionCard {
+    padding: 16px;
   }
 }

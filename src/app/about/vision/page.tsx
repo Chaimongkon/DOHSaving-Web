@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import InfographicPageLayout from "@/components/about/InfographicPageLayout";
+import VisionPageContent from "./VisionPageContent";
 
 export const metadata: Metadata = {
   title: "วิสัยทัศน์และพันธกิจ | สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
@@ -7,11 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function VisionPage() {
-  return (
-    <InfographicPageLayout
-      pageKey="vision"
-      breadcrumbLabel="วิสัยทัศน์และพันธกิจ"
-      pageTitle="คำนิยม วิสัยทัศน์ พันธกิจ"
-    />
-  );
+  return <VisionPageContent />;
 }

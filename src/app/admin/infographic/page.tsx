@@ -19,7 +19,6 @@ interface PageConfig {
 }
 
 const PAGES: PageConfig[] = [
-  { key: "vision", label: "วิสัยทัศน์และพันธกิจ", icon: <EyeOutlined />, href: "/about/vision" },
   { key: "ethics-board", label: "จรรยาบรรณคณะกรรมการ", icon: <AuditOutlined />, href: "/about/ethics-board" },
 ];
 
