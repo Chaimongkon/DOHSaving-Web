@@ -24,12 +24,12 @@
 /* Dialog card */
 .dialog {
   background: #ffffff;
-  border-radius: 12px;
-  max-width: 520px;
+  border-radius: 16px;
+  max-width: 620px;
   width: 100%;
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  overflow: visible;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
   animation: slideUp 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
@@ -38,34 +38,39 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Close X button */
+/* Close X button — positioned outside top-right */
 .closeBtn {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 30px;
-  height: 30px;
+  top: -14px;
+  right: -14px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: none;
-  background: rgba(0, 0, 0, 0.45);
+  border: 3px solid #ffffff;
+  background: #E8652B;
   color: #ffffff;
-  font-size: 13px;
+  font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
   z-index: 2;
+  box-shadow: 0 4px 12px rgba(232, 101, 43, 0.4);
 }
 
 .closeBtn:hover {
-  background: rgba(0, 0, 0, 0.7);
+  background: #d45a24;
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(232, 101, 43, 0.5);
 }
 
 /* Image body */
 .imageBody {
   width: 100%;
   line-height: 0;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .imageLink {
@@ -80,20 +85,90 @@
   object-fit: contain;
 }
 
+/* Slide animations */
+.slideIn {
+  animation: slideIn 0.3s ease;
+}
+
+.slideOutLeft {
+  animation: slideOutLeft 0.25s ease forwards;
+}
+
+.slideOutRight {
+  animation: slideOutRight 0.25s ease forwards;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideOutLeft {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-30px); }
+}
+
+@keyframes slideOutRight {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(30px); }
+}
+
+/* Nav arrows */
+.navArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  color: #374151;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 3;
+}
+
+.navArrow:hover:not(:disabled) {
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.navArrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.navPrev {
+  left: -17px;
+}
+
+.navNext {
+  right: -17px;
+}
+
 /* Footer — close + counter */
 .footer {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16px;
-  padding: 12px 20px;
-  background: #f9fafb;
-  border-top: 1px solid #f0f0f0;
+  padding: 10px 20px;
+  background: transparent;
+  position: absolute;
+  bottom: -48px;
+  left: 0;
+  right: 0;
 }
 
 .counter {
-  font-size: 12px;
-  color: #9ca3af;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
   font-weight: 500;
 }
 
@@ -101,20 +176,48 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: none;
-  border: none;
-  color: #6b7280;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  padding: 6px 16px;
-  border-radius: 6px;
+  padding: 8px 20px;
+  border-radius: 20px;
   transition: all 0.2s;
 }
 
 .footerClose:hover {
-  background: #e5e7eb;
-  color: #374151;
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+/* Dots */
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s;
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.dotActive {
+  background: #ffffff;
+  transform: scale(1.2);
 }
 
 /* ── Responsive ── */
@@ -124,11 +227,33 @@
   }
 
   .dialog {
-    max-width: 100%;
-    border-radius: 10px;
+    max-width: calc(100% - 32px);
+    border-radius: 12px;
+  }
+
+  .closeBtn {
+    top: -12px;
+    right: -8px;
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .navArrow {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+
+  .navPrev {
+    left: -10px;
+  }
+
+  .navNext {
+    right: -10px;
   }
 
   .footer {
-    padding: 10px 16px;
+    bottom: -44px;
   }
 }

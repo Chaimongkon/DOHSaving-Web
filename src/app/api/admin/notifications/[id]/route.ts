@@ -57,7 +57,7 @@ export async function PUT(
 
   try {
     const body = await req.json();
-    const { imagePath, urlLink, isActive } = body;
+    const { title, imagePath, urlLink, sortOrder, startDate, endDate, isActive } = body;
 
     // ลบรูปเก่าถ้าเปลี่ยนรูป
     if (imagePath !== undefined) {
@@ -73,8 +73,12 @@ export async function PUT(
     const notification = await prisma.notification.update({
       where: { id: parseInt(id) },
       data: {
+        ...(title !== undefined && { title: title || null }),
         ...(imagePath !== undefined && { imagePath: imagePath || null }),
         ...(urlLink !== undefined && { urlLink: urlLink || null }),
+        ...(sortOrder !== undefined && { sortOrder }),
+        ...(startDate !== undefined && { startDate: startDate ? new Date(startDate) : null }),
+        ...(endDate !== undefined && { endDate: endDate ? new Date(endDate) : null }),
         ...(isActive !== undefined && { isActive }),
         updatedBy: user.userName,
       },

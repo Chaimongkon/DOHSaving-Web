@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { CloseOutlined } from "@ant-design/icons";
+import React, { useState, useEffect, useCallback } from "react";
+import { CloseOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import css from "./PromoDialog.module.css";
 
 interface NotificationData {
@@ -10,46 +10,88 @@ interface NotificationData {
   urlLink: string | null;
 }
 
+const DISMISS_KEY = "promo_dismiss_date";
+
+function isDismissedToday(): boolean {
+  if (typeof window === "undefined") return false;
+  const saved = localStorage.getItem(DISMISS_KEY);
+  if (!saved) return false;
+  const today = new Date().toISOString().slice(0, 10);
+  return saved === today;
+}
+
+function dismissToday() {
+  const today = new Date().toISOString().slice(0, 10);
+  localStorage.setItem(DISMISS_KEY, today);
+}
+
 export default function PromoDialog() {
   const [visible, setVisible] = useState(false);
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState<"next" | "prev">("next");
+  const [animating, setAnimating] = useState(false);
 
   useEffect(() => {
-    // ดึงข้อมูล popup จาก API
+    if (isDismissedToday()) return;
+
     fetch("/api/notifications")
       .then((res) => res.json())
       .then((data: NotificationData[]) => {
-        if (data.length > 0) {
+        if (Array.isArray(data) && data.length > 0) {
           setNotifications(data);
-          // แสดง popup หลังโหลดข้อมูลเสร็จ — delay 1 วินาที
           setTimeout(() => setVisible(true), 1000);
         }
       })
-      .catch(() => {
-        // ถ้า API error ไม่แสดง popup
-      });
+      .catch(() => {});
   }, []);
 
-  const handleClose = () => {
-    // ถ้ามีหลาย notification — แสดงตัวถัดไป
-    if (currentIndex < notifications.length - 1) {
-      setCurrentIndex((prev) => prev + 1);
-    } else {
-      setVisible(false);
-    }
-  };
+  const goTo = useCallback((idx: number, dir: "next" | "prev") => {
+    if (animating) return;
+    setDirection(dir);
+    setAnimating(true);
+    setTimeout(() => {
+      setCurrentIndex(idx);
+      setAnimating(false);
+    }, 250);
+  }, [animating]);
+
+  const handlePrev = useCallback(() => {
+    if (currentIndex > 0) goTo(currentIndex - 1, "prev");
+  }, [currentIndex, goTo]);
+
+  const handleNext = useCallback(() => {
+    if (currentIndex < notifications.length - 1) goTo(currentIndex + 1, "next");
+  }, [currentIndex, notifications.length, goTo]);
+
+  const handleClose = useCallback(() => {
+    setVisible(false);
+  }, []);
+
+  const handleDismissToday = useCallback(() => {
+    dismissToday();
+    setVisible(false);
+  }, []);
+
+  const trackClick = useCallback((id: number) => {
+    fetch("/api/notifications", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    }).catch(() => {});
+  }, []);
 
   if (!visible || notifications.length === 0) return null;
 
   const current = notifications[currentIndex];
+  const hasMultiple = notifications.length > 1;
 
-  // Content ภาพ — ถ้ามี urlLink ให้คลิกได้
   const imageContent = current.imagePath ? (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={current.imagePath}
       alt="ประชาสัมพันธ์"
-      className={css.promoImage}
+      className={`${css.promoImage} ${animating ? (direction === "next" ? css.slideOutLeft : css.slideOutRight) : css.slideIn}`}
       draggable={false}
     />
   ) : null;
@@ -70,6 +112,7 @@ export default function PromoDialog() {
               target="_blank"
               rel="noopener noreferrer"
               className={css.imageLink}
+              onClick={() => trackClick(current.id)}
             >
               {imageContent}
             </a>
@@ -78,16 +121,44 @@ export default function PromoDialog() {
           )}
         </div>
 
-        {/* Footer — counter + close */}
+        {/* Nav arrows (if multiple) */}
+        {hasMultiple && (
+          <>
+            <button
+              className={`${css.navArrow} ${css.navPrev}`}
+              onClick={handlePrev}
+              disabled={currentIndex === 0}
+              aria-label="ก่อนหน้า"
+            >
+              <LeftOutlined />
+            </button>
+            <button
+              className={`${css.navArrow} ${css.navNext}`}
+              onClick={handleNext}
+              disabled={currentIndex === notifications.length - 1}
+              aria-label="ถัดไป"
+            >
+              <RightOutlined />
+            </button>
+          </>
+        )}
+
+        {/* Footer — dots + dismiss */}
         <div className={css.footer}>
-          {notifications.length > 1 && (
-            <span className={css.counter}>
-              {currentIndex + 1} / {notifications.length}
-            </span>
+          {hasMultiple && (
+            <div className={css.dots}>
+              {notifications.map((_, i) => (
+                <button
+                  key={i}
+                  className={`${css.dot} ${i === currentIndex ? css.dotActive : ""}`}
+                  onClick={() => goTo(i, i > currentIndex ? "next" : "prev")}
+                  aria-label={`ภาพ ${i + 1}`}
+                />
+              ))}
+            </div>
           )}
-          <button className={css.footerClose} onClick={handleClose}>
-            <CloseOutlined />
-            {currentIndex < notifications.length - 1 ? "ถัดไป" : "ปิด"}
+          <button className={css.footerClose} onClick={handleDismissToday}>
+            ไม่แสดงอีกวันนี้
           </button>
         </div>
       </div>

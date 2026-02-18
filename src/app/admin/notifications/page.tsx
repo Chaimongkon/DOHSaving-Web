@@ -10,13 +10,20 @@ import {
   NotificationOutlined,
   LinkOutlined,
   CalendarOutlined,
+  EyeOutlined,
+  ThunderboltOutlined,
 } from "@ant-design/icons";
 import css from "./page.module.css";
 
 interface Notification {
   id: number;
+  title: string | null;
   imagePath: string | null;
   urlLink: string | null;
+  sortOrder: number;
+  startDate: string | null;
+  endDate: string | null;
+  clickCount: number;
   isActive: boolean;
   createdBy: string | null;
   createdAt: string;
@@ -24,14 +31,22 @@ interface Notification {
 }
 
 interface NotificationForm {
+  title: string;
   imagePath: string;
   urlLink: string;
+  sortOrder: number;
+  startDate: string;
+  endDate: string;
   isActive: boolean;
 }
 
 const defaultForm: NotificationForm = {
+  title: "",
   imagePath: "",
   urlLink: "",
+  sortOrder: 0,
+  startDate: "",
+  endDate: "",
   isActive: false,
 };
 
@@ -73,8 +88,12 @@ export default function NotificationsPage() {
   const openEdit = (item: Notification) => {
     setEditingId(item.id);
     setForm({
+      title: item.title || "",
       imagePath: item.imagePath || "",
       urlLink: item.urlLink || "",
+      sortOrder: item.sortOrder ?? 0,
+      startDate: item.startDate ? item.startDate.slice(0, 10) : "",
+      endDate: item.endDate ? item.endDate.slice(0, 10) : "",
       isActive: item.isActive,
     });
     setModalOpen(true);
@@ -214,16 +233,27 @@ export default function NotificationsPage() {
                 </span>
               </div>
               <div className={css.cardBody}>
+                <p className={css.cardName}>{item.title || `Popup #${item.id}`}</p>
                 <p className={css.cardInfo}>
                   <CalendarOutlined /> {formatDate(item.createdAt)} • โดย: {item.createdBy || "—"}
                 </p>
-                {item.urlLink ? (
-                  <a href={item.urlLink} target="_blank" rel="noopener noreferrer" className={css.cardLink}>
-                    <LinkOutlined /> {item.urlLink}
-                  </a>
-                ) : (
-                  <span className={css.noLink}>ไม่มีลิงก์</span>
-                )}
+                {item.startDate || item.endDate ? (
+                  <p className={css.cardSchedule}>
+                    <ThunderboltOutlined /> {item.startDate ? formatDate(item.startDate) : "—"} ถึง {item.endDate ? formatDate(item.endDate) : "ไม่จำกัด"}
+                  </p>
+                ) : null}
+                <div className={css.cardStats}>
+                  {item.urlLink ? (
+                    <a href={item.urlLink} target="_blank" rel="noopener noreferrer" className={css.cardLink}>
+                      <LinkOutlined /> ลิงก์
+                    </a>
+                  ) : (
+                    <span className={css.noLink}>ไม่มีลิงก์</span>
+                  )}
+                  <span className={css.clickStat}>
+                    <EyeOutlined /> {item.clickCount} คลิก
+                  </span>
+                </div>
               </div>
               <div className={css.actions}>
                 <button className={css.actionBtn} onClick={() => openEdit(item)}>
@@ -252,6 +282,18 @@ export default function NotificationsPage() {
             </div>
 
             <div className={css.modalBody}>
+              {/* Title */}
+              <div className={css.formGroup}>
+                <label className={css.formLabel}>ชื่อ/หมายเหตุ (สำหรับ admin)</label>
+                <input
+                  type="text"
+                  className={css.formInput}
+                  placeholder="เช่น แคมเปญ มี.ค. 2568"
+                  value={form.title}
+                  onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
+                />
+              </div>
+
               {/* Image upload */}
               <div className={css.formGroup}>
                 <label className={css.formLabel}>รูปภาพป๊อปอัพ *</label>
@@ -305,6 +347,41 @@ export default function NotificationsPage() {
                 />
               </div>
 
+              {/* Sort order */}
+              <div className={css.formGroup}>
+                <label className={css.formLabel}>ลำดับแสดง (ยิ่งน้อยยิ่งแสดงก่อน)</label>
+                <input
+                  type="number"
+                  className={css.formInput}
+                  value={form.sortOrder}
+                  min={0}
+                  onChange={(e) => setForm((prev) => ({ ...prev, sortOrder: parseInt(e.target.value) || 0 }))}
+                />
+              </div>
+
+              {/* Schedule */}
+              <div className={css.formRow}>
+                <div className={css.formGroup}>
+                  <label className={css.formLabel}>วันเริ่มแสดง</label>
+                  <input
+                    type="date"
+                    className={css.formInput}
+                    value={form.startDate}
+                    onChange={(e) => setForm((prev) => ({ ...prev, startDate: e.target.value }))}
+                  />
+                </div>
+                <div className={css.formGroup}>
+                  <label className={css.formLabel}>วันสิ้นสุด</label>
+                  <input
+                    type="date"
+                    className={css.formInput}
+                    value={form.endDate}
+                    onChange={(e) => setForm((prev) => ({ ...prev, endDate: e.target.value }))}
+                  />
+                </div>
+              </div>
+              <p className={css.formHint}>เว้นว่างทั้งสองช่อง = แสดงตลอดเวลา</p>
+
               {/* Active toggle */}
               <div className={css.formGroup}>
                 <label className={css.formLabel}>สถานะ</label>
@@ -319,6 +396,19 @@ export default function NotificationsPage() {
                   </span>
                 </div>
               </div>
+
+              {/* Preview */}
+              {form.imagePath && (
+                <div className={css.formGroup}>
+                  <label className={css.formLabel}>ตัวอย่างป๊อปอัพ</label>
+                  <div className={css.previewDialog}>
+                    <div className={css.previewImgWrap}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={form.imagePath} alt="Preview" className={css.previewImg} />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className={css.modalFooter}>

@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { imagePath, urlLink, isActive } = body;
+    const { title, imagePath, urlLink, sortOrder, startDate, endDate, isActive } = body;
 
     if (!imagePath) {
       return NextResponse.json({ error: "กรุณาอัพโหลดรูปภาพ" }, { status: 400 });
@@ -37,8 +37,12 @@ export async function POST(req: NextRequest) {
 
     const notification = await prisma.notification.create({
       data: {
+        title: title || null,
         imagePath: imagePath || null,
         urlLink: urlLink || null,
+        sortOrder: sortOrder ?? 0,
+        startDate: startDate ? new Date(startDate) : null,
+        endDate: endDate ? new Date(endDate) : null,
         isActive: isActive ?? false,
         createdBy: user.userName,
         updatedBy: user.userName,

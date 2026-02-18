@@ -90,20 +90,42 @@
   padding: 14px 16px;
 }
 
+.cardName {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f1d36;
+  margin: 0 0 6px;
+}
+
 .cardInfo {
-  font-size: 12px;
-  color: #6b7280;
+  font-size: 11px;
+  color: #9ca3af;
   margin: 0 0 4px;
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
+.cardSchedule {
+  font-size: 11px;
+  color: #E8652B;
+  margin: 0 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cardStats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
 .cardLink {
   font-size: 12px;
   color: #E8652B;
   text-decoration: none;
-  word-break: break-all;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -114,9 +136,17 @@
 }
 
 .noLink {
-  font-size: 12px;
+  font-size: 11px;
   color: #d1d5db;
   font-style: italic;
+}
+
+.clickStat {
+  font-size: 11px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .actions {
@@ -433,6 +463,43 @@
 .saveBtn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Form row (side by side) */
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.formHint {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: -12px 0 0;
+}
+
+/* Preview dialog mock */
+.previewDialog {
+  background: #1a1a2e;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.previewImgWrap {
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  max-width: 280px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.previewImg {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* Loading */
