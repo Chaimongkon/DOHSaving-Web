@@ -1,0 +1,373 @@
+/* Ethics Board Page — Vertical Timeline */
+
+/* Breadcrumb bar */
+.breadcrumbBar {
+  background: #f8f9fb;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 14px 24px;
+}
+
+.breadcrumbInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.breadcrumbLink {
+  color: #9ca3af;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumbLink:hover {
+  color: #0d9488;
+}
+
+.breadcrumbSep {
+  margin: 0 8px;
+  color: #d1d5db;
+}
+
+.breadcrumbCurrent {
+  color: #0f1d36;
+  font-weight: 600;
+}
+
+.printBtn {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.printBtn:hover {
+  color: #0d9488;
+  border-color: #0d9488;
+}
+
+/* Main layout */
+.wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 40px;
+  align-items: start;
+}
+
+.main {
+  min-width: 0;
+}
+
+/* Title section */
+.titleSection {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.titleBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0d9488, #14b8a6);
+  color: #ffffff;
+  font-size: 26px;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.25);
+}
+
+.pageTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f1d36;
+  margin: 0 0 6px;
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0;
+  font-weight: 500;
+}
+
+.countBadge {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 6px 18px;
+  background: linear-gradient(135deg, #0d9488, #14b8a6);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+
+/* ========== TIMELINE ========== */
+.timeline {
+  position: relative;
+  padding: 20px 0;
+}
+
+/* Vertical center line */
+.timelineLine {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #0d9488, #f59e0b, #0ea5e9);
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+/* Timeline item */
+.timelineItem {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 28px;
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.timelineItem:last-child {
+  margin-bottom: 0;
+}
+
+.timelineItemVisible {
+  opacity: 1;
+  transform: translateX(0) !important;
+}
+
+/* Left item */
+.timelineLeft {
+  justify-content: flex-start;
+  padding-right: calc(50% + 28px);
+  transform: translateX(-30px);
+}
+
+/* Right item */
+.timelineRight {
+  justify-content: flex-end;
+  padding-left: calc(50% + 28px);
+  transform: translateX(30px);
+}
+
+/* Number circle on the line */
+.timelineNum {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+  z-index: 2;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  border: 3px solid #ffffff;
+}
+
+/* Card */
+.timelineCard {
+  position: relative;
+  width: 100%;
+  padding: 18px 22px;
+  border-radius: 14px;
+  border: 2px solid;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.timelineCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Card text */
+.timelineText {
+  font-size: 14px;
+  line-height: 1.75;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Sidebar */
+.sidebar {
+  position: sticky;
+  top: 90px;
+}
+
+.sidebarCard {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.sidebarTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f1d36;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  margin: 0;
+  background: #f8f9fb;
+}
+
+.sidebarNav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebarLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  font-size: 13px;
+  color: #6b7280;
+  text-decoration: none;
+  border-bottom: 1px solid #f9fafb;
+  transition: all 0.15s;
+}
+
+.sidebarLink:hover {
+  background: #f8f9fb;
+  color: #0d9488;
+}
+
+.sidebarLinkActive {
+  color: #0d9488;
+  font-weight: 600;
+  background: rgba(13, 148, 136, 0.04);
+  border-left: 3px solid #0d9488;
+}
+
+.sidebarLinkIcon {
+  font-size: 14px;
+  opacity: 0.5;
+}
+
+/* Empty / loading */
+.empty {
+  text-align: center;
+  padding: 80px 24px;
+  color: #9ca3af;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.emptyText {
+  font-size: 15px;
+}
+
+.loading {
+  text-align: center;
+  padding: 80px 24px;
+  color: #9ca3af;
+}
+
+/* Print */
+@media print {
+  .breadcrumbBar,
+  .sidebar,
+  .printBtn {
+    display: none !important;
+  }
+
+  .wrapper {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+
+  .timelineItem {
+    opacity: 1;
+    transform: none !important;
+    break-inside: avoid;
+  }
+
+  .timelineCard {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* Responsive — stack timeline on mobile */
+@media (max-width: 768px) {
+  .wrapper {
+    grid-template-columns: 1fr;
+    padding: 24px 16px 60px;
+    gap: 24px;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .pageTitle {
+    font-size: 22px;
+  }
+
+  .printBtn {
+    display: none;
+  }
+
+  /* Stack timeline to single column on mobile */
+  .timelineLine {
+    left: 20px;
+  }
+
+  .timelineNum {
+    left: 20px;
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+
+  .timelineLeft,
+  .timelineRight {
+    padding-left: 56px;
+    padding-right: 0;
+    justify-content: flex-start;
+    transform: translateY(16px);
+  }
+
+  .timelineItemVisible {
+    transform: translateY(0) !important;
+  }
+
+  .timelineCard {
+    padding: 14px 16px;
+  }
+
+  .timelineText {
+    font-size: 13px;
+  }
+}

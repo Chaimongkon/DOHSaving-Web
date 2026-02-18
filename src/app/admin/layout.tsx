@@ -49,10 +49,10 @@ const navItems = [
       { label: "ประวัติสหกรณ์", href: "/admin/pages/history", icon: <HistoryOutlined /> },
       { label: "วิสัยทัศน์และพันธกิจ", href: "/admin/vision-data", icon: <EyeOutlined /> },
       { label: "นโยบายสหกรณ์", href: "/admin/policy-items", icon: <SafetyCertificateOutlined /> },
+      { label: "จรรยาบรรณคณะกรรมการ", href: "/admin/ethics-board-items", icon: <AuditOutlined /> },
       { label: "จรรยาบรรณเจ้าหน้าที่", href: "/admin/ethics-staff-items", icon: <SolutionOutlined /> },
       { label: "คณะกรรมการ", href: "/admin/pages/board", icon: <TeamOutlined /> },
       { label: "โครงสร้างองค์กร", href: "/admin/pages/organization", icon: <BankOutlined /> },
-      { label: "รูป Infographic", href: "/admin/infographic", icon: <PictureOutlined /> },
     ],
   },
   {

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import InfographicPageLayout from "@/components/about/InfographicPageLayout";
+import EthicsBoardContent from "./EthicsBoardContent";
 
 export const metadata: Metadata = {
   title: "จรรยาบรรณคณะกรรมการ | สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
@@ -7,11 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function EthicsBoardPage() {
-  return (
-    <InfographicPageLayout
-      pageKey="ethics-board"
-      breadcrumbLabel="จรรยาบรรณคณะกรรมการ"
-      pageTitle="จรรยาบรรณคณะกรรมการ"
-    />
-  );
+  return <EthicsBoardContent />;
 }

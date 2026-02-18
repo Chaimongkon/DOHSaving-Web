@@ -18,9 +18,7 @@ interface PageConfig {
   href: string;
 }
 
-const PAGES: PageConfig[] = [
-  { key: "ethics-board", label: "จรรยาบรรณคณะกรรมการ", icon: <AuditOutlined />, href: "/about/ethics-board" },
-];
+const PAGES: PageConfig[] = [];
 
 export default function InfographicManager() {
   const [images, setImages] = useState<Record<string, string>>({});

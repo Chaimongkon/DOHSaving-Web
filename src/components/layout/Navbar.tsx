@@ -156,6 +156,7 @@ const navItems: NavItem[] = [
       {
         title: "รายงานกิจการประจำปี",
         links: [
+          { label: "รายงานประจำปี", href: "/reports/annual-meeting" },
           { label: "เอกสารประกอบการประชุมใหญ่", href: "/reports/annual-meeting" },
         ],
       },
