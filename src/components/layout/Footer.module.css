@@ -188,10 +188,9 @@
 }
 
 .appIcon {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #E8652B, #f09060);
   display: flex;
   align-items: center;
   justify-content: center;

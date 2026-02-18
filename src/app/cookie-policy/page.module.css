@@ -1,0 +1,158 @@
+/* Cookie Policy Page */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f1d36;
+  margin: 0 0 8px;
+}
+
+.updated {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 0 0 32px;
+}
+
+.section {
+  margin-bottom: 32px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f1d36;
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #E8652B;
+  display: inline-block;
+}
+
+.text {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.8;
+  margin: 0 0 12px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13px;
+}
+
+.table th {
+  background: #0f1d36;
+  color: #ffffff;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+  vertical-align: top;
+}
+
+.table tr:nth-child(even) td {
+  background: #f9fafb;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badgeRequired {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.badgeOptional {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.list {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+.list li {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.8;
+  margin-bottom: 4px;
+}
+
+.contactBox {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-top: 12px;
+}
+
+.contactItem {
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contactItem:last-child {
+  margin-bottom: 0;
+}
+
+.btnManage {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 24px;
+  background: #E8652B;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  margin-top: 12px;
+}
+
+.btnManage:hover {
+  background: #d45a24;
+  box-shadow: 0 4px 12px rgba(232, 101, 43, 0.3);
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 32px 16px 60px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .table {
+    font-size: 12px;
+  }
+
+  .table th,
+  .table td {
+    padding: 8px 10px;
+  }
+}

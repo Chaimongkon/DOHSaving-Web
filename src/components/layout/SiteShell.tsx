@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { TopBar, Navbar, Footer } from "@/components/layout";
+import CookieConsentBanner from "@/components/CookieConsent";
 
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -17,6 +18,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
       <Navbar />
       <main className="main-content">{children}</main>
       <Footer />
+      <CookieConsentBanner />
     </>
   );
 }

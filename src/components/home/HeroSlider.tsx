@@ -111,20 +111,15 @@ export default function HeroSlider() {
       >
         {slides.map((slide) => (
           <div key={slide.id}>
-            {/* ถ้ามี urlLink และไม่มี title — ให้คลิกทั้งภาพ */}
+            {/* ถ้ามี urlLink แต่ไม่มี title (ไม่มี CTA ข้างใน) — ครอบทั้ง slide เป็น link */}
             {slide.urlLink && !slide.title ? (
               <Link href={slide.urlLink} className={css.slideLink}>
                 <div className={css.slide}>
                   {renderSlideInner(slide)}
                 </div>
               </Link>
-            ) : slide.urlLink && slide.title ? (
-              <Link href={slide.urlLink} className={css.slideLink}>
-                <div className={css.slide}>
-                  {renderSlideInner(slide)}
-                </div>
-              </Link>
             ) : (
+              /* ถ้ามี title (มี CTA link ข้างใน) หรือไม่มี urlLink — ไม่ครอบ link */
               <div className={css.slide}>
                 {renderSlideInner(slide)}
               </div>

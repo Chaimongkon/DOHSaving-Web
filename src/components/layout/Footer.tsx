@@ -40,34 +40,33 @@ export default function Footer() {
         {/* Column 1 — Brand + Contact */}
         <div>
           <div className={css.brand}>
-            <Image
-              src="/logo.svg"
-              alt="สหกรณ์ออมทรัพย์กรมทางหลวง"
-              width={48}
-              height={48}
-            />
+          <img
+            src="/images/logo/logo.png"
+            alt="สหกรณ์ออมทรัพย์กรมทางหลวง"
+            width={52}
+            height={52}
+          />
             <h3 className={css.brandName}>สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด</h3>
           </div>
           <p className={css.brandDesc}>
-            บริการเงินฝาก สินเชื่อ และสวัสดิการสมาชิก
-            ด้วยระบบที่ทันสมัยและโปร่งใส ให้บริการมากว่า 50 ปี
+            เป็นสหกรณ์ที่มั่นคง ดำรงหลักธรรมาภิบาล จัดการด้วยเทคโนโลยีทันสมัย ใส่ใจสมาชิกและสังคม
           </p>
           <div className={css.contactList}>
             <div className={css.contactItem}>
               <EnvironmentOutlined className={css.contactIcon} />
-              <span>ถนนศรีอยุธยา แขวงทุ่งพญาไท เขตราชเทวี กทม. 10400</span>
+              <span>2/486 อาคาร 26 ถนนศรีอยุธยา แขวงทุ่งพญาไท เขตราชเทวี กทม. 10400</span>
             </div>
             <div className={css.contactItem}>
               <PhoneOutlined className={css.contactIcon} />
-              <span>02-354-6827</span>
+              <span>02-644-4633 ต่อ 205</span>
             </div>
             <div className={css.contactItem}>
               <PrinterOutlined className={css.contactIcon} />
-              <span>02-354-6833</span>
+              <span>02-354-5717</span>
             </div>
             <div className={css.contactItem}>
               <MailOutlined className={css.contactIcon} />
-              <span>dohsaving@gmail.com</span>
+              <span>dohcoop@hotmail.com</span>
             </div>
           </div>
         </div>
@@ -120,16 +119,39 @@ export default function Footer() {
             >
               <MessageFilled />
             </a>
+                        <a
+              href="https://line.me/R/ti/p/@dohsaving"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${css.socialBtn} ${css.socialLine}`}
+              aria-label="LINE"
+            >
+              <MessageFilled />
+            </a>
+                        <a
+              href="https://line.me/R/ti/p/@dohsaving"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${css.socialBtn} ${css.socialLine}`}
+              aria-label="LINE"
+            >
+              <MessageFilled />
+            </a>
           </div>
 
           <h4 className={css.socialTitle}>ดาวน์โหลดแอป</h4>
           <a href="#download-app" className={css.appCard}>
-            <div className={css.appIcon}>D</div>
+            <div className={css.appIcon}>          
+              <img
+              src="/images/logo/logoapp.png"
+              alt="DOH Saving App"
+              className={css.iconImg}
+            /></div>
             <div className={css.appText}>
               <span className={css.appTextTitle}>
                 <DownloadOutlined /> DOH Saving App
               </span>
-              ตรวจยอด ทำธุรกรรม ได้ทุกที่ 24 ชม.
+              ตรวจยอด ทำธุรกรรม ได้ 24 ชม.
             </div>
           </a>
         </div>

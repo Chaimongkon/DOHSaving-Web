@@ -1,0 +1,339 @@
+/* ============================================================
+   Cookie Consent Banner + Settings Modal
+   ============================================================ */
+
+/* Banner — bottom fixed */
+.banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9998;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.bannerInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 32px;
+}
+
+.bannerIcon {
+  font-size: 28px;
+  color: #E8652B;
+  flex-shrink: 0;
+}
+
+.bannerContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.bannerTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f1d36;
+  margin: 0 0 4px;
+}
+
+.bannerText {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.bannerLink {
+  color: #E8652B;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.bannerLink:hover {
+  text-decoration: underline;
+}
+
+.bannerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.btnAccept {
+  padding: 10px 24px;
+  background: #E8652B;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btnAccept:hover {
+  background: #d45a24;
+  box-shadow: 0 4px 12px rgba(232, 101, 43, 0.3);
+}
+
+.btnReject {
+  padding: 10px 24px;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btnReject:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.btnSettings {
+  padding: 10px 20px;
+  background: transparent;
+  color: #E8652B;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid #E8652B;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btnSettings:hover {
+  background: rgba(232, 101, 43, 0.06);
+}
+
+/* ── Settings Modal ── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.modalTitle {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f1d36;
+  margin: 0;
+}
+
+.modalClose {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: #f3f4f6;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.modalClose:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.modalBody {
+  padding: 20px 24px;
+}
+
+.modalDesc {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+/* Cookie category card */
+.categoryCard {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+.categoryCard:last-child {
+  margin-bottom: 0;
+}
+
+.categoryCardActive {
+  border-color: #E8652B;
+  background: rgba(232, 101, 43, 0.02);
+}
+
+.categoryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.categoryInfo {
+  flex: 1;
+}
+
+.categoryName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f1d36;
+  display: block;
+}
+
+.categoryDesc {
+  font-size: 12px;
+  color: #9ca3af;
+  display: block;
+  margin-top: 2px;
+}
+
+.categoryRequired {
+  font-size: 11px;
+  color: #E8652B;
+  font-weight: 500;
+}
+
+/* Toggle switch */
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggleInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSlider {
+  position: absolute;
+  inset: 0;
+  background: #d1d5db;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggleSlider::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.toggleInput:checked + .toggleSlider {
+  background: #E8652B;
+}
+
+.toggleInput:checked + .toggleSlider::before {
+  transform: translateX(20px);
+}
+
+.toggleInput:disabled + .toggleSlider {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Modal footer */
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .bannerInner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 20px;
+    gap: 14px;
+  }
+
+  .bannerIcon {
+    display: none;
+  }
+
+  .bannerActions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .btnAccept,
+  .btnReject,
+  .btnSettings {
+    flex: 1;
+    text-align: center;
+    padding: 10px 12px;
+  }
+
+  .modal {
+    max-height: 90vh;
+  }
+}

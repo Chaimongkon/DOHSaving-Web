@@ -1,11 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  DownloadOutlined,
-  AppleOutlined,
-  AndroidOutlined,
-} from "@ant-design/icons";
+import { DownloadOutlined } from "@ant-design/icons";
 import css from "./AppDownloadBar.module.css";
 
 export default function AppDownloadBar() {
@@ -14,9 +10,12 @@ export default function AppDownloadBar() {
       <div className={css.inner}>
         {/* Left: App icon + text */}
         <div className={css.info}>
-          <div className={css.icon}>
-            <span className={css.iconText}>D</span>
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/logo/logoapp.png"
+            alt="DOH Saving App"
+            className={css.iconImg}
+          />
           <div>
             <span className={css.name}>
               แอป DOH Saving — <span className={css.highlight}>ใหม่!</span>
@@ -27,11 +26,17 @@ export default function AppDownloadBar() {
 
         {/* Right: Store buttons + CTA */}
         <div className={css.actions}>
-          <a href="#download-ios" className={css.store} aria-label="App Store">
-            <AppleOutlined />
+          <a href="https://apps.apple.com/th/app/id1663748261" className={css.store} target="_blank" aria-label="App Store">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/logo/AppStore.png" alt="App Store" className={css.storeImg} />
           </a>
-          <a href="#download-android" className={css.store} aria-label="Google Play">
-            <AndroidOutlined />
+          <a href="https://play.google.com/store/apps/details?id=com.dohsaving.mobile" className={css.store} target="_blank" aria-label="Google Play">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/logo/GooglePlay.png" alt="Google Play" className={css.storeImg} />
+          </a>
+          <a href="https://appgallery.huawei.com/#/app/C107569233" className={css.store} target="_blank" aria-label="App Gallery">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/logo/AppGellery.png" alt="App Gallery" className={css.storeImg} />
           </a>
           <a href="#download-app" className={css.cta}>
             <DownloadOutlined />

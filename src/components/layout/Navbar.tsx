@@ -339,12 +339,12 @@ export default function Navbar() {
       <div className="navbar-inner">
         {/* Logo */}
         <Link href="/" className="navbar-logo">
-          <Image
-            src="/logo.svg"
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/logo/logo.png"
             alt="สหกรณ์ออมทรัพย์กรมทางหลวง"
             width={52}
             height={52}
-            priority
           />
           <div className="navbar-logo-text">
             <span className="navbar-title">สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด</span>

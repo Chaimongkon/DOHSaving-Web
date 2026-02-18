@@ -20,21 +20,12 @@
   gap: 12px;
 }
 
-.icon {
-  width: 36px;
-  height: 36px;
+.iconImg {
+  width: 56px;
+  height: 56px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #E8652B, #f09060);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  object-fit: cover;
   flex-shrink: 0;
-}
-
-.iconText {
-  color: #ffffff;
-  font-size: 18px;
-  font-weight: 800;
 }
 
 .name {
@@ -68,13 +59,18 @@
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: transparent;
-  color: rgba(255, 255, 255, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
   text-decoration: none;
   transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.storeImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .store:hover {

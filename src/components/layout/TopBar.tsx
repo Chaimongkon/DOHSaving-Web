@@ -23,7 +23,7 @@ export default function TopBar() {
           </Space>
           <Space size={4}>
             <MailOutlined />
-            <Text className="topbar-text">dohsaving@gmail.com</Text>
+            <Text className="topbar-text">dohcoop@hotmail.com</Text>
           </Space>
         </Space>
 
