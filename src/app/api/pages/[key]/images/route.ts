@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-// GET /api/pages/:key/images — ดึงรูป infographic (public)
+// GET /api/pages/:key/images — ดึงรูป infographic (public, single image)
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ key: string }> }
@@ -10,17 +10,15 @@ export async function GET(
 
   try {
     const setting = await prisma.siteSetting.findUnique({
-      where: { key: `page_${key}_images` },
+      where: { key: `page_${key}_image` },
     });
 
-    const images: string[] = setting?.value ? JSON.parse(setting.value) : [];
-
     return NextResponse.json(
-      { images },
+      { image: setting?.value || "" },
       { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } }
     );
   } catch (error) {
-    console.error("Failed to fetch images:", error);
-    return NextResponse.json({ images: [] }, { status: 500 });
+    console.error("Failed to fetch image:", error);
+    return NextResponse.json({ image: "" }, { status: 500 });
   }
 }

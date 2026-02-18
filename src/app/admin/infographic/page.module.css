@@ -1,0 +1,204 @@
+/* Admin — Infographic Manager (all pages in one) */
+.header {
+  margin-bottom: 28px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f1d36;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 6px 0 0;
+}
+
+/* Card grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  background: #f8f9fb;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cardIcon {
+  font-size: 18px;
+  color: #E8652B;
+}
+
+.cardLabel {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f1d36;
+  margin: 0;
+}
+
+.cardBody {
+  padding: 20px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Preview image */
+.preview {
+  width: 100%;
+  position: relative;
+}
+
+.previewImg {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  display: block;
+  border: 1px solid #f0f0f0;
+}
+
+/* Actions */
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.btnUpload {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: linear-gradient(135deg, #E8652B, #d45a24);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.btnUpload:hover {
+  box-shadow: 0 3px 10px rgba(232, 101, 43, 0.3);
+}
+
+.btnUpload:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnDelete {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: #ffffff;
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.btnDelete:hover {
+  background: #fef2f2;
+  border-color: #dc2626;
+}
+
+.btnView {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: #ffffff;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.btnView:hover {
+  color: #E8652B;
+  border-color: #E8652B;
+}
+
+/* Empty placeholder */
+.placeholder {
+  text-align: center;
+  color: #d1d5db;
+  cursor: pointer;
+  padding: 20px;
+  border: 2px dashed #e5e7eb;
+  border-radius: 10px;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.placeholder:hover {
+  border-color: #E8652B;
+  color: #E8652B;
+}
+
+.placeholderIcon {
+  font-size: 36px;
+  margin-bottom: 8px;
+  opacity: 0.4;
+}
+
+.placeholderText {
+  font-size: 13px;
+  margin: 0;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 80px 24px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
