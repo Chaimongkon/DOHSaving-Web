@@ -1,0 +1,177 @@
+/* History Page */
+.hero {
+  background: linear-gradient(135deg, #0f1d36 0%, #1a2d4a 100%);
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.heroTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px;
+}
+
+.breadcrumb {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.breadcrumbLink {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+}
+
+.breadcrumbLink:hover {
+  color: #ffffff;
+}
+
+.breadcrumbSep {
+  margin: 0 8px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.breadcrumbCurrent {
+  color: #E8652B;
+  font-weight: 500;
+}
+
+/* Content area */
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+.content {
+  font-size: 15px;
+  line-height: 1.9;
+  color: #374151;
+}
+
+/* Rich text styling */
+.content h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f1d36;
+  margin: 36px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid #E8652B;
+}
+
+.content h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f1d36;
+  margin: 32px 0 14px;
+  padding-left: 14px;
+  border-left: 4px solid #E8652B;
+}
+
+.content h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f1d36;
+  margin: 28px 0 10px;
+}
+
+.content p {
+  margin: 0 0 14px;
+  text-indent: 2em;
+}
+
+.content ol,
+.content ul {
+  padding-left: 28px;
+  margin: 10px 0 18px;
+  text-indent: 0;
+}
+
+.content ol li,
+.content ul li {
+  margin-bottom: 8px;
+  text-indent: 0;
+}
+
+.content strong {
+  color: #0f1d36;
+  font-weight: 700;
+}
+
+.content img {
+  max-width: 100%;
+  border-radius: 10px;
+  margin: 20px 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.content blockquote {
+  margin: 20px 0;
+  padding: 16px 24px;
+  background: #f9fafb;
+  border-left: 4px solid #E8652B;
+  border-radius: 0 8px 8px 0;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.content a {
+  color: #E8652B;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.content a:hover {
+  text-decoration: underline;
+}
+
+/* Empty state */
+.empty {
+  text-align: center;
+  padding: 80px 24px;
+  color: #9ca3af;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.emptyText {
+  font-size: 15px;
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 80px 24px;
+  color: #9ca3af;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .hero {
+    padding: 32px 16px;
+  }
+
+  .heroTitle {
+    font-size: 22px;
+  }
+
+  .container {
+    padding: 32px 16px 60px;
+  }
+
+  .content {
+    font-size: 14px;
+  }
+
+  .content h1 {
+    font-size: 20px;
+  }
+
+  .content h2 {
+    font-size: 17px;
+  }
+}

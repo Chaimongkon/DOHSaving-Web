@@ -14,6 +14,7 @@ import {
   SettingOutlined,
   LogoutOutlined,
   MenuOutlined,
+  HistoryOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,6 +37,12 @@ const navItems = [
       { label: "ป๊อปอัพแจ้งเตือน", href: "/admin/notifications", icon: <NotificationOutlined /> },
       { label: "วิดีโอ", href: "/admin/videos", icon: <VideoCameraOutlined /> },
       { label: "อัลบั้มภาพ", href: "/admin/photo-albums", icon: <CameraOutlined /> },
+    ],
+  },
+  {
+    group: "หน้าเพจ",
+    items: [
+      { label: "ประวัติสหกรณ์", href: "/admin/pages/history", icon: <HistoryOutlined /> },
     ],
   },
   {
