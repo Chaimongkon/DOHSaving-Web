@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AboutPageLayout from "@/components/about/AboutPageLayout";
+import BoardContent from "./BoardContent";
 
 export const metadata: Metadata = {
   title: "คณะกรรมการ | สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function BoardPage() {
-  return <AboutPageLayout pageKey="board" breadcrumbLabel="คณะกรรมการ" />;
+  return <BoardContent />;
 }

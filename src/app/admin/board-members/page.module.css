@@ -1,0 +1,148 @@
+/* Admin — Board Members Manager */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.headerLeft h1 { font-size: 22px; font-weight: 700; color: #0f1d36; margin: 0; }
+.headerLeft p { font-size: 13px; color: #9ca3af; margin: 4px 0 0; }
+
+.actions { display: flex; gap: 10px; }
+
+.btnAdd {
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 22px;
+  background: linear-gradient(135deg, #E8652B, #f59e0b);
+  color: #fff; font-size: 13px; font-weight: 600;
+  border: none; border-radius: 8px; cursor: pointer;
+  font-family: inherit; transition: all 0.2s;
+}
+.btnAdd:hover { box-shadow: 0 4px 12px rgba(232,101,43,0.3); }
+
+.btnSave {
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 22px; background: #0f1d36;
+  color: #fff; font-size: 13px; font-weight: 600;
+  border: none; border-radius: 8px; cursor: pointer;
+  font-family: inherit; transition: all 0.2s;
+}
+.btnSave:hover { background: #1a2d4a; }
+.btnSave:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Tier tabs */
+.tierTabs {
+  display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+}
+
+.tierTab {
+  padding: 8px 18px;
+  font-size: 13px; font-weight: 600;
+  border: 1px solid #e5e7eb; border-radius: 8px;
+  background: #fff; color: #6b7280;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.15s;
+}
+.tierTab:hover { border-color: #E8652B; color: #E8652B; }
+.tierTabActive {
+  background: linear-gradient(135deg, #E8652B, #f59e0b);
+  color: #fff; border-color: transparent;
+}
+
+/* Members grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+/* Member card */
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+
+.cardImage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  background: #f3f4f6;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.cardImage img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+.cardImageOverlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 24px;
+  opacity: 0; transition: opacity 0.2s;
+}
+.cardImage:hover .cardImageOverlay { opacity: 1; }
+
+.cardImagePlaceholder {
+  font-size: 40px; color: #d1d5db;
+}
+
+.cardBody { padding: 14px; }
+
+.cardInput {
+  width: 100%; padding: 8px 10px;
+  border: 1px solid #e5e7eb; border-radius: 6px;
+  font-size: 13px; color: #374151;
+  font-family: inherit; margin-bottom: 8px;
+  transition: border-color 0.15s;
+}
+.cardInput:focus {
+  outline: none; border-color: #E8652B;
+  box-shadow: 0 0 0 2px rgba(232,101,43,0.08);
+}
+
+.cardSelect {
+  width: 100%; padding: 8px 10px;
+  border: 1px solid #e5e7eb; border-radius: 6px;
+  font-size: 13px; color: #374151;
+  font-family: inherit; margin-bottom: 8px;
+  background: #fff; cursor: pointer;
+}
+
+.cardActions {
+  display: flex; gap: 6px; margin-top: 4px;
+}
+
+.btnDel {
+  display: flex; align-items: center; gap: 4px;
+  padding: 6px 12px; font-size: 11px; font-weight: 600;
+  color: #dc2626; background: #fff;
+  border: 1px solid #fecaca; border-radius: 6px;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.15s;
+}
+.btnDel:hover { background: #fef2f2; }
+
+/* Empty */
+.empty {
+  text-align: center; padding: 60px 24px; color: #d1d5db;
+}
+.emptyIcon { font-size: 40px; margin-bottom: 12px; opacity: 0.3; }
+.emptyText { font-size: 14px; color: #9ca3af; }
+
+.loading {
+  text-align: center; padding: 80px 24px; color: #9ca3af; font-size: 14px;
+}
+
+.status {
+  font-size: 12px; color: #9ca3af; margin-top: 16px; text-align: right;
+}

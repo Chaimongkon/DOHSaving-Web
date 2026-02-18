@@ -53,7 +53,7 @@ const navItems = [
       { label: "นโยบายสหกรณ์", href: "/admin/policy-items", icon: <SafetyCertificateOutlined /> },
       { label: "จรรยาบรรณคณะกรรมการ", href: "/admin/ethics-board-items", icon: <AuditOutlined /> },
       { label: "จรรยาบรรณเจ้าหน้าที่", href: "/admin/ethics-staff-items", icon: <SolutionOutlined /> },
-      { label: "คณะกรรมการ", href: "/admin/pages/board", icon: <TeamOutlined /> },
+      { label: "คณะกรรมการ", href: "/admin/board-members", icon: <TeamOutlined /> },
       { label: "โครงสร้างองค์กร", href: "/admin/pages/organization", icon: <BankOutlined /> },
     ],
   },
