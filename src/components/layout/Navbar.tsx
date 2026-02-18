@@ -52,7 +52,7 @@ const navItems: NavItem[] = [
           { label: "จรรยาบรรณคณะกรรมการดำเนินการ", href: "/about/ethics-board" },
           { label: "จรรยาบรรณเจ้าหน้าที่", href: "/about/ethics-staff" },
           { label: "นโยบายสหกรณ์", href: "/about/policy" },
-          { label: "สารจากประธาน สอ.กส.", href: "/about/chairman-message" },
+          { label: "สารจากประธาน สอ.ทล.", href: "/about/chairman-message" },
         ],
       },
       {

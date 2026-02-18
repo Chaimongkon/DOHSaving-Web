@@ -19,6 +19,7 @@ import {
   AuditOutlined,
   SolutionOutlined,
   BankOutlined,
+  CrownOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
@@ -47,6 +48,7 @@ const navItems = [
     group: "หน้าเพจ",
     items: [
       { label: "ประวัติสหกรณ์", href: "/admin/pages/history", icon: <HistoryOutlined /> },
+      { label: "สารจากประธานฯ", href: "/admin/chairman-message", icon: <CrownOutlined /> },
       { label: "วิสัยทัศน์และพันธกิจ", href: "/admin/vision-data", icon: <EyeOutlined /> },
       { label: "นโยบายสหกรณ์", href: "/admin/policy-items", icon: <SafetyCertificateOutlined /> },
       { label: "จรรยาบรรณคณะกรรมการ", href: "/admin/ethics-board-items", icon: <AuditOutlined /> },
