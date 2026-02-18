@@ -56,6 +56,7 @@ const navItems = [
       { label: "จรรยาบรรณเจ้าหน้าที่", href: "/admin/ethics-staff-items", icon: <SolutionOutlined /> },
       { label: "คณะกรรมการ", href: "/admin/board-members", icon: <TeamOutlined /> },
       { label: "ผู้ตรวจสอบ", href: "/admin/auditors", icon: <SearchOutlined /> },
+      { label: "บุคลากร/ฝ่ายต่างๆ", href: "/admin/department-staff", icon: <TeamOutlined /> },
       { label: "โครงสร้างองค์กร", href: "/admin/pages/organization", icon: <BankOutlined /> },
     ],
   },

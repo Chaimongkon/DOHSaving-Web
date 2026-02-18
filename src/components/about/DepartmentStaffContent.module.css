@@ -1,0 +1,353 @@
+/* Department Staff Page — Shared Component */
+
+/* Breadcrumb bar */
+.breadcrumbBar {
+  background: #f8f9fb;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 14px 24px;
+}
+
+.breadcrumbInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.breadcrumbLink {
+  color: #9ca3af;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumbLink:hover {
+  color: #0d9488;
+}
+
+.breadcrumbSep {
+  margin: 0 8px;
+  color: #d1d5db;
+}
+
+.breadcrumbCurrent {
+  color: #0f1d36;
+  font-weight: 600;
+}
+
+.printBtn {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.printBtn:hover {
+  color: #0d9488;
+  border-color: #0d9488;
+}
+
+/* Main layout */
+.wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 40px;
+  align-items: start;
+}
+
+.main {
+  min-width: 0;
+}
+
+/* Title section */
+.titleSection {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.pageTitle {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f1d36;
+  margin: 0 0 6px;
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0;
+  font-weight: 500;
+}
+
+.countBadge {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 5px 16px;
+  background: linear-gradient(135deg, #0d9488, #14b8a6);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 20px;
+}
+
+/* ========== Staff Grid ========== */
+.staffGrid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 28px;
+}
+
+/* Staff card */
+.staffCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 160px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.staffCard.cardVisible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.staffCard:hover {
+  transform: translateY(-4px);
+  transition: transform 0.3s ease;
+}
+
+/* Circular image with gradient ring */
+.cardRing {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(135deg, #0d9488, #14b8a6, #5eead4);
+  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.2);
+  margin-bottom: 12px;
+  transition: box-shadow 0.3s;
+}
+
+.staffCard:hover .cardRing {
+  box-shadow: 0 8px 24px rgba(13, 148, 136, 0.3);
+}
+
+.cardImageInner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #ffffff;
+  border: 3px solid #ffffff;
+}
+
+.cardImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cardImgPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  color: #d1d5db;
+  font-size: 32px;
+}
+
+/* Info */
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.cardName {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f1d36;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.cardPosition {
+  display: inline-block;
+  padding: 3px 12px;
+  background: #f0fdfa;
+  color: #0d9488;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1px solid #ccfbf1;
+}
+
+/* Sidebar */
+.sidebar {
+  position: sticky;
+  top: 90px;
+}
+
+.sidebarCard {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.sidebarTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f1d36;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  margin: 0;
+  background: #f8f9fb;
+}
+
+.sidebarNav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebarLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  font-size: 13px;
+  color: #6b7280;
+  text-decoration: none;
+  border-bottom: 1px solid #f9fafb;
+  transition: all 0.15s;
+}
+
+.sidebarLink:hover {
+  background: #f8f9fb;
+  color: #0d9488;
+}
+
+.sidebarLinkActive {
+  color: #0d9488;
+  font-weight: 600;
+  background: rgba(13, 148, 136, 0.04);
+  border-left: 3px solid #0d9488;
+}
+
+.sidebarLinkIcon {
+  font-size: 14px;
+  opacity: 0.5;
+}
+
+/* Empty / loading */
+.empty {
+  text-align: center;
+  padding: 80px 24px;
+  color: #9ca3af;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.emptyText {
+  font-size: 15px;
+}
+
+.loading {
+  text-align: center;
+  padding: 80px 24px;
+  color: #9ca3af;
+}
+
+/* Print */
+@media print {
+  .breadcrumbBar,
+  .sidebar,
+  .printBtn {
+    display: none !important;
+  }
+
+  .wrapper {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+
+  .staffCard {
+    opacity: 1;
+    transform: none;
+    break-inside: avoid;
+  }
+
+  .cardRing {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .wrapper {
+    grid-template-columns: 1fr;
+    padding: 24px 16px 60px;
+    gap: 24px;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .pageTitle {
+    font-size: 20px;
+  }
+
+  .printBtn {
+    display: none;
+  }
+
+  .staffGrid {
+    gap: 20px;
+  }
+
+  .staffCard {
+    width: 120px;
+  }
+
+  .cardRing {
+    width: 100px;
+    height: 100px;
+  }
+
+  .cardName {
+    font-size: 12px;
+  }
+
+  .cardPosition {
+    font-size: 10px;
+  }
+}
