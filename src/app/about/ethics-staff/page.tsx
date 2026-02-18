@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import InfographicPageLayout from "@/components/about/InfographicPageLayout";
+import EthicsStaffContent from "./EthicsStaffContent";
 
 export const metadata: Metadata = {
   title: "จรรยาบรรณเจ้าหน้าที่ | สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
@@ -7,11 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function EthicsStaffPage() {
-  return (
-    <InfographicPageLayout
-      pageKey="ethics-staff"
-      breadcrumbLabel="จรรยาบรรณเจ้าหน้าที่"
-      pageTitle="จรรยาบรรณเจ้าหน้าที่"
-    />
-  );
+  return <EthicsStaffContent />;
 }

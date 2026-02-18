@@ -8,7 +8,6 @@ import {
   EyeOutlined,
   PictureOutlined,
   AuditOutlined,
-  SolutionOutlined,
 } from "@ant-design/icons";
 import css from "./page.module.css";
 
@@ -22,7 +21,6 @@ interface PageConfig {
 const PAGES: PageConfig[] = [
   { key: "vision", label: "วิสัยทัศน์และพันธกิจ", icon: <EyeOutlined />, href: "/about/vision" },
   { key: "ethics-board", label: "จรรยาบรรณคณะกรรมการ", icon: <AuditOutlined />, href: "/about/ethics-board" },
-  { key: "ethics-staff", label: "จรรยาบรรณเจ้าหน้าที่", icon: <SolutionOutlined />, href: "/about/ethics-staff" },
 ];
 
 export default function InfographicManager() {

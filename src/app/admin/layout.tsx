@@ -48,6 +48,7 @@ const navItems = [
     items: [
       { label: "ประวัติสหกรณ์", href: "/admin/pages/history", icon: <HistoryOutlined /> },
       { label: "นโยบายสหกรณ์", href: "/admin/policy-items", icon: <SafetyCertificateOutlined /> },
+      { label: "จรรยาบรรณเจ้าหน้าที่", href: "/admin/ethics-staff-items", icon: <SolutionOutlined /> },
       { label: "คณะกรรมการ", href: "/admin/pages/board", icon: <TeamOutlined /> },
       { label: "โครงสร้างองค์กร", href: "/admin/pages/organization", icon: <BankOutlined /> },
       { label: "รูป Infographic", href: "/admin/infographic", icon: <PictureOutlined /> },

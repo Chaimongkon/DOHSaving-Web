@@ -1,0 +1,351 @@
+/* Ethics Staff Page — Gradient Ribbon Banners */
+
+/* Breadcrumb bar */
+.breadcrumbBar {
+  background: #f8f9fb;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 14px 24px;
+}
+
+.breadcrumbInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.breadcrumbLink {
+  color: #9ca3af;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumbLink:hover {
+  color: #8b5cf6;
+}
+
+.breadcrumbSep {
+  margin: 0 8px;
+  color: #d1d5db;
+}
+
+.breadcrumbCurrent {
+  color: #0f1d36;
+  font-weight: 600;
+}
+
+.printBtn {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.printBtn:hover {
+  color: #8b5cf6;
+  border-color: #8b5cf6;
+}
+
+/* Main layout */
+.wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 40px;
+  align-items: start;
+}
+
+.main {
+  min-width: 0;
+}
+
+/* Title section */
+.titleSection {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.titleBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  color: #ffffff;
+  font-size: 26px;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.25);
+}
+
+.pageTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f1d36;
+  margin: 0 0 6px;
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0;
+  font-weight: 500;
+}
+
+.countBadge {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 6px 18px;
+  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+
+/* Ribbon list */
+.ribbonList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Ribbon item */
+.ribbon {
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.ribbonLeft {
+  transform: translateX(-40px);
+}
+
+.ribbonRight {
+  transform: translateX(40px);
+}
+
+.ribbonVisible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.ribbonInner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 24px;
+  border-radius: 14px;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.ribbonInner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.ribbon:hover .ribbonInner {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Number circle */
+.ribbonNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* Ribbon text */
+.ribbonText {
+  flex: 1;
+  font-size: 14.5px;
+  line-height: 1.7;
+  font-weight: 500;
+}
+
+/* Sidebar */
+.sidebar {
+  position: sticky;
+  top: 90px;
+}
+
+.sidebarCard {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.sidebarTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f1d36;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  margin: 0;
+  background: #f8f9fb;
+}
+
+.sidebarNav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebarLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  font-size: 13px;
+  color: #6b7280;
+  text-decoration: none;
+  border-bottom: 1px solid #f9fafb;
+  transition: all 0.15s;
+}
+
+.sidebarLink:hover {
+  background: #f8f9fb;
+  color: #8b5cf6;
+}
+
+.sidebarLinkActive {
+  color: #8b5cf6;
+  font-weight: 600;
+  background: rgba(139, 92, 246, 0.04);
+  border-left: 3px solid #8b5cf6;
+}
+
+.sidebarLinkIcon {
+  font-size: 14px;
+  opacity: 0.5;
+}
+
+/* Empty / loading */
+.empty {
+  text-align: center;
+  padding: 80px 24px;
+  color: #9ca3af;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.emptyText {
+  font-size: 15px;
+}
+
+.loading {
+  text-align: center;
+  padding: 80px 24px;
+  color: #9ca3af;
+}
+
+/* Print */
+@media print {
+  .breadcrumbBar,
+  .sidebar,
+  .printBtn {
+    display: none !important;
+  }
+
+  .wrapper {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+
+  .ribbon {
+    opacity: 1;
+    transform: none;
+  }
+
+  .ribbonInner {
+    break-inside: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .wrapper {
+    grid-template-columns: 1fr;
+    padding: 24px 16px 60px;
+    gap: 24px;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .pageTitle {
+    font-size: 22px;
+  }
+
+  .printBtn {
+    display: none;
+  }
+
+  .ribbonInner {
+    padding: 14px 16px;
+    gap: 14px;
+  }
+
+  .ribbonNumber {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 16px;
+  }
+
+  .ribbonText {
+    font-size: 13px;
+  }
+
+  .ribbonLeft,
+  .ribbonRight {
+    transform: translateY(20px);
+  }
+
+  .ribbonVisible {
+    transform: translateY(0);
+  }
+}
