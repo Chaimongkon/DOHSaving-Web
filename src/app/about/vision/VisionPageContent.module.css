@@ -113,106 +113,122 @@
   gap: 28px;
 }
 
+/* ========== SECTION: Shared Header ========== */
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #9ca3af;
+  margin: 0 0 4px;
+}
+
+.sectionTitlePink {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f1d36;
+  margin: 0;
+}
+
 /* ========== SECTION: ค่านิยม (Core Values) ========== */
-.coreValuesCard {
-  position: relative;
-  background: linear-gradient(135deg, #ec4899, #f43f5e, #fb7185);
-  border-radius: 20px;
-  padding: 36px 32px;
-  color: #ffffff;
-  overflow: hidden;
+.coreValuesSection {
   opacity: 0;
   transform: translateY(24px);
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-.coreValuesCard.sectionVisible {
+.coreValuesSection.sectionVisible {
   opacity: 1;
   transform: translateY(0);
 }
 
-.coreValuesBg {
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  pointer-events: none;
-}
-
-.coreValuesBg2 {
-  position: absolute;
-  bottom: -30px;
-  left: -30px;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  pointer-events: none;
-}
-
-.coreValuesIcon {
+.coreValuesIconLg {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.2);
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ec4899, #f43f5e);
+  color: #ffffff;
+  font-size: 28px;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 24px rgba(236, 72, 153, 0.3);
+}
+
+.coreValuesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.coreValueCard {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ec4899, #f43f5e);
+  padding: 3px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.coreValueCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(236, 72, 153, 0.25);
+}
+
+.coreValueCardBg {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  pointer-events: none;
+}
+
+.coreValueCardInner {
+  position: relative;
+  background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(8px);
-  font-size: 24px;
-  margin-bottom: 16px;
+  border-radius: 14px;
+  padding: 28px 24px;
+  text-align: center;
+  color: #ffffff;
 }
 
-.coreValuesLabel {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  opacity: 0.8;
-  margin: 0 0 8px;
-}
-
-.coreValuesTitle {
-  font-size: 22px;
-  font-weight: 800;
-  margin: 0 0 18px;
-}
-
-.coreValuesList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.coreValueItem {
+.coreValueNum {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 30px;
-  font-size: 14px;
-  font-weight: 600;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 14px;
 }
 
-.coreValueDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #ffffff;
+.coreValueText {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.6;
+  letter-spacing: 0.3px;
 }
 
 /* ========== SECTION: วิสัยทัศน์ (Vision) ========== */
 .visionCard {
   position: relative;
-  background: linear-gradient(135deg, #7c3aed, #6366f1, #8b5cf6);
-  border-radius: 20px;
-  padding: 36px 32px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed, #8b5cf6);
+  border-radius: 24px;
+  padding: 48px 40px;
   color: #ffffff;
   overflow: hidden;
   opacity: 0;
@@ -225,52 +241,108 @@
   transform: translateY(0);
 }
 
-.visionBg {
+.visionBgCircle1 {
   position: absolute;
-  top: 50%;
-  right: -50px;
-  transform: translateY(-50%);
-  width: 200px;
-  height: 200px;
+  top: -60px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.06);
   pointer-events: none;
 }
 
-.visionIcon {
+.visionBgCircle2 {
+  position: absolute;
+  bottom: -40px;
+  left: -40px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+}
+
+.visionBgCircle3 {
+  position: absolute;
+  top: 30%;
+  right: 15%;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.visionContent {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.visionIconLg {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(8px);
-  font-size: 24px;
-  margin-bottom: 16px;
+  width: 68px;
+  height: 68px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 32px;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 .visionLabel {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  opacity: 0.8;
-  margin: 0 0 8px;
+  letter-spacing: 3px;
+  opacity: 0.7;
+  margin: 0 0 6px;
 }
 
 .visionTitle {
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 800;
-  margin: 0 0 18px;
+  margin: 0 0 28px;
+}
+
+.visionQuote {
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.quoteOpen {
+  position: absolute;
+  top: -16px;
+  left: -4px;
+  font-size: 60px;
+  font-family: Georgia, serif;
+  opacity: 0.2;
+  line-height: 1;
+}
+
+.quoteClose {
+  position: absolute;
+  bottom: -30px;
+  right: -4px;
+  font-size: 60px;
+  font-family: Georgia, serif;
+  opacity: 0.2;
+  line-height: 1;
 }
 
 .visionText {
-  font-size: 16px;
-  line-height: 1.8;
-  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.9;
+  font-weight: 600;
   opacity: 0.95;
-  max-width: 600px;
+  margin: 0;
 }
 
 /* ========== SECTION: พันธกิจ (Mission) ========== */
@@ -479,7 +551,7 @@
     padding: 0;
   }
 
-  .coreValuesCard,
+  .coreValuesSection,
   .visionCard,
   .missionSection,
   .missionCard {
@@ -517,31 +589,38 @@
     display: none;
   }
 
-  .coreValuesCard,
   .visionCard {
-    padding: 24px 20px;
+    padding: 32px 20px;
   }
 
-  .coreValuesTitle,
+  .sectionTitlePink,
   .visionTitle,
   .missionTitle {
-    font-size: 18px;
+    font-size: 20px;
   }
 
   .visionText {
+    font-size: 16px;
+  }
+
+  .coreValuesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .coreValueCardInner {
+    padding: 20px 16px;
+  }
+
+  .coreValueText {
     font-size: 14px;
-  }
-
-  .coreValuesList {
-    gap: 8px;
-  }
-
-  .coreValueItem {
-    padding: 6px 14px;
-    font-size: 13px;
   }
 
   .missionCard {
     padding: 16px;
+  }
+
+  .quoteOpen,
+  .quoteClose {
+    font-size: 40px;
   }
 }

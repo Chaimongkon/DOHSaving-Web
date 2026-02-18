@@ -158,19 +158,22 @@ export default function VisionPageContent() {
               {coreValueLines.length > 0 && (
                 <div
                   ref={(el) => { sectionsRef.current[0] = el; }}
-                  className={css.coreValuesCard}
+                  className={css.coreValuesSection}
                 >
-                  <div className={css.coreValuesBg} />
-                  <div className={css.coreValuesBg2} />
-                  <div className={css.coreValuesIcon}><HeartOutlined /></div>
-                  <p className={css.coreValuesLabel}>CORE VALUES</p>
-                  <h2 className={css.coreValuesTitle}>ค่านิยม</h2>
-                  <div className={css.coreValuesList}>
+                  <div className={css.sectionHeader}>
+                    <div className={css.coreValuesIconLg}><HeartOutlined /></div>
+                    <p className={css.sectionLabel}>CORE VALUES</p>
+                    <h2 className={css.sectionTitlePink}>ค่านิยม</h2>
+                  </div>
+                  <div className={css.coreValuesGrid}>
                     {coreValueLines.map((line, i) => (
-                      <span key={i} className={css.coreValueItem}>
-                        <span className={css.coreValueDot} />
-                        {line}
-                      </span>
+                      <div key={i} className={css.coreValueCard}>
+                        <div className={css.coreValueCardBg} />
+                        <div className={css.coreValueCardInner}>
+                          <div className={css.coreValueNum}>{i + 1}</div>
+                          <div className={css.coreValueText}>{line}</div>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -182,11 +185,19 @@ export default function VisionPageContent() {
                   ref={(el) => { sectionsRef.current[1] = el; }}
                   className={css.visionCard}
                 >
-                  <div className={css.visionBg} />
-                  <div className={css.visionIcon}><EyeOutlined /></div>
-                  <p className={css.visionLabel}>VISION</p>
-                  <h2 className={css.visionTitle}>วิสัยทัศน์</h2>
-                  <p className={css.visionText}>{data.vision}</p>
+                  <div className={css.visionBgCircle1} />
+                  <div className={css.visionBgCircle2} />
+                  <div className={css.visionBgCircle3} />
+                  <div className={css.visionContent}>
+                    <div className={css.visionIconLg}><EyeOutlined /></div>
+                    <p className={css.visionLabel}>VISION</p>
+                    <h2 className={css.visionTitle}>วิสัยทัศน์</h2>
+                    <div className={css.visionQuote}>
+                      <span className={css.quoteOpen}>&ldquo;</span>
+                      <p className={css.visionText}>{data.vision}</p>
+                      <span className={css.quoteClose}>&rdquo;</span>
+                    </div>
+                  </div>
                 </div>
               )}
 
