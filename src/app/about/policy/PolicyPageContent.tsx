@@ -119,6 +119,9 @@ export default function PolicyPageContent() {
           <div className={css.titleSection}>
             <h1 className={css.pageTitle}>นโยบายสหกรณ์</h1>
             <p className={css.pageSubtitle}>สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด</p>
+            {items.length > 0 && (
+              <span className={css.countBadge}>ทั้งหมด {items.length} ข้อ</span>
+            )}
           </div>
 
           {loading ? (
@@ -131,7 +134,7 @@ export default function PolicyPageContent() {
                   <div
                     key={item.id}
                     ref={(el) => { cardsRef.current[i] = el; }}
-                    className={css.card}
+                    className={`${css.card} ${items.length % 2 === 1 && i === items.length - 1 ? css.cardFull : ""}`}
                     style={{
                       animationDelay: `${i * 80}ms`,
                       borderLeftColor: theme.border,

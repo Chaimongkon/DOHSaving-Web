@@ -107,6 +107,18 @@
   font-weight: 500;
 }
 
+.countBadge {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 6px 18px;
+  background: linear-gradient(135deg, #E8652B, #f59e0b);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+
 /* Policy cards grid — 2 columns */
 .grid {
   display: grid;
@@ -206,6 +218,11 @@
   line-height: 1.75;
   color: #374151;
   padding-top: 4px;
+}
+
+/* Last odd card spans full width */
+.cardFull {
+  grid-column: 1 / -1;
 }
 
 /* Sidebar */
