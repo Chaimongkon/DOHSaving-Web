@@ -497,3 +497,45 @@ model AuditLog {
   @@index([createdAt])
   @@map("audit_logs")
 }
+
+// ============================================================
+// 💬 Q&A Board
+// ============================================================
+
+model QnaQuestion {
+  id            Int        @id @default(autoincrement())
+  authorName    String     @db.VarChar(255)
+  memberCode    String?    @db.VarChar(50)
+  title         String     @db.VarChar(500)
+  body          String     @db.Text
+  views         Int        @default(0)
+  isPinned      Boolean    @default(false)
+  isClosed      Boolean    @default(false)
+  isActive      Boolean    @default(true)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  replies       QnaReply[]
+
+  @@index([createdAt])
+  @@index([isActive])
+  @@map("qna_questions")
+}
+
+model QnaReply {
+  id            Int          @id @default(autoincrement())
+  questionId    Int
+  authorName    String       @db.VarChar(255)
+  memberCode    String?      @db.VarChar(50)
+  body          String       @db.Text
+  isAdmin       Boolean      @default(false)
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  question      QnaQuestion  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@index([createdAt])
+  @@map("qna_replies")
+}

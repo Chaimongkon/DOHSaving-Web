@@ -21,6 +21,7 @@ import {
   BankOutlined,
   CrownOutlined,
   SearchOutlined,
+  MessageOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
@@ -64,6 +65,12 @@ const navItems = [
     group: "การเงิน",
     items: [
       { label: "อัตราดอกเบี้ย", href: "/admin/interest-rates", icon: <DollarOutlined /> },
+    ],
+  },
+  {
+    group: "สื่อสาร",
+    items: [
+      { label: "กระดานถาม-ตอบ", href: "/admin/qna", icon: <MessageOutlined /> },
     ],
   },
   {
