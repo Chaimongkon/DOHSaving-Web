@@ -166,7 +166,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 160px;
+  width: 190px;
   text-align: center;
   transition: transform 0.3s ease;
 }
@@ -225,22 +225,32 @@
 }
 
 .cardName {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: #0f1d36;
   margin: 0;
   line-height: 1.4;
+  min-height: 2.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .cardPosition {
   display: inline-block;
-  padding: 3px 12px;
+  padding: 4px 12px;
   background: #f0fdfa;
   color: #0d9488;
   font-size: 11px;
   font-weight: 600;
   border-radius: 10px;
   border: 1px solid #ccfbf1;
+  text-align: center;
+  line-height: 1.4;
+  text-wrap: balance;
+  max-width: 100%;
 }
 
 /* Sidebar */
@@ -374,7 +384,7 @@
   }
 
   .staffCard {
-    width: 110px;
+    width: 130px;
   }
 
   .cardRing {
