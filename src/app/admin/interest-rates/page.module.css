@@ -1,0 +1,337 @@
+/* Admin Interest Rates */
+.page {
+  max-width: 1000px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f1d36;
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.saveBtn {
+  padding: 8px 24px;
+  background: linear-gradient(135deg, #0d9488, #14b8a6);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.saveBtn:hover {
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+}
+
+.saveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.addBtn {
+  padding: 8px 20px;
+  background: #ffffff;
+  color: #0f1d36;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.addBtn:hover {
+  border-color: #0d9488;
+  color: #0d9488;
+}
+
+/* Date input */
+.dateRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 14px 18px;
+  background: #f8f9fb;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+.dateLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.dateInput {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #374151;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 8px 20px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.tab:hover {
+  border-color: #0d9488;
+  color: #0d9488;
+}
+
+.tabActive {
+  background: #0d9488;
+  color: #ffffff;
+  border-color: #0d9488;
+}
+
+.tabActive:hover {
+  background: #0d9488;
+  color: #ffffff;
+}
+
+/* Rate table */
+.rateTable {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.rateTableHead {
+  display: grid;
+  grid-template-columns: 1fr 200px 100px 100px 80px 40px;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f8f9fb;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.rateRow {
+  display: grid;
+  grid-template-columns: 1fr 200px 100px 100px 80px 40px;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  align-items: center;
+  transition: background 0.15s;
+}
+
+.rateRow:hover {
+  background: #fafbfc;
+}
+
+.rateRow:last-child {
+  border-bottom: none;
+}
+
+.rateInput {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #374151;
+  transition: border-color 0.15s;
+}
+
+.rateInput:focus {
+  outline: none;
+  border-color: #0d9488;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.1);
+}
+
+.rateInputSmall {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #374151;
+  transition: border-color 0.15s;
+  text-align: center;
+  font-weight: 600;
+}
+
+.rateInputSmall:focus {
+  outline: none;
+  border-color: #0d9488;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.1);
+}
+
+.rateSelect {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #374151;
+  transition: border-color 0.15s;
+  cursor: pointer;
+}
+
+.rateSelect:focus {
+  outline: none;
+  border-color: #0d9488;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.1);
+}
+
+.toggleBtn {
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.toggleOn {
+  background: #0d9488;
+}
+
+.toggleOff {
+  background: #d1d5db;
+}
+
+.toggleBtn::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  top: 2px;
+  transition: left 0.2s;
+}
+
+.toggleOn::after {
+  left: 18px;
+}
+
+.toggleOff::after {
+  left: 2px;
+}
+
+.deleteBtn {
+  background: none;
+  border: none;
+  color: #d1d5db;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.15s;
+}
+
+.deleteBtn:hover {
+  color: #ef4444;
+}
+
+/* Dual rate indicator */
+.dualLabel {
+  font-size: 10px;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 12px 24px;
+  background: #0d9488;
+  color: #ffffff;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 60px;
+  color: #9ca3af;
+}
+
+/* Empty */
+.empty {
+  text-align: center;
+  padding: 60px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .rateTableHead,
+  .rateRow {
+    grid-template-columns: 1fr 140px 80px 80px 60px 36px;
+    gap: 6px;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .rateInput {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+}

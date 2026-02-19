@@ -116,7 +116,7 @@ export default function VideoAndRateSection() {
               <span className={css.rateDate}>{dateLabel}</span>
             </div>
             <div className={css.rateBody}>
-              {(loaded ? loanRates : mockLoanRates.map((r) => ({ id: r.id, name: r.name, rate: r.rate }))).map((r) => (
+              {(loaded ? loanRates : mockLoanRates.map((r) => ({ id: r.id, name: r.name, rate: r.rate }))).slice(0, 5).map((r) => (
                 <div key={r.id} className={css.rateRow}>
                   <span className={css.rateName}>{r.name}</span>
                   <span className={css.rateValue}>
@@ -125,6 +125,11 @@ export default function VideoAndRateSection() {
                   </span>
                 </div>
               ))}
+              {loanRates.length > 5 && (
+                <div className={css.rateRow} style={{ justifyContent: "center", color: "#9ca3af", fontSize: 12 }}>
+                  และอีก {loanRates.length - 5} รายการ
+                </div>
+              )}
             </div>
           </div>
 
