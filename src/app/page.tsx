@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   BankOutlined,
   TeamOutlined,
@@ -8,6 +9,7 @@ import {
   DollarOutlined,
   SafetyOutlined,
   ArrowRightOutlined,
+  AlertOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import HeroSlider from "@/components/home/HeroSlider";
@@ -16,6 +18,7 @@ import NewsSection from "@/components/home/NewsSection";
 import VideoAndRateSection from "@/components/home/VideoAndRateSection";
 import PhotoGallerySection from "@/components/home/PhotoGallerySection";
 import PromoDialog from "@/components/home/PromoDialog";
+import ComplaintPopup from "@/components/home/ComplaintPopup";
 import css from "./page.module.css";
 
 const quickLinks = [
@@ -64,6 +67,8 @@ const quickLinks = [
 ];
 
 export default function HomePage() {
+  const [complaintOpen, setComplaintOpen] = useState(false);
+
   return (
     <>
       {/* Promotion Popup */}
@@ -106,6 +111,28 @@ export default function HomePage() {
                 </span>
               </Link>
             ))}
+
+            {/* Complaint popup trigger card */}
+            <button
+              className={css.card}
+              style={{ "--accent": "#dc2626" } as React.CSSProperties}
+              onClick={() => setComplaintOpen(true)}
+            >
+              <div
+                className={css.iconWrap}
+                style={{
+                  background: "linear-gradient(135deg, #dc2626, #dc2626aa)",
+                  boxShadow: "0 8px 24px #dc262635",
+                }}
+              >
+                <AlertOutlined />
+              </div>
+              <h3 className={css.cardTitle}>ร้องเรียน / เสนอแนะ</h3>
+              <p className={css.cardDesc}>แจ้งข้อเสนอแนะหรือร้องเรียน</p>
+              <span className={css.cta}>
+                แจ้งเรื่อง <ArrowRightOutlined className={css.ctaArrow} />
+              </span>
+            </button>
           </div>
         </div>
       </section>
@@ -118,6 +145,9 @@ export default function HomePage() {
 
       {/* Photo Gallery */}
       <PhotoGallerySection />
+
+      {/* Complaint Popup */}
+      <ComplaintPopup open={complaintOpen} onClose={() => setComplaintOpen(false)} />
     </>
   );
 }

@@ -52,6 +52,7 @@ export default function QnaThreadPage() {
   const [replyCode, setReplyCode] = useState("");
   const [replyBody, setReplyBody] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [hp, setHp] = useState(""); // honeypot anti-bot
 
   const fetchQuestion = useCallback(async () => {
     try {
@@ -83,6 +84,7 @@ export default function QnaThreadPage() {
           authorName: replyName.trim() || "ผู้ไม่ประสงค์ออกนาม",
           memberCode: replyCode.trim() || "000000",
           body: replyBody.trim(),
+          _hp: hp, // honeypot
         }),
       });
 

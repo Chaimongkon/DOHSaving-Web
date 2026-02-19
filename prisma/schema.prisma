@@ -407,17 +407,24 @@ model Answer {
 // ============================================================
 
 model Complaint {
-  id          Int       @id @default(autoincrement())
-  memberId    String?   @db.VarChar(255)
-  name        String?   @db.VarChar(255)
-  tel         String?   @db.VarChar(20)
-  email       String?   @db.VarChar(255)
-  complaint   String?   @db.Text
-  status      String    @default("pending") @db.VarChar(50) // pending, in_progress, resolved
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id              Int       @id @default(autoincrement())
+  trackingCode    String    @unique @db.VarChar(20)
+  memberId        String?   @db.VarChar(255)
+  name            String?   @db.VarChar(255)
+  tel             String?   @db.VarChar(20)
+  email           String?   @db.VarChar(255)
+  category        String    @default("complaint") @db.VarChar(100) // complaint, suggestion, inquiry
+  subject         String?   @db.VarChar(500)
+  complaint       String?   @db.Text
+  status          String    @default("pending") @db.VarChar(50) // pending, reviewing, resolved, rejected
+  adminNote       String?   @db.Text
+  resolvedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
+  @@index([trackingCode])
   @@index([status])
+  @@index([createdAt])
   @@map("complaints")
 }
 

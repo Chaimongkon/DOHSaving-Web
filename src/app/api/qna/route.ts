@@ -1,6 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+// ─── Security helpers ───
+function sanitize(input: string | null | undefined): string {
+  if (!input) return "";
+  return input
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;")
+    .replace(/\//g, "&#x2F;");
+}
+
+function truncate(val: string, max: number): string {
+  return val.length > max ? val.slice(0, max) : val;
+}
+
+// Rate limit: 5 questions per hour per IP
+const qnaLimitMap = new Map<string, number[]>();
+function isQnaLimited(ip: string): boolean {
+  const now = Date.now();
+  const ts = (qnaLimitMap.get(ip) || []).filter((t) => now - t < 3600000);
+  qnaLimitMap.set(ip, ts);
+  if (ts.length >= 5) return true;
+  ts.push(now);
+  qnaLimitMap.set(ip, ts);
+  return false;
+}
+
 // GET /api/qna — list questions (public)
 export async function GET(req: NextRequest) {
   try {
@@ -84,7 +111,34 @@ export async function GET(req: NextRequest) {
 // POST /api/qna — create new question (public)
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    // ── Security Layer 1: Content-Type check ──
+    const ct = req.headers.get("content-type") || "";
+    if (!ct.includes("application/json")) {
+      return NextResponse.json({ error: "Invalid content type" }, { status: 415 });
+    }
+
+    // ── Security Layer 2: Rate limit ──
+    const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
+    if (isQnaLimited(ip)) {
+      return NextResponse.json(
+        { error: "ตั้งกระทู้ได้สูงสุด 5 กระทู้ต่อชั่วโมง" },
+        { status: 429 }
+      );
+    }
+
+    // ── Security Layer 3: Body size limit (max 10KB) ──
+    const rawBody = await req.text();
+    if (rawBody.length > 10240) {
+      return NextResponse.json({ error: "ข้อมูลมีขนาดใหญ่เกินไป" }, { status: 413 });
+    }
+
+    const body = JSON.parse(rawBody);
+
+    // ── Security Layer 4: Honeypot bot trap ──
+    if (body._website || body._url || body._hp) {
+      return NextResponse.json({ question: { id: 0 } }, { status: 201 });
+    }
+
     const { authorName, memberCode, title, body: questionBody } = body;
 
     if (!title || !questionBody) {
@@ -93,10 +147,10 @@ export async function POST(req: NextRequest) {
 
     const question = await prisma.qnaQuestion.create({
       data: {
-        authorName: authorName?.trim() || "ผู้ไม่ประสงค์ออกนาม",
-        memberCode: memberCode?.trim() || "000000",
-        title: title.trim(),
-        body: questionBody.trim(),
+        authorName: truncate(sanitize(authorName?.trim() || "ผู้ไม่ประสงค์ออกนาม"), 255),
+        memberCode: truncate(sanitize(memberCode?.trim() || "000000"), 50),
+        title: truncate(sanitize(title.trim()), 500),
+        body: truncate(sanitize(questionBody.trim()), 5000),
       },
     });
 

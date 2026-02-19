@@ -21,6 +21,7 @@ export default function QnaNewPage() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [hp, setHp] = useState(""); // honeypot anti-bot
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +37,7 @@ export default function QnaNewPage() {
           memberCode: memberCode.trim() || "000000",
           title: title.trim(),
           body: body.trim(),
+          _hp: hp, // honeypot
         }),
       });
 

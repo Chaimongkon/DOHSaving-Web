@@ -71,6 +71,7 @@ const navItems = [
     group: "สื่อสาร",
     items: [
       { label: "กระดานถาม-ตอบ", href: "/admin/qna", icon: <MessageOutlined /> },
+      { label: "ร้องเรียน/เสนอแนะ", href: "/admin/complaints", icon: <FileTextOutlined /> },
     ],
   },
   {

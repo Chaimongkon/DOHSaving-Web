@@ -2,7 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { authenticateRequest } from "@/lib/auth";
 
-// GET /api/admin/qna — list all questions (admin)
+// ─── XSS Sanitizer ───
+function sanitize(input: string | null | undefined): string {
+  if (!input) return "";
+  return input
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;")
+    .replace(/\//g, "&#x2F;");
+}
+
+// GET /api/admin/complaints — list all complaints
 export async function GET(req: NextRequest) {
   const user = authenticateRequest(req);
   if (!user) {
@@ -11,43 +22,46 @@ export async function GET(req: NextRequest) {
 
   try {
     const { searchParams } = new URL(req.url);
+    const status = searchParams.get("status") || "";
     const search = searchParams.get("search") || "";
     const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
     const limit = 20;
     const skip = (page - 1) * limit;
 
-    const where = search ? { title: { contains: search } } : {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: any = {};
+    if (status) where.status = status;
+    if (search) {
+      where.OR = [
+        { trackingCode: { contains: search } },
+        { name: { contains: search } },
+        { subject: { contains: search } },
+      ];
+    }
 
-    const [questions, total] = await Promise.all([
-      prisma.qnaQuestion.findMany({
+    const [complaints, total] = await Promise.all([
+      prisma.complaint.findMany({
         where,
-        orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
+        orderBy: { createdAt: "desc" },
         skip,
         take: limit,
-        include: {
-          _count: { select: { replies: true } },
-        },
       }),
-      prisma.qnaQuestion.count({ where }),
+      prisma.complaint.count({ where }),
     ]);
 
     return NextResponse.json({
-      questions: questions.map((q) => ({
-        ...q,
-        replyCount: q._count.replies,
-        _count: undefined,
-      })),
+      complaints,
       total,
       page,
       totalPages: Math.ceil(total / limit),
     });
   } catch (error) {
-    console.error("Admin QnA list error:", error);
-    return NextResponse.json({ questions: [], total: 0 }, { status: 500 });
+    console.error("Admin complaints error:", error);
+    return NextResponse.json({ complaints: [], total: 0 }, { status: 500 });
   }
 }
 
-// PATCH /api/admin/qna — update question (pin, close, hide)
+// PATCH /api/admin/complaints — update complaint status / admin note
 export async function PATCH(req: NextRequest) {
   const user = authenticateRequest(req);
   if (!user) {
@@ -56,32 +70,37 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { id, isPinned, isClosed, isActive } = body;
+    const { id, status, adminNote } = body;
 
     if (!id) {
       return NextResponse.json({ error: "Missing ID" }, { status: 400 });
     }
 
-    // Whitelist only allowed fields — prevent mass assignment
+    // Validate status whitelist
+    const allowedStatuses = ["pending", "reviewing", "resolved", "rejected"];
+    if (status && !allowedStatuses.includes(status)) {
+      return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data: any = {};
-    if (typeof isPinned === "boolean") data.isPinned = isPinned;
-    if (typeof isClosed === "boolean") data.isClosed = isClosed;
-    if (typeof isActive === "boolean") data.isActive = isActive;
+    if (status) data.status = status;
+    if (adminNote !== undefined) data.adminNote = sanitize(adminNote).slice(0, 2000);
+    if (status === "resolved") data.resolvedAt = new Date();
 
-    const question = await prisma.qnaQuestion.update({
+    const complaint = await prisma.complaint.update({
       where: { id },
       data,
     });
 
-    return NextResponse.json({ question });
+    return NextResponse.json({ complaint });
   } catch (error) {
-    console.error("Admin QnA update error:", error);
+    console.error("Admin complaint update error:", error);
     return NextResponse.json({ error: "เกิดข้อผิดพลาด" }, { status: 500 });
   }
 }
 
-// DELETE /api/admin/qna — delete question
+// DELETE /api/admin/complaints — delete complaint
 export async function DELETE(req: NextRequest) {
   const user = authenticateRequest(req);
   if (!user) {
@@ -91,16 +110,14 @@ export async function DELETE(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const id = parseInt(searchParams.get("id") || "");
-
     if (isNaN(id)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
-    await prisma.qnaQuestion.delete({ where: { id } });
-
+    await prisma.complaint.delete({ where: { id } });
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error("Admin QnA delete error:", error);
+    console.error("Admin complaint delete error:", error);
     return NextResponse.json({ error: "เกิดข้อผิดพลาด" }, { status: 500 });
   }
 }

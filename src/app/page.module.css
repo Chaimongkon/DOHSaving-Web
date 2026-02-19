@@ -11,10 +11,10 @@
   margin: 0 auto;
 }
 
-/* ── Grid: 6 compact columns ── */
+/* ── Grid: 7 compact columns ── */
 .grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   gap: 16px;
 }
 
