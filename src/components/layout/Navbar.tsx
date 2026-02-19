@@ -67,7 +67,7 @@ const navItems: NavItem[] = [
           { label: "ฝ่ายทะเบียนหุ้นและติดตามหนี้สิน", href: "/about/dept-shares" },
           { label: "ฝ่ายบริหารทั่วไป", href: "/about/dept-general" },
           { label: "ฝ่ายบัญชี", href: "/about/dept-accounting" },
-          { label: "ฝ่ายสารสนเทศ", href: "/about/dept-it" },
+          { label: "งานสารสนเทศ", href: "/about/dept-it" },
         ],
       },
     ],
