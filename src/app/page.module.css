@@ -1,21 +1,37 @@
 /* ============================================================
-   Quick Links / Services Section — Light & Warm
+   Quick Links / Services Section — Colorful & Engaging
    ============================================================ */
 .quickLinksSection {
-  padding: 48px 24px 52px;
-  background: linear-gradient(180deg, #fdfaf7 0%, #f5f0eb 100%);
+  padding: 44px 24px 48px;
+  background: #f8f6f3;
 }
 
 .quickLinksInner {
-  max-width: 1200px;
+  max-width: 1140px;
   margin: 0 auto;
 }
 
-/* ── Grid: 7 compact columns ── */
+/* ── Section heading ── */
+.sectionTitle {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1a2a3a;
+  text-align: center;
+  margin: 0 0 4px;
+}
+
+.sectionSub {
+  font-size: 13px;
+  color: #9ca3af;
+  text-align: center;
+  margin: 0 0 28px;
+}
+
+/* ── Grid: single row 8 cols ── */
 .grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 12px;
 }
 
 /* ── Card ── */
@@ -25,148 +41,175 @@
   align-items: center;
   text-align: center;
   text-decoration: none;
-  padding: 28px 12px 22px;
-  border-radius: 14px;
-  background: #ffffff;
-  border: 1px solid #f0ebe5;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  padding: 24px 8px 16px;
+  border-radius: 16px;
+  background: var(--bg, #fff);
+  border: 1.5px solid transparent;
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  font-family: inherit;
 }
 
-/* Accent top bar */
+/* Left accent strip */
 .card::before {
   content: "";
   position: absolute;
-  top: 0;
+  top: 12px;
+  bottom: 12px;
   left: 0;
-  right: 0;
-  height: 3px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
   background: var(--accent, #E8652B);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
-  border-color: #ece4db;
+  border-color: var(--accent, #E8652B);
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.06),
+    0 0 0 1px var(--accent, #E8652B);
 }
 
 .card:hover::before {
-  transform: scaleX(1);
+  opacity: 1;
 }
 
 /* ── Icon ── */
 .iconWrap {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 22px;
   color: #ffffff;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
 .card:hover .iconWrap {
-  transform: scale(1.08);
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
 }
 
 /* ── Text ── */
 .cardTitle {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  color: #1a2a3a;
-  margin: 0 0 4px 0;
+  color: #1f2937;
+  margin: 0 0 3px 0;
   transition: color 0.2s ease;
   line-height: 1.4;
 }
 
 .card:hover .cardTitle {
-  color: #E8652B;
+  color: var(--accent, #E8652B);
 }
 
 .cardDesc {
-  font-size: 11.5px;
+  font-size: 10.5px;
   color: #9ca3af;
-  margin: 0 0 14px 0;
+  margin: 0 0 12px 0;
   line-height: 1.4;
 }
 
-/* ── CTA link ── */
+/* ── CTA arrow pill ── */
 .cta {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #b0b8c4;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent, #E8652B);
   margin-top: auto;
-  transition: all 0.25s ease;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: all 0.3s ease;
 }
 
 .cta .ctaArrow {
-  font-size: 9px;
-  transition: transform 0.2s ease, color 0.2s ease;
+  font-size: 11px;
+  color: #fff;
+  transition: transform 0.2s ease;
 }
 
 .card:hover .cta {
-  color: #E8652B;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .card:hover .cta .ctaArrow {
-  transform: translateX(3px);
-  color: #E8652B;
+  transform: translateX(1px);
 }
 
 /* ── Responsive ── */
 @media (max-width: 1100px) {
   .grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media (max-width: 768px) {
   .quickLinksSection {
-    padding: 36px 16px 40px;
+    padding: 32px 16px 36px;
+  }
+
+  .sectionTitle {
+    font-size: 20px;
   }
 
   .grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
   }
 
   .card {
-    padding: 22px 10px 18px;
+    padding: 20px 10px 14px;
+    border-radius: 14px;
   }
 
   .iconWrap {
-    width: 48px;
-    height: 48px;
-    font-size: 20px;
-    border-radius: 12px;
+    width: 44px;
+    height: 44px;
+    font-size: 19px;
     margin-bottom: 10px;
   }
 
   .cardTitle {
-    font-size: 13px;
+    font-size: 12.5px;
   }
 
   .cardDesc {
-    font-size: 11px;
+    font-size: 10px;
+    margin-bottom: 10px;
+  }
+
+  .cta {
+    opacity: 1;
+    transform: translateY(0);
+    width: 24px;
+    height: 24px;
+  }
+
+  .cta .ctaArrow {
+    font-size: 10px;
   }
 }
 
 @media (max-width: 480px) {
   .grid {
-    gap: 10px;
+    gap: 8px;
   }
 
   .card {
-    padding: 18px 8px 16px;
+    padding: 18px 6px 12px;
   }
 }

@@ -22,6 +22,8 @@ import {
   CrownOutlined,
   SearchOutlined,
   MessageOutlined,
+  PhoneOutlined,
+  CustomerServiceOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
@@ -72,6 +74,15 @@ const navItems = [
     items: [
       { label: "กระดานถาม-ตอบ", href: "/admin/qna", icon: <MessageOutlined /> },
       { label: "ร้องเรียน/เสนอแนะ", href: "/admin/complaints", icon: <FileTextOutlined /> },
+    ],
+  },
+  {
+    group: "ข้อมูลติดต่อ",
+    items: [
+      { label: "ข้อมูลสหกรณ์", href: "/admin/contact-info", icon: <PhoneOutlined /> },
+      { label: "ฝ่ายงาน/เบอร์โทร", href: "/admin/departments", icon: <CustomerServiceOutlined /> },
+      { label: "LINE ฝ่ายต่างๆ", href: "/admin/line-contacts", icon: <MessageOutlined /> },
+      { label: "บัญชีธนาคาร", href: "/admin/bank-accounts", icon: <BankOutlined /> },
     ],
   },
   {

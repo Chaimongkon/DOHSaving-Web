@@ -10,6 +10,7 @@ import {
   SafetyOutlined,
   ArrowRightOutlined,
   AlertOutlined,
+  QuestionCircleOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import HeroSlider from "@/components/home/HeroSlider";
@@ -25,37 +26,50 @@ const quickLinks = [
   {
     icon: <BankOutlined />,
     title: "อัตราดอกเบี้ย",
-    desc: "ดอกเบี้ยเงินฝากและเงินกู้ล่าสุด",
+    desc: "เงินฝาก-เงินกู้ล่าสุด",
     href: "/interest-rates",
     color: "#E8652B",
+    bg: "#fff5f0",
   },
   {
     icon: <DollarOutlined />,
     title: "เงินกู้",
-    desc: "เงินกู้ฉุกเฉิน สามัญ พิเศษ",
+    desc: "ฉุกเฉิน สามัญ พิเศษ",
     href: "/services/general-loan",
     color: "#1a3a5c",
+    bg: "#f0f4f8",
   },
   {
     icon: <SafetyOutlined />,
     title: "เงินฝาก",
     desc: "ออมทรัพย์ ประจำ พิเศษ",
     href: "/services/savings",
-    color: "#2d6a4f",
+    color: "#16a34a",
+    bg: "#f0fdf4",
   },
   {
     icon: <TeamOutlined />,
     title: "สวัสดิการ",
-    desc: "สิทธิประโยชน์สมาชิกทุกประเภท",
+    desc: "สิทธิประโยชน์สมาชิก",
     href: "/services/welfare-a",
     color: "#7c3aed",
+    bg: "#f5f3ff",
   },
   {
     icon: <FileTextOutlined />,
     title: "ดาวน์โหลดแบบฟอร์ม",
-    desc: "แบบฟอร์มบริการทุกประเภท",
+    desc: "แบบฟอร์มทุกประเภท",
     href: "/downloads/member-forms",
     color: "#0369a1",
+    bg: "#f0f9ff",
+  },
+  {
+    icon: <QuestionCircleOutlined />,
+    title: "ถาม-ตอบ Q&A",
+    desc: "สอบถามเจ้าหน้าที่",
+    href: "/qna",
+    color: "#0891b2",
+    bg: "#ecfeff",
   },
   {
     icon: <CustomerServiceOutlined />,
@@ -63,6 +77,7 @@ const quickLinks = [
     desc: "ช่องทางติดต่อสหกรณ์",
     href: "/contact",
     color: "#be185d",
+    bg: "#fdf2f8",
   },
 ];
 
@@ -83,8 +98,8 @@ export default function HomePage() {
       {/* Quick Links / Services Section */}
       <section className={css.quickLinksSection}>
         <div className={css.quickLinksInner}>
-          <h2 className="section-heading">บริการของเรา</h2>
-          <p className="section-subheading">
+          <h2 className={css.sectionTitle}>บริการของเรา</h2>
+          <p className={css.sectionSub}>
             เข้าถึงบริการต่างๆ ของสหกรณ์ออมทรัพย์กรมทางหลวง ได้อย่างสะดวกรวดเร็ว
           </p>
           <div className={css.grid}>
@@ -93,21 +108,18 @@ export default function HomePage() {
                 key={i}
                 href={item.href}
                 className={css.card}
-                style={{ "--accent": item.color } as React.CSSProperties}
+                style={{ "--accent": item.color, "--bg": item.bg } as React.CSSProperties}
               >
                 <div
                   className={css.iconWrap}
-                  style={{
-                    background: `linear-gradient(135deg, ${item.color}, ${item.color}aa)`,
-                    boxShadow: `0 8px 24px ${item.color}35`,
-                  }}
+                  style={{ background: item.color }}
                 >
                   {item.icon}
                 </div>
                 <h3 className={css.cardTitle}>{item.title}</h3>
                 <p className={css.cardDesc}>{item.desc}</p>
                 <span className={css.cta}>
-                  เข้าใช้บริการ <ArrowRightOutlined className={css.ctaArrow} />
+                  <ArrowRightOutlined className={css.ctaArrow} />
                 </span>
               </Link>
             ))}
@@ -115,22 +127,19 @@ export default function HomePage() {
             {/* Complaint popup trigger card */}
             <button
               className={css.card}
-              style={{ "--accent": "#dc2626" } as React.CSSProperties}
+              style={{ "--accent": "#dc2626", "--bg": "#fef2f2" } as React.CSSProperties}
               onClick={() => setComplaintOpen(true)}
             >
               <div
                 className={css.iconWrap}
-                style={{
-                  background: "linear-gradient(135deg, #dc2626, #dc2626aa)",
-                  boxShadow: "0 8px 24px #dc262635",
-                }}
+                style={{ background: "#dc2626" }}
               >
                 <AlertOutlined />
               </div>
               <h3 className={css.cardTitle}>ร้องเรียน / เสนอแนะ</h3>
-              <p className={css.cardDesc}>แจ้งข้อเสนอแนะหรือร้องเรียน</p>
+              <p className={css.cardDesc}>แจ้งเรื่องหรือเสนอแนะ</p>
               <span className={css.cta}>
-                แจ้งเรื่อง <ArrowRightOutlined className={css.ctaArrow} />
+                <ArrowRightOutlined className={css.ctaArrow} />
               </span>
             </button>
           </div>

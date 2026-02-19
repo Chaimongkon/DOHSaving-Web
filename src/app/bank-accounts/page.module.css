@@ -1,0 +1,341 @@
+/* ═══════════════════════════════════════════════════════
+   Bank Accounts Page — Card Layout
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(160deg, #0a1628 0%, #1a2d4a 40%, #1e3a5f 70%, #1a4a6a 100%);
+  padding: 44px 24px 56px;
+  text-align: center;
+}
+
+.heroTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.heroSub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  margin: 0;
+}
+
+/* ── Content ── */
+.content {
+  max-width: 900px;
+  margin: -32px auto 0;
+  padding: 0 24px 60px;
+  position: relative;
+  z-index: 10;
+}
+
+/* ── Intro card ── */
+.introCard {
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border: 1px solid #bae6fd;
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.introTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0c4a6e;
+  margin: 0 0 4px;
+}
+
+.introDesc {
+  font-size: 13px;
+  color: #0369a1;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Bank Cards Grid ── */
+.bankGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+/* ── Bank Card ── */
+.bankCard {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.3s ease;
+}
+
+.bankCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  border-color: var(--bank-color, #e5e7eb);
+}
+
+/* Bank header with brand color */
+.bankHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--bank-color, #1a2d4a);
+  color: #fff;
+}
+
+.bankLogo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  flex-shrink: 0;
+  backdrop-filter: blur(4px);
+}
+
+.bankName {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.bankNameSub {
+  font-size: 11px;
+  opacity: 0.75;
+  margin: 1px 0 0;
+}
+
+/* Bank body */
+.bankBody {
+  padding: 16px 18px;
+}
+
+.accountLabel {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 4px;
+}
+
+.accountNumber {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1f2937;
+  margin: 0;
+  letter-spacing: 1.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.accountType {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 6px 0 0;
+}
+
+/* ── Transfer Info Section ── */
+.transferSection {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  overflow: hidden;
+}
+
+.transferHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px;
+  background: #fef3c7;
+  border-bottom: 1px solid #fde68a;
+}
+
+.transferHeaderIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f59e0b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: #fff;
+}
+
+.transferHeaderTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #92400e;
+  margin: 0;
+}
+
+.transferBody {
+  padding: 24px;
+}
+
+.transferSteps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.transferStep {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13.5px;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.stepNum {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #E8652B;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.stepText {
+  flex: 1;
+}
+
+.stepHighlight {
+  font-weight: 700;
+  color: #E8652B;
+}
+
+/* ── Send proof section ── */
+.proofSection {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 18px 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.proofTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin: 0 0 12px;
+}
+
+.proofChannels {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.proofChannel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 13px;
+  color: #374151;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.proofChannel:hover {
+  border-color: #93c5fd;
+  background: #f0f9ff;
+}
+
+.proofChannelIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.proofChannelLabel {
+  font-size: 10px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.proofChannelValue {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .hero {
+    padding: 36px 16px 48px;
+  }
+
+  .heroTitle {
+    font-size: 24px;
+  }
+
+  .content {
+    padding: 0 16px 48px;
+  }
+
+  .bankGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .accountNumber {
+    font-size: 19px;
+  }
+
+  .proofChannels {
+    grid-template-columns: 1fr;
+  }
+
+  .transferBody {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bankHeader {
+    padding: 12px 14px;
+  }
+
+  .bankBody {
+    padding: 14px;
+  }
+
+  .accountNumber {
+    font-size: 17px;
+    letter-spacing: 1px;
+  }
+}

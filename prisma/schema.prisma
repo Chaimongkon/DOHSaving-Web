@@ -429,6 +429,70 @@ model Complaint {
 }
 
 // ============================================================
+// 📞 Contact & Bank — Admin-managed
+// ============================================================
+
+model ContactInfo {
+  id          Int       @id @default(autoincrement())
+  key         String    @unique @db.VarChar(100) // address, hours, hoursNote, phone, phoneSub1, phoneSub2, fax1, fax1Note, fax2, fax2Note, email, lineOfficialId, lineOfficialUrl, mainPhone
+  value       String    @db.Text
+  sortOrder   Int       @default(0)
+  updatedBy   String?   @db.VarChar(255)
+  updatedAt   DateTime  @updatedAt
+
+  @@index([key])
+  @@map("contact_info")
+}
+
+model Department {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  dohCodes    String?   @db.VarChar(255)
+  coopExt     String?   @db.VarChar(255)
+  mobile      String?   @db.VarChar(50)
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  updatedBy   String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([sortOrder])
+  @@map("departments")
+}
+
+model LineContact {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  lineUrl     String    @db.VarChar(500)
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  updatedBy   String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([sortOrder])
+  @@map("line_contacts")
+}
+
+model BankAccount {
+  id              Int       @id @default(autoincrement())
+  bankName        String    @db.VarChar(255)
+  bankNameSub     String?   @db.VarChar(255)
+  accountNumber   String    @db.VarChar(50)
+  accountType     String    @default("ออมทรัพย์") @db.VarChar(100)
+  brandColor      String    @default("#1a2d4a") @db.VarChar(20)
+  abbr            String?   @db.VarChar(20)
+  sortOrder       Int       @default(0)
+  isActive        Boolean   @default(true)
+  updatedBy       String?   @db.VarChar(255)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([sortOrder])
+  @@map("bank_accounts")
+}
+
+// ============================================================
 // 🎨 Site Settings & Particles
 // ============================================================
 

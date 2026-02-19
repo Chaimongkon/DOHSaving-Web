@@ -1,0 +1,562 @@
+/* ═══════════════════════════════════════════════════════
+   Contact Page — Clean & Modern
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(160deg, #0a1628 0%, #1a2d4a 40%, #1e3a5f 70%, #1a4a6a 100%);
+  padding: 44px 24px 56px;
+  text-align: center;
+  position: relative;
+}
+
+.heroTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.heroSub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  margin: 0;
+}
+
+/* ── Content wrapper ── */
+.content {
+  max-width: 1100px;
+  margin: -32px auto 0;
+  padding: 0 24px 60px;
+  position: relative;
+  z-index: 10;
+}
+
+/* ── Quick Info Cards (top row) ── */
+.infoCards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.infoCard {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px 20px;
+  text-align: center;
+  border: 1px solid #eee;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  transition: transform 0.3s ease;
+}
+
+.infoCard:hover {
+  transform: translateY(-3px);
+}
+
+.infoIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.infoLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 6px;
+}
+
+.infoValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.infoValueSm {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 4px 0 0;
+}
+
+/* ── Two-column layout ── */
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+/* ── Section Card ── */
+.sectionCard {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  overflow: hidden;
+}
+
+.sectionHeader {
+  padding: 16px 24px;
+  border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sectionHeaderIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: #fff;
+}
+
+.sectionHeaderTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.sectionBody {
+  padding: 20px 24px;
+}
+
+/* ── Department Cards Grid ── */
+.deptGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.deptCard {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.deptCard:hover {
+  border-color: #bfdbfe;
+  box-shadow: 0 2px 12px rgba(3,105,161,0.08);
+}
+
+.deptCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.deptNum {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #0369a1;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.deptName {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e3a5f;
+}
+
+.deptCardBody {
+  padding: 10px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.deptDetail {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.deptDetailLabel {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  min-width: 48px;
+  flex-shrink: 0;
+}
+
+.deptDetailValue {
+  color: #4b5563;
+  font-size: 12px;
+}
+
+.deptMobile {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 5px 12px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #0369a1;
+  width: fit-content;
+}
+
+.deptMobileLink {
+  color: #0369a1;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+}
+
+.deptMobileLink:hover {
+  text-decoration: underline;
+}
+
+.phoneLink {
+  color: #0369a1;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.phoneLink:hover {
+  text-decoration: underline;
+}
+
+/* ── Right Column Items ── */
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── LINE List ── */
+.lineList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lineItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #f0fdf4;
+  border-radius: 10px;
+  border: 1px solid #dcfce7;
+  font-size: 13px;
+  color: #166534;
+  font-weight: 600;
+  transition: all 0.2s;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.lineItem:hover {
+  background: #dcfce7;
+  border-color: #86efac;
+  transform: translateX(2px);
+}
+
+.lineDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  flex-shrink: 0;
+}
+
+/* ── Contact Link Items ── */
+.contactList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.contactItemIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.contactItemText {
+  font-weight: 500;
+}
+
+.contactItemLink {
+  color: #0369a1;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.contactItemLink:hover {
+  text-decoration: underline;
+}
+
+/* ── Bank Account ── */
+.bankCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+  border-radius: 12px;
+  border: 1px solid #e9d5ff;
+}
+
+.bankLogo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #7c3aed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.bankName {
+  font-size: 11px;
+  color: #7c3aed;
+  font-weight: 600;
+  margin: 0;
+}
+
+.bankAccount {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 2px 0 0;
+  letter-spacing: 0.5px;
+}
+
+/* ── Complaint Link ── */
+.complaintLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  border-radius: 12px;
+  border: 1px solid #fecaca;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.complaintLink:hover {
+  background: #fee2e2;
+  transform: translateY(-1px);
+}
+
+.complaintLinkIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #dc2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #fff;
+}
+
+.complaintLinkText {
+  font-size: 13px;
+  font-weight: 700;
+  color: #991b1b;
+}
+
+.complaintLinkSub {
+  font-size: 11px;
+  color: #b91c1c;
+  margin: 2px 0 0;
+}
+
+/* ── Map Section ── */
+.mapSection {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  overflow: hidden;
+}
+
+.mapFrame {
+  width: 100%;
+  height: 320px;
+  border: none;
+  display: block;
+}
+
+.mapInfo {
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #f3f4f6;
+}
+
+.mapAddress {
+  font-size: 13px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.mapDirectionLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0369a1;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  transition: all 0.2s;
+}
+
+.mapDirectionLink:hover {
+  background: #e0f2fe;
+}
+
+/* ── Phone Numbers Section ── */
+.phoneSection {
+  padding: 0;
+}
+
+.phoneRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 0;
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.phoneRow + .phoneRow {
+  border-top: 1px solid #f9fafb;
+}
+
+.phoneLabel {
+  font-weight: 600;
+  color: #6b7280;
+  min-width: 70px;
+  flex-shrink: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .infoCards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .twoCol {
+    grid-template-columns: 1fr;
+  }
+
+  .deptGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 36px 16px 48px;
+  }
+
+  .heroTitle {
+    font-size: 24px;
+  }
+
+  .content {
+    padding: 0 16px 48px;
+  }
+
+  .infoCards {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .infoCard {
+    padding: 18px 14px;
+  }
+
+  .infoIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .sectionBody {
+    padding: 16px;
+    overflow-x: auto;
+  }
+
+  .deptGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .mapFrame {
+    height: 240px;
+  }
+
+  .mapInfo {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+}
