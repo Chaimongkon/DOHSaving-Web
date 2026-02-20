@@ -573,6 +573,31 @@ model AuditLog {
 // 💬 Q&A Board
 // ============================================================
 
+// ============================================================
+// 📊 Financial Summary (รายการย่อแสดงสินทรัพย์และหนี้สิน)
+// ============================================================
+
+model FinancialSummary {
+  id              Int       @id @default(autoincrement())
+  year            Int                           // พ.ศ. e.g. 2568
+  month           Int                           // 1-12
+  title           String?   @db.VarChar(255)    // ชื่อรายการ (optional override)
+  fileUrl         String?   @db.VarChar(500)    // PDF or image URL
+  totalAssets     Decimal?  @db.Decimal(18, 2)  // รวมสินทรัพย์
+  totalLiabilities Decimal? @db.Decimal(18, 2)  // รวมหนี้สิน
+  totalEquity     Decimal?  @db.Decimal(18, 2)  // ทุนของสหกรณ์
+  totalMembers    Int?                          // จำนวนสมาชิก
+  isActive        Boolean   @default(true)
+  updatedBy       String?   @db.VarChar(255)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([year, month])
+  @@index([year])
+  @@index([isActive])
+  @@map("financial_summaries")
+}
+
 model QnaQuestion {
   id            Int        @id @default(autoincrement())
   authorName    String     @db.VarChar(255)

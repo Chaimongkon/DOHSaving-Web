@@ -3,16 +3,17 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  EnvironmentOutlined,
-  ClockCircleOutlined,
-  PhoneOutlined,
-  MailOutlined,
-  BankOutlined,
-  AlertOutlined,
-  CompassOutlined,
-  MessageOutlined,
-  TeamOutlined,
-} from "@ant-design/icons";
+  MapPin,
+  Clock,
+  Phone,
+  Mail,
+  Landmark,
+  MessageSquareWarning,
+  Navigation,
+  MessageCircle,
+  Users,
+} from "lucide-react";
+import Image from "next/image";
 import css from "./page.module.css";
 
 /* ── Fallback data (used when API unavailable) ── */
@@ -82,8 +83,8 @@ export default function ContactPage() {
         <div className={css.infoCards}>
           {/* Address */}
           <div className={css.infoCard}>
-            <div className={css.infoIcon} style={{ background: "#E8652B" }}>
-              <EnvironmentOutlined />
+            <div className={`${css.infoIcon} ${css.iconAddress}`}>
+              <MapPin size={28} />
             </div>
             <p className={css.infoLabel}>ที่อยู่</p>
             <p className={css.infoValue}>
@@ -97,8 +98,8 @@ export default function ContactPage() {
 
           {/* Hours */}
           <div className={css.infoCard}>
-            <div className={css.infoIcon} style={{ background: "#16a34a" }}>
-              <ClockCircleOutlined />
+            <div className={`${css.infoIcon} ${css.iconHours}`}>
+              <Clock size={28} />
             </div>
             <p className={css.infoLabel}>เวลาทำการ</p>
             <p className={css.infoValue}>
@@ -111,8 +112,8 @@ export default function ContactPage() {
 
           {/* Phone */}
           <div className={css.infoCard}>
-            <div className={css.infoIcon} style={{ background: "#0369a1" }}>
-              <PhoneOutlined />
+            <div className={`${css.infoIcon} ${css.iconPhone}`}>
+              <Phone size={28} />
             </div>
             <p className={css.infoLabel}>โทรศัพท์</p>
             <p className={css.infoValue}>
@@ -129,8 +130,8 @@ export default function ContactPage() {
 
           {/* Email */}
           <div className={css.infoCard}>
-            <div className={css.infoIcon} style={{ background: "#7c3aed" }}>
-              <MailOutlined />
+            <div className={`${css.infoIcon} ${css.iconEmail}`}>
+              <Mail size={28} />
             </div>
             <p className={css.infoLabel}>อีเมล</p>
             <p className={css.infoValue}>
@@ -141,7 +142,7 @@ export default function ContactPage() {
                 dohcoop@hotmail.com
               </a>
             </p>
-            <p className={css.infoValueSm}>LINE Official: @dohcoop</p>
+            <p className={css.infoValueSm}>LINE Official: @dohsaving</p>
           </div>
         </div>
 
@@ -151,7 +152,7 @@ export default function ContactPage() {
           <div className={css.sectionCard}>
             <div className={css.sectionHeader}>
               <div className={css.sectionHeaderIcon} style={{ background: "#0369a1" }}>
-                <TeamOutlined />
+                <Users size={18} />
               </div>
               <h2 className={css.sectionHeaderTitle}>หมายเลขติดต่อฝ่ายงาน</h2>
             </div>
@@ -195,7 +196,7 @@ export default function ContactPage() {
                       </div>
                       {dept.mobile && (
                         <div className={css.deptMobile}>
-                          <PhoneOutlined />
+                          <Phone size={14} />
                           <a href={`tel:${dept.mobile.replace(/-/g, "")}`} className={css.deptMobileLink}>
                             {dept.mobile}
                           </a>
@@ -213,8 +214,8 @@ export default function ContactPage() {
             {/* LINE Contacts */}
             <div className={css.sectionCard}>
               <div className={css.sectionHeader}>
-                <div className={css.sectionHeaderIcon} style={{ background: "#22c55e" }}>
-                  <MessageOutlined />
+                <div className={`${css.sectionHeaderIcon} ${css.iconLine}`}>
+                  <Image src="/images/logo/Line.png" alt="LINE" width={25} height={25} />
                 </div>
                 <h2 className={css.sectionHeaderTitle}>ติดต่อทาง LINE</h2>
               </div>
@@ -228,7 +229,9 @@ export default function ContactPage() {
                         rel="noopener noreferrer"
                         className={css.lineItem}
                       >
-                        <span className={css.lineDot} />
+                        <span className={css.lineIconBadge}>
+                          <Image src="/images/logo/Line.png" alt="LINE" width={25} height={25} />
+                        </span>
                         {item.name}
                       </a>
                     </li>
@@ -240,7 +243,7 @@ export default function ContactPage() {
             {/* Bank Account Link */}
             <Link href="/bank-accounts" className={css.complaintLink} style={{ background: "linear-gradient(135deg, #faf5ff, #f3e8ff)", borderColor: "#e9d5ff" }}>
               <div className={css.complaintLinkIcon} style={{ background: "#7c3aed" }}>
-                <BankOutlined />
+                <Landmark size={20} />
               </div>
               <div>
                 <div className={css.complaintLinkText} style={{ color: "#5b21b6" }}>บัญชีธนาคาร</div>
@@ -253,7 +256,7 @@ export default function ContactPage() {
             {/* Complaint Link */}
             <Link href="/complaints" className={css.complaintLink}>
               <div className={css.complaintLinkIcon}>
-                <AlertOutlined />
+                <MessageSquareWarning size={20} />
               </div>
               <div>
                 <div className={css.complaintLinkText}>แจ้งข้อเสนอแนะ / ร้องเรียน</div>
@@ -277,7 +280,7 @@ export default function ContactPage() {
           />
           <div className={css.mapInfo}>
             <span className={css.mapAddress}>
-              <EnvironmentOutlined /> สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด — 2/486 อาคาร 26 ถนนศรีอยุธยา กรุงเทพฯ 10400
+              <MapPin size={16} /> สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด — 2/486 อาคาร 26 ถนนศรีอยุธยา กรุงเทพฯ 10400
             </span>
             <a
               href="https://maps.google.com/?q=สหกรณ์ออมทรัพย์กรมทางหลวง"
@@ -285,7 +288,7 @@ export default function ContactPage() {
               rel="noopener noreferrer"
               className={css.mapDirectionLink}
             >
-              <CompassOutlined /> นำทาง
+              <Navigation size={14} /> นำทาง
             </a>
           </div>
         </div>

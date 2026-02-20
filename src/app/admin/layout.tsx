@@ -67,6 +67,7 @@ const navItems = [
     group: "การเงิน",
     items: [
       { label: "อัตราดอกเบี้ย", href: "/admin/interest-rates", icon: <DollarOutlined /> },
+      { label: "สินทรัพย์และหนี้สิน", href: "/admin/financial-summary", icon: <BankOutlined /> },
     ],
   },
   {

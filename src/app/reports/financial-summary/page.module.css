@@ -1,0 +1,543 @@
+/* ═══════════════════════════════════════════════════════
+   Financial Summary — รายการย่อแสดงสินทรัพย์และหนี้สิน
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(160deg, #0a1628 0%, #1a2d4a 40%, #1e3a5f 70%, #1a4a6a 100%);
+  padding: 44px 24px 56px;
+  text-align: center;
+}
+
+.heroTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.heroSub {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+/* ── Content ── */
+.content {
+  max-width: 1000px;
+  margin: -32px auto 0;
+  padding: 0 24px 60px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Year Selector ── */
+.yearBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px 20px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  margin-bottom: 20px;
+}
+
+.yearLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #E8652B;
+}
+
+.yearLabel {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.yearSelector {
+  position: relative;
+}
+
+.yearBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  border: 1px solid #E8652B;
+  background: #fff;
+  color: #E8652B;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 100px;
+  justify-content: center;
+}
+
+.yearBtn:hover {
+  background: #fff7ed;
+}
+
+.chevronUp {
+  transform: rotate(180deg);
+}
+
+.yearDropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  min-width: 160px;
+  z-index: 50;
+  padding: 6px;
+  animation: dropIn 0.15s ease;
+}
+
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.yearOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.yearOption:hover {
+  background: #f9fafb;
+}
+
+.yearOptionActive {
+  background: #fff7ed;
+  color: #E8652B;
+}
+
+.yearCheck {
+  color: #E8652B;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* ── Item Count ── */
+.itemCount {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0 0 14px;
+  padding-left: 2px;
+}
+
+.itemCount strong {
+  color: #1e3a5f;
+  font-weight: 700;
+}
+
+/* ── Skeleton Loading ── */
+.skeletonCard {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e8ecf1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.skeletonInner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.skeletonIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease infinite;
+  flex-shrink: 0;
+}
+
+.skeletonLines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.skeletonLine {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease infinite;
+}
+
+.skeletonBtn {
+  height: 36px;
+  border-radius: 9px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Empty ── */
+.emptyBox {
+  text-align: center;
+  padding: 60px 20px;
+  color: #d1d5db;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.emptyBox p {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* ── Month Grid ── */
+.monthGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e8ecf1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: all 0.25s ease;
+  opacity: 0;
+}
+
+.cardFadeIn {
+  animation: cardAppear 0.4s ease forwards;
+}
+
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cardClickable {
+  cursor: pointer;
+}
+
+.cardClickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: #c7d2e0;
+}
+
+.cardInner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.cardIcon {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+}
+
+.cardIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cardInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.cardMonthRow {
+  margin-bottom: 6px;
+}
+
+.monthTag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e3a5f;
+  background: #eef4fb;
+}
+
+.cardTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 3px;
+  line-height: 1.4;
+}
+
+.cardDate {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.cardBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 9px 0;
+  border-radius: 9px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e3a5f;
+  background: #eef4fb;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cardClickable:hover .cardBtn {
+  background: #1e3a5f;
+  color: #fff;
+}
+
+.cardNoFile {
+  text-align: center;
+  padding: 9px 0;
+  border-radius: 9px;
+  font-size: 12px;
+  color: #c5ccd6;
+  border: 1px dashed #e0e5eb;
+}
+
+/* ── Info Banner ── */
+.infoBanner {
+  background: linear-gradient(135deg, #0f1d36 0%, #1a2d4a 100%);
+  border-radius: 16px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.infoBannerIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #E8652B;
+  flex-shrink: 0;
+}
+
+.infoBannerText {
+  flex: 1;
+}
+
+.infoBannerTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+}
+
+.infoBannerSub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── PDF Viewer Modal ── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modalContent {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 960px;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+  gap: 12px;
+  background: #f9fafb;
+}
+
+.modalTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modalTitle svg {
+  color: #E8652B;
+}
+
+.modalActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modalBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.modalBtn:hover {
+  opacity: 0.85;
+}
+
+.modalClose {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s;
+}
+
+.modalClose:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+.pdfFrame {
+  flex: 1;
+  width: 100%;
+  border: none;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .hero {
+    padding: 36px 16px 48px;
+  }
+  .heroTitle {
+    font-size: 22px;
+  }
+  .content {
+    padding: 0 16px 40px;
+  }
+  .yearBar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .yearLeft {
+    justify-content: center;
+  }
+  .yearSelector {
+    align-self: center;
+  }
+  .monthGrid {
+    grid-template-columns: 1fr;
+  }
+  .infoBanner {
+    flex-direction: column;
+    text-align: center;
+  }
+  .modalContent {
+    height: 95vh;
+    border-radius: 12px;
+  }
+  .modalHeader {
+    flex-wrap: wrap;
+  }
+  .modalActions {
+    flex-wrap: wrap;
+  }
+}
