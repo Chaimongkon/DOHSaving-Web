@@ -598,6 +598,28 @@ model FinancialSummary {
   @@map("financial_summaries")
 }
 
+// ============================================================
+// 📄 Forms (แบบฟอร์มต่างๆ)
+// ============================================================
+
+model Form {
+  id          Int      @id @default(autoincrement())
+  category    String   @db.VarChar(100)  // สมาชิกสามัญ ก, สมาชิกสามัญ ข, สมาชิกสมทบ, สมาชิกทุกประเภท
+  group       String   @db.VarChar(100)  // แบบฟอร์มบริการ, แบบฟอร์มอื่นๆ, แบบฟอร์มขอรับสวัสดิการ
+  title       String   @db.VarChar(255)
+  fileUrl     String?  @db.VarChar(500)
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  updatedBy   String?  @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([group])
+  @@index([isActive])
+  @@map("forms")
+}
+
 model QnaQuestion {
   id            Int        @id @default(autoincrement())
   authorName    String     @db.VarChar(255)

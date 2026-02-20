@@ -24,6 +24,7 @@ import {
   MessageOutlined,
   PhoneOutlined,
   CustomerServiceOutlined,
+  FormOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
@@ -68,6 +69,7 @@ const navItems = [
     items: [
       { label: "อัตราดอกเบี้ย", href: "/admin/interest-rates", icon: <DollarOutlined /> },
       { label: "สินทรัพย์และหนี้สิน", href: "/admin/financial-summary", icon: <BankOutlined /> },
+      { label: "แบบฟอร์มต่างๆ", href: "/admin/forms", icon: <FormOutlined /> },
     ],
   },
   {

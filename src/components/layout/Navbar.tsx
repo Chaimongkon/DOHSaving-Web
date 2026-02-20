@@ -171,19 +171,19 @@ const navItems: NavItem[] = [
       {
         title: "แบบฟอร์มบริการ",
         links: [
-          { label: "แบบฟอร์มสมัครสมาชิก", href: "/downloads/member-forms" },
-          { label: "แบบฟอร์มเงินฝาก-ถอน", href: "/downloads/deposit-forms" },
-          { label: "แบบฟอร์มเกี่ยวกับเงินกู้", href: "/downloads/loan-forms" },
-          { label: "แบบฟอร์มขอสวัสดิการ", href: "/downloads/welfare-forms" },
+          { label: "แบบฟอร์มสมัครสมาชิก", href: "/forms?group=member-registration" },
+          { label: "แบบฟอร์มเงินฝาก-ถอน", href: "/forms?group=deposit-withdraw" },
+          { label: "แบบฟอร์มเกี่ยวกับเงินกู้", href: "/forms?group=loan" },
+          { label: "แบบฟอร์มขอสวัสดิการ", href: "/forms?group=welfare" },
         ],
       },
       {
         title: "แบบฟอร์มอื่นๆ",
         links: [
-          { label: "แบบฟอร์มหนังสือร้องทุกข์", href: "/downloads/complaint-forms" },
-          { label: "หนังสือแต่งตั้งผู้รับโอนประโยชน์", href: "/downloads/beneficiary-forms" },
-          { label: "ใบคำขอเอาประกันภัยกลุ่มสหกรณ์", href: "/downloads/insurance-forms" },
-          { label: "แบบฟอร์มอื่น ๆ", href: "/downloads/other-forms" },
+          { label: "แบบฟอร์มหนังสือร้องทุกข์", href: "/forms?group=complaint" },
+          { label: "หนังสือแต่งตั้งผู้รับโอนประโยชน์", href: "/forms?group=beneficiary" },
+          { label: "ใบคำขอเอาประกันภัยกลุ่มสหกรณ์", href: "/forms?group=insurance" },
+          { label: "แบบฟอร์มอื่น ๆ", href: "/forms?group=other" },
         ],
       },
     ],
