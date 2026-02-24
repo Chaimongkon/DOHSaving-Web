@@ -345,6 +345,160 @@
   100% { background-position: -200% 0; }
 }
 
+/* ── Category Overview Grid ── */
+.catGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+
+.catCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #e8ecf1;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: left;
+  opacity: 0;
+  font-family: inherit;
+}
+
+.catCardFadeIn {
+  animation: catCardAppear 0.4s ease forwards;
+}
+
+@keyframes catCardAppear {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.catCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+  border-color: var(--cat-color, #1e3a5f);
+}
+
+.catIconWrap {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: var(--cat-bg, #f0f4f8);
+  color: var(--cat-color, #1e3a5f);
+  transition: all 0.25s ease;
+}
+
+.catCard:hover .catIconWrap {
+  background: var(--cat-color, #1e3a5f);
+  color: #fff;
+}
+
+.catInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.catLabel {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 3px;
+  line-height: 1.35;
+}
+
+.catDesc {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.catMeta {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.catCount {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cat-color, #64748b);
+  white-space: nowrap;
+}
+
+.catArrow {
+  font-size: 22px;
+  color: #cbd5e1;
+  line-height: 1;
+  transition: all 0.25s ease;
+}
+
+.catCard:hover .catArrow {
+  color: var(--cat-color, #1e3a5f);
+  transform: translateX(3px);
+}
+
+/* ── Category Skeleton ── */
+.catSkeleton {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #e8ecf1;
+  border-radius: 14px;
+}
+
+.catSkeletonIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease infinite;
+  flex-shrink: 0;
+}
+
+.catSkeletonLines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Back Button ── */
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.backBtn:hover {
+  background: #f8fafc;
+  color: #1e3a5f;
+  border-color: #cbd5e1;
+}
+
 /* ── Empty ── */
 .emptyBox {
   text-align: center;
@@ -394,5 +548,24 @@
   }
   .grid {
     grid-template-columns: 1fr;
+  }
+  .catGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .catCard {
+    padding: 16px;
+    gap: 12px;
+  }
+  .catIconWrap {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+  }
+  .catLabel {
+    font-size: 14px;
+  }
+  .catDesc {
+    font-size: 11px;
   }
 }

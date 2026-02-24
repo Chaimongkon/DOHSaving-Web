@@ -120,7 +120,19 @@ const navItems: NavItem[] = [
         links: [
           { label: "ประกันภัยรถยนต์", href: "/services/car-insurance" },
           { label: "พ.ร.บ. รถยนต์", href: "/services/car-act" },
+        ],
+      },
+            {
+        title: "บริการสหกรณ์อิเล็กทรอนิกส์",
+        links: [
           { label: "APP DOHSAVING", href: "/services/app-dohsaving" },
+          { label: "สื่อสำหรับสมาชิก", href: "/services/member-media" },
+        ],
+      },
+      {
+        title: "ดาวน์โหลด",
+        links: [
+          { label: "ดาวน์โหลดแบบฟอร์ม", href: "/forms" },
         ],
       },
     ],
@@ -137,7 +149,21 @@ const navItems: NavItem[] = [
     key: "news",
     label: "ข่าวสาร",
     icon: <NotificationOutlined />,
-    href: "/news",
+    megaColumns: [
+      {
+        title: "ข่าวประชาสัมพันธ์",
+        links: [
+          { label: "ข่าวสารทั้งหมด", href: "/news" },
+        ],
+      },
+      {
+        title: "กิจกรรม",
+        links: [
+          { label: "ภาพกิจกรรมสหกรณ์", href: "/activities" },
+          { label: "วิดีโอสหกรณ์", href: "/videos" },
+        ],
+      },
+    ],
   },
   // ─── 5. เอกสาร (รวม ผลการดำเนินการ + ข้อบังคับ + ดาวน์โหลด) ───
   {
@@ -156,7 +182,7 @@ const navItems: NavItem[] = [
       {
         title: "รายงานกิจการประจำปี",
         links: [
-          { label: "รายงานประจำปี", href: "/reports/annual-meeting" },
+          { label: "รายงานประจำปี (eBook)", href: "/annual-reports" },
           { label: "เอกสารประกอบการประชุมใหญ่", href: "/reports/annual-meeting" },
         ],
       },
@@ -243,11 +269,15 @@ function MegaDropdown({
   isOpen,
   onMouseEnter,
   onMouseLeave,
+  onClick,
+  onLinkClick,
 }: {
   item: NavItem;
   isOpen: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
+  onClick: () => void;
+  onLinkClick: () => void;
 }) {
   const hasMega = !!item.megaColumns;
   const isWide = item.wide;
@@ -264,7 +294,10 @@ function MegaDropdown({
           <span>{item.label}</span>
         </Link>
       ) : (
-        <button className={`nav-pill ${isOpen ? "nav-pill--active" : ""}`}>
+        <button
+          className={`nav-pill ${isOpen ? "nav-pill--active" : ""}`}
+          onClick={onClick}
+        >
           <span>{item.label}</span>
           {hasMega && <DownOutlined className="nav-pill-arrow" />}
         </button>
@@ -296,7 +329,7 @@ function MegaDropdown({
                   <ul className="mega-column-list">
                     {col.links.map((link) => (
                       <li key={`${link.href}-${link.label}`}>
-                        <Link href={link.href} className="mega-link">
+                        <Link href={link.href} className="mega-link" onClick={onLinkClick}>
                           <RightOutlined className="mega-link-icon" />
                           {link.label}
                         </Link>
@@ -318,7 +351,13 @@ function MegaDropdown({
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [openKey, setOpenKey] = useState<string | null>(null);
+  const [pinnedKey, setPinnedKey] = useState<string | null>(null);
+  const pinnedRef = useRef<string | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navRef = useRef<HTMLDivElement>(null);
+
+  // Keep ref in sync with state
+  useEffect(() => { pinnedRef.current = pinnedKey; }, [pinnedKey]);
 
   const handleMouseEnter = useCallback((key: string) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -326,7 +365,40 @@ export default function Navbar() {
   }, []);
 
   const handleMouseLeave = useCallback(() => {
-    timeoutRef.current = setTimeout(() => setOpenKey(null), 150);
+    timeoutRef.current = setTimeout(() => {
+      setOpenKey((prev) => {
+        // Keep open if this menu is pinned
+        return prev !== null && prev === pinnedRef.current ? prev : null;
+      });
+    }, 150);
+  }, []);
+
+  const handleClick = useCallback((key: string) => {
+    setPinnedKey((prev) => {
+      if (prev === key) {
+        setOpenKey(null);
+        return null;
+      }
+      setOpenKey(key);
+      return key;
+    });
+  }, []);
+
+  const handleLinkClick = useCallback(() => {
+    setPinnedKey(null);
+    setOpenKey(null);
+  }, []);
+
+  // Close pinned menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (pinnedRef.current && navRef.current && !navRef.current.contains(e.target as Node)) {
+        setPinnedKey(null);
+        setOpenKey(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -356,7 +428,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Menu — Pill buttons with mega dropdowns */}
-        <div className="navbar-menu-desktop">
+        <div className="navbar-menu-desktop" ref={navRef}>
           {navItems.map((item) => (
             <MegaDropdown
               key={item.key}
@@ -364,12 +436,14 @@ export default function Navbar() {
               isOpen={openKey === item.key}
               onMouseEnter={() => handleMouseEnter(item.key)}
               onMouseLeave={handleMouseLeave}
+              onClick={() => handleClick(item.key)}
+              onLinkClick={handleLinkClick}
             />
           ))}
         </div>
 
         {/* Login button */}
-        <Link href="/login" className="navbar-login-btn">
+        <Link href="https://doh.icoopsiam.com/login" className="navbar-login-btn">
           <LoginOutlined />
           <span>เข้าสู่ระบบ</span>
         </Link>

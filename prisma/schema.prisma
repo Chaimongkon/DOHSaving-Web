@@ -66,6 +66,7 @@ model News {
   details     String?   @db.Text
   imagePath   String?   @db.VarChar(500)
   pdfPath     String?   @db.VarChar(500)
+  legacyPath  String?   @db.VarChar(500)  // ชื่อไฟล์เก่า เช่น 34005357-f6e8-4f9a-a7ff-f05eca0fff40.pdf
   category    String    @default("general") @db.VarChar(50)
   viewCount   Int       @default(0)
   isPinned    Boolean   @default(false)
@@ -78,6 +79,7 @@ model News {
   @@index([title])
   @@index([createdAt])
   @@index([category])
+  @@index([legacyPath])
   @@map("news")
 }
 
@@ -242,25 +244,34 @@ model FormDownload {
   typeForm    String?   @db.VarChar(255)
   typeMember  String?   @db.VarChar(255)
   filePath    String?   @db.VarChar(500)
+  legacyPath  String?   @db.VarChar(500)  // ชื่อไฟล์เก่า เช่น 985fdf3a-5701-4c7e-85a8-015da42d2872.pdf
   isActive    Boolean   @default(true)
   createdBy   String?   @db.VarChar(255)
   updatedBy   String?   @db.VarChar(255)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
+  @@index([legacyPath])
   @@map("form_downloads")
 }
 
 model MemberMedia {
   id          Int       @id @default(autoincrement())
   title       String    @db.VarChar(500)
+  description String?   @db.VarChar(1000)
   category    String    @db.VarChar(200)
+  coverUrl    String?   @db.VarChar(1000)        // ภาพปก (ถ้าไม่มีจะแสดง icon ตามประเภทไฟล์)
   filePath    String?   @db.VarChar(1000)
+  fileType    String    @default("pdf") @db.VarChar(20) // pdf, video, image, link
+  legacyPath  String?   @db.VarChar(500)  // ชื่อไฟล์เก่า เช่น d1e18c72-3a85-44c0-8b56-4006d934c177.pdf
+  sortOrder   Int       @default(0)
   isActive    Boolean   @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   @@index([category])
+  @@index([isActive, sortOrder])
+  @@index([legacyPath])
   @@index([createdAt])
   @@map("member_media")
 }
@@ -291,12 +302,14 @@ model BusinessReport {
   title       String?   @db.VarChar(255)
   imagePath   String?   @db.VarChar(500)
   filePath    String?   @db.VarChar(500)
+  legacyPath  String?   @db.VarChar(500)  // ชื่อไฟล์เก่า เช่น a1710c90-bb47-46d6-bae2-8335eccefc1e.pdf
   isActive    Boolean   @default(true)
   createdBy   String?   @db.VarChar(255)
   updatedBy   String?   @db.VarChar(255)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
+  @@index([legacyPath])
   @@map("business_reports")
 }
 
@@ -493,7 +506,40 @@ model BankAccount {
 }
 
 // ============================================================
-// 🎨 Site Settings & Particles
+// � Festival Themes
+// ============================================================
+
+model FestivalTheme {
+  id            Int       @id @default(autoincrement())
+  name          String    @db.VarChar(255)        // ชื่อเทศกาล เช่น "วาเลนไทน์ 2569"
+  themeKey      String    @db.VarChar(50)         // valentine, newyear, songkran, christmas, loy-krathong
+  isActive      Boolean   @default(false)
+  startDate     DateTime  @db.Date
+  endDate       DateTime  @db.Date
+  colorPrimary  String?   @db.VarChar(20)         // override สีหลัก เช่น #e91e63
+  colorBg       String?   @db.VarChar(20)         // override สีพื้นหลัง
+  effect        String    @default("none") @db.VarChar(50) // falling-hearts, fireworks, snow, confetti, water-drops, lanterns, none
+  effectUrl     String?   @db.VarChar(500)        // custom Lottie URL สำหรับ effect
+  intensity     Int       @default(50)            // ความหนาแน่น effect 0-100
+  effectScale   Int       @default(50)            // ขนาด effect 0-100 (เล็ก→ใหญ่)
+  effectColor   String?   @db.VarChar(20)         // สี effect เช่น #ffffff
+  effectCount   Int       @default(2)             // จำนวน Lottie pop พร้อมกัน 1-5
+  effectDelay   Int       @default(1500)          // ระยะห่างระหว่าง pop (ms) 0-5000
+  animation     String    @default("none") @db.VarChar(50) // santa-sleigh, rocket, cupid, none
+  animationUrl  String?   @db.VarChar(500)        // custom image URL สำหรับ animation
+  animationScale Int      @default(50)            // ขนาด animation 0-100 (เล็ก→ใหญ่)
+  createdBy     String?   @db.VarChar(255)
+  updatedBy     String?   @db.VarChar(255)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([isActive])
+  @@index([startDate, endDate])
+  @@map("festival_themes")
+}
+
+// ============================================================
+// �🎨 Site Settings & Particles
 // ============================================================
 
 model SiteSetting {
@@ -608,6 +654,7 @@ model Form {
   group       String   @db.VarChar(100)  // แบบฟอร์มบริการ, แบบฟอร์มอื่นๆ, แบบฟอร์มขอรับสวัสดิการ
   title       String   @db.VarChar(255)
   fileUrl     String?  @db.VarChar(500)
+  legacyPath  String?  @db.VarChar(500)  // ชื่อไฟล์เก่า เช่น 985fdf3a-5701-4c7e-85a8-015da42d2872.pdf
   sortOrder   Int      @default(0)
   isActive    Boolean  @default(true)
   updatedBy   String?  @db.VarChar(255)
@@ -617,7 +664,113 @@ model Form {
   @@index([category])
   @@index([group])
   @@index([isActive])
+  @@index([legacyPath])
   @@map("forms")
+}
+
+// ============================================================
+// 📚 Annual Reports (รายงานประจำปี — eBook)
+// ============================================================
+
+model AnnualReport {
+  id          Int      @id @default(autoincrement())
+  year        Int                        // ปี พ.ศ. เช่น 2567
+  title       String   @db.VarChar(255)  // ชื่อรายงาน
+  coverUrl    String?  @db.VarChar(500)  // ภาพปก
+  fileUrl     String   @db.VarChar(500)  // ไฟล์ PDF
+  legacyPath  String?  @db.VarChar(500)  // ชื่อไฟล์เก่า เช่น a1710c90-bb47-46d6-bae2-8335eccefc1e.pdf
+  description String?  @db.Text          // คำอธิบาย
+  isActive    Boolean  @default(true)
+  updatedBy   String?  @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([year])
+  @@index([isActive])
+  @@index([legacyPath])
+  @@map("annual_reports")
+}
+
+// ============================================================
+// 📋 Meeting Documents (เอกสารประกอบการประชุม)
+// ============================================================
+
+model MeetingDocument {
+  id          Int      @id @default(autoincrement())
+  year        Int                        // ปี พ.ศ. เช่น 2568
+  title       String   @db.VarChar(255)  // ชื่อเอกสาร
+  fileUrl     String   @db.VarChar(500)  // ไฟล์ PDF
+  coverUrl    String?  @db.VarChar(500)  // ภาพปก (optional)
+  category    String   @default("general") @db.VarChar(100) // หมวดหมู่
+  sortOrder   Int      @default(0)       // ลำดับการแสดง
+  description String?  @db.Text          // คำอธิบาย
+  isActive    Boolean  @default(true)
+  updatedBy   String?  @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([year])
+  @@index([isActive])
+  @@index([category])
+  @@map("meeting_documents")
+}
+
+// ============================================================
+// 📸 Activity Gallery (ภาพกิจกรรมสหกรณ์)
+// ============================================================
+
+model ActivityAlbum {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(255)
+  description String?  @db.Text
+  coverUrl    String?  @db.VarChar(500)
+  eventDate   DateTime?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  updatedBy   String?  @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  photos      ActivityPhoto[]
+
+  @@index([isActive])
+  @@index([eventDate])
+  @@map("activity_albums")
+}
+
+model ActivityPhoto {
+  id        Int      @id @default(autoincrement())
+  albumId   Int
+  imageUrl  String   @db.VarChar(500)
+  caption   String?  @db.VarChar(500)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  album     ActivityAlbum @relation(fields: [albumId], references: [id], onDelete: Cascade)
+
+  @@index([albumId])
+  @@map("activity_photos")
+}
+
+// ============================================================
+// 🎬 CO-OP Videos (วิดีโอสหกรณ์ — YouTube links)
+// ============================================================
+
+model CoopVideo {
+  id           Int      @id @default(autoincrement())
+  title        String   @db.VarChar(255)
+  youtubeUrl   String   @db.VarChar(500)
+  youtubeId    String   @db.VarChar(50)    // extracted video ID
+  thumbnailUrl String   @db.VarChar(500)   // auto from YouTube
+  description  String?  @db.Text
+  sortOrder    Int      @default(0)
+  isActive     Boolean  @default(true)
+  updatedBy    String?  @db.VarChar(255)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([isActive])
+  @@map("coop_videos")
 }
 
 model QnaQuestion {
@@ -656,4 +809,46 @@ model QnaReply {
   @@index([questionId])
   @@index([createdAt])
   @@map("qna_replies")
+}
+
+// ============================================================
+// 📋 Service Pages (หน้าบริการ — infographic + download links)
+// ============================================================
+
+model ServicePage {
+  id              Int      @id @default(autoincrement())
+  slug            String   @unique @db.VarChar(100)   // เช่น "savings", "emergency-loan"
+  title           String   @db.VarChar(255)            // ชื่อหน้า เช่น "เงินฝากออมทรัพย์"
+  category        String   @db.VarChar(100)            // กลุ่ม เช่น "สมัครสมาชิก", "เงินฝาก", "เงินกู้", "สวัสดิการ"
+  infographicUrl  String?  @db.VarChar(500)            // URL รูป infographic
+  downloadLinks   String?  @db.Text                    // JSON array: [{label, url}]
+  sortOrder       Int      @default(0)
+  isActive        Boolean  @default(true)
+  updatedBy       String?  @db.VarChar(255)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([slug])
+  @@index([category])
+  @@index([isActive])
+  @@map("service_pages")
+}
+
+// ============================================================
+// 📱 App Guide Sections (วิธีใช้งาน Application DOHSaving)
+// ============================================================
+
+model AppGuideSection {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(255)            // ชื่อหัวข้อ เช่น "วิธีการติดตั้ง และ การลืมรหัสผ่าน"
+  images      String?  @db.Text                    // JSON array: [{imageUrl, caption}]
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  updatedBy   String?  @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([sortOrder])
+  @@index([isActive])
+  @@map("app_guide_sections")
 }

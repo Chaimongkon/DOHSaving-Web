@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { title, details, imagePath, pdfPath, category, isPinned, isActive } = body;
+    const { title, details, imagePath, pdfPath, legacyPath, category, isPinned, isActive } = body;
 
     if (!title) {
       return NextResponse.json({ error: "กรุณาระบุหัวข้อข่าว" }, { status: 400 });
@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
         details: details || null,
         imagePath: imagePath || null,
         pdfPath: pdfPath || null,
+        legacyPath: legacyPath || null,
         category: category || "general",
         isPinned: isPinned ?? false,
         isActive: isActive ?? true,

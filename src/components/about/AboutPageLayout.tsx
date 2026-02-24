@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -74,7 +75,7 @@ export default function AboutPageLayout({ pageKey, breadcrumbLabel }: AboutPageL
           ) : content ? (
             <div
               className={css.content}
-              dangerouslySetInnerHTML={{ __html: content }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
             />
           ) : (
             <div className={css.empty}>

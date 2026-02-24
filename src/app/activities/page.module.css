@@ -1,0 +1,545 @@
+/* ═══════════════════════════════════════════════════════
+   Activity Gallery — Beautiful Grid + Lightbox
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Hero ── */
+.hero {
+  background: #0f172a;
+  padding: 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative grid of tilted photo frames */
+.heroBg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0.12;
+  transform: rotate(-6deg) scale(1.3);
+  pointer-events: none;
+}
+
+.heroBgCol {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: heroBgScroll 25s linear infinite;
+}
+
+.heroBgCol:nth-child(even) {
+  animation-direction: reverse;
+}
+
+@keyframes heroBgScroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+.heroBgBlock {
+  width: 100px;
+  height: 72px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(56,189,248,0.4), rgba(99,102,241,0.3));
+  flex-shrink: 0;
+}
+
+.heroBgBlock:nth-child(odd) {
+  background: linear-gradient(135deg, rgba(168,85,247,0.35), rgba(56,189,248,0.25));
+  height: 56px;
+}
+
+.heroBgBlock:nth-child(3n) {
+  background: linear-gradient(135deg, rgba(244,114,182,0.3), rgba(168,85,247,0.25));
+  height: 90px;
+}
+
+/* Dark overlay on top of grid */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(15,23,42,0.6) 0%, rgba(15,23,42,0.92) 70%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to top, #f8fafc, transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.heroInner {
+  position: relative;
+  z-index: 3;
+  padding: 56px 24px 72px;
+}
+
+.heroIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  margin-bottom: 20px;
+  color: #fff;
+  box-shadow: 0 0 0 8px rgba(59,130,246,0.15), 0 0 0 16px rgba(59,130,246,0.07);
+}
+
+.heroTitle {
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
+}
+
+.heroSub {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  line-height: 1.6;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Content ── */
+.content {
+  max-width: 1100px;
+  margin: -32px auto 0;
+  padding: 0 24px 60px;
+  position: relative;
+  z-index: 4;
+}
+
+/* ── Album Grid ── */
+.albumGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* Featured first card spans full width */
+.albumCardFeatured {
+  grid-column: 1 / -1;
+}
+
+.albumCardFeatured .albumCover {
+  height: 380px;
+}
+
+.albumCardFeatured .albumCoverTitle {
+  font-size: 22px;
+}
+
+.albumCard {
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.35s ease;
+}
+
+.albumCard:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  transform: translateY(-4px);
+}
+
+.albumCover {
+  height: 260px;
+  background: linear-gradient(135deg, #1e293b, #334155);
+  position: relative;
+  overflow: hidden;
+}
+
+.albumCover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.albumCard:hover .albumCover img {
+  transform: scale(1.08);
+}
+
+/* Dark gradient overlay on cover */
+.albumCoverOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.albumCard:hover .albumCoverOverlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+}
+
+.albumCoverEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 8px;
+  color: #64748b;
+}
+
+.albumCoverEmpty span {
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0.6;
+}
+
+/* Photo count badge - top right */
+.albumPhotoCount {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 5px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 2;
+}
+
+/* Title & date overlaid at bottom of cover */
+.albumCoverInfo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 22px;
+  z-index: 2;
+}
+
+.albumCoverTitle {
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+  line-height: 1.4;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.albumCoverDate {
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  margin: 0;
+}
+
+/* ── Album Detail — Photo Grid ── */
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 20px;
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.backBtn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.detailHeader {
+  margin-bottom: 28px;
+}
+
+.detailTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 6px;
+}
+
+.detailDate {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0 0 6px;
+}
+
+.detailDesc {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.photoItem {
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #f1f5f9;
+}
+
+.photoItem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.photoItem:hover img {
+  transform: scale(1.06);
+}
+
+.photoOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photoItem:hover .photoOverlay {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.photoOverlayIcon {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photoItem:hover .photoOverlayIcon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Lightbox ── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.lightboxClose {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s;
+  z-index: 2;
+}
+
+.lightboxClose:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.lightboxNav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.2s;
+  z-index: 2;
+  backdrop-filter: blur(4px);
+}
+
+.lightboxNav:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.lightboxPrev {
+  left: 16px;
+}
+
+.lightboxNext {
+  right: 16px;
+}
+
+.lightboxImage {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 8px;
+  user-select: none;
+}
+
+.lightboxCounter {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 6px 18px;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+.lightboxCaption {
+  position: absolute;
+  bottom: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 14px;
+  max-width: 600px;
+  text-align: center;
+}
+
+/* ── Empty & Loading ── */
+.empty {
+  text-align: center;
+  padding: 80px 20px;
+  color: #94a3b8;
+}
+
+.empty svg {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+  opacity: 0.35;
+}
+
+.loading {
+  text-align: center;
+  padding: 80px 20px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .heroInner {
+    padding: 40px 16px 52px;
+  }
+  .heroIcon {
+    width: 52px;
+    height: 52px;
+  }
+  .heroTitle {
+    font-size: 24px;
+  }
+  .heroBgBlock {
+    width: 60px;
+    height: 44px;
+  }
+  .content {
+    padding: 0 12px 40px;
+  }
+  .albumGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .albumCover {
+    height: 220px;
+  }
+  .albumCardFeatured .albumCover {
+    height: 260px;
+  }
+  .albumCoverTitle {
+    font-size: 15px;
+  }
+  .albumCardFeatured .albumCoverTitle {
+    font-size: 18px;
+  }
+  .photoGrid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+  }
+  .lightboxNav {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+  .lightboxPrev {
+    left: 8px;
+  }
+  .lightboxNext {
+    right: 8px;
+  }
+  .lightboxImage {
+    max-width: 95vw;
+    max-height: 80vh;
+  }
+  .detailTitle {
+    font-size: 18px;
+  }
+}

@@ -1,0 +1,246 @@
+/* ── Viewer Container ── */
+.viewer {
+  min-height: 100vh;
+  background: #111827;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Top Bar ── */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: #1f2937;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #d1d5db;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: var(--font-noto-sans-thai), "Noto Sans Thai", sans-serif;
+  transition: color 0.2s;
+}
+
+.backBtn:hover {
+  color: #fff;
+}
+
+.topTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f9fafb;
+  text-align: center;
+  flex: 1;
+  margin: 0 16px;
+}
+
+.pageInfo {
+  font-size: 12px;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+/* ── Flipbook Area ── */
+.flipArea {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* ── Page styling ── */
+.page {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.page canvas {
+  display: block;
+}
+
+.pageLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #1e3a5f;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Navigation ── */
+.navControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 24px;
+  background: #1f2937;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #d1d5db;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: var(--font-noto-sans-thai), "Noto Sans Thai", sans-serif;
+  transition: all 0.2s;
+}
+
+.navBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.navBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pageSlider {
+  width: 200px;
+  accent-color: #3b82f6;
+}
+
+.pageNumber {
+  color: #d1d5db;
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 80px;
+  text-align: center;
+}
+
+/* ── Fullscreen ── */
+.fullscreenBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #9ca3af;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--font-noto-sans-thai), "Noto Sans Thai", sans-serif;
+  transition: all 0.2s;
+}
+
+.fullscreenBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* ── Loading State ── */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #111827;
+  color: #9ca3af;
+  gap: 16px;
+}
+
+.loadingState .spinner {
+  width: 48px;
+  height: 48px;
+}
+
+.progressBar {
+  width: 240px;
+  height: 4px;
+  background: #374151;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .topBar {
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .backBtn {
+    font-size: 12px;
+    padding: 4px 0;
+  }
+  .topTitle {
+    font-size: 11px;
+    margin: 0 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pageInfo {
+    font-size: 11px;
+  }
+  .fullscreenBtn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  .flipArea {
+    padding: 4px;
+  }
+  .navControls {
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  .navBtn {
+    padding: 6px 10px;
+    font-size: 11px;
+    gap: 4px;
+  }
+  .pageSlider {
+    width: 80px;
+  }
+  .pageNumber {
+    font-size: 11px;
+    min-width: 60px;
+  }
+}

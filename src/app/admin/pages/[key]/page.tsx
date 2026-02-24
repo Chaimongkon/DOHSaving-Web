@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { SaveOutlined, EyeOutlined, FormOutlined } from "@ant-design/icons";
@@ -127,7 +128,7 @@ export default function PageEditorPage() {
         <div className={css.previewWrap}>
           <div
             className={css.previewContent}
-            dangerouslySetInnerHTML={{ __html: content }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
           />
         </div>
       ) : (

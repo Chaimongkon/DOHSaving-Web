@@ -31,7 +31,7 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  gap: 12px;
+  gap: 14px;
 }
 
 /* ── Card ── */
@@ -41,15 +41,15 @@
   align-items: center;
   text-align: center;
   text-decoration: none;
-  padding: 24px 8px 16px;
-  border-radius: 16px;
+  padding: 36px 14px 28px;
+  border-radius: 20px;
   background: var(--bg, #fff);
-  border: 1.5px solid transparent;
-  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
   font-family: inherit;
 }
 
@@ -68,10 +68,10 @@
 }
 
 .card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
   border-color: var(--accent, #E8652B);
   box-shadow:
-    0 8px 24px rgba(0,0,0,0.06),
+    0 12px 30px rgba(0,0,0,0.08),
     0 0 0 1px var(--accent, #E8652B);
 }
 
@@ -81,30 +81,37 @@
 
 /* ── Icon ── */
 .iconWrap {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+  width: 72px;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  color: #ffffff;
-  margin-bottom: 12px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  margin-bottom: 16px;
+  transition: transform 0.3s ease;
+  animation: float 6s ease-in-out infinite;
+}
+
+.card:nth-child(even) .iconWrap {
+  animation-delay: 1.5s;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
 }
 
 .card:hover .iconWrap {
   transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  animation-play-state: paused;
 }
 
 /* ── Text ── */
 .cardTitle {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: #1f2937;
-  margin: 0 0 3px 0;
+  margin: 0 0 6px 0;
   transition: color 0.2s ease;
   line-height: 1.4;
 }
@@ -114,10 +121,10 @@
 }
 
 .cardDesc {
-  font-size: 10.5px;
-  color: #9ca3af;
-  margin: 0 0 12px 0;
-  line-height: 1.4;
+  font-size: 11px;
+  color: #6b7280;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
 }
 
 /* ── CTA arrow pill ── */
@@ -177,10 +184,10 @@
   }
 
   .iconWrap {
-    width: 44px;
-    height: 44px;
+    width: 60px;
+    height: 60px;
     font-size: 19px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
 
   .cardTitle {

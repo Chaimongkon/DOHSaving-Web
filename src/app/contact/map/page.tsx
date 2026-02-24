@@ -2,13 +2,16 @@
 
 import Link from "next/link";
 import {
-  MapPin,
-  Navigation,
-  Clock,
-  Phone,
-  Car,
-  TrainFront,
-  Bus,
+  MapPinIcon,
+  ClockIcon,
+  PhoneIcon,
+  CarIcon,
+  TrainIcon,
+  BusIcon,
+  TaxiIcon,
+  NavigateIcon
+} from "@/components/icons/ContactIcons";
+import {
   Building2,
   Hospital,
   Landmark,
@@ -17,6 +20,8 @@ import {
   Copy,
   ExternalLink,
   Info,
+  TrainFront,
+  Phone,
 } from "lucide-react";
 import css from "./page.module.css";
 
@@ -51,7 +56,7 @@ export default function MapPage() {
           />
           <div className={css.mapBar}>
             <span className={css.mapAddress}>
-              <MapPin size={16} />
+              <MapPinIcon size={24} />
               สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด — 2/486 อาคาร 26 ถนนศรีอยุธยา กรุงเทพฯ 10400
             </span>
             <div className={css.mapActions}>
@@ -64,7 +69,7 @@ export default function MapPage() {
                 rel="noopener noreferrer"
                 className={`${css.btnDirection} ${css.btnPrimary}`}
               >
-                <Navigation size={14} /> เปิด Google Maps
+                <NavigateIcon size={18} /> เปิด Google Maps
               </a>
             </div>
           </div>
@@ -75,8 +80,8 @@ export default function MapPage() {
           {/* Address */}
           <div className={css.card}>
             <div className={css.cardHeader}>
-              <div className={css.cardIcon} style={{ background: "linear-gradient(135deg, #FF9F43, #E8652B)" }}>
-                <MapPin size={22} />
+              <div className={css.cardIcon}>
+                <MapPinIcon size={44} />
               </div>
               <h3 className={css.cardTitle}>ที่อยู่สหกรณ์</h3>
             </div>
@@ -93,8 +98,8 @@ export default function MapPage() {
           {/* Hours */}
           <div className={css.card}>
             <div className={css.cardHeader}>
-              <div className={css.cardIcon} style={{ background: "linear-gradient(135deg, #2ECC71, #16a34a)" }}>
-                <Clock size={22} />
+              <div className={css.cardIcon}>
+                <ClockIcon size={44} />
               </div>
               <h3 className={css.cardTitle}>เวลาทำการ</h3>
             </div>
@@ -111,8 +116,8 @@ export default function MapPage() {
           {/* Contact */}
           <div className={css.card}>
             <div className={css.cardHeader}>
-              <div className={css.cardIcon} style={{ background: "linear-gradient(135deg, #54A0FF, #0369a1)" }}>
-                <Phone size={22} />
+              <div className={css.cardIcon}>
+                <PhoneIcon size={44} />
               </div>
               <h3 className={css.cardTitle}>โทรศัพท์</h3>
             </div>
@@ -132,8 +137,8 @@ export default function MapPage() {
           {/* By Car */}
           <div className={css.transportCard}>
             <div className={css.transportHeader}>
-              <div className={css.transportIcon} style={{ background: "linear-gradient(135deg, #FF6B6B, #ee5a24)" }}>
-                <Car size={24} />
+              <div className={css.transportIcon}>
+                <CarIcon size={48} />
               </div>
               <div>
                 <h3 className={css.transportTitle}>รถยนต์ส่วนตัว</h3>
@@ -163,8 +168,8 @@ export default function MapPage() {
           {/* By BTS */}
           <div className={css.transportCard}>
             <div className={css.transportHeader}>
-              <div className={css.transportIcon} style={{ background: "linear-gradient(135deg, #45B649, #1B8A3D)" }}>
-                <TrainFront size={24} />
+              <div className={css.transportIcon}>
+                <TrainIcon size={48} />
               </div>
               <div>
                 <h3 className={css.transportTitle}>รถไฟฟ้า BTS / ARL</h3>
@@ -194,8 +199,8 @@ export default function MapPage() {
           {/* By Bus */}
           <div className={css.transportCard}>
             <div className={css.transportHeader}>
-              <div className={css.transportIcon} style={{ background: "linear-gradient(135deg, #FDA085, #f5576c)" }}>
-                <Bus size={24} />
+              <div className={css.transportIcon}>
+                <BusIcon size={48} />
               </div>
               <div>
                 <h3 className={css.transportTitle}>รถโดยสารประจำทาง</h3>
@@ -221,8 +226,8 @@ export default function MapPage() {
           {/* By Taxi */}
           <div className={css.transportCard}>
             <div className={css.transportHeader}>
-              <div className={css.transportIcon} style={{ background: "linear-gradient(135deg, #F7971E, #FFD200)" }}>
-                <Car size={24} />
+              <div className={css.transportIcon}>
+                <TaxiIcon size={48} />
               </div>
               <div>
                 <h3 className={css.transportTitle}>แท็กซี่ / Grab</h3>

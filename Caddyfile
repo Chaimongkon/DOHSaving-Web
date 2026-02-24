@@ -1,0 +1,39 @@
+# DOHSaving-Web — Caddy Reverse Proxy with SSL
+# Usage: caddy run --config Caddyfile
+#
+# แก้ไข:
+# 1. เปลี่ยน your-domain.com เป็นชื่อ domain จริง
+# 2. เปลี่ยน path ไปยัง SSL certificate จริง
+
+your-domain.com {
+	# SSL certificate (ใช้ folder Apache-or-CRT-PEM-Format)
+	tls C:\ssl\certificate.crt C:\ssl\private.key
+
+	# Reverse proxy ไป Node.js
+	reverse_proxy 127.0.0.1:3000
+
+	# Security headers
+	header {
+		X-Frame-Options "SAMEORIGIN"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+		-X-Powered-By
+	}
+
+	# Gzip compression
+	encode gzip
+
+	# Logging
+	log {
+		output file C:\Caddy\logs\access.log
+		format json
+	}
+}
+
+# Redirect HTTP → HTTPS
+http://your-domain.com {
+	redir https://your-domain.com{uri} permanent
+}

@@ -1,0 +1,141 @@
+/* Custom Festival Animations */
+.container {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.animatedWrapper {
+  position: absolute;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ── Santa Sleigh: Right to Left ── */
+.flyAcross {
+  height: auto;
+  animation-name: flyAcrossRtl;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+/* ── Santa Sleigh: Left to Right ── */
+.flyAcrossLtr {
+  height: auto;
+  animation-name: flyAcrossLtr;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes flyAcrossRtl {
+  0% {
+    transform: translateX(calc(100vw + 200px)) rotate(-5deg);
+  }
+  50% {
+    transform: translateX(30vw) rotate(0deg) translateY(-20px);
+  }
+  100% {
+    transform: translateX(-400px) rotate(5deg);
+  }
+}
+
+@keyframes flyAcrossLtr {
+  0% {
+    transform: translateX(-400px) rotate(5deg) scaleX(-1);
+  }
+  50% {
+    transform: translateX(50vw) rotate(0deg) translateY(-20px) scaleX(-1);
+  }
+  100% {
+    transform: translateX(calc(100vw + 200px)) rotate(-5deg) scaleX(-1);
+  }
+}
+
+/* ── Cupid: Right to Left ── */
+.floatAcross {
+  height: auto;
+  animation-name: floatAcrossRtl;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+/* ── Cupid: Left to Right ── */
+.floatAcrossLtr {
+  height: auto;
+  animation-name: floatAcrossLtr;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes floatAcrossRtl {
+  0% {
+    transform: translateX(calc(100vw + 200px)) rotate(-5deg);
+  }
+  25% {
+    transform: translateX(70vw) rotate(5deg) translateY(-40px);
+  }
+  50% {
+    transform: translateX(40vw) rotate(-5deg) translateY(20px);
+  }
+  75% {
+    transform: translateX(15vw) rotate(5deg) translateY(-30px);
+  }
+  100% {
+    transform: translateX(-300px) rotate(-5deg);
+  }
+}
+
+@keyframes floatAcrossLtr {
+  0% {
+    transform: translateX(-300px) rotate(5deg) scaleX(-1);
+  }
+  25% {
+    transform: translateX(20vw) rotate(-5deg) translateY(-40px) scaleX(-1);
+  }
+  50% {
+    transform: translateX(50vw) rotate(5deg) translateY(20px) scaleX(-1);
+  }
+  75% {
+    transform: translateX(80vw) rotate(-5deg) translateY(-30px) scaleX(-1);
+  }
+  100% {
+    transform: translateX(calc(100vw + 200px)) rotate(5deg) scaleX(-1);
+  }
+}
+
+/* ── Rocket/Fireworks: launch from bottom to top (Random X via inline style later if needed) ── */
+.launchUp {
+  height: auto;
+  animation-name: launchUp;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+  transform-origin: bottom center;
+}
+
+@keyframes launchUp {
+  0% {
+    bottom: -300px;
+    right: 15%;
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: scale(0.8);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  100% {
+    bottom: 120vh;
+    right: 50%;
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* ── Responsive: smaller on mobile ── */
+

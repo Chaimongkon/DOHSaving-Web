@@ -8,6 +8,7 @@ import {
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { categoryMap, type NewsData } from "@/data/mockNews";
+import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import css from "./page.module.css";
 
 function formatDate(dateStr: string) {
@@ -184,7 +185,7 @@ export default function NewsDetailClient() {
               <div className={css.detailCard}>
                 <h3 className={css.detailHeading}>รายละเอียด</h3>
                 {isHtml ? (
-                  <div className={css.content} dangerouslySetInnerHTML={{ __html: news.details }} />
+                  <div className={css.content} dangerouslySetInnerHTML={{ __html: sanitizeHtml(news.details) }} />
                 ) : (
                   <div className={css.content}>
                     {news.details.split("\n").map((paragraph, i) => (
@@ -205,7 +206,7 @@ export default function NewsDetailClient() {
             )}
             {news.details && (
               isHtml ? (
-                <div className={css.content} dangerouslySetInnerHTML={{ __html: news.details }} />
+                <div className={css.content} dangerouslySetInnerHTML={{ __html: sanitizeHtml(news.details) }} />
               ) : (
                 <div className={css.content}>
                   {news.details.split("\n").map((paragraph, i) => (

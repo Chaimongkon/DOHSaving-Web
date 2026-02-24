@@ -1,14 +1,34 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { CameraOutlined, RightOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import { mockPhotoAlbums } from "@/data/mockPhotos";
 import css from "./PhotoGallerySection.module.css";
 
-const albums = mockPhotoAlbums.filter((a) => a.isActive).slice(0, 6);
+interface Album {
+  id: number;
+  title: string;
+  coverUrl: string | null;
+  _count: { photos: number };
+}
 
 export default function PhotoGallerySection() {
+  const [albums, setAlbums] = useState<Album[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/activity-albums");
+        if (res.ok) {
+          const data: Album[] = await res.json();
+          setAlbums(data.slice(0, 6));
+        }
+      } catch { /* ignore */ }
+    })();
+  }, []);
+
+  if (albums.length === 0) return null;
+
   return (
     <section className={css.section}>
       <div className={css.inner}>
@@ -16,24 +36,24 @@ export default function PhotoGallerySection() {
           <h2 className="section-heading section-heading--left">
             ภาพกิจกรรมสหกรณ์
           </h2>
-          <Link href="/gallery" className={css.viewAll}>
+          <Link href="/activities" className={css.viewAll}>
             ดูทั้งหมด <RightOutlined />
           </Link>
         </div>
 
         <div className={css.grid}>
           {albums.map((album) => (
-            <Link href={`/gallery/${album.id}`} key={album.id} className={css.card}>
+            <Link href={`/activities?album=${album.id}`} key={album.id} className={css.card}>
               <div className={css.imgWrap}>
-                {album.coverImage ? (
+                {album.coverUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={album.coverImage} alt={album.title} className={css.img} />
+                  <img src={album.coverUrl} alt={album.title} className={css.img} />
                 ) : (
                   <div className={css.placeholder} />
                 )}
                 <div className={css.overlay}>
                   <CameraOutlined className={css.icon} />
-                  <span>{album.photoCount} ภาพ</span>
+                  <span>{album._count.photos} ภาพ</span>
                 </div>
               </div>
               <span className={css.title}>{album.title}</span>

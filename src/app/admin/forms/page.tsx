@@ -21,11 +21,12 @@ interface FormItem {
   group: string;
   title: string;
   fileUrl: string;
+  legacyPath: string;
   sortOrder: number;
   isActive: boolean;
 }
 
-const empty: FormItem = { category: CATEGORIES[0], group: GROUPS[0], title: "", fileUrl: "", sortOrder: 0, isActive: true };
+const empty: FormItem = { category: CATEGORIES[0], group: GROUPS[0], title: "", fileUrl: "", legacyPath: "", sortOrder: 0, isActive: true };
 
 export default function AdminFormsPage() {
   const [items, setItems] = useState<FormItem[]>([]);
@@ -205,6 +206,16 @@ export default function AdminFormsPage() {
                 </button>
               </div>
             </div>
+          </div>
+
+          {/* Legacy Path */}
+          <div style={{ marginTop: 12, maxWidth: 700 }}>
+            <label style={labelStyle}>ชื่อไฟล์เก่า (Legacy Redirect)
+              <input value={editing.legacyPath} onChange={(e) => setEditing({ ...editing, legacyPath: e.target.value })} placeholder="เช่น 985fdf3a-5701-4c7e-85a8-015da42d2872.pdf" style={inputStyle} />
+            </label>
+            <span style={{ fontSize: 11, color: "#9ca3af", marginTop: 2, display: "block" }}>
+              ใส่ชื่อไฟล์เก่า เพื่อให้ /DownloadForm/File/xxx.pdf ยัง redirect ได้
+            </span>
           </div>
 
           {/* Actions */}

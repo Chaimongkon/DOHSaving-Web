@@ -1,0 +1,238 @@
+/* ═══════════════════════════════════════════════════════
+   Service Page — หน้าบริการ (Infographic + Downloads)
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(160deg, #0a1628 0%, #1a2d4a 40%, #1e3a5f 70%, #1a4a6a 100%);
+  padding: 44px 24px 56px;
+  text-align: center;
+}
+
+.heroTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.heroSub {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.breadcrumb a {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumb a:hover {
+  color: #fff;
+}
+
+/* ── Content ── */
+.content {
+  max-width: 900px;
+  margin: -32px auto 0;
+  padding: 0 24px 60px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Infographic Card ── */
+.infographicCard {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.infographicImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Downloads Section ── */
+.downloadsSection {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  padding: 28px 32px;
+}
+
+.downloadsTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.downloadsTitle::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 20px;
+  background: #E8652B;
+  border-radius: 2px;
+}
+
+.downloadsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.downloadItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #1e293b;
+  transition: all 0.2s;
+}
+
+.downloadItem:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.08);
+  transform: translateY(-1px);
+}
+
+.downloadIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #1e3a5f;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.downloadLabel {
+  font-size: 14px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.downloadArrow {
+  color: #94a3b8;
+  font-size: 14px;
+  transition: transform 0.2s;
+}
+
+.downloadItem:hover .downloadArrow {
+  transform: translateX(3px);
+  color: #1e40af;
+}
+
+/* ── Loading / Not Found ── */
+.loading {
+  text-align: center;
+  padding: 80px 24px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.notFound {
+  text-align: center;
+  padding: 80px 24px;
+}
+
+.notFoundIcon {
+  font-size: 48px;
+  color: #d1d5db;
+  margin-bottom: 16px;
+}
+
+.notFoundTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #374151;
+  margin: 0 0 8px;
+}
+
+.notFoundText {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0 0 24px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 24px;
+  background: #1e3a5f;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.backLink:hover {
+  background: #152c4a;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .hero {
+    padding: 32px 16px 44px;
+  }
+
+  .heroTitle {
+    font-size: 22px;
+  }
+
+  .content {
+    padding: 0 16px 40px;
+  }
+
+  .downloadsSection {
+    padding: 20px 18px;
+  }
+
+  .downloadItem {
+    padding: 12px 14px;
+  }
+
+  .downloadIcon {
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+  }
+
+  .downloadLabel {
+    font-size: 13px;
+  }
+}

@@ -3,15 +3,18 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
+  MapPinIcon,
+  ClockIcon,
+  PhoneIcon,
+  MailIcon,
+  UsersIcon,
+  BankIcon,
+  ComplaintIcon,
+  NavigateIcon,
+} from "@/components/icons/ContactIcons";
+import {
   MapPin,
-  Clock,
   Phone,
-  Mail,
-  Landmark,
-  MessageSquareWarning,
-  Navigation,
-  MessageCircle,
-  Users,
 } from "lucide-react";
 import Image from "next/image";
 import css from "./page.module.css";
@@ -37,7 +40,7 @@ const defaultLineContacts = [
 const defaultInfo: Record<string, string> = {
   address: "2/486 อาคาร 26\nถนนศรีอยุธยา แขวงทุ่งพญาไท\nเขตราชเทวี กรุงเทพฯ 10400",
   hours: "วันจันทร์ – ศุกร์\n08.30 – 16.30 น.",
-  hoursNote: "(ภายใน ปิดทำการเวลา 15.30 น.)",
+  hoursNote: "(การเงิน ปิดทำการเวลา 15.30 น.)",
   phone: "02-245-0668",
   phoneSub1: "02-644-7940-43",
   phoneSub2: "02-644-9243, 02-644-4833",
@@ -84,7 +87,7 @@ export default function ContactPage() {
           {/* Address */}
           <div className={css.infoCard}>
             <div className={`${css.infoIcon} ${css.iconAddress}`}>
-              <MapPin size={28} />
+              <MapPinIcon size={42} />
             </div>
             <p className={css.infoLabel}>ที่อยู่</p>
             <p className={css.infoValue}>
@@ -99,7 +102,7 @@ export default function ContactPage() {
           {/* Hours */}
           <div className={css.infoCard}>
             <div className={`${css.infoIcon} ${css.iconHours}`}>
-              <Clock size={28} />
+              <ClockIcon size={42} />
             </div>
             <p className={css.infoLabel}>เวลาทำการ</p>
             <p className={css.infoValue}>
@@ -107,13 +110,13 @@ export default function ContactPage() {
               <br />
               08.30 – 16.30 น.
             </p>
-            <p className={css.infoValueSm}>(ภายใน ปิดทำการเวลา 15.30 น.)</p>
+            <p className={css.infoValueSm}>(การเงิน ปิดทำการเวลา 15.30 น.)</p>
           </div>
 
           {/* Phone */}
           <div className={css.infoCard}>
             <div className={`${css.infoIcon} ${css.iconPhone}`}>
-              <Phone size={28} />
+              <PhoneIcon size={42} />
             </div>
             <p className={css.infoLabel}>โทรศัพท์</p>
             <p className={css.infoValue}>
@@ -131,7 +134,7 @@ export default function ContactPage() {
           {/* Email */}
           <div className={css.infoCard}>
             <div className={`${css.infoIcon} ${css.iconEmail}`}>
-              <Mail size={28} />
+              <MailIcon size={42} />
             </div>
             <p className={css.infoLabel}>อีเมล</p>
             <p className={css.infoValue}>
@@ -151,8 +154,8 @@ export default function ContactPage() {
           {/* ── LEFT: Department Table ── */}
           <div className={css.sectionCard}>
             <div className={css.sectionHeader}>
-              <div className={css.sectionHeaderIcon} style={{ background: "#0369a1" }}>
-                <Users size={18} />
+              <div className={css.sectionHeaderIcon}>
+                <UsersIcon size={32} />
               </div>
               <h2 className={css.sectionHeaderTitle}>หมายเลขติดต่อฝ่ายงาน</h2>
             </div>
@@ -242,8 +245,8 @@ export default function ContactPage() {
 
             {/* Bank Account Link */}
             <Link href="/bank-accounts" className={css.complaintLink} style={{ background: "linear-gradient(135deg, #faf5ff, #f3e8ff)", borderColor: "#e9d5ff" }}>
-              <div className={css.complaintLinkIcon} style={{ background: "#7c3aed" }}>
-                <Landmark size={20} />
+              <div className={css.complaintLinkIcon}>
+                <BankIcon size={32} />
               </div>
               <div>
                 <div className={css.complaintLinkText} style={{ color: "#5b21b6" }}>บัญชีธนาคาร</div>
@@ -256,7 +259,7 @@ export default function ContactPage() {
             {/* Complaint Link */}
             <Link href="/complaints" className={css.complaintLink}>
               <div className={css.complaintLinkIcon}>
-                <MessageSquareWarning size={20} />
+                <ComplaintIcon size={32} />
               </div>
               <div>
                 <div className={css.complaintLinkText}>แจ้งข้อเสนอแนะ / ร้องเรียน</div>
@@ -288,7 +291,7 @@ export default function ContactPage() {
               rel="noopener noreferrer"
               className={css.mapDirectionLink}
             >
-              <Navigation size={14} /> นำทาง
+              <NavigateIcon size={18} /> นำทาง
             </a>
           </div>
         </div>

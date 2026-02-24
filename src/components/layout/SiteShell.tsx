@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { TopBar, Navbar, Footer } from "@/components/layout";
 import CookieConsentBanner from "@/components/CookieConsent";
+import FestivalOverlay from "@/components/festival/FestivalOverlay";
 
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -14,6 +15,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      <FestivalOverlay />
       <TopBar />
       <Navbar />
       <main className="main-content">{children}</main>

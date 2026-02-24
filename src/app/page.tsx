@@ -1,18 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import {
-  BankOutlined,
-  TeamOutlined,
-  FileTextOutlined,
-  CustomerServiceOutlined,
-  DollarOutlined,
-  SafetyOutlined,
-  ArrowRightOutlined,
-  AlertOutlined,
-  QuestionCircleOutlined,
-} from "@ant-design/icons";
+import { ArrowRightOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import {
+  InterestRateIcon,
+  LoanIcon,
+  DepositIcon,
+  WelfareIcon,
+  FormIcon,
+  QnAIcon,
+  ContactIcon,
+  AlertIcon
+} from "@/components/icons/HomeIcons";
 import HeroSlider from "@/components/home/HeroSlider";
 import AppDownloadBar from "@/components/home/AppDownloadBar";
 import NewsSection from "@/components/home/NewsSection";
@@ -24,7 +24,7 @@ import css from "./page.module.css";
 
 const quickLinks = [
   {
-    icon: <BankOutlined />,
+    icon: <InterestRateIcon size={56} />,
     title: "อัตราดอกเบี้ย",
     desc: "เงินฝาก-เงินกู้ล่าสุด",
     href: "/interest-rates",
@@ -32,7 +32,7 @@ const quickLinks = [
     bg: "#fff5f0",
   },
   {
-    icon: <DollarOutlined />,
+    icon: <LoanIcon size={56} />,
     title: "เงินกู้",
     desc: "ฉุกเฉิน สามัญ พิเศษ",
     href: "/services/general-loan",
@@ -40,7 +40,7 @@ const quickLinks = [
     bg: "#f0f4f8",
   },
   {
-    icon: <SafetyOutlined />,
+    icon: <DepositIcon size={56} />,
     title: "เงินฝาก",
     desc: "ออมทรัพย์ ประจำ พิเศษ",
     href: "/services/savings",
@@ -48,7 +48,7 @@ const quickLinks = [
     bg: "#f0fdf4",
   },
   {
-    icon: <TeamOutlined />,
+    icon: <WelfareIcon size={56} />,
     title: "สวัสดิการ",
     desc: "สิทธิประโยชน์สมาชิก",
     href: "/services/welfare-a",
@@ -56,15 +56,15 @@ const quickLinks = [
     bg: "#f5f3ff",
   },
   {
-    icon: <FileTextOutlined />,
+    icon: <FormIcon size={56} />,
     title: "ดาวน์โหลดแบบฟอร์ม",
     desc: "แบบฟอร์มทุกประเภท",
-    href: "/downloads/member-forms",
+    href: "/forms",
     color: "#0369a1",
     bg: "#f0f9ff",
   },
   {
-    icon: <QuestionCircleOutlined />,
+    icon: <QnAIcon size={56} />,
     title: "ถาม-ตอบ Q&A",
     desc: "สอบถามเจ้าหน้าที่",
     href: "/qna",
@@ -72,7 +72,7 @@ const quickLinks = [
     bg: "#ecfeff",
   },
   {
-    icon: <CustomerServiceOutlined />,
+    icon: <ContactIcon size={56} />,
     title: "ติดต่อเรา",
     desc: "ช่องทางติดต่อสหกรณ์",
     href: "/contact",
@@ -110,10 +110,7 @@ export default function HomePage() {
                 className={css.card}
                 style={{ "--accent": item.color, "--bg": item.bg } as React.CSSProperties}
               >
-                <div
-                  className={css.iconWrap}
-                  style={{ background: item.color }}
-                >
+                <div className={css.iconWrap}>
                   {item.icon}
                 </div>
                 <h3 className={css.cardTitle}>{item.title}</h3>
@@ -130,11 +127,8 @@ export default function HomePage() {
               style={{ "--accent": "#dc2626", "--bg": "#fef2f2" } as React.CSSProperties}
               onClick={() => setComplaintOpen(true)}
             >
-              <div
-                className={css.iconWrap}
-                style={{ background: "#dc2626" }}
-              >
-                <AlertOutlined />
+              <div className={css.iconWrap}>
+                <AlertIcon size={56} />
               </div>
               <h3 className={css.cardTitle}>ร้องเรียน / เสนอแนะ</h3>
               <p className={css.cardDesc}>แจ้งเรื่องหรือเสนอแนะ</p>

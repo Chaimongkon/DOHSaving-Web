@@ -13,7 +13,9 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
-    const folder = (formData.get("folder") as string) || "general";
+    // Sanitize folder to prevent path traversal (only allow a-z, 0-9, hyphens)
+    const rawFolder = (formData.get("folder") as string) || "general";
+    const folder = rawFolder.replace(/[^a-zA-Z0-9\-_]/g, "").slice(0, 50) || "general";
 
     if (!file) {
       return NextResponse.json({ error: "ไม่พบไฟล์" }, { status: 400 });
@@ -23,18 +25,22 @@ export async function POST(req: NextRequest) {
     const allowedTypes = [
       "image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml",
       "application/pdf",
+      "application/json",
     ];
-    if (!allowedTypes.includes(file.type)) {
+    const isJson = file.name.endsWith(".json") || file.type === "application/json";
+    if (!allowedTypes.includes(file.type) && !isJson) {
       return NextResponse.json(
-        { error: "รองรับเฉพาะไฟล์ภาพ (jpg, png, webp, gif, svg) และ PDF" },
+        { error: "รองรับเฉพาะไฟล์ภาพ (jpg, png, webp, gif, svg), PDF และ JSON (Lottie)" },
         { status: 400 }
       );
     }
 
-    // ขนาดไม่เกิน 10MB
-    if (file.size > 10 * 1024 * 1024) {
+    // ขนาดไม่เกิน 100MB สำหรับ PDF, 5MB สำหรับ JSON, 10MB สำหรับรูปภาพ
+    const maxSize = file.type === "application/pdf" ? 100 * 1024 * 1024 : isJson ? 5 * 1024 * 1024 : 10 * 1024 * 1024;
+    const maxLabel = file.type === "application/pdf" ? "100MB" : isJson ? "5MB" : "10MB";
+    if (file.size > maxSize) {
       return NextResponse.json(
-        { error: "ขนาดไฟล์ต้องไม่เกิน 10MB" },
+        { error: `ขนาดไฟล์ต้องไม่เกิน ${maxLabel}` },
         { status: 400 }
       );
     }

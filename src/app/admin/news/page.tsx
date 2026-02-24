@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import {
   PlusOutlined,
   EditOutlined,
@@ -25,6 +26,7 @@ interface News {
   details: string | null;
   imagePath: string | null;
   pdfPath: string | null;
+  legacyPath: string | null;
   category: string;
   viewCount: number;
   isPinned: boolean;
@@ -39,6 +41,7 @@ interface NewsForm {
   details: string;
   imagePath: string;
   pdfPath: string;
+  legacyPath: string;
   category: string;
   isPinned: boolean;
   isActive: boolean;
@@ -49,6 +52,7 @@ const defaultForm: NewsForm = {
   details: "",
   imagePath: "",
   pdfPath: "",
+  legacyPath: "",
   category: "general",
   isPinned: false,
   isActive: true,
@@ -125,6 +129,7 @@ export default function NewsPage() {
       details: item.details || "",
       imagePath: item.imagePath || "",
       pdfPath: item.pdfPath || "",
+      legacyPath: item.legacyPath || "",
       category: item.category,
       isPinned: item.isPinned ?? false,
       isActive: item.isActive,
@@ -394,7 +399,7 @@ export default function NewsPage() {
                   {form.details && (
                     <div
                       className={css.previewContent}
-                      dangerouslySetInnerHTML={{ __html: form.details }}
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(form.details) }}
                     />
                   )}
                   {form.pdfPath && (
@@ -528,6 +533,21 @@ export default function NewsPage() {
                   onChange={handleUploadPdf}
                   onClick={(e) => e.stopPropagation()}
                 />
+              </div>
+
+              {/* Legacy Path */}
+              <div className={css.formGroup}>
+                <label className={css.formLabel}>ชื่อไฟล์เก่า (Legacy Redirect)</label>
+                <input
+                  type="text"
+                  className={css.formInput}
+                  placeholder="เช่น 34005357-f6e8-4f9a-a7ff-f05eca0fff40.pdf"
+                  value={form.legacyPath}
+                  onChange={(e) => setForm((prev) => ({ ...prev, legacyPath: e.target.value }))}
+                />
+                <span style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>
+                  ใส่ชื่อไฟล์เก่า เพื่อให้ /News/File/Pdf/xxx.pdf ยัง redirect ได้
+                </span>
               </div>
 
               {/* isPinned toggle */}

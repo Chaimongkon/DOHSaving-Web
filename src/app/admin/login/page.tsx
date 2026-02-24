@@ -1,18 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  UserOutlined,
-  LockOutlined,
-  EyeOutlined,
-  EyeInvisibleOutlined,
-  LoginOutlined,
-  ExclamationCircleOutlined,
-  ArrowLeftOutlined,
-} from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { 
+  User, 
+  Lock, 
+  Eye, 
+  EyeOff, 
+  ArrowLeft,
+  AlertCircle,
+  LogIn
+} from "lucide-react";
 import css from "./page.module.css";
 
 export default function AdminLoginPage() {
@@ -53,37 +53,68 @@ export default function AdminLoginPage() {
 
   return (
     <div className={css.container}>
-      <div className={css.card}>
-        {/* Header */}
-        <div className={css.header}>
-          <div className={css.logo}>
-            <Image src="/logo.svg" alt="Logo" width={56} height={56} />
-          </div>
-          <h1 className={css.title}>สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด</h1>
-          <p className={css.subtitle}>ระบบจัดการเว็บไซต์</p>
+      {/* Brand Section - Hidden on Mobile */}
+      <div className={css.brandSection}>
+        <div className={css.floatingShapes}>
+          <div className={`${css.shape} ${css.shape1}`}></div>
+          <div className={`${css.shape} ${css.shape2}`}></div>
+          <div className={`${css.shape} ${css.shape3}`}></div>
         </div>
+        <div className={css.brandContent}>
+          <div className={css.brandLogo}>
+                      <img
+            src="/images/logo/logo.png"
+            alt="สหกรณ์ออมทรัพย์กรมทางหลวง"
+            width={120}
+            height={120}
+          />
+          </div>
+          <h1 className={css.brandTitle}>ระบบจัดการเว็บไซต์<br/>สหกรณ์ออมทรัพย์กรมทางหลวง</h1>
+          <p className={css.brandSubtitle}>
+            ยินดีต้อนรับเข้าสู่ระบบจัดการเนื้อหาสำหรับผู้ดูแลระบบ จัดการข้อมูลข่าวสาร และบริการต่างๆ ของสหกรณ์ได้อย่างมีประสิทธิภาพ
+          </p>
+        </div>
+      </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit}>
-          <div className={css.body}>
+      {/* Form Section */}
+      <div className={css.formSection}>
+        <div className={css.formWrapper}>
+          {/* Mobile Header */}
+          <div className={css.mobileHeader}>
+            <div className={css.mobileLogo}>
+              
+                        <img
+            src="/images/logo/logo.png"
+            alt="สหกรณ์ออมทรัพย์กรมทางหลวง"
+            width={64}
+            height={64}
+          />
+            </div>
+            <h1 className={css.mobileTitle}>สหกรณ์ออมทรัพย์กรมทางหลวง</h1>
+            <p className={css.mobileSubtitle}>ระบบจัดการเว็บไซต์</p>
+          </div>
+
+          <div className={css.formHeader}>
             <h2 className={css.formTitle}>เข้าสู่ระบบ</h2>
-            <p className={css.formSubtitle}>กรุณากรอกข้อมูลเพื่อเข้าใช้งานระบบ</p>
+            <p className={css.formSubtitle}>กรุณากรอกข้อมูลประจำตัวของคุณเพื่อดำเนินการต่อ</p>
+          </div>
 
+          <form onSubmit={handleSubmit}>
             {error && (
               <div className={css.error}>
-                <ExclamationCircleOutlined /> {error}
+                <AlertCircle size={20} />
+                <span>{error}</span>
               </div>
             )}
 
-            {/* Username */}
             <div className={css.inputGroup}>
-              <label className={css.label}>ชื่อผู้ใช้</label>
+              <label className={css.label}>ชื่อผู้ใช้งาน</label>
               <div className={css.inputWrap}>
-                <UserOutlined className={css.inputIcon} />
+                <User className={css.inputIcon} size={20} />
                 <input
                   type="text"
                   className={css.input}
-                  placeholder="กรอกชื่อผู้ใช้"
+                  placeholder="กรอกชื่อผู้ใช้งาน"
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
                   autoComplete="username"
@@ -92,11 +123,10 @@ export default function AdminLoginPage() {
               </div>
             </div>
 
-            {/* Password */}
             <div className={css.inputGroup}>
               <label className={css.label}>รหัสผ่าน</label>
               <div className={css.inputWrap}>
-                <LockOutlined className={css.inputIcon} />
+                <Lock className={css.inputIcon} size={20} />
                 <input
                   type={showPassword ? "text" : "password"}
                   className={css.input}
@@ -111,30 +141,31 @@ export default function AdminLoginPage() {
                   className={css.passwordToggle}
                   onClick={() => setShowPassword(!showPassword)}
                   tabIndex={-1}
+                  aria-label={showPassword ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน"}
                 >
-                  {showPassword ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>
 
-            {/* Submit */}
             <button type="submit" className={css.submitBtn} disabled={loading}>
               {loading ? (
                 <span className={css.spinner} />
               ) : (
                 <>
-                  <LoginOutlined /> เข้าสู่ระบบ
+                  <LogIn size={20} />
+                  <span>เข้าสู่ระบบจัดการ</span>
                 </>
               )}
             </button>
-          </div>
-        </form>
+          </form>
 
-        {/* Footer */}
-        <div className={css.footer}>
-          <Link href="/" className={css.backLink}>
-            <ArrowLeftOutlined /> กลับหน้าหลัก
-          </Link>
+          <div className={css.footer}>
+            <Link href="/" className={css.backLink}>
+              <ArrowLeft size={16} />
+              <span>กลับสู่หน้าหลักเว็บไซต์</span>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

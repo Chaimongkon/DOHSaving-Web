@@ -5,17 +5,12 @@ import { Carousel } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import type { CarouselRef } from "antd/es/carousel";
 import Link from "next/link";
-import { mockSlides, type SlideData } from "@/data/mockSlides";
+import { type SlideData } from "@/data/mockSlides";
 import css from "./HeroSlider.module.css";
-
-// Fallback mock — ใช้ขณะที่ DB ยังไม่มีข้อมูล
-const fallbackSlides = mockSlides
-  .filter((item) => item.isActive)
-  .sort((a, b) => a.sortOrder - b.sortOrder);
 
 export default function HeroSlider() {
   const carouselRef = useRef<CarouselRef>(null);
-  const [slides, setSlides] = useState<SlideData[]>(fallbackSlides);
+  const [slides, setSlides] = useState<SlideData[]>([]);
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {

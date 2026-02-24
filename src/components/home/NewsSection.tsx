@@ -3,14 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { CalendarOutlined, RightOutlined, EyeOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import { mockNews, categoryMap, type NewsData } from "@/data/mockNews";
+import { categoryMap, type NewsData } from "@/data/mockNews";
 import css from "./NewsSection.module.css";
-
-// Fallback mock — ใช้ขณะที่ DB ยังไม่มีข้อมูล
-const fallbackNews = mockNews
-  .filter((n) => n.isActive)
-  .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-  .slice(0, 4);
 
 function formatDate(dateStr: string) {
   const d = new Date(dateStr);
@@ -34,7 +28,7 @@ function formatViews(count: number) {
 }
 
 export default function NewsSection() {
-  const [newsList, setNewsList] = useState<NewsData[]>(fallbackNews);
+  const [newsList, setNewsList] = useState<NewsData[]>([]);
 
   useEffect(() => {
     fetch("/api/news?limit=4")

@@ -25,6 +25,8 @@ import {
   PhoneOutlined,
   CustomerServiceOutlined,
   FormOutlined,
+  BookOutlined,
+  GiftOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
@@ -47,6 +49,9 @@ const navItems = [
       { label: "ป๊อปอัพแจ้งเตือน", href: "/admin/notifications", icon: <NotificationOutlined /> },
       { label: "วิดีโอ", href: "/admin/videos", icon: <VideoCameraOutlined /> },
       { label: "อัลบั้มภาพ", href: "/admin/photo-albums", icon: <CameraOutlined /> },
+      { label: "สื่อสำหรับสมาชิก", href: "/admin/member-media", icon: <BookOutlined /> },
+      { label: "หน้าบริการ", href: "/admin/service-pages", icon: <PictureOutlined /> },
+      { label: "วิธีใช้งาน App", href: "/admin/app-guide", icon: <FileTextOutlined /> },
     ],
   },
   {
@@ -70,6 +75,8 @@ const navItems = [
       { label: "อัตราดอกเบี้ย", href: "/admin/interest-rates", icon: <DollarOutlined /> },
       { label: "สินทรัพย์และหนี้สิน", href: "/admin/financial-summary", icon: <BankOutlined /> },
       { label: "แบบฟอร์มต่างๆ", href: "/admin/forms", icon: <FormOutlined /> },
+      { label: "รายงานประจำปี", href: "/admin/annual-reports", icon: <BookOutlined /> },
+      { label: "เอกสารประกอบการประชุม", href: "/admin/meeting-documents", icon: <FileTextOutlined /> },
     ],
   },
   {
@@ -91,6 +98,7 @@ const navItems = [
   {
     group: "ระบบ",
     items: [
+      { label: "Festival Theme", href: "/admin/festivals", icon: <GiftOutlined /> },
       { label: "ผู้ใช้งาน", href: "/admin/users", icon: <TeamOutlined /> },
       { label: "Cookie Consent", href: "/admin/cookie-consent", icon: <SafetyCertificateOutlined /> },
       { label: "ตั้งค่า", href: "/admin/settings", icon: <SettingOutlined /> },
@@ -138,7 +146,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Sidebar */}
       <aside className={`${css.sidebar} ${sidebarOpen ? css.sidebarOpen : ""}`}>
         <div className={css.brand}>
-          <Image src="/logo.svg" alt="Logo" width={36} height={36} />
+          <img
+            src="/images/logo/logo.png"
+            alt="สหกรณ์ออมทรัพย์กรมทางหลวง"
+            width={36}
+            height={36}
+          />
           <h2 className={css.brandName}>
             DOH Saving
             <span className={css.brandSub}>Admin Panel</span>

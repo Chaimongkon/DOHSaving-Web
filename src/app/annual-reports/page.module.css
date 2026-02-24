@@ -1,0 +1,250 @@
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8f 60%, #1a4b8c 100%);
+  padding: 48px 24px 64px;
+  text-align: center;
+  color: #fff;
+}
+
+.heroTitle {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.heroSub {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* ── Content ── */
+.content {
+  max-width: 1100px;
+  margin: -28px auto 0;
+  padding: 0 24px 60px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Book Grid ── */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px 36px;
+}
+
+/* ── Book Card ── */
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  width: 220px;
+  transition: transform 0.35s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+}
+
+/* ── Book ── */
+.bookWrap {
+  position: relative;
+  width: 190px;
+  height: 270px;
+  margin-bottom: 14px;
+}
+
+/* Front cover */
+.coverFront {
+  position: absolute;
+  inset: 0;
+  border-radius: 0 6px 6px 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1e3a5f, #2d5a8f);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 3;
+  transition: box-shadow 0.35s ease;
+}
+
+.card:hover .coverFront {
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 12px 36px rgba(0, 0, 0, 0.28);
+}
+
+.coverImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.coverPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.coverPlaceholder svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 4px;
+}
+
+/* ── Spine (dark strip on left) ── */
+.spine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 14px;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.15) 40%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  z-index: 4;
+  pointer-events: none;
+  border-radius: 0;
+}
+
+/* ── Stacked pages behind (visible on right edge) ── */
+.pageEdges {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: -5px;
+  bottom: -4px;
+  border-radius: 0 6px 6px 0;
+  background: #f5f1ea;
+  z-index: 1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pageEdges::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  right: -4px;
+  bottom: -3px;
+  border-radius: 0 6px 6px 0;
+  background: #ece6da;
+  z-index: -1;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Info ── */
+.info {
+  text-align: center;
+  padding: 0 4px;
+  width: 100%;
+}
+
+.year {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 6px 0 4px;
+  line-height: 1.4;
+  color: #1f2937;
+}
+
+.description {
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.4;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.readBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  margin-top: 10px;
+  background: #1e3a5f;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+
+.card:hover .readBtn {
+  background: #2d5a8f;
+}
+
+/* ── Empty State ── */
+.empty {
+  text-align: center;
+  padding: 80px 20px;
+  color: #9ca3af;
+}
+
+.empty svg {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+
+/* ── Loading ── */
+.loading {
+  text-align: center;
+  padding: 80px 20px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .hero {
+    padding: 36px 16px 52px;
+  }
+  .heroTitle {
+    font-size: 24px;
+  }
+  .content {
+    padding: 0 16px 40px;
+  }
+  .grid {
+    gap: 32px 20px;
+  }
+  .card {
+    width: 160px;
+  }
+  .bookWrap {
+    width: 145px;
+    height: 206px;
+  }
+}

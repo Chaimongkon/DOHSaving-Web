@@ -57,39 +57,27 @@
 .infoIcon {
   width: 54px;
   height: 54px;
-  border-radius: 20px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  color: #fff;
   margin-bottom: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
+.infoIcon:nth-child(even) {
+  animation-delay: 1s;
 }
 
 .infoIcon:hover {
   transform: translateY(-2px) scale(1.05);
-}
-
-.iconAddress {
-  background: linear-gradient(135deg, #FF9F43, #E8652B);
-  box-shadow: 0 10px 25px rgba(232, 101, 43, 0.3);
-}
-
-.iconHours {
-  background: linear-gradient(135deg, #2ECC71, #16a34a);
-  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.3);
-}
-
-.iconPhone {
-  background: linear-gradient(135deg, #54A0FF, #0369a1);
-  box-shadow: 0 10px 25px rgba(3, 105, 161, 0.3);
-}
-
-.iconEmail {
-  background: linear-gradient(135deg, #A29BFE, #7c3aed);
-  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
+  animation-play-state: paused;
 }
 
 .iconLine {
@@ -459,13 +447,9 @@
 .complaintLinkIcon {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
-  background: #dc2626;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  color: #fff;
 }
 
 .complaintLinkText {

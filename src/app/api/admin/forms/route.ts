@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
         group: body.group,
         title: body.title,
         fileUrl: body.fileUrl || null,
+        legacyPath: body.legacyPath || null,
         sortOrder: body.sortOrder ?? 0,
         isActive: body.isActive ?? true,
         updatedBy,
@@ -64,6 +65,7 @@ export async function PATCH(req: NextRequest) {
     if (body.group !== undefined) data.group = body.group;
     if (body.title !== undefined) data.title = body.title;
     if (body.fileUrl !== undefined) data.fileUrl = body.fileUrl || null;
+    if (body.legacyPath !== undefined) data.legacyPath = body.legacyPath || null;
     if (body.sortOrder !== undefined) data.sortOrder = Number(body.sortOrder);
     if (body.isActive !== undefined) data.isActive = body.isActive;
 
