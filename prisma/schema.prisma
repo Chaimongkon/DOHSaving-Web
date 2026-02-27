@@ -333,16 +333,23 @@ model AssetLiability {
 
 model Regulation {
   id          Int       @id @default(autoincrement())
-  title       String?   @db.VarChar(255)
-  typeForm    String?   @db.VarChar(255) // statute, regularity, declare
-  typeMember  String?   @db.VarChar(255)
+  title       String?   @db.VarChar(500)
+  typeForm    String?   @db.VarChar(255) // statute, rules, announcements
+  typeMember  String?   @db.VarChar(255) // กลุ่มสมาชิก เช่น "สมาชิกสามัญประเภท ก"
   filePath    String?   @db.VarChar(500)
+  imagePath   String?   @db.VarChar(500) // รูปประกอบ (optional)
+  description String?   @db.Text         // รายละเอียดเพิ่มเติม
+  sortOrder   Int       @default(0)
   isActive    Boolean   @default(true)
   createdBy   String?   @db.VarChar(255)
   updatedBy   String?   @db.VarChar(255)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
+  @@index([typeForm])
+  @@index([typeMember])
+  @@index([sortOrder])
+  @@index([isActive])
   @@map("regulations")
 }
 
@@ -840,15 +847,20 @@ model ServicePage {
 
 model AppGuideSection {
   id          Int      @id @default(autoincrement())
-  title       String   @db.VarChar(255)            // ชื่อหัวข้อ เช่น "วิธีการติดตั้ง และ การลืมรหัสผ่าน"
+  groupTitle  String?  @db.VarChar(255)            // หัวข้อหลัก เช่น "วิธีการติดตั้ง และ การลืมรหัสผ่าน"
+  groupOrder  Int      @default(0)                 // ลำดับกลุ่มหลัก
+  title       String   @db.VarChar(255)            // ชื่อหัวข้อย่อย เช่น "ขั้นตอนดาวน์โหลด App"
+  coverUrl    String?  @db.VarChar(500)            // รูปปก
   images      String?  @db.Text                    // JSON array: [{imageUrl, caption}]
-  sortOrder   Int      @default(0)
+  sortOrder   Int      @default(0)                 // ลำดับภายในกลุ่ม
   isActive    Boolean  @default(true)
   updatedBy   String?  @db.VarChar(255)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  @@index([groupOrder])
   @@index([sortOrder])
   @@index([isActive])
   @@map("app_guide_sections")
 }
+
