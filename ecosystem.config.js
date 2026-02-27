@@ -4,14 +4,14 @@
 module.exports = {
   apps: [{
     name: 'dohsaving-web',
-    script: '.next/standalone/server.js',
+    script: 'node_modules/next/dist/bin/next',
+    args: 'start',
     cwd: 'C:\\WebApps\\DOHSaving-Web',
     instances: 1,
     exec_mode: 'fork',
     env: {
       NODE_ENV: 'production',
       PORT: 3000,
-      HOSTNAME: '0.0.0.0',
     },
     // Auto restart settings
     max_memory_restart: '1G',
