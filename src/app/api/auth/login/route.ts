@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
 
     response.cookies.set("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false, // TODO: เปลี่ยนกลับเป็น true เมื่อติดตั้ง SSL แล้ว
       sameSite: "lax",
       maxAge: 8 * 60 * 60, // 8 hours
       path: "/",

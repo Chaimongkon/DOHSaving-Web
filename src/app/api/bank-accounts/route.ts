@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 // GET /api/bank-accounts — public: fetch active bank accounts
@@ -9,9 +8,9 @@ export async function GET() {
       orderBy: { sortOrder: "asc" },
     });
 
-    return NextResponse.json(banks);
+    return Response.json(banks);
   } catch (error) {
     console.error("Bank accounts fetch error:", error);
-    return NextResponse.json([], { status: 500 });
+    return Response.json([], { status: 500 });
   }
 }

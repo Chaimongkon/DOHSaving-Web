@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 // GET /api/videos — public: active videos
@@ -17,9 +16,9 @@ export async function GET() {
         createdAt: true,
       },
     });
-    return NextResponse.json(items);
+    return Response.json(items);
   } catch (error) {
     console.error("Failed to fetch videos:", error);
-    return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
+    return Response.json({ error: "Failed to fetch" }, { status: 500 });
   }
 }

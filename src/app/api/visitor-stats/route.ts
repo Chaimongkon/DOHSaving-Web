@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 // GET /api/visitor-stats — public: today + total counts
@@ -14,7 +13,7 @@ export async function GET() {
       }),
     ]);
 
-    return NextResponse.json(
+    return Response.json(
       { total, today },
       {
         headers: {
@@ -24,6 +23,6 @@ export async function GET() {
     );
   } catch (error) {
     console.error("Failed to get visitor stats:", error);
-    return NextResponse.json({ total: 0, today: 0 }, { status: 500 });
+    return Response.json({ total: 0, today: 0 }, { status: 500 });
   }
 }

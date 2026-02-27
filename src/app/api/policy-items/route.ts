@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
 const DB_KEY = "page_policy_items";
@@ -12,12 +12,12 @@ export async function GET(_req: NextRequest) {
 
     const items = setting?.value ? JSON.parse(setting.value) : [];
 
-    return NextResponse.json(
+    return Response.json(
       { items },
       { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } }
     );
   } catch (error) {
     console.error("Failed to fetch policy items:", error);
-    return NextResponse.json({ items: [] }, { status: 500 });
+    return Response.json({ items: [] }, { status: 500 });
   }
 }

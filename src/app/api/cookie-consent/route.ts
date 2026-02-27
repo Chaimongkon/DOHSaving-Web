@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     return res;
   } catch (error) {
     console.error("Failed to save cookie consent:", error);
-    return NextResponse.json({ error: "Failed to save" }, { status: 500 });
+    return Response.json({ error: "Failed to save" }, { status: 500 });
   }
 }
 
@@ -76,7 +76,7 @@ export async function GET(req: NextRequest) {
   try {
     const visitorId = req.cookies.get("visitor_id")?.value;
     if (!visitorId) {
-      return NextResponse.json({ hasConsent: false });
+      return Response.json({ hasConsent: false });
     }
 
     const record = await prisma.cookieConsent.findFirst({
@@ -85,10 +85,10 @@ export async function GET(req: NextRequest) {
     });
 
     if (!record) {
-      return NextResponse.json({ hasConsent: false });
+      return Response.json({ hasConsent: false });
     }
 
-    return NextResponse.json({
+    return Response.json({
       hasConsent: true,
       consentStatus: record.consentStatus,
       cookieCategories: record.cookieCategories,
@@ -96,6 +96,6 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error("Failed to check cookie consent:", error);
-    return NextResponse.json({ hasConsent: false }, { status: 500 });
+    return Response.json({ hasConsent: false }, { status: 500 });
   }
 }

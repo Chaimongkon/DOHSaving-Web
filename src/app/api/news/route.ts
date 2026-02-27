@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
 // GET /api/news — ดึงข่าวที่ active สำหรับหน้าเว็บ (public)
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
           category: true, viewCount: true, createdAt: true,
         },
       });
-      return NextResponse.json(related, {
+      return Response.json(related, {
         headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" },
       });
     }
@@ -75,12 +75,12 @@ export async function GET(req: NextRequest) {
       prisma.news.count({ where }),
     ]);
 
-    return NextResponse.json(
+    return Response.json(
       { data: news, total, page, totalPages: Math.ceil(total / limit) },
       { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" } }
     );
   } catch (error) {
     console.error("Failed to fetch news:", error);
-    return NextResponse.json({ data: [], total: 0, page: 1, totalPages: 0 }, { status: 500 });
+    return Response.json({ data: [], total: 0, page: 1, totalPages: 0 }, { status: 500 });
   }
 }

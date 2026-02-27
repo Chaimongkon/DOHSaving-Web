@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
 // ─── Security helpers ───
@@ -85,7 +85,7 @@ export async function GET(req: NextRequest) {
       }),
     ]);
 
-    return NextResponse.json({
+    return Response.json({
       questions: questions.map((q) => ({
         ...q,
         replyCount: q._count.replies,
@@ -104,7 +104,7 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error("Failed to get QnA:", error);
-    return NextResponse.json({ questions: [], total: 0 }, { status: 500 });
+    return Response.json({ questions: [], total: 0 }, { status: 500 });
   }
 }
 
@@ -114,13 +114,13 @@ export async function POST(req: NextRequest) {
     // ── Security Layer 1: Content-Type check ──
     const ct = req.headers.get("content-type") || "";
     if (!ct.includes("application/json")) {
-      return NextResponse.json({ error: "Invalid content type" }, { status: 415 });
+      return Response.json({ error: "Invalid content type" }, { status: 415 });
     }
 
     // ── Security Layer 2: Rate limit ──
     const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
     if (isQnaLimited(ip)) {
-      return NextResponse.json(
+      return Response.json(
         { error: "ตั้งกระทู้ได้สูงสุด 5 กระทู้ต่อชั่วโมง" },
         { status: 429 }
       );
@@ -129,20 +129,20 @@ export async function POST(req: NextRequest) {
     // ── Security Layer 3: Body size limit (max 10KB) ──
     const rawBody = await req.text();
     if (rawBody.length > 10240) {
-      return NextResponse.json({ error: "ข้อมูลมีขนาดใหญ่เกินไป" }, { status: 413 });
+      return Response.json({ error: "ข้อมูลมีขนาดใหญ่เกินไป" }, { status: 413 });
     }
 
     const body = JSON.parse(rawBody);
 
     // ── Security Layer 4: Honeypot bot trap ──
     if (body._website || body._url || body._hp) {
-      return NextResponse.json({ question: { id: 0 } }, { status: 201 });
+      return Response.json({ question: { id: 0 } }, { status: 201 });
     }
 
     const { authorName, memberCode, title, body: questionBody } = body;
 
     if (!title || !questionBody) {
-      return NextResponse.json({ error: "กรุณากรอกหัวข้อและเนื้อหา" }, { status: 400 });
+      return Response.json({ error: "กรุณากรอกหัวข้อและเนื้อหา" }, { status: 400 });
     }
 
     const question = await prisma.qnaQuestion.create({
@@ -154,9 +154,9 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ question }, { status: 201 });
+    return Response.json({ question }, { status: 201 });
   } catch (error) {
     console.error("Failed to create question:", error);
-    return NextResponse.json({ error: "เกิดข้อผิดพลาด" }, { status: 500 });
+    return Response.json({ error: "เกิดข้อผิดพลาด" }, { status: 500 });
   }
 }

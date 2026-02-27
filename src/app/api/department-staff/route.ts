@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
 function dbKey(dept: string) {
@@ -9,7 +9,7 @@ function dbKey(dept: string) {
 export async function GET(req: NextRequest) {
   const dept = req.nextUrl.searchParams.get("dept");
   if (!dept) {
-    return NextResponse.json({ error: "Missing dept param" }, { status: 400 });
+    return Response.json({ error: "Missing dept param" }, { status: 400 });
   }
 
   try {
@@ -19,12 +19,12 @@ export async function GET(req: NextRequest) {
 
     const staff = setting?.value ? JSON.parse(setting.value) : [];
 
-    return NextResponse.json(
+    return Response.json(
       { staff },
       { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } }
     );
   } catch (error) {
     console.error("Failed to fetch department staff:", error);
-    return NextResponse.json({ staff: [] }, { status: 500 });
+    return Response.json({ staff: [] }, { status: 500 });
   }
 }

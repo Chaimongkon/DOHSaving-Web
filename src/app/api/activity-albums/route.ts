@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
 // GET /api/activity-albums — public: list active albums
@@ -15,8 +15,8 @@ export async function GET(req: NextRequest) {
           photos: { orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }] },
         },
       });
-      if (!album) return NextResponse.json({ error: "Not found" }, { status: 404 });
-      return NextResponse.json(album);
+      if (!album) return Response.json({ error: "Not found" }, { status: 404 });
+      return Response.json(album);
     }
 
     const albums = await prisma.activityAlbum.findMany({
@@ -24,9 +24,9 @@ export async function GET(req: NextRequest) {
       orderBy: [{ sortOrder: "asc" }, { eventDate: "desc" }, { createdAt: "desc" }],
       include: { _count: { select: { photos: true } } },
     });
-    return NextResponse.json(albums);
+    return Response.json(albums);
   } catch (error) {
     console.error("Failed to fetch albums:", error);
-    return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
+    return Response.json({ error: "Failed to fetch" }, { status: 500 });
   }
 }

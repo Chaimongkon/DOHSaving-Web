@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { authenticateRequest } from "@/lib/auth";
 
@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   const payload = authenticateRequest(req);
 
   if (!payload) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
@@ -26,13 +26,13 @@ export async function GET(req: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return Response.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(user);
+    return Response.json(user);
   } catch (error) {
     console.error("Auth me error:", error);
-    return NextResponse.json(
+    return Response.json(
       { error: "เกิดข้อผิดพลาดในระบบ" },
       { status: 500 }
     );

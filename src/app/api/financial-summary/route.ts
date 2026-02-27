@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
 // GET /api/financial-summary?year=2568 — public: fetch financial summaries by year
@@ -31,13 +31,13 @@ export async function GET(req: NextRequest) {
         })
       : [];
 
-    return NextResponse.json({
+    return Response.json({
       items,
       years: availableYears,
       selectedYear: targetYear,
     });
   } catch (error) {
     console.error("Financial summary fetch error:", error);
-    return NextResponse.json({ items: [], years: [], selectedYear: null }, { status: 500 });
+    return Response.json({ items: [], years: [], selectedYear: null }, { status: 500 });
   }
 }

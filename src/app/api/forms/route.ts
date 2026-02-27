@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
 // GET /api/forms — public: fetch active forms, optionally filter by category/group
@@ -25,9 +25,9 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(items);
+    return Response.json(items);
   } catch (error) {
     console.error("Failed to fetch forms:", error);
-    return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
+    return Response.json({ error: "Failed to fetch" }, { status: 500 });
   }
 }

@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 // GET /api/meeting-documents — public: fetch active documents
@@ -8,9 +7,9 @@ export async function GET() {
       where: { isActive: true },
       orderBy: [{ year: "desc" }, { sortOrder: "asc" }, { createdAt: "desc" }],
     });
-    return NextResponse.json(items);
+    return Response.json(items);
   } catch (error) {
     console.error("Failed to fetch meeting documents:", error);
-    return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
+    return Response.json({ error: "Failed to fetch" }, { status: 500 });
   }
 }

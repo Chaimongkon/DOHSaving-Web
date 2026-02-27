@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 // GET /api/contact — public: fetch all contact data
@@ -22,10 +21,10 @@ export async function GET() {
       infoMap[item.key] = item.value;
     }
 
-    return NextResponse.json({ info: infoMap, departments, lineContacts });
+    return Response.json({ info: infoMap, departments, lineContacts });
   } catch (error) {
     console.error("Contact fetch error:", error);
-    return NextResponse.json(
+    return Response.json(
       { info: {}, departments: [], lineContacts: [] },
       { status: 500 }
     );

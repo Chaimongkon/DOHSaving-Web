@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 // GET /api/festival/active — ดึง theme ที่ active และอยู่ในช่วงวันที่ปัจจุบัน
@@ -19,12 +18,12 @@ export async function GET() {
     });
 
     if (!theme) {
-      return NextResponse.json(null);
+      return Response.json(null);
     }
 
-    return NextResponse.json(theme);
+    return Response.json(theme);
   } catch (error) {
     console.error("Failed to fetch active festival theme:", error);
-    return NextResponse.json(null);
+    return Response.json(null);
   }
 }

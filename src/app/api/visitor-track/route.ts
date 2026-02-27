@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
 // Rate limit: max 60 visits per minute per IP (prevents flooding)
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
     // Rate limit check
     if (isVisitLimited(ip)) {
-      return NextResponse.json({ ok: true }); // silent reject
+      return Response.json({ ok: true }); // silent reject
     }
 
     const body = await req.json().catch(() => ({}));
@@ -39,9 +39,9 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ ok: true });
+    return Response.json({ ok: true });
   } catch (error) {
     console.error("Failed to track visit:", error);
-    return NextResponse.json({ ok: false }, { status: 500 });
+    return Response.json({ ok: false }, { status: 500 });
   }
 }

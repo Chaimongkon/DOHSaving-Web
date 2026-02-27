@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
 // GET /api/notifications — ดึง notification ที่ active + อยู่ในช่วงเวลา
@@ -25,12 +25,12 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json(notifications, {
+    return Response.json(notifications, {
       headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" },
     });
   } catch (error) {
     console.error("Failed to fetch notifications:", error);
-    return NextResponse.json([], { status: 500 });
+    return Response.json([], { status: 500 });
   }
 }
 
@@ -38,16 +38,16 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const { id } = await req.json();
-    if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+    if (!id) return Response.json({ error: "Missing id" }, { status: 400 });
 
     await prisma.notification.update({
       where: { id: parseInt(id) },
       data: { clickCount: { increment: 1 } },
     });
 
-    return NextResponse.json({ success: true });
+    return Response.json({ success: true });
   } catch (error) {
     console.error("Failed to track click:", error);
-    return NextResponse.json({ error: "Failed" }, { status: 500 });
+    return Response.json({ error: "Failed" }, { status: 500 });
   }
 }

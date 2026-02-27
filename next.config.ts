@@ -13,11 +13,12 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   experimental: {
     serverActions: {
       bodySizeLimit: "100mb",
     },
-    middlewareClientMaxBodySize: "100mb",
+    proxyClientMaxBodySize: "100mb",
   },
   async headers() {
     return [

@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 // GET /api/slides — ดึง slide ที่ active สำหรับหน้าเว็บ (public)
@@ -20,11 +19,11 @@ export async function GET() {
         isActive: true,
       },
     });
-    return NextResponse.json(slides, {
+    return Response.json(slides, {
       headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" },
     });
   } catch (error) {
     console.error("Failed to fetch slides:", error);
-    return NextResponse.json([], { status: 500 });
+    return Response.json([], { status: 500 });
   }
 }

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
 // ─── XSS Sanitizer — strip dangerous HTML/script tags ───
@@ -74,13 +74,13 @@ export async function POST(req: NextRequest) {
     // ── Security Layer 1: Content-Type check ──
     const ct = req.headers.get("content-type") || "";
     if (!ct.includes("application/json")) {
-      return NextResponse.json({ error: "Invalid content type" }, { status: 415 });
+      return Response.json({ error: "Invalid content type" }, { status: 415 });
     }
 
     // ── Security Layer 2: Rate limit ──
     const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
     if (isRateLimited(ip)) {
-      return NextResponse.json(
+      return Response.json(
         { error: "ส่งเรื่องได้สูงสุด 3 เรื่องต่อชั่วโมง กรุณาลองใหม่ภายหลัง" },
         { status: 429 }
       );
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
     // ── Security Layer 3: Body size limit (max 10KB) ──
     const rawBody = await req.text();
     if (rawBody.length > 10240) {
-      return NextResponse.json({ error: "ข้อมูลมีขนาดใหญ่เกินไป" }, { status: 413 });
+      return Response.json({ error: "ข้อมูลมีขนาดใหญ่เกินไป" }, { status: 413 });
     }
 
     const body = JSON.parse(rawBody);
@@ -97,13 +97,13 @@ export async function POST(req: NextRequest) {
     // ── Security Layer 4: Honeypot bot trap ──
     if (body._website || body._url || body._hp) {
       // Bot filled hidden field — silently reject with fake success
-      return NextResponse.json({ ok: true, trackingCode: "CP000000-0000", message: "ส่งข้อมูลสำเร็จ" }, { status: 201 });
+      return Response.json({ ok: true, trackingCode: "CP000000-0000", message: "ส่งข้อมูลสำเร็จ" }, { status: 201 });
     }
 
     const { memberId, name, tel, email, category, subject, complaint: detail } = body;
 
     if (!subject || !detail) {
-      return NextResponse.json({ error: "กรุณากรอกหัวข้อและรายละเอียด" }, { status: 400 });
+      return Response.json({ error: "กรุณากรอกหัวข้อและรายละเอียด" }, { status: 400 });
     }
 
     // Validate category whitelist
@@ -112,12 +112,12 @@ export async function POST(req: NextRequest) {
 
     // Validate email format if provided
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      return NextResponse.json({ error: "รูปแบบอีเมลไม่ถูกต้อง" }, { status: 400 });
+      return Response.json({ error: "รูปแบบอีเมลไม่ถูกต้อง" }, { status: 400 });
     }
 
     // Validate tel format if provided (digits, dashes, spaces only)
     if (tel && !/^[\d\s\-+()]{0,20}$/.test(tel.trim())) {
-      return NextResponse.json({ error: "รูปแบบเบอร์โทรไม่ถูกต้อง" }, { status: 400 });
+      return Response.json({ error: "รูปแบบเบอร์โทรไม่ถูกต้อง" }, { status: 400 });
     }
 
     const trackingCode = generateTrackingCode();
@@ -135,14 +135,14 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({
+    return Response.json({
       ok: true,
       trackingCode: record.trackingCode,
       message: "ส่งข้อมูลสำเร็จ",
     }, { status: 201 });
   } catch (error) {
     console.error("Failed to create complaint:", error);
-    return NextResponse.json({ error: "เกิดข้อผิดพลาด" }, { status: 500 });
+    return Response.json({ error: "เกิดข้อผิดพลาด" }, { status: 500 });
   }
 }
 
@@ -152,7 +152,7 @@ export async function GET(req: NextRequest) {
     // Anti brute-force rate limit
     const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
     if (isTrackLimited(ip)) {
-      return NextResponse.json(
+      return Response.json(
         { error: "ค้นหาได้สูงสุด 10 ครั้งต่อนาที กรุณาลองใหม่ภายหลัง" },
         { status: 429 }
       );
@@ -162,12 +162,12 @@ export async function GET(req: NextRequest) {
     const code = searchParams.get("code")?.trim();
 
     if (!code) {
-      return NextResponse.json({ error: "กรุณาระบุรหัสติดตาม" }, { status: 400 });
+      return Response.json({ error: "กรุณาระบุรหัสติดตาม" }, { status: 400 });
     }
 
     // Validate tracking code format (CP + 6 digits + dash + 4 digits)
     if (!/^CP\d{6}-\d{4}$/.test(code)) {
-      return NextResponse.json({ error: "รูปแบบรหัสติดตามไม่ถูกต้อง" }, { status: 400 });
+      return Response.json({ error: "รูปแบบรหัสติดตามไม่ถูกต้อง" }, { status: 400 });
     }
 
     const record = await prisma.complaint.findUnique({
@@ -183,12 +183,12 @@ export async function GET(req: NextRequest) {
     });
 
     if (!record) {
-      return NextResponse.json({ error: "ไม่พบข้อมูล" }, { status: 404 });
+      return Response.json({ error: "ไม่พบข้อมูล" }, { status: 404 });
     }
 
-    return NextResponse.json({ complaint: record });
+    return Response.json({ complaint: record });
   } catch (error) {
     console.error("Failed to get complaint:", error);
-    return NextResponse.json({ error: "เกิดข้อผิดพลาด" }, { status: 500 });
+    return Response.json({ error: "เกิดข้อผิดพลาด" }, { status: 500 });
   }
 }

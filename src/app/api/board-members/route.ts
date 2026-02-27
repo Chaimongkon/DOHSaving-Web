@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
 const DB_KEY = "page_board_members";
@@ -12,12 +12,12 @@ export async function GET(_req: NextRequest) {
 
     const members = setting?.value ? JSON.parse(setting.value) : [];
 
-    return NextResponse.json(
+    return Response.json(
       { members },
       { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } }
     );
   } catch (error) {
     console.error("Failed to fetch board members:", error);
-    return NextResponse.json({ members: [] }, { status: 500 });
+    return Response.json({ members: [] }, { status: 500 });
   }
 }

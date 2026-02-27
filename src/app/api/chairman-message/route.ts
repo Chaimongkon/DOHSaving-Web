@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
 const DB_KEY = "page_chairman_message";
@@ -14,12 +14,12 @@ export async function GET(_req: NextRequest) {
       ? JSON.parse(setting.value)
       : { portraitUrl: "", messageUrl: "", name: "", title: "" };
 
-    return NextResponse.json(data, {
+    return Response.json(data, {
       headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" },
     });
   } catch (error) {
     console.error("Failed to fetch chairman message:", error);
-    return NextResponse.json(
+    return Response.json(
       { portraitUrl: "", messageUrl: "", name: "", title: "" },
       { status: 500 }
     );
