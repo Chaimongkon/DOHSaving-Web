@@ -22,6 +22,10 @@ function formatMonth(dateStr: string) {
   });
 }
 
+function stripHtml(html: string) {
+  return html.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim();
+}
+
 function formatViews(count: number) {
   if (count >= 1000) return (count / 1000).toFixed(1).replace(/\.0$/, "") + "k";
   return count.toString();
@@ -39,7 +43,7 @@ export default function NewsSection() {
           setNewsList(items);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const featured = newsList[0];
@@ -85,7 +89,7 @@ export default function NewsSection() {
                 {featured.category === "member-approval" && (
                   <span className={css.monthly}>{formatMonth(featured.createdAt)}</span>
                 )}
-                <p className={`${css.excerpt} ${css.excerptFeatured}`}>{featured.details}</p>
+                <p className={`${css.excerpt} ${css.excerptFeatured}`}>{featured.details ? stripHtml(featured.details) : ""}</p>
                 <div className={css.meta}>
                   <div className={css.metaLeft}>
                     <span className={css.metaItem}>
