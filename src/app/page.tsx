@@ -44,7 +44,7 @@ const quickLinks = [
     icon: <DepositIcon size={56} />,
     title: "เงินฝาก",
     desc: "ออมทรัพย์ ประจำ พิเศษ",
-    href: "/services/savings",
+    href: "/services/deposit",
     color: "#16a34a",
     bg: "#f0fdf4",
   },
