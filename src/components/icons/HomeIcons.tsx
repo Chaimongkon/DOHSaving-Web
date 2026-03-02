@@ -138,7 +138,27 @@ export const ContactIcon = ({ size = 48, ...props }: IconProps) => (
   </svg>
 );
 
-// 8. ร้องเรียน/เสนอแนะ (Complaint - Red)
+// 8. บัญชีธนาคารสหกรณ์ (Bank Account - Teal)
+export const BankAccountIcon = ({ size = 48, ...props }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ overflow: "visible" }} {...props}>
+    <defs>
+      <linearGradient id="bankAccGrad" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#2dd4bf" />
+        <stop offset="1" stopColor="#0d9488" />
+      </linearGradient>
+      <filter id="bankAccShadow" x="-10" y="-10" width="84" height="84" filterUnits="userSpaceOnUse">
+        <feDropShadow dx="0" dy="6" stdDeviation="6" floodColor="#0d9488" floodOpacity="0.4" />
+      </filter>
+    </defs>
+    <circle cx="32" cy="32" r="24" fill="url(#bankAccGrad)" filter="url(#bankAccShadow)" />
+    <rect x="20" y="26" width="24" height="16" rx="3" stroke="white" strokeWidth="2.5" fill="none" />
+    <path d="M20 31H44" stroke="white" strokeWidth="2" />
+    <rect x="24" y="35" width="8" height="4" rx="1" fill="white" opacity="0.7" />
+    <path d="M26 22L32 18L38 22" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+// 9. ร้องเรียน/เสนอแนะ (Complaint - Red)
 export const AlertIcon = ({ size = 48, ...props }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ overflow: "visible" }} {...props}>
     <defs>

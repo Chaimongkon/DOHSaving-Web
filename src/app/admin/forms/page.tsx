@@ -129,7 +129,7 @@ export default function AdminFormsPage() {
           <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>แบบฟอร์มต่างๆ</h1>
           <p style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>จัดการแบบฟอร์มสำหรับดาวน์โหลด แยกตามประเภทสมาชิก</p>
         </div>
-        <button onClick={() => { setEditing({ ...empty }); setIsNew(true); }} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#E8652B", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontWeight: 600, fontSize: 13 }}>
+        <button onClick={() => { setEditing({ ...empty, category: filterCat !== "ทั้งหมด" ? filterCat : CATEGORIES[0], group: filterGroup !== "ทั้งหมด" ? filterGroup : GROUPS[0] }); setIsNew(true); }} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#E8652B", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontWeight: 600, fontSize: 13 }}>
           <PlusOutlined /> เพิ่มแบบฟอร์ม
         </button>
       </div>

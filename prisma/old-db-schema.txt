@@ -1,0 +1,75 @@
+Connected to db_webdohcoop
+
+=== ALL TABLES ===
+  answers                             6 rows
+  application                         43 rows
+  assetsliabilities                   36 rows
+  businessreport                      5 rows
+  complaints                          7 rows
+  contact                             6 rows
+  cookieconsents                      3807 rows
+  cooperativesociety                  6 rows
+  countwebvisits                      50176 rows
+  election                            15619 rows
+  electiondepartment                  158 rows
+  electionvideos                      16 rows
+  formdowsloads                       54 rows
+  interest                            17 rows
+  member_media                        4 rows
+  news                                142 rows
+  notification                        6 rows
+  particles                           7 rows
+  photoalbum                          8 rows
+  questions                           12 rows
+  services                            19 rows
+  slides                              5 rows
+  statushome                          5 rows
+  statuteregularitydeclare            46 rows
+  treeorganizational                  56 rows
+  users                               6 rows
+  videos                              5 rows
+
+=== NEWS TABLE COLUMNS ===
+  Id                   int                       NO
+  Title                varchar(255)              YES
+  Details              varchar(255)              YES
+  Image                longblob                  YES
+  ImagePath            varchar(255)              YES
+  File                 longblob                  YES
+  PdfPath              varchar(255)              YES
+  CreateDate           datetime                  NO
+  CreateBy             varchar(255)              YES
+  UpdateDate           datetime                  YES
+  UpdateBy             varchar(255)              YES
+
+=== NEWS SAMPLE (2 rows, text columns only) ===
+[
+  {
+    "Id": 202,
+    "Title": "ประกาศรายชื่อสมาชิกผู้โชคดี สามัญ ข ",
+    "Details": "ประกาศรายชื่อสมาชิกผู้โชคดีได้รับรางวัลในการประชุมใหญ่สามัญประจำปี2568 ประเภทสามัญ ข วันที่ 13 ก.พ. 2569",
+    "ImagePath": "/Uploads/News/Image/8823924d-0fbd-4494-8743-4171e9e84ce0.jpg",
+    "PdfPath": "/Uploads/News/Pdf/34005357-f6e8-4f9a-a7ff-f05eca0fff40.pdf",
+    "CreateDate": "2026-02-16T02:26:03.000Z",
+    "CreateBy": null,
+    "UpdateDate": null,
+    "UpdateBy": null
+  },
+  {
+    "Id": 201,
+    "Title": "ประกาศรายชื่อสมาชิกผู้โชคดี สามัญ ก",
+    "Details": "ประกาศรายชื่อสมาชิกผู้โชคดีได้รับรางวัลในการประชุมใหญ่สามัญประจำปี2568 ประเภทสามัญ ก วันที่ 13 ก.พ. 2569",
+    "ImagePath": "/Uploads/News/Image/acf62c00-2dc5-45a3-9e96-12be9d182e5f.jpg",
+    "PdfPath": "/Uploads/News/Pdf/66e527c8-8677-428b-8b3d-a1363e27b678.pdf",
+    "CreateDate": "2026-02-16T02:24:34.000Z",
+    "CreateBy": null,
+    "UpdateDate": null,
+    "UpdateBy": null
+  }
+]
+
+Total news: 142
+
+Blob columns (images stored in DB): Image, File
+  Image: 63/142 rows have data
+  File: 63/142 rows have data

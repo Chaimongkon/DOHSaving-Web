@@ -43,12 +43,15 @@
   margin-bottom: 24px;
   overflow-x: auto;
   position: relative;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
 }
 
 .tabBar::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  display: none;
+  /* Chrome/Safari */
 }
 
 .tab {
@@ -229,8 +232,15 @@
 }
 
 @keyframes cardAppear {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card:hover {
@@ -341,8 +351,13 @@
 }
 
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* ── Category Overview Grid ── */
@@ -372,32 +387,38 @@
 }
 
 @keyframes catCardAppear {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .catCard:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   border-color: var(--cat-color, #1e3a5f);
 }
 
 .catIconWrap {
   flex-shrink: 0;
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px;
-  background: var(--cat-bg, #f0f4f8);
-  color: var(--cat-color, #1e3a5f);
-  transition: all 0.25s ease;
+  border-radius: 16px;
+  background: transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scale(1);
 }
 
 .catCard:hover .catIconWrap {
-  background: var(--cat-color, #1e3a5f);
-  color: #fff;
+  transform: scale(1.1) translateY(-4px);
 }
 
 .catInfo {
@@ -521,50 +542,61 @@
   .hero {
     padding: 36px 16px 48px;
   }
+
   .heroTitle {
     font-size: 22px;
   }
+
   .content {
     padding: 0 16px 40px;
   }
+
   .tabBar {
     flex-wrap: nowrap;
     padding: 4px;
     gap: 4px;
     border-radius: 12px;
   }
+
   .tab {
     padding: 10px 12px;
     font-size: 12px;
     border-radius: 8px;
   }
+
   .tabLabel {
     font-size: 12px;
   }
+
   .tabCount {
     min-width: 18px;
     height: 18px;
     font-size: 10px;
   }
+
   .grid {
     grid-template-columns: 1fr;
   }
+
   .catGrid {
     grid-template-columns: 1fr;
     gap: 10px;
   }
+
   .catCard {
     padding: 16px;
     gap: 12px;
   }
+
   .catIconWrap {
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
+    width: 48px;
+    height: 48px;
   }
+
   .catLabel {
     font-size: 14px;
   }
+
   .catDesc {
     font-size: 11px;
   }

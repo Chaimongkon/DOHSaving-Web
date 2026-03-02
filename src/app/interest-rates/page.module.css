@@ -1,102 +1,110 @@
 /* ═══════════════════════════════════════════════════════
-   Interest Rates Page — Premium Financial Design
+   Interest Rates Page — Premium Financial Design (Elegant Scale)
    ═══════════════════════════════════════════════════════ */
 
 /* ─── Hero ─── */
 .hero {
-  background: linear-gradient(160deg, #0a1628 0%, #122a4a 40%, #0f3d5c 70%, #0d4f5a 100%);
-  padding: 40px 24px 48px;
+  background: #0f172a;
+  /* Slate 900 */
+  padding: 30px 24px 44px;
   text-align: center;
   position: relative;
   overflow: hidden;
+  color: #fff;
 }
 
-.heroDecor1 {
-  position: absolute;
-  width: 350px;
-  height: 350px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(13, 148, 136, 0.15) 0%, transparent 70%);
-  top: -200px;
-  right: -100px;
-  pointer-events: none;
-}
-
-.heroDecor2 {
-  position: absolute;
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(232, 101, 43, 0.08) 0%, transparent 70%);
-  bottom: -150px;
-  left: -80px;
-  pointer-events: none;
-}
-
-.heroDecor3 {
+.heroOuterBackground {
   position: absolute;
   inset: 0;
-  background-image: 
-    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.heroBlob1,
+.heroBlob2 {
+  position: absolute;
+  filter: blur(80px);
+  border-radius: 50%;
+  opacity: 0.5;
+}
+
+.heroBlob1 {
+  top: -50px;
+  right: 10%;
+  width: 300px;
+  height: 300px;
+  background: rgba(16, 185, 129, 0.3);
+  /* Emerald Green */
+}
+
+.heroBlob2 {
+  bottom: -80px;
+  left: 10%;
+  width: 350px;
+  height: 350px;
+  background: rgba(59, 130, 246, 0.3);
+  /* Blue */
 }
 
 .heroInner {
   position: relative;
   z-index: 1;
-  max-width: 720px;
+  max-width: 800px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.heroBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 18px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.heroIconHeader {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 12px;
-  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
+  backdrop-filter: blur(8px);
 }
 
 .heroTitle {
   font-size: 30px;
   font-weight: 800;
   color: #ffffff;
-  margin: 0 0 6px;
+  margin: 0 0 10px;
   letter-spacing: -0.5px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .heroSubtitle {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 15px;
+  color: #e2e8f0;
   margin: 0 0 16px;
   font-weight: 400;
+  line-height: 1.5;
 }
 
 .heroDate {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 18px;
-  background: rgba(255, 255, 255, 0.08);
+  gap: 8px;
+  padding: 6px 20px;
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 28px;
-  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 30px;
+  color: #f8fafc;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .heroDateIcon {
-  color: #5eead4;
-  font-size: 15px;
+  color: #34d399;
+  /* Emerald 400 */
+  font-size: 16px;
 }
 
 /* ─── Hero stats ─── */
@@ -105,112 +113,130 @@
   align-items: center;
   justify-content: center;
   gap: 0;
-  margin-top: 20px;
-  background: rgba(255, 255, 255, 0.06);
+  margin-top: 16px;
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
-  padding: 16px 32px;
-  max-width: 420px;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 16px 20px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
 
 .heroStat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   flex: 1;
 }
 
 .heroStatLabel {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.45);
-  font-weight: 500;
+  font-size: 13px;
+  color: #cbd5e1;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .heroStatValue {
-  font-size: 28px;
-  font-weight: 800;
-  color: #5eead4;
+  font-size: 32px;
+  font-weight: 900;
+  color: #34d399;
   line-height: 1;
+  text-shadow: 0 2px 10px rgba(52, 211, 153, 0.3);
 }
 
 .heroStatValue small {
-  font-size: 14px;
-  font-weight: 600;
-  opacity: 0.7;
+  font-size: 16px;
+  font-weight: 700;
+  opacity: 0.8;
   margin-left: 2px;
 }
 
 .heroStatValueLoan {
-  color: #fdba74;
+  color: #fb923c;
+  /* Orange 400 */
+  text-shadow: 0 2px 10px rgba(251, 146, 60, 0.3);
+}
+
+.heroStatSubtext {
+  font-size: 12px;
+  color: #94a3b8;
 }
 
 .heroStatDivider {
-  width: 1px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 0 24px;
+  width: 2px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 0 32px;
 }
 
 /* ─── Tabs ─── */
 .tabWrapper {
   background: #ffffff;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #e2e8f0;
   position: sticky;
   top: 0;
   z-index: 20;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .tabBar {
   display: flex;
   justify-content: center;
-  gap: 0;
+  gap: 8px;
   max-width: 900px;
   margin: 0 auto;
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabBar::-webkit-scrollbar {
+  display: none;
 }
 
 .tab {
-  padding: 16px 32px;
+  padding: 16px 20px;
   border: none;
   background: transparent;
-  color: #9ca3af;
+  color: #64748b;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   font-family: inherit;
   display: flex;
   align-items: center;
   gap: 8px;
   border-bottom: 3px solid transparent;
   margin-bottom: -1px;
+  white-space: nowrap;
+}
+
+.tabIcon {
+  font-size: 18px;
 }
 
 .tab:hover {
-  color: #374151;
+  color: #0f172a;
 }
 
 .tabActive {
   color: #0d9488;
   border-bottom-color: #0d9488;
-}
-
-.tabActive:hover {
-  color: #0d9488;
-}
-
-.tabIcon {
-  font-size: 16px;
+  background: #f0fdfa;
+  /* Highlight background */
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
 /* ─── Content ─── */
 .content {
   max-width: 900px;
   margin: 0 auto;
-  padding: 32px 24px 80px;
+  padding: 40px 24px 80px;
 }
 
 /* ─── Section ─── */
@@ -221,9 +247,12 @@
 .sectionHeader {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 16px;
-  padding: 0 4px;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
 }
 
 .sectionIcon {
@@ -233,94 +262,99 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  color: #ffffff;
   flex-shrink: 0;
 }
 
 .sectionIconDeposit {
-  background: linear-gradient(135deg, #0d9488, #14b8a6);
-  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25);
+  background: transparent;
 }
 
 .sectionIconLoan {
-  background: linear-gradient(135deg, #E8652B, #f59e0b);
-  box-shadow: 0 4px 14px rgba(232, 101, 43, 0.25);
+  background: transparent;
 }
 
 .sectionTitle {
   font-size: 20px;
-  font-weight: 700;
-  color: #0f1d36;
+  font-weight: 800;
+  color: #0f172a;
   margin: 0;
   line-height: 1.2;
 }
 
 .sectionSub {
   font-size: 13px;
-  color: #9ca3af;
-  margin: 2px 0 0;
+  color: #475569;
+  margin: 4px 0 0;
+  font-weight: 500;
 }
 
 .sectionCount {
   margin-left: auto;
-  font-size: 12px;
-  color: #9ca3af;
-  font-weight: 500;
-  background: #f3f4f6;
-  padding: 4px 12px;
-  border-radius: 12px;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 700;
+  background: #e2e8f0;
+  padding: 6px 14px;
+  border-radius: 20px;
 }
 
 /* ─── Rate list ─── */
 .rateList {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid #e5e7eb;
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
 }
 
-/* ─── Rate item ─── */
+/* ─── Rate item (Cards instead of List) ─── */
 .rateItem {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px;
-  border-bottom: 1px solid #f3f4f6;
-  transition: all 0.2s ease;
+  padding: 20px;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   animation: fadeSlideUp 0.35s ease both;
   position: relative;
+  overflow: hidden;
 }
 
-.rateItem:last-child {
-  border-bottom: none;
+.rateItem:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
 }
 
 .rateItemDeposit:hover {
-  background: #f0fdfa;
+  border-color: #34d399;
 }
 
 .rateItemLoan:hover {
-  background: #fff7ed;
+  border-color: #fb923c;
 }
 
-/* Highlight row */
-.rateItemHighlight {
-  background: linear-gradient(90deg, rgba(13, 148, 136, 0.04), transparent);
+/* Highlight Indicator (Colored Left Border instead of full background) */
+.rateItemHighlight::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 5px;
+  background: #10b981;
 }
 
-.rateItemLoan.rateItemHighlight {
-  background: linear-gradient(90deg, rgba(232, 101, 43, 0.04), transparent);
+.rateItemLoan.rateItemHighlight::before {
+  background: #f97316;
 }
 
 @keyframes fadeSlideUp {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(12px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -330,23 +364,25 @@
 /* ─── Badge ─── */
 .badge {
   position: absolute;
-  top: 6px;
-  right: 12px;
-  font-size: 9px;
+  top: 0;
+  right: 20px;
+  font-size: 11px;
   font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 8px;
-  letter-spacing: 0.3px;
+  padding: 4px 12px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .badgeDeposit {
-  background: #0d9488;
+  background: #10b981;
   color: #ffffff;
 }
 
 .badgeLoan {
-  background: #E8652B;
+  background: #f97316;
   color: #ffffff;
 }
 
@@ -354,17 +390,31 @@
 .rateItemLeft {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   flex: 1;
   min-width: 0;
 }
 
-.rateIndex {
-  font-size: 11px;
-  font-weight: 700;
-  color: #d1d5db;
-  min-width: 22px;
+.rateIconWrapper {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.rateItem:hover .rateIconWrapper {
+  transform: scale(1.1);
+}
+
+.rateIconDeposit {
+  background: transparent;
+}
+
+.rateIconLoan {
+  background: transparent;
 }
 
 .rateInfo {
@@ -372,24 +422,33 @@
 }
 
 .rateName {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1f2937;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
   margin: 0;
   line-height: 1.35;
 }
 
 .rateCondition {
-  font-size: 11px;
-  color: #9ca3af;
-  margin: 2px 0 0;
-  line-height: 1.4;
+  font-size: 13px;
+  color: #64748b;
+  margin: 4px 0 0;
+  line-height: 1.5;
+  font-weight: 500;
 }
 
 /* ─── Rate item right ─── */
 .rateItemRight {
   flex-shrink: 0;
-  margin-left: 16px;
+  margin-left: 20px;
+  text-align: right;
+}
+
+.singleRateBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
 }
 
 /* ─── Rate pill ─── */
@@ -398,23 +457,24 @@
   align-items: baseline;
   gap: 2px;
   padding: 6px 14px;
-  border-radius: 12px;
+  border-radius: 10px;
 }
 
 .ratePillDeposit {
-  background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
+  background: #ecfdf5;
 }
 
 .ratePillLoan {
-  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  background: #fff7ed;
 }
 
 .ratePillBig {
-  padding: 8px 18px;
+  padding: 8px 14px;
 }
 
 .ratePillBig .ratePillNum {
   font-size: 26px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .ratePillNum {
@@ -425,24 +485,24 @@
 }
 
 .ratePillDeposit .ratePillNum {
-  color: #0d9488;
+  color: #059669;
 }
 
 .ratePillLoan .ratePillNum {
-  color: #E8652B;
+  color: #c2410c;
 }
 
 .ratePillPct {
-  font-size: 12px;
-  font-weight: 600;
-  opacity: 0.6;
+  font-size: 15px;
+  font-weight: 700;
+  opacity: 0.8;
 }
 
 .ratePillUnit {
-  font-size: 10px;
-  font-weight: 500;
-  color: #9ca3af;
-  margin-left: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  margin-left: 4px;
 }
 
 /* ─── Rate pill second (dual) ─── */
@@ -451,103 +511,115 @@
   align-items: baseline;
   gap: 2px;
   padding: 6px 14px;
-  border-radius: 12px;
-  background: #f3f4f6;
+  border-radius: 10px;
+  background: #f1f5f9;
 }
 
 .ratePillSecond .ratePillNum {
-  color: #4b5563;
+  font-size: 20px;
+  color: #334155;
 }
 
 /* ─── Dual rate ─── */
 .dualRate {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: nowrap;
   justify-content: flex-end;
 }
 
-.dualMeta {
+.dualRateBlock {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 2px;
+  align-items: flex-end;
+  gap: 4px;
 }
 
 .dualLabel {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
-  color: #9ca3af;
+  color: #64748b;
   white-space: nowrap;
+  background: #f8fafc;
+  padding: 2px 8px;
+  border-radius: 6px;
 }
 
 .dualArrow {
-  color: #d1d5db;
-  font-size: 11px;
-  margin: 0 2px;
+  color: #cbd5e1;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
 /* ─── Notice ─── */
 .notice {
   margin-top: 40px;
-  padding: 20px 24px;
-  background: linear-gradient(135deg, #fffbeb, #fef3c7);
-  border: 1px solid #fde68a;
+  padding: 24px;
+  background: #fffbeb;
+  border: 2px solid #fde68a;
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 20px;
   flex-wrap: wrap;
+  box-shadow: 0 10px 30px rgba(253, 230, 138, 0.3);
 }
 
 .noticeLeft {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 16px;
+  flex: 1;
 }
 
 .noticeIcon {
-  color: #f59e0b;
-  font-size: 20px;
+  color: #d97706;
+  font-size: 28px;
   flex-shrink: 0;
-  margin-top: 2px;
+  background: #fff3cd;
+  border-radius: 50%;
+  padding: 8px;
 }
 
 .noticeTitle {
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 800;
   color: #92400e;
   display: block;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 
 .noticeText {
-  font-size: 13px;
-  color: #a16207;
-  line-height: 1.5;
+  font-size: 14px;
+  color: #b45309;
+  line-height: 1.6;
   margin: 0;
+  font-weight: 500;
 }
 
 .noticePhone {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 12px 24px;
   background: #ffffff;
-  border: 1px solid #fde68a;
-  border-radius: 12px;
-  color: #92400e;
-  font-size: 14px;
-  font-weight: 700;
+  border: 2px solid #f59e0b;
+  border-radius: 16px;
+  color: #b45309;
+  font-size: 15px;
+  font-weight: 800;
   text-decoration: none;
   white-space: nowrap;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .noticePhone:hover {
-  background: #fef3c7;
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+  background: #f59e0b;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
 }
 
 /* ─── Loading / Empty ─── */
@@ -557,28 +629,32 @@
   align-items: center;
   gap: 16px;
   padding: 80px 24px;
-  color: #9ca3af;
-  font-size: 14px;
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .spinner {
-  width: 36px;
-  height: 36px;
-  border: 3px solid #f0f0f0;
-  border-top-color: #0d9488;
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f1f5f9;
+  border-top-color: #0ea5e9;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .empty {
   text-align: center;
   padding: 80px 24px;
-  color: #9ca3af;
-  font-size: 15px;
+  color: #64748b;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -591,119 +667,69 @@
   }
 
   .heroTitle {
-    font-size: 24px;
+    font-size: 26px;
+  }
+
+  .heroSubtitle {
+    font-size: 14px;
   }
 
   .heroStats {
-    padding: 14px 16px;
-    gap: 0;
-  }
-
-  .heroStatValue {
-    font-size: 22px;
-  }
-
-  .heroStatDivider {
-    margin: 0 16px;
-    height: 36px;
-  }
-
-  .tab {
-    padding: 14px 20px;
-    font-size: 13px;
-  }
-
-  .content {
-    padding: 20px 12px 60px;
-  }
-
-  .rateItem {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 14px 16px;
-  }
-
-  .rateItemRight {
-    align-self: flex-end;
-  }
-
-  .ratePillNum {
-    font-size: 20px;
-  }
-
-  .ratePillBig .ratePillNum {
-    font-size: 22px;
-  }
-
-  .dualRate {
-    gap: 6px;
-  }
-
-  .notice {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .sectionIcon {
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
-    border-radius: 10px;
-  }
-
-  .sectionTitle {
-    font-size: 17px;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero {
-    padding: 28px 14px 36px;
-  }
-
-  .heroTitle {
-    font-size: 22px;
-  }
-
-  .heroBadge {
-    font-size: 10px;
-    padding: 4px 12px;
-  }
-
-  .heroStats {
+    padding: 16px;
     flex-direction: column;
     gap: 12px;
-    padding: 18px;
   }
 
   .heroStatDivider {
     width: 60%;
     height: 1px;
-    margin: 0;
+    margin: 4px 0;
   }
 
   .tab {
-    padding: 12px 14px;
-    font-size: 12px;
-    gap: 5px;
+    padding: 14px 16px;
+    font-size: 13px;
   }
 
-  .sectionHeader {
-    flex-wrap: wrap;
+  .content {
+    padding: 24px 16px 60px;
   }
 
-  .sectionCount {
+  .rateItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 16px;
+  }
+
+  .rateItemRight {
+    align-self: flex-start;
     margin-left: 0;
+    width: 100%;
   }
 
-  .rateIndex {
+  .singleRateBlock,
+  .dualRate {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .dualRate {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .dualArrow {
     display: none;
   }
 
-  .badge {
-    position: static;
-    display: inline-block;
-    margin-bottom: 4px;
+  .notice {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
+  }
+
+  .noticePhone {
+    justify-content: center;
   }
 }

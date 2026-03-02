@@ -4,7 +4,11 @@ import React, { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Download, FileText, Search, ChevronLeft, Users, Banknote, HandCoins, HeartHandshake, FileWarning, UserCheck, Shield, FolderOpen } from "lucide-react";
+import { Download, FileText, Search, ChevronLeft } from "lucide-react";
+import {
+  Users3D, Wallet3D, HandCoins3D, HeartGift3D,
+  Complaint3D, Certificate3D, Shield3D, Folder3D
+} from "@/components/icons/ThreeDIcons";
 import css from "./page.module.css";
 
 const CATEGORIES = ["สมาชิกสามัญ ก", "สมาชิกสามัญ ข", "สมาชิกสมทบ", "สมาชิกทุกประเภท"];
@@ -27,14 +31,14 @@ const GROUP_THAI_TO_KEY: Record<string, string> = Object.fromEntries(
 
 // Group metadata for category overview cards
 const GROUP_META: { key: string; label: string; desc: string; icon: React.ReactNode; color: string; bg: string }[] = [
-  { key: "member-registration", label: "แบบฟอร์มสมัครสมาชิก", desc: "สมัครสมาชิกสามัญ ก, ข และสมทบ", icon: <Users size={28} />, color: "#0369a1", bg: "#f0f9ff" },
-  { key: "deposit-withdraw", label: "แบบฟอร์มเงินฝาก-ถอน", desc: "ฝาก ถอน โอน เงินฝากทุกประเภท", icon: <Banknote size={28} />, color: "#16a34a", bg: "#f0fdf4" },
-  { key: "loan", label: "แบบฟอร์มเกี่ยวกับเงินกู้", desc: "กู้ฉุกเฉิน สามัญ พิเศษ", icon: <HandCoins size={28} />, color: "#E8652B", bg: "#fff5f0" },
-  { key: "welfare", label: "แบบฟอร์มขอสวัสดิการ", desc: "สวัสดิการสมาชิกทุกประเภท", icon: <HeartHandshake size={28} />, color: "#7c3aed", bg: "#f5f3ff" },
-  { key: "complaint", label: "แบบฟอร์มหนังสือร้องทุกข์", desc: "ร้องเรียน ร้องทุกข์", icon: <FileWarning size={28} />, color: "#dc2626", bg: "#fef2f2" },
-  { key: "beneficiary", label: "หนังสือแต่งตั้งผู้รับโอนประโยชน์", desc: "แต่งตั้งผู้รับผลประโยชน์", icon: <UserCheck size={28} />, color: "#0891b2", bg: "#ecfeff" },
-  { key: "insurance", label: "ใบคำขอเอาประกันภัยกลุ่มสหกรณ์", desc: "ประกันภัยกลุ่มสมาชิก", icon: <Shield size={28} />, color: "#be185d", bg: "#fdf2f8" },
-  { key: "other", label: "แบบฟอร์มอื่นๆ", desc: "แบบฟอร์มทั่วไป", icon: <FolderOpen size={28} />, color: "#64748b", bg: "#f8fafc" },
+  { key: "member-registration", label: "แบบฟอร์มสมัครสมาชิก", desc: "สมัครสมาชิกสามัญ ก, ข และสมทบ", icon: <Users3D size={48} />, color: "#0369a1", bg: "#f0f9ff" },
+  { key: "deposit-withdraw", label: "แบบฟอร์มเงินฝาก-ถอน", desc: "ฝาก ถอน โอน เงินฝากทุกประเภท", icon: <Wallet3D size={48} />, color: "#16a34a", bg: "#f0fdf4" },
+  { key: "loan", label: "แบบฟอร์มเกี่ยวกับเงินกู้", desc: "กู้ฉุกเฉิน สามัญ พิเศษ", icon: <HandCoins3D size={48} />, color: "#E8652B", bg: "#fff5f0" },
+  { key: "welfare", label: "แบบฟอร์มขอสวัสดิการ", desc: "สวัสดิการสมาชิกทุกประเภท", icon: <HeartGift3D size={48} />, color: "#7c3aed", bg: "#f5f3ff" },
+  { key: "complaint", label: "แบบฟอร์มหนังสือร้องทุกข์", desc: "ร้องเรียน ร้องทุกข์", icon: <Complaint3D size={48} />, color: "#dc2626", bg: "#fef2f2" },
+  { key: "beneficiary", label: "หนังสือแต่งตั้งผู้รับโอนประโยชน์", desc: "แต่งตั้งผู้รับผลประโยชน์", icon: <Certificate3D size={48} />, color: "#0891b2", bg: "#ecfeff" },
+  { key: "insurance", label: "ใบคำขอเอาประกันภัยกลุ่มสหกรณ์", desc: "ประกันภัยกลุ่มสมาชิก", icon: <Shield3D size={48} />, color: "#be185d", bg: "#fdf2f8" },
+  { key: "other", label: "แบบฟอร์มอื่นๆ", desc: "แบบฟอร์มทั่วไป", icon: <Folder3D size={48} />, color: "#64748b", bg: "#f8fafc" },
 ];
 
 interface FormItem {

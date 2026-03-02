@@ -11,7 +11,8 @@ import {
   FormIcon,
   QnAIcon,
   ContactIcon,
-  AlertIcon
+  AlertIcon,
+  BankAccountIcon
 } from "@/components/icons/HomeIcons";
 import HeroSlider from "@/components/home/HeroSlider";
 import AppDownloadBar from "@/components/home/AppDownloadBar";
@@ -78,6 +79,14 @@ const quickLinks = [
     href: "/contact",
     color: "#be185d",
     bg: "#fdf2f8",
+  },
+  {
+    icon: <BankAccountIcon size={56} />,
+    title: "บัญชีธนาคารสหกรณ์",
+    desc: "ข้อมูลบัญชีสำหรับโอนเงิน",
+    href: "/bank-accounts",
+    color: "#0d9488",
+    bg: "#f0fdfa",
   },
 ];
 

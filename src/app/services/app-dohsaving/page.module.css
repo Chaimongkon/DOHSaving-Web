@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   App DOHSaving — วิธีใช้งาน Application
+   App DOHSaving — วิธีใช้งาน Application (Album Listing)
    ═══════════════════════════════════════════════════════ */
 
 /* ── Hero ── */
@@ -56,22 +56,22 @@
   border: 1px solid #e2e8f0;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
   padding: 28px 32px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
   font-size: 14px;
   color: #475569;
   line-height: 1.8;
 }
 
-/* ── Section ── */
+/* ── Section (Group Heading) ── */
 .section {
-  margin-bottom: 32px;
+  margin-bottom: 36px;
 }
 
 .sectionTitle {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: #1e293b;
-  margin: 0 0 16px;
+  margin: 0 0 18px;
   padding-left: 14px;
   border-left: 4px solid #E8652B;
 }
@@ -81,160 +81,72 @@
   margin-right: 4px;
 }
 
-/* ── Image Grid ── */
-.imageGrid {
+/* ── Album Grid ── */
+.albumGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 20px;
 }
 
-.imageCard {
+.albumCard {
   background: #fff;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
-  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
   transition: all 0.25s;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.imageCard:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+.albumCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
   border-color: #93c5fd;
 }
 
-.imageThumb {
+.albumCover {
   width: 100%;
   aspect-ratio: 4 / 3;
-  object-fit: contain;
-  background: #f8fafc;
+  object-fit: cover;
   display: block;
-  padding: 8px;
+  background: #f1f5f9;
 }
 
-.imageCaption {
-  padding: 10px 14px;
-  font-size: 12px;
-  color: #475569;
-  font-weight: 500;
-  text-align: center;
+.albumInfo {
+  padding: 14px 16px;
   border-top: 1px solid #f1f5f9;
-  background: #fff;
 }
 
-.zoomHint {
+.albumTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 6px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.albumMeta {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 6px;
-  font-size: 10px;
+  gap: 6px;
+  font-size: 12px;
   color: #94a3b8;
-  background: #f8fafc;
 }
 
-/* ── Lightbox ── */
-.lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(0, 0, 0, 0.92);
-  display: flex;
+.albumBadge {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.lightboxClose {
-  position: absolute;
-  top: 20px;
-  right: 24px;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-  z-index: 10;
-}
-
-.lightboxClose:hover {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.lightboxNav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-  z-index: 10;
-}
-
-.lightboxNav:hover {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.lightboxPrev {
-  left: 20px;
-}
-
-.lightboxNext {
-  right: 20px;
-}
-
-.lightboxImage {
-  max-width: 90vw;
-  max-height: 85vh;
-  object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
-}
-
-.lightboxCaption {
-  position: absolute;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.7);
-  color: #fff;
-  padding: 8px 20px;
-  border-radius: 8px;
-  font-size: 13px;
-  max-width: 80%;
-  text-align: center;
-  backdrop-filter: blur(8px);
-}
-
-.lightboxCounter {
-  position: absolute;
-  top: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 13px;
+  gap: 4px;
+  padding: 3px 10px;
+  background: #eff6ff;
+  color: #1e40af;
+  border-radius: 6px;
+  font-size: 11px;
   font-weight: 600;
 }
 
@@ -246,11 +158,17 @@
   font-size: 14px;
 }
 
+.empty {
+  text-align: center;
+  padding: 60px 24px;
+  color: #9ca3af;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .imageGrid {
+  .albumGrid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 14px;
   }
 
   .hero {
@@ -271,13 +189,8 @@
 }
 
 @media (max-width: 480px) {
-  .imageGrid {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  .lightboxImage {
-    max-width: 95vw;
-    max-height: 80vh;
+  .albumGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 }

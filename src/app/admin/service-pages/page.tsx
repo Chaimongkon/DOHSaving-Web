@@ -16,6 +16,17 @@ const CATEGORIES = [
   "บริการอิเล็กทรอนิกส์",
 ];
 
+const FORM_GROUPS = [
+  "แบบฟอร์มสมัครสมาชิก",
+  "แบบฟอร์มเงินฝาก-ถอน",
+  "แบบฟอร์มเกี่ยวกับเงินกู้",
+  "แบบฟอร์มขอสวัสดิการ",
+  "แบบฟอร์มหนังสือร้องทุกข์",
+  "หนังสือแต่งตั้งผู้รับโอนประโยชน์",
+  "ใบคำขอเอาประกันภัยกลุ่มสหกรณ์",
+  "แบบฟอร์มอื่นๆ",
+];
+
 interface DownloadLink {
   label: string;
   url: string;
@@ -28,6 +39,7 @@ interface ServicePageItem {
   category: string;
   infographicUrl: string;
   downloadLinks: string; // JSON string
+  formGroup: string;
   sortOrder: number;
   isActive: boolean;
 }
@@ -38,6 +50,7 @@ const empty: ServicePageItem = {
   category: CATEGORIES[0],
   infographicUrl: "",
   downloadLinks: "[]",
+  formGroup: "",
   sortOrder: 0,
   isActive: true,
 };
@@ -123,6 +136,7 @@ export default function AdminServicePagesPage() {
       category: editing.category,
       infographicUrl: editing.infographicUrl || null,
       downloadLinks: JSON.stringify(links.filter((l) => l.label.trim() && l.url.trim())),
+      formGroup: editing.formGroup || null,
       sortOrder: editing.sortOrder,
       isActive: editing.isActive,
     };
@@ -200,6 +214,18 @@ export default function AdminServicePagesPage() {
               <label style={labelStyle}>ลำดับ</label>
               <input type="number" value={editing.sortOrder} onChange={(e) => setEditing({ ...editing, sortOrder: parseInt(e.target.value) || 0 })} style={inputStyle} />
             </div>
+          </div>
+
+          {/* Row 1.5: Form Group */}
+          <div style={{ marginTop: 12, maxWidth: 400 }}>
+            <label style={labelStyle}>แบบฟอร์มที่แสดงในหน้าบริการ</label>
+            <select value={editing.formGroup} onChange={(e) => setEditing({ ...editing, formGroup: e.target.value })} style={inputStyle}>
+              <option value="">— ไม่แสดงแบบฟอร์ม —</option>
+              {FORM_GROUPS.map((g) => <option key={g} value={g}>{g}</option>)}
+            </select>
+            <span style={{ fontSize: 11, color: "#9ca3af", marginTop: 2, display: "block" }}>
+              เลือกหมวดแบบฟอร์มที่จะแสดงด้านข้าง infographic (ดึงจากระบบแบบฟอร์มอัตโนมัติ)
+            </span>
           </div>
 
           <p style={{ fontSize: 11, color: "#9ca3af", margin: "4px 0 12px" }}>URL จะเป็น: /services/<strong>{editing.slug || "xxx"}</strong></p>
@@ -297,6 +323,7 @@ export default function AdminServicePagesPage() {
               <th style={{ padding: "10px 16px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>ชื่อหน้า</th>
               <th style={{ padding: "10px 16px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>Slug</th>
               <th style={{ padding: "10px 16px", textAlign: "center", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>Infographic</th>
+              <th style={{ padding: "10px 16px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>แบบฟอร์ม</th>
               <th style={{ padding: "10px 16px", textAlign: "center", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>ลิงก์</th>
               <th style={{ padding: "10px 16px", textAlign: "center", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>สถานะ</th>
               <th style={{ padding: "10px 16px", textAlign: "center", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>จัดการ</th>
@@ -320,6 +347,7 @@ export default function AdminServicePagesPage() {
                       <span style={{ color: "#d1d5db", fontSize: 12 }}><FileOutlined /> -</span>
                     )}
                   </td>
+                  <td style={{ padding: "10px 16px", fontSize: 11, color: "#6b7280" }}>{item.formGroup || <span style={{ color: "#d1d5db" }}>-</span>}</td>
                   <td style={{ padding: "10px 16px", textAlign: "center", fontSize: 12, color: "#6b7280" }}>{linkCount} ลิงก์</td>
                   <td style={{ padding: "10px 16px", textAlign: "center" }}>
                     <span style={{ fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 4, background: item.isActive ? "#d1fae5" : "#fee2e2", color: item.isActive ? "#065f46" : "#991b1b" }}>
@@ -334,7 +362,7 @@ export default function AdminServicePagesPage() {
               );
             })}
             {filtered.length === 0 && (
-              <tr><td colSpan={7} style={{ padding: 40, textAlign: "center", color: "#9ca3af", fontSize: 13 }}>ยังไม่มีหน้าบริการ</td></tr>
+              <tr><td colSpan={8} style={{ padding: 40, textAlign: "center", color: "#9ca3af", fontSize: 13 }}>ยังไม่มีหน้าบริการ</td></tr>
             )}
           </tbody>
         </table>

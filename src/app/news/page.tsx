@@ -22,6 +22,14 @@ function formatDate(dateStr: string) {
   return d.toLocaleDateString("th-TH", { day: "numeric", month: "long", year: "numeric" });
 }
 
+function stripHtml(html: string) {
+  if (typeof window !== "undefined") {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent?.trim() || "";
+  }
+  return html.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").trim();
+}
+
 function formatViews(count: number) {
   if (count >= 1000) return (count / 1000).toFixed(1).replace(/\.0$/, "") + "k";
   return count.toString();
@@ -155,7 +163,7 @@ export default function NewsListPage() {
                 </div>
                 <div className={css.body}>
                   <h3 className={css.title}>{item.title || "ไม่มีหัวข้อ"}</h3>
-                  {item.details && <p className={css.excerpt}>{item.details}</p>}
+                  {item.details && <p className={css.excerpt}>{stripHtml(item.details)}</p>}
                   <div className={css.meta}>
                     <span><CalendarOutlined /> {formatDate(item.createdAt)}</span>
                     <span><EyeOutlined /> {formatViews(item.viewCount)}</span>

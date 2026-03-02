@@ -17,14 +17,13 @@ export async function GET(
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    // เพิ่ม viewCount
-    await prisma.news.update({
+    const updated = await prisma.news.update({
       where: { id: parseInt(id) },
       data: { viewCount: { increment: 1 } },
     });
 
-    return NextResponse.json(news, {
-      headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60" },
+    return NextResponse.json(updated, {
+      headers: { "Cache-Control": "private, no-cache" },
     });
   } catch (error) {
     console.error("Failed to fetch news:", error);

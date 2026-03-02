@@ -13,13 +13,16 @@ interface GuideImage {
 
 interface SectionItem {
   id?: number;
+  groupTitle: string;
+  groupOrder: number;
   title: string;
+  coverUrl: string;
   images: string; // JSON
   sortOrder: number;
   isActive: boolean;
 }
 
-const empty: SectionItem = { title: "", images: "[]", sortOrder: 0, isActive: true };
+const empty: SectionItem = { groupTitle: "", groupOrder: 0, title: "", coverUrl: "", images: "[]", sortOrder: 0, isActive: true };
 
 export default function AdminAppGuidePage() {
   const [items, setItems] = useState<SectionItem[]>([]);
@@ -27,7 +30,9 @@ export default function AdminAppGuidePage() {
   const [isNew, setIsNew] = useState(false);
   const [images, setImages] = useState<GuideImage[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
     const res = await fetch("/api/admin/app-guide", { credentials: "include" });
@@ -36,8 +41,11 @@ export default function AdminAppGuidePage() {
 
   useEffect(() => { load(); }, [load]);
 
+  // Collect unique group titles for autocomplete
+  const groupTitles = Array.from(new Set(items.map((i) => i.groupTitle).filter(Boolean)));
+
   const openEdit = (item: SectionItem) => {
-    setEditing({ ...item });
+    setEditing({ ...item, groupTitle: item.groupTitle || "", coverUrl: item.coverUrl || "" });
     setIsNew(false);
     try { setImages(JSON.parse(item.images || "[]")); } catch { setImages([]); }
   };
@@ -46,6 +54,25 @@ export default function AdminAppGuidePage() {
     setEditing({ ...empty });
     setIsNew(true);
     setImages([]);
+  };
+
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editing) return;
+    if (!file.type.startsWith("image/")) { alert("รองรับเฉพาะไฟล์รูปภาพ"); return; }
+    setUploadingCover(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("folder", "app-guide");
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd, credentials: "include" });
+      if (res.ok) {
+        const data = await res.json();
+        setEditing({ ...editing, coverUrl: data.url });
+      } else alert("อัปโหลดไม่สำเร็จ");
+    } catch { alert("อัปโหลดไม่สำเร็จ"); }
+    setUploadingCover(false);
+    if (coverInputRef.current) coverInputRef.current.value = "";
   };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,11 +116,14 @@ export default function AdminAppGuidePage() {
 
   const save = async () => {
     if (!editing) return;
-    if (!editing.title.trim()) return alert("กรุณาระบุชื่อหัวข้อ");
+    if (!editing.title.trim()) return alert("กรุณาระบุชื่อหัวข้อย่อย");
 
     const method = isNew ? "POST" : "PATCH";
     const payload: Record<string, unknown> = {
+      groupTitle: editing.groupTitle.trim() || null,
+      groupOrder: editing.groupOrder,
       title: editing.title.trim(),
+      coverUrl: editing.coverUrl || null,
       images: JSON.stringify(images),
       sortOrder: editing.sortOrder,
       isActive: editing.isActive,
@@ -118,7 +148,17 @@ export default function AdminAppGuidePage() {
     load();
   };
 
-  const inputStyle: React.CSSProperties = { display: "block", width: "100%", padding: "8px 12px", border: "1px solid #d1d5db", borderRadius: 8, marginTop: 4, fontSize: 13 };
+  // Group items by groupTitle for display
+  const grouped: { groupTitle: string; groupOrder: number; items: SectionItem[] }[] = [];
+  for (const item of items) {
+    const gt = item.groupTitle || "(ไม่มีกลุ่ม)";
+    let group = grouped.find((g) => g.groupTitle === gt);
+    if (!group) { group = { groupTitle: gt, groupOrder: item.groupOrder, items: [] }; grouped.push(group); }
+    group.items.push(item);
+  }
+  grouped.sort((a, b) => a.groupOrder - b.groupOrder);
+
+  const inputStyle: React.CSSProperties = { display: "block", width: "100%", padding: "8px 12px", border: "1px solid #d1d5db", borderRadius: 8, marginTop: 4, fontSize: 13, boxSizing: "border-box" };
   const labelStyle: React.CSSProperties = { fontSize: 12, color: "#6b7280", display: "block" };
 
   return (
@@ -127,27 +167,75 @@ export default function AdminAppGuidePage() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
         <div>
           <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>วิธีใช้งาน Application DOHSaving</h1>
-          <p style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>จัดการหัวข้อและรูปภาพแนะนำการใช้งานแอพ</p>
+          <p style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>จัดการหัวข้อหลักและหัวข้อย่อยพร้อมรูปปกและรูปรายละเอียด</p>
         </div>
         <button onClick={openNew} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#E8652B", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontWeight: 600, fontSize: 13 }}>
-          <PlusOutlined /> เพิ่มหัวข้อ
+          <PlusOutlined /> เพิ่มหัวข้อย่อย
         </button>
       </div>
 
       {/* Edit Form */}
       {editing && (
         <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 24, marginBottom: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-          <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700 }}>{isNew ? "เพิ่มหัวข้อใหม่" : "แก้ไขหัวข้อ"}</h3>
+          <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700 }}>{isNew ? "เพิ่มหัวข้อย่อยใหม่" : "แก้ไขหัวข้อย่อย"}</h3>
 
-          {/* Title + Sort */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 100px", gap: 12, maxWidth: 600 }}>
+          {/* Group Title + Group Order */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 80px", gap: 12, maxWidth: 700 }}>
             <div>
-              <label style={labelStyle}>ชื่อหัวข้อ *</label>
-              <input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} placeholder='เช่น "วิธีการติดตั้ง และ การลืมรหัสผ่าน"' style={inputStyle} />
+              <label style={labelStyle}>หัวข้อหลัก (กลุ่ม)</label>
+              <input
+                list="groupTitleList"
+                value={editing.groupTitle}
+                onChange={(e) => setEditing({ ...editing, groupTitle: e.target.value })}
+                placeholder='เช่น "วิธีการติดตั้ง และ การลืมรหัสผ่าน"'
+                style={inputStyle}
+              />
+              <datalist id="groupTitleList">
+                {groupTitles.map((gt, i) => <option key={i} value={gt} />)}
+              </datalist>
             </div>
             <div>
-              <label style={labelStyle}>ลำดับ</label>
+              <label style={labelStyle}>ชื่อหัวข้อย่อย *</label>
+              <input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} placeholder='เช่น "ขั้นตอนดาวน์โหลด App"' style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>ลำดับกลุ่ม</label>
+              <input type="number" value={editing.groupOrder} onChange={(e) => setEditing({ ...editing, groupOrder: parseInt(e.target.value) || 0 })} style={inputStyle} />
+            </div>
+          </div>
+
+          {/* Sort Order */}
+          <div style={{ display: "grid", gridTemplateColumns: "100px", gap: 12, maxWidth: 700, marginTop: 8 }}>
+            <div>
+              <label style={labelStyle}>ลำดับย่อย</label>
               <input type="number" value={editing.sortOrder} onChange={(e) => setEditing({ ...editing, sortOrder: parseInt(e.target.value) || 0 })} style={inputStyle} />
+            </div>
+          </div>
+
+          {/* Cover Upload */}
+          <div style={{ marginTop: 12, padding: 16, background: "#f9fafb", borderRadius: 10, border: "1px dashed #d1d5db" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 16, flexWrap: "wrap" }}>
+              <div style={{ flex: 1, minWidth: 200 }}>
+                <p style={{ fontSize: 14, fontWeight: 700, color: "#374151", margin: "0 0 4px" }}>
+                  <PictureOutlined style={{ color: "#E8652B", marginRight: 6 }} />
+                  รูปปก (Cover)
+                </p>
+                <p style={{ fontSize: 11, color: "#9ca3af", margin: "4px 0 8px" }}>รูปที่จะแสดงในหน้ารวม (แนะนำขนาด 400x300)</p>
+                <input ref={coverInputRef} type="file" accept="image/*" onChange={handleCoverUpload} style={{ display: "none" }} />
+                <button
+                  onClick={() => coverInputRef.current?.click()}
+                  disabled={uploadingCover}
+                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", background: uploadingCover ? "#d1d5db" : "#0369a1", color: "#fff", border: "none", borderRadius: 8, cursor: uploadingCover ? "not-allowed" : "pointer", fontWeight: 600, fontSize: 13 }}
+                >
+                  {uploadingCover ? <><LoadingOutlined /> กำลังอัปโหลด...</> : <><UploadOutlined /> เลือกรูปปก</>}
+                </button>
+              </div>
+              {editing.coverUrl && (
+                <div style={{ position: "relative" }}>
+                  <img src={editing.coverUrl} alt="cover" style={{ height: 120, borderRadius: 8, border: "1px solid #e5e7eb", objectFit: "cover" }} />
+                  <button onClick={() => setEditing({ ...editing, coverUrl: "" })} style={{ position: "absolute", top: -8, right: -8, width: 24, height: 24, borderRadius: "50%", background: "#ef4444", color: "#fff", border: "none", cursor: "pointer", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -156,7 +244,7 @@ export default function AdminAppGuidePage() {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
               <p style={{ fontSize: 14, fontWeight: 700, color: "#374151", margin: 0 }}>
                 <PictureOutlined style={{ color: "#E8652B", marginRight: 6 }} />
-                รูปภาพประกอบ ({images.length} รูป)
+                รูปภาพรายละเอียด ({images.length} รูป)
               </p>
               <div>
                 <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleUpload} style={{ display: "none" }} />
@@ -196,7 +284,6 @@ export default function AdminAppGuidePage() {
                       <button onClick={() => removeImage(idx)} style={{ padding: "2px 8px", border: "1px solid #fecaca", borderRadius: 4, background: "#fef2f2", color: "#dc2626", cursor: "pointer", fontSize: 11 }}>ลบ</button>
                     </div>
                   </div>
-                  {/* Number badge */}
                   <div style={{ position: "absolute", top: 6, left: 6, width: 24, height: 24, borderRadius: "50%", background: "#E8652B", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700 }}>{idx + 1}</div>
                 </div>
               ))}
@@ -217,49 +304,56 @@ export default function AdminAppGuidePage() {
         </div>
       )}
 
-      {/* Section Cards */}
+      {/* Grouped Section Cards */}
       {items.length === 0 ? (
         <div style={{ textAlign: "center", padding: 60, color: "#9ca3af" }}>
           <MenuOutlined style={{ fontSize: 40, marginBottom: 12 }} />
           <p>ยังไม่มีหัวข้อ</p>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {items.map((item) => {
-            let imgCount = 0;
-            let firstImg = "";
-            try {
-              const parsed = JSON.parse(item.images || "[]");
-              imgCount = parsed.length;
-              if (parsed[0]?.imageUrl) firstImg = parsed[0].imageUrl;
-            } catch { /* */ }
-            return (
-              <div key={item.id} style={{ display: "flex", alignItems: "center", gap: 16, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, opacity: item.isActive ? 1 : 0.5 }}>
-                {/* Thumbnail */}
-                <div style={{ width: 80, height: 60, borderRadius: 8, overflow: "hidden", background: "#f3f4f6", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  {firstImg ? (
-                    <img src={firstImg} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  ) : (
-                    <PictureOutlined style={{ fontSize: 24, color: "#d1d5db" }} />
-                  )}
-                </div>
-                {/* Info */}
-                <div style={{ flex: 1 }}>
-                  <h4 style={{ fontSize: 14, fontWeight: 600, margin: "0 0 4px", color: "#1f2937" }}>{item.title}</h4>
-                  <span style={{ fontSize: 12, color: "#6b7280" }}>{imgCount} รูป · ลำดับ {item.sortOrder}</span>
-                </div>
-                {/* Status */}
-                <span style={{ fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 4, background: item.isActive ? "#d1fae5" : "#fee2e2", color: item.isActive ? "#065f46" : "#991b1b" }}>
-                  {item.isActive ? "เผยแพร่" : "ซ่อน"}
-                </span>
-                {/* Actions */}
-                <div>
-                  <button onClick={() => openEdit(item)} style={{ background: "none", border: "none", color: "#0369a1", cursor: "pointer", fontSize: 16, marginRight: 8 }} title="แก้ไข"><EditOutlined /></button>
-                  <button onClick={() => item.id && remove(item.id)} style={{ background: "none", border: "none", color: "#dc2626", cursor: "pointer", fontSize: 16 }} title="ลบ"><DeleteOutlined /></button>
-                </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          {grouped.map((group, gIdx) => (
+            <div key={gIdx}>
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: "#1e293b", margin: "0 0 10px", paddingLeft: 12, borderLeft: "4px solid #E8652B" }}>
+                <span style={{ color: "#E8652B", marginRight: 6 }}>{gIdx + 1}.</span>
+                {group.groupTitle}
+                <span style={{ fontSize: 11, color: "#9ca3af", fontWeight: 400, marginLeft: 8 }}>ลำดับกลุ่ม: {group.groupOrder}</span>
+              </h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingLeft: 16 }}>
+                {group.items.map((item) => {
+                  let imgCount = 0;
+                  let firstImg = "";
+                  try {
+                    const parsed = JSON.parse(item.images || "[]");
+                    imgCount = parsed.length;
+                    if (parsed[0]?.imageUrl) firstImg = parsed[0].imageUrl;
+                  } catch { /* */ }
+                  return (
+                    <div key={item.id} style={{ display: "flex", alignItems: "center", gap: 16, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 14, opacity: item.isActive ? 1 : 0.5 }}>
+                      <div style={{ width: 72, height: 54, borderRadius: 8, overflow: "hidden", background: "#f3f4f6", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        {(item.coverUrl || firstImg) ? (
+                          <img src={item.coverUrl || firstImg} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        ) : (
+                          <PictureOutlined style={{ fontSize: 22, color: "#d1d5db" }} />
+                        )}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <h4 style={{ fontSize: 13, fontWeight: 600, margin: "0 0 2px", color: "#1f2937" }}>{item.title}</h4>
+                        <span style={{ fontSize: 11, color: "#6b7280" }}>{imgCount} รูป · ลำดับย่อย {item.sortOrder}</span>
+                      </div>
+                      <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 4, background: item.isActive ? "#d1fae5" : "#fee2e2", color: item.isActive ? "#065f46" : "#991b1b" }}>
+                        {item.isActive ? "เผยแพร่" : "ซ่อน"}
+                      </span>
+                      <div>
+                        <button onClick={() => openEdit(item)} style={{ background: "none", border: "none", color: "#0369a1", cursor: "pointer", fontSize: 15, marginRight: 6 }} title="แก้ไข"><EditOutlined /></button>
+                        <button onClick={() => item.id && remove(item.id)} style={{ background: "none", border: "none", color: "#dc2626", cursor: "pointer", fontSize: 15 }} title="ลบ"><DeleteOutlined /></button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       )}
     </div>

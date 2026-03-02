@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
         category: body.category,
         infographicUrl: body.infographicUrl || null,
         downloadLinks: body.downloadLinks || null,
+        formGroup: body.formGroup || null,
         sortOrder: Number(body.sortOrder) || 0,
         isActive: body.isActive ?? true,
         updatedBy,
@@ -66,6 +67,7 @@ export async function PATCH(req: NextRequest) {
     if (body.category !== undefined) data.category = body.category;
     if (body.infographicUrl !== undefined) data.infographicUrl = body.infographicUrl || null;
     if (body.downloadLinks !== undefined) data.downloadLinks = body.downloadLinks || null;
+    if (body.formGroup !== undefined) data.formGroup = body.formGroup || null;
     if (body.sortOrder !== undefined) data.sortOrder = Number(body.sortOrder);
     if (body.isActive !== undefined) data.isActive = body.isActive;
 

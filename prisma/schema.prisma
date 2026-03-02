@@ -829,6 +829,7 @@ model ServicePage {
   category        String   @db.VarChar(100)            // กลุ่ม เช่น "สมัครสมาชิก", "เงินฝาก", "เงินกู้", "สวัสดิการ"
   infographicUrl  String?  @db.VarChar(500)            // URL รูป infographic
   downloadLinks   String?  @db.Text                    // JSON array: [{label, url}]
+  formGroup       String?  @db.VarChar(100)            // หมวดแบบฟอร์มที่จะแสดง เช่น "แบบฟอร์มเกี่ยวกับเงินกู้"
   sortOrder       Int      @default(0)
   isActive        Boolean  @default(true)
   updatedBy       String?  @db.VarChar(255)

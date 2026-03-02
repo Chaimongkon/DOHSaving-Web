@@ -23,7 +23,11 @@ function formatMonth(dateStr: string) {
 }
 
 function stripHtml(html: string) {
-  return html.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim();
+  if (typeof window !== "undefined") {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent?.trim() || "";
+  }
+  return html.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").trim();
 }
 
 function formatViews(count: number) {

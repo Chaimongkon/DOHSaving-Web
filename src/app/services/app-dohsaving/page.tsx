@@ -2,29 +2,27 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { LoadingOutlined, HomeOutlined, LeftOutlined, RightOutlined, CloseOutlined, ZoomInOutlined } from "@ant-design/icons";
+import { LoadingOutlined, HomeOutlined, PictureOutlined } from "@ant-design/icons";
 import css from "./page.module.css";
-
-interface GuideImage {
-  imageUrl: string;
-  caption: string;
-}
 
 interface Section {
   id: number;
+  groupTitle: string | null;
+  groupOrder: number;
   title: string;
+  coverUrl: string | null;
   images: string;
   sortOrder: number;
+}
+
+interface Group {
+  groupTitle: string;
+  items: Section[];
 }
 
 export default function AppDohsavingPage() {
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Lightbox state
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxImages, setLightboxImages] = useState<GuideImage[]>([]);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -37,33 +35,14 @@ export default function AppDohsavingPage() {
 
   useEffect(() => { load(); }, [load]);
 
-  const openLightbox = (images: GuideImage[], index: number) => {
-    setLightboxImages(images);
-    setLightboxIndex(index);
-    setLightboxOpen(true);
-    document.body.style.overflow = "hidden";
-  };
-
-  const closeLightbox = () => {
-    setLightboxOpen(false);
-    document.body.style.overflow = "";
-  };
-
-  const prevImage = () => setLightboxIndex((i) => (i > 0 ? i - 1 : lightboxImages.length - 1));
-  const nextImage = () => setLightboxIndex((i) => (i < lightboxImages.length - 1 ? i + 1 : 0));
-
-  // Keyboard navigation
-  useEffect(() => {
-    if (!lightboxOpen) return;
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeLightbox();
-      if (e.key === "ArrowLeft") prevImage();
-      if (e.key === "ArrowRight") nextImage();
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lightboxOpen, lightboxImages.length]);
+  // Group sections by groupTitle
+  const groups: Group[] = [];
+  for (const s of sections) {
+    const gt = s.groupTitle || "(ไม่มีกลุ่ม)";
+    let group = groups.find((g) => g.groupTitle === gt);
+    if (!group) { group = { groupTitle: gt, items: [] }; groups.push(group); }
+    group.items.push(s);
+  }
 
   return (
     <>
@@ -85,7 +64,7 @@ export default function AppDohsavingPage() {
         <div className={css.intro}>
           เพื่อความสะดวกในการทำธุรกรรมของสมาชิกสหกรณ์ออมทรัพย์กรมทางหลวง ทุกท่าน ทางสหกรณ์ฯ ได้จัดทำคู่มือการใช้งานแอปพลิเคชั่น เพื่อง่ายต่อการใช้งาน
           <br />
-          <strong>คลิกที่รูปภาพเพื่อดูขนาดเต็ม</strong>
+          <strong>คลิกที่รูปภาพเพื่อดูรายละเอียดวิธีใช้งาน</strong>
         </div>
 
         {/* Loading */}
@@ -95,93 +74,52 @@ export default function AppDohsavingPage() {
           </div>
         )}
 
-        {/* Sections */}
-        {sections.map((section, sIdx) => {
-          let images: GuideImage[] = [];
-          try { images = JSON.parse(section.images || "[]"); } catch { /* */ }
-          if (images.length === 0) return null;
-
-          return (
-            <div key={section.id} className={css.section}>
-              <h2 className={css.sectionTitle}>
-                <span className={css.sectionNumber}>{sIdx + 1}.</span> {section.title}
-              </h2>
-              <div className={css.imageGrid}>
-                {images.map((img, iIdx) => (
-                  <div
-                    key={iIdx}
-                    className={css.imageCard}
-                    onClick={() => openLightbox(images, iIdx)}
-                  >
-                    <img
-                      src={img.imageUrl}
-                      alt={img.caption || section.title}
-                      className={css.imageThumb}
-                      loading="lazy"
-                    />
-                    {img.caption && (
-                      <div className={css.imageCaption}>{img.caption}</div>
-                    )}
-                    <div className={css.zoomHint}>
-                      <ZoomInOutlined /> คลิกเพื่อขยาย
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Lightbox */}
-      {lightboxOpen && lightboxImages.length > 0 && (
-        <div className={css.lightbox} onClick={closeLightbox}>
-          {/* Close */}
-          <button className={css.lightboxClose} onClick={closeLightbox}>
-            <CloseOutlined />
-          </button>
-
-          {/* Counter */}
-          <div className={css.lightboxCounter}>
-            {lightboxIndex + 1} / {lightboxImages.length}
+        {/* Empty */}
+        {!loading && sections.length === 0 && (
+          <div className={css.empty}>
+            <PictureOutlined style={{ fontSize: 40, marginBottom: 12, display: "block" }} />
+            <p>ยังไม่มีหัวข้อ</p>
           </div>
+        )}
 
-          {/* Prev */}
-          {lightboxImages.length > 1 && (
-            <button
-              className={`${css.lightboxNav} ${css.lightboxPrev}`}
-              onClick={(e) => { e.stopPropagation(); prevImage(); }}
-            >
-              <LeftOutlined />
-            </button>
-          )}
+        {/* Grouped Sections */}
+        {groups.map((group, gIdx) => (
+          <div key={gIdx} className={css.section}>
+            <h2 className={css.sectionTitle}>
+              <span className={css.sectionNumber}>{gIdx + 1}.</span> {group.groupTitle}
+            </h2>
+            <div className={css.albumGrid}>
+              {group.items.map((item) => {
+                let fallbackCover = "";
+                try {
+                  const parsed = JSON.parse(item.images || "[]");
+                  if (parsed[0]?.imageUrl) fallbackCover = parsed[0].imageUrl;
+                } catch { /* */ }
+                const cover = item.coverUrl || fallbackCover;
 
-          {/* Image */}
-          <img
-            src={lightboxImages[lightboxIndex].imageUrl}
-            alt={lightboxImages[lightboxIndex].caption || ""}
-            className={css.lightboxImage}
-            onClick={(e) => e.stopPropagation()}
-          />
-
-          {/* Next */}
-          {lightboxImages.length > 1 && (
-            <button
-              className={`${css.lightboxNav} ${css.lightboxNext}`}
-              onClick={(e) => { e.stopPropagation(); nextImage(); }}
-            >
-              <RightOutlined />
-            </button>
-          )}
-
-          {/* Caption */}
-          {lightboxImages[lightboxIndex].caption && (
-            <div className={css.lightboxCaption}>
-              {lightboxImages[lightboxIndex].caption}
+                return (
+                  <Link
+                    key={item.id}
+                    href={`/services/app-dohsaving/${item.id}`}
+                    className={css.albumCard}
+                  >
+                    {cover ? (
+                      <img src={cover} alt={item.title} className={css.albumCover} loading="lazy" />
+                    ) : (
+                      <div className={css.albumCover} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <PictureOutlined style={{ fontSize: 40, color: "#d1d5db" }} />
+                      </div>
+                    )}
+                    <div className={css.albumInfo}>
+                      <h3 className={css.albumTitle}>{item.title}</h3>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        ))}
+      </div>
     </>
   );
 }
