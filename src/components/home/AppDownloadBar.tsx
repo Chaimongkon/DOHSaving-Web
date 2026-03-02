@@ -38,7 +38,7 @@ export default function AppDownloadBar() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/images/logo/AppGellery.png" alt="App Gallery" className={css.storeImg} />
           </a>
-          <a href="#download-app" className={css.cta}>
+          <a href="/download-app" className={css.cta}>
             <DownloadOutlined />
             <span>ดาวน์โหลดแอป</span>
           </a>

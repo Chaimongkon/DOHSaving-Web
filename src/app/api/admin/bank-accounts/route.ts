@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const { bankName, bankNameSub, accountNumber, accountType, brandColor, abbr, sortOrder } = await req.json();
+    const { bankName, bankNameSub, accountNumber, accountType, brandColor, abbr, logoUrl, sortOrder } = await req.json();
     if (!bankName || !accountNumber) {
       return NextResponse.json({ error: "ต้องระบุชื่อธนาคารและเลขบัญชี" }, { status: 400 });
     }
@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
         accountType: accountType || "ออมทรัพย์",
         brandColor: brandColor || "#1a2d4a",
         abbr: abbr || null,
+        logoUrl: logoUrl || null,
         sortOrder: sortOrder ?? 0,
         updatedBy: user.userName,
       },
@@ -64,6 +65,7 @@ export async function PATCH(req: NextRequest) {
     if (accountType !== undefined) data.accountType = accountType;
     if (brandColor !== undefined) data.brandColor = brandColor;
     if (abbr !== undefined) data.abbr = abbr || null;
+    if (body.logoUrl !== undefined) data.logoUrl = body.logoUrl || null;
     if (sortOrder !== undefined) data.sortOrder = sortOrder;
     if (typeof isActive === "boolean") data.isActive = isActive;
 

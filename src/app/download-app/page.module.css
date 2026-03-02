@@ -1,0 +1,593 @@
+/* ═══════════════════════════════════════════════════════
+   Download App Page — Modern & Beautiful
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(160deg, #0a1628 0%, #1a2d4a 30%, #1e3a5f 60%, #1a4a6a 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 0 0 40px;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -200px;
+  right: -150px;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 101, 43, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.heroInner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 50px 24px 40px;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.heroContent {
+  flex: 1;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.breadcrumb a {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumb a:hover {
+  color: #fff;
+}
+
+.heroTitle {
+  font-size: 36px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 12px;
+  line-height: 1.2;
+}
+
+.heroDesc {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 28px;
+  line-height: 1.6;
+  max-width: 500px;
+}
+
+.storeButtons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.storeBtn {
+  display: block;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.storeBtn:hover {
+  transform: scale(1.05);
+}
+
+.storeImg {
+  height: 44px;
+  width: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+.heroVisual {
+  flex-shrink: 0;
+}
+
+.heroAppIcon {
+  width: 180px;
+  height: 180px;
+  border-radius: 36px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: floatIcon 4s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.heroWave {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  line-height: 0;
+}
+
+.heroWave svg {
+  width: 100%;
+  height: 60px;
+}
+
+/* ── Page ── */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+  background: #f8fafc;
+}
+
+/* ── Features ── */
+.features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin: -24px 0 48px;
+  position: relative;
+  z-index: 1;
+}
+
+.featureCard {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 32px 20px;
+  text-align: center;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-4px);
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+.featureIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: #fff5f0;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.featureCard:hover .featureIcon {
+  transform: scale(1.05);
+  background: #ffedd5;
+}
+
+.featureTitle {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 8px;
+}
+
+.featureDesc {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── QR Code Section ── */
+.qrSection {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  padding: 40px;
+  margin-bottom: 40px;
+}
+
+.qrHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.qrHeaderIcon {
+  font-size: 32px;
+  color: #1e293b;
+}
+
+.qrTitle {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+}
+
+.qrSubtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin: 4px 0 0;
+}
+
+.qrContent {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+/* Platform tabs */
+.platformTabs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.platformTab {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.platformTab:hover {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+}
+
+.platformTabActive {
+  border-color: var(--tab-color);
+  background: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.platformIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.platformTextWrapper {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.platformLabel {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.platformStore {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+/* QR Display */
+.qrDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.qrCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.qrCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 16px 16px 0 0;
+  background: var(--qr-color);
+}
+
+.qrImage {
+  width: 260px;
+  height: 260px;
+  object-fit: contain;
+  border-radius: 12px;
+  display: block;
+  margin: 0 auto;
+}
+
+.qrPlaceholder {
+  width: 260px;
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #d1d5db;
+  gap: 16px;
+  margin: 0 auto;
+}
+
+.qrPlaceholder p {
+  font-size: 15px;
+  margin: 0;
+}
+
+.downloadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 14px 40px;
+  background: var(--btn-color);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--btn-color) 30%, transparent);
+}
+
+.downloadBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--btn-color) 40%, transparent);
+}
+
+/* ── Infographic Section ── */
+.infographicSection {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.infoTitle {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 6px;
+}
+
+.infoSubtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 28px;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+}
+
+.infoCard {
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.infoImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Guide Section ── */
+.guideSection {
+  margin-bottom: 20px;
+}
+
+.guideCard {
+  background: #1e3a5f;
+  border-radius: 16px;
+  padding: 32px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  color: #ffffff;
+}
+
+.guideTitle {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 0 8px;
+}
+
+.guideDesc {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.guideInfo {
+  flex: 1;
+}
+
+.guideBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: #ea580c;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.guideBtn:hover {
+  background: #f97316;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(234, 88, 12, 0.4);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .heroInner {
+    flex-direction: column;
+    text-align: center;
+    gap: 24px;
+    padding: 36px 24px 32px;
+  }
+
+  .heroTitle {
+    font-size: 28px;
+  }
+
+  .heroDesc {
+    max-width: 100%;
+  }
+
+  .storeButtons {
+    justify-content: center;
+  }
+
+  .heroAppIcon {
+    width: 120px;
+    height: 120px;
+    border-radius: 28px;
+  }
+
+  .features {
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: -16px;
+  }
+
+  .qrContent {
+    grid-template-columns: 1fr;
+  }
+
+  .platformTabs {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .platformTab {
+    flex-direction: column;
+    text-align: center;
+    min-width: 110px;
+    padding: 14px 16px;
+    gap: 8px;
+  }
+
+  .guideCard {
+    flex-direction: column;
+    text-align: center;
+    padding: 28px 24px;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroTitle {
+    font-size: 24px;
+  }
+
+  .heroDesc {
+    font-size: 14px;
+  }
+
+  .storeImg {
+    height: 38px;
+  }
+
+  .features {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .featureCard {
+    padding: 18px 14px;
+  }
+
+  .featureIcon {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .featureTitle {
+    font-size: 13px;
+  }
+
+  .featureDesc {
+    font-size: 11px;
+  }
+
+  .qrSection {
+    padding: 24px 18px;
+    border-radius: 18px;
+  }
+
+  .qrTitle {
+    font-size: 18px;
+  }
+
+  .qrImage {
+    width: 180px;
+    height: 180px;
+  }
+
+  .qrPlaceholder {
+    width: 180px;
+    height: 180px;
+  }
+
+  .downloadBtn {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .infoTitle {
+    font-size: 20px;
+  }
+
+  .guideCard {
+    padding: 24px 20px;
+  }
+}

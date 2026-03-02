@@ -21,16 +21,16 @@ const quickLinks = [
   { label: "หน้าแรก", href: "/" },
   { label: "ข่าวประชาสัมพันธ์", href: "/news" },
   { label: "อัตราดอกเบี้ย", href: "/interest-rates" },
-  { label: "แบบฟอร์มดาวน์โหลด", href: "/downloads/forms" },
+  { label: "แบบฟอร์มดาวน์โหลด", href: "/forms" },
   { label: "ข้อบังคับ/ระเบียบ", href: "/downloads/regulations" },
   { label: "ถาม-ตอบ", href: "/qna" },
 ];
 
 const serviceLinks = [
   { label: "บริการเงินฝาก", href: "/services/deposit" },
-  { label: "บริการเงินกู้", href: "/services/loan" },
-  { label: "สวัสดิการสมาชิก", href: "/services/welfare" },
-  { label: "สมัครสมาชิก", href: "/services/application" },
+  { label: "บริการเงินกู้", href: "/services/general-loan" },
+  { label: "สวัสดิการสมาชิก", href: "/services/welfare-a" },
+  { label: "สมัครสมาชิก", href: "/forms?group=member-registration" },
   { label: "ร้องเรียน", href: "/complaints" },
   { label: "ติดต่อเรา", href: "/contact" },
 ];

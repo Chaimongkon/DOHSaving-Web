@@ -450,3 +450,85 @@ export const HomeLoan3D: React.FC<IconProps> = ({ size = 64, className = "" }) =
         </g>
     </svg>
 );
+
+export const Phone3D: React.FC<IconProps> = ({ size = 64, className = "" }) => (
+    <svg width={size} height={size} viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="phone-body" x1="20" y1="10" x2="80" y2="90" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#818CF8" />  {/* Indigo 400 */}
+                <stop offset="100%" stopColor="#4338CA" /> {/* Indigo 700 */}
+            </linearGradient>
+            <linearGradient id="phone-screen" x1="30" y1="20" x2="70" y2="80" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#E0E7FF" />  {/* Indigo 100 */}
+                <stop offset="100%" stopColor="#A5B4FC" /> {/* Indigo 300 */}
+            </linearGradient>
+            <filter id="shadow-phone" x="-10" y="-10" width="120" height="120" filterUnits="userSpaceOnUse">
+                <feDropShadow dx="0" dy="8" stdDeviation="6" floodColor="#4338CA" floodOpacity="0.3" />
+            </filter>
+        </defs>
+        <g filter="url(#shadow-phone)">
+            <rect x="25" y="10" width="50" height="80" rx="12" fill="url(#phone-body)" />
+            <rect x="30" y="20" width="40" height="60" rx="4" fill="url(#phone-screen)" />
+            {/* Screen reflection/details */}
+            <path d="M30 40 L50 20" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" opacity="0.3" />
+            <circle cx="50" cy="84" r="3" fill="#E0E7FF" />
+            <rect x="42" y="14" width="16" height="2" rx="1" fill="#E0E7FF" />
+        </g>
+    </svg>
+);
+
+export const ShieldTick3D: React.FC<IconProps> = ({ size = 64, className = "" }) => (
+    <svg width={size} height={size} viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="shield-body" x1="20" y1="10" x2="80" y2="90" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#34D399" /> {/* Emerald 400 */}
+                <stop offset="100%" stopColor="#047857" /> {/* Emerald 700 */}
+            </linearGradient>
+            <filter id="shadow-shield-tick" x="-10" y="-10" width="120" height="120" filterUnits="userSpaceOnUse">
+                <feDropShadow dx="0" dy="8" stdDeviation="6" floodColor="#047857" floodOpacity="0.3" />
+            </filter>
+        </defs>
+        <g filter="url(#shadow-shield-tick)">
+            <path d="M50 15 L20 25 C20 55 30 75 50 90 C70 75 80 55 80 25 L50 15 Z" fill="url(#shield-body)" />
+            <path d="M50 25 L30 32 C30 55 38 68 50 80 C62 68 70 55 70 32 L50 25 Z" fill="#D1FAE5" /> {/* Emerald 100 */}
+            <path d="M40 50 L47 57 L62 42" stroke="#059669" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" /> {/* Emerald 600 */}
+        </g>
+    </svg>
+);
+
+export const CloudBase3D: React.FC<IconProps> = ({ size = 64, className = "" }) => (
+    <svg width={size} height={size} viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="cloud-grad" x1="10" y1="30" x2="90" y2="70" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#38BDF8" /> {/* Light Blue 400 */}
+                <stop offset="100%" stopColor="#0284C7" /> {/* Light Blue 700 */}
+            </linearGradient>
+            <filter id="shadow-cloud" x="-10" y="-10" width="120" height="120" filterUnits="userSpaceOnUse">
+                <feDropShadow dx="0" dy="8" stdDeviation="6" floodColor="#0284C7" floodOpacity="0.3" />
+            </filter>
+        </defs>
+        <g filter="url(#shadow-cloud)">
+            <path d="M70 45 C70 34 61 25 50 25 C42 25 35 30 32 37 C24 38 18 45 18 53 C18 63 26 71 36 71 L68 71 C78 71 86 63 86 53 C86 44 80 37 72 35 C72 38 70 42 70 45 Z" fill="url(#cloud-grad)" />
+            <path d="M40 45 C35 45 31 50 31 55 C31 61 36 65 42 65 L65 65 C71 65 76 60 76 54 C76 49 72 45 67 44" stroke="#E0F2FE" strokeWidth="8" strokeLinecap="round" /> {/* Light Blue 100 */}
+        </g>
+    </svg>
+);
+
+export const CheckSquare3D: React.FC<IconProps> = ({ size = 64, className = "" }) => (
+    <svg width={size} height={size} viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="check-grad" x1="20" y1="20" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#F472B6" /> {/* Pink 400 */}
+                <stop offset="100%" stopColor="#BE185D" /> {/* Pink 700 */}
+            </linearGradient>
+            <filter id="shadow-check" x="-10" y="-10" width="120" height="120" filterUnits="userSpaceOnUse">
+                <feDropShadow dx="0" dy="8" stdDeviation="6" floodColor="#BE185D" floodOpacity="0.3" />
+            </filter>
+        </defs>
+        <g filter="url(#shadow-check)">
+            <rect x="20" y="20" width="60" height="60" rx="16" fill="url(#check-grad)" />
+            <rect x="28" y="28" width="44" height="44" rx="10" fill="#FCE7F3" /> {/* Pink 100 */}
+            <path d="M38 52 L45 59 L62 42" stroke="#DB2777" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" /> {/* Pink 600 */}
+        </g>
+    </svg>
+);

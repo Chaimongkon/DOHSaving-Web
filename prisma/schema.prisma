@@ -502,6 +502,7 @@ model BankAccount {
   accountType     String    @default("ออมทรัพย์") @db.VarChar(100)
   brandColor      String    @default("#1a2d4a") @db.VarChar(20)
   abbr            String?   @db.VarChar(20)
+  logoUrl         String?   @db.VarChar(500)    // URL รูป logo ธนาคาร
   sortOrder       Int       @default(0)
   isActive        Boolean   @default(true)
   updatedBy       String?   @db.VarChar(255)
@@ -840,6 +841,29 @@ model ServicePage {
   @@index([category])
   @@index([isActive])
   @@map("service_pages")
+}
+
+// ============================================================
+// 📲 Download App Page (หน้าดาวน์โหลดแอป)
+// ============================================================
+
+model DownloadApp {
+  id              Int      @id @default(autoincrement())
+  title           String?  @db.VarChar(255)
+  description     String?  @db.Text
+  androidQrUrl    String?  @db.VarChar(500)
+  androidStoreUrl String?  @db.VarChar(500)
+  iosQrUrl        String?  @db.VarChar(500)
+  iosStoreUrl     String?  @db.VarChar(500)
+  huaweiQrUrl     String?  @db.VarChar(500)
+  huaweiStoreUrl  String?  @db.VarChar(500)
+  infographicUrl  String?  @db.VarChar(500)    // รูปโฆษณาหลัก
+  infographic2Url String?  @db.VarChar(500)    // รูปโฆษณาเสริม
+  updatedBy       String?  @db.VarChar(255)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("download_app")
 }
 
 // ============================================================

@@ -173,7 +173,7 @@ export default function RegulationsPage() {
                         </div>
                       ) : (
                         <div className={css.docIconSquare}>
-                          <FileText size={24} />
+                          {React.cloneElement(config.icon as React.ReactElement<any>, { size: 64 })}
                         </div>
                       )}
                     </div>
@@ -186,14 +186,15 @@ export default function RegulationsPage() {
                     </div>
 
                     <div className={css.docFooter}>
+                      <div className={css.divider}></div>
                       {item.filePath ? (
                         <span className={css.downloadBtn}>
-                          <Download size={14} />
+                          <Download size={16} strokeWidth={2} className={css.btnIcon} />
                           <span>ดาวน์โหลด</span>
                         </span>
                       ) : (
                         <span className={css.viewBadge}>
-                          <FileText size={14} />
+                          {React.cloneElement(config.icon as React.ReactElement<any>, { size: 16 })}
                           <span>รายละเอียด</span>
                         </span>
                       )}

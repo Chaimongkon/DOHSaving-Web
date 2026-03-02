@@ -12,17 +12,17 @@ import { Copy, Check, ShieldCheck } from "lucide-react";
 import css from "./page.module.css";
 
 /* ── Fallback bank data ── */
-const defaultBanks = [
-  { bankName: "ธนาคารกรุงไทย", bankNameSub: "จำกัด (มหาชน)", accountNumber: "013-1-25604-1", accountType: "ออมทรัพย์", brandColor: "#1ba5e0", abbr: "KTB" },
-  { bankName: "ธนาคารไทยพาณิชย์", bankNameSub: "จำกัด (มหาชน)", accountNumber: "026-4-09590-2", accountType: "ออมทรัพย์", brandColor: "#4e2a84", abbr: "SCB" },
-  { bankName: "ธนาคารกสิกรไทย", bankNameSub: "จำกัด (มหาชน)", accountNumber: "023-2-56500-4", accountType: "ออมทรัพย์", brandColor: "#138f2d", abbr: "KBANK" },
-  { bankName: "ธนาคารกรุงเทพ", bankNameSub: "จำกัด (มหาชน)", accountNumber: "149-0-89521-4", accountType: "ออมทรัพย์", brandColor: "#1e2b87", abbr: "BBL" },
-  { bankName: "ธนาคารกรุงศรีอยุธยา", bankNameSub: "จำกัด (มหาชน)", accountNumber: "044-1-37968-0", accountType: "ออมทรัพย์", brandColor: "#fec400", abbr: "BAY" },
-  { bankName: "ธนาคารทหารไทยธนชาต", bankNameSub: "จำกัด (มหาชน)", accountNumber: "003-2-90393-2", accountType: "ออมทรัพย์", brandColor: "#1279be", abbr: "TTB" },
-  { bankName: "ธนาคารซีไอเอ็มบี ไทย", bankNameSub: "จำกัด (มหาชน)", accountNumber: "700-0-23218-5", accountType: "ออมทรัพย์", brandColor: "#e02020", abbr: "CIMB" },
+const defaultBanks: BankData[] = [
+  { bankName: "ธนาคารกรุงไทย", bankNameSub: "จำกัด (มหาชน)", accountNumber: "013-1-25604-1", accountType: "ออมทรัพย์", brandColor: "#1ba5e0", abbr: "KTB", logoUrl: null },
+  { bankName: "ธนาคารไทยพาณิชย์", bankNameSub: "จำกัด (มหาชน)", accountNumber: "026-4-09590-2", accountType: "ออมทรัพย์", brandColor: "#4e2a84", abbr: "SCB", logoUrl: null },
+  { bankName: "ธนาคารกสิกรไทย", bankNameSub: "จำกัด (มหาชน)", accountNumber: "023-2-56500-4", accountType: "ออมทรัพย์", brandColor: "#138f2d", abbr: "KBANK", logoUrl: null },
+  { bankName: "ธนาคารกรุงเทพ", bankNameSub: "จำกัด (มหาชน)", accountNumber: "149-0-89521-4", accountType: "ออมทรัพย์", brandColor: "#1e2b87", abbr: "BBL", logoUrl: null },
+  { bankName: "ธนาคารกรุงศรีอยุธยา", bankNameSub: "จำกัด (มหาชน)", accountNumber: "044-1-37968-0", accountType: "ออมทรัพย์", brandColor: "#fec400", abbr: "BAY", logoUrl: null },
+  { bankName: "ธนาคารทหารไทยธนชาต", bankNameSub: "จำกัด (มหาชน)", accountNumber: "003-2-90393-2", accountType: "ออมทรัพย์", brandColor: "#1279be", abbr: "TTB", logoUrl: null },
+  { bankName: "ธนาคารซีไอเอ็มบี ไทย", bankNameSub: "จำกัด (มหาชน)", accountNumber: "700-0-23218-5", accountType: "ออมทรัพย์", brandColor: "#e02020", abbr: "CIMB", logoUrl: null },
 ];
 
-interface BankData { bankName: string; bankNameSub: string | null; accountNumber: string; accountType: string; brandColor: string; abbr: string | null }
+interface BankData { bankName: string; bankNameSub: string | null; accountNumber: string; accountType: string; brandColor: string; abbr: string | null; logoUrl: string | null }
 
 /* ── SVG Bank Logos ── */
 const BankIcon = ({ abbr, size = 48 }: { abbr: string | null; size?: number }) => {
@@ -161,7 +161,12 @@ export default function BankAccountsPage() {
                 style={{ background: bank.brandColor }}
               >
                 <div className={css.bankLogo}>
-                  <BankIcon abbr={bank.abbr} size={44} />
+                  {bank.logoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={bank.logoUrl} alt={bank.bankName} style={{ width: 44, height: 44, borderRadius: 10, objectFit: "contain", background: "#fff" }} />
+                  ) : (
+                    <BankIcon abbr={bank.abbr} size={44} />
+                  )}
                 </div>
                 <div>
                   <p className={css.bankName}>{bank.bankName}</p>

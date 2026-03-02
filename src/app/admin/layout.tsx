@@ -27,6 +27,7 @@ import {
   FormOutlined,
   BookOutlined,
   GiftOutlined,
+  DownloadOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
@@ -52,6 +53,7 @@ const navItems = [
       { label: "สื่อสำหรับสมาชิก", href: "/admin/member-media", icon: <BookOutlined /> },
       { label: "หน้าบริการ", href: "/admin/service-pages", icon: <PictureOutlined /> },
       { label: "วิธีใช้งาน App", href: "/admin/app-guide", icon: <FileTextOutlined /> },
+      { label: "ดาวน์โหลดแอป", href: "/admin/download-app", icon: <DownloadOutlined /> },
       { label: "ข้อบังคับ ระเบียบ ประกาศ", href: "/admin/regulations", icon: <AuditOutlined /> },
     ],
   },
