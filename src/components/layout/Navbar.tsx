@@ -58,6 +58,7 @@ const navItems: NavItem[] = [
       {
         title: "ผู้บริหารและฝ่ายจัดการ",
         links: [
+          { label: "โครงสร้างองค์กร", href: "/about/organization" },
           { label: "คณะกรรมการดำเนินการ", href: "/about/board" },
           { label: "ผู้ตรวจสอบบัญชีและผู้ตรวจสอบกิจการ", href: "/about/auditors" },
           { label: "ผู้จัดการใหญ่และรองผู้จัดการฯ", href: "/about/managers" },
@@ -122,7 +123,7 @@ const navItems: NavItem[] = [
           { label: "พ.ร.บ. รถยนต์", href: "/services/car-act" },
         ],
       },
-            {
+      {
         title: "บริการสหกรณ์อิเล็กทรอนิกส์",
         links: [
           { label: "APP DOHSAVING", href: "/services/app-dohsaving" },

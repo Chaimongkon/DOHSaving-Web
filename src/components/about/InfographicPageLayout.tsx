@@ -14,6 +14,7 @@ import {
   SolutionOutlined,
   PrinterOutlined,
 } from "@ant-design/icons";
+import { ZoomIn, X } from "lucide-react";
 import css from "./InfographicPageLayout.module.css";
 
 const sidebarLinks = [
@@ -38,14 +39,17 @@ export default function InfographicPageLayout({
   pageTitle,
 }: InfographicPageLayoutProps) {
   const pathname = usePathname();
-  const [image, setImage] = useState("");
+  const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Lightbox state
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
     fetch(`/api/pages/${pageKey}/images`)
       .then((res) => res.json())
-      .then((data) => setImage(data.image || ""))
-      .catch(() => {})
+      .then((data) => setImages(data.images || []))
+      .catch(() => { })
       .finally(() => setLoading(false));
   }, [pageKey]);
 
@@ -76,9 +80,22 @@ export default function InfographicPageLayout({
 
           {loading ? (
             <div className={css.loading}>กำลังโหลด...</div>
-          ) : image ? (
-            <div className={css.imageWrap}>
-              <img src={image} alt={pageTitle} className={css.image} />
+          ) : images.length > 0 ? (
+            <div className={css.imageGallery}>
+              {images.map((img, idx) => (
+                <div
+                  key={idx}
+                  className={css.imageWrap}
+                  onClick={() => setLightboxIndex(idx)}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={img} alt={`${pageTitle} - ภาพที่ ${idx + 1}`} className={css.image} />
+                  <div className={css.zoomHint}>
+                    <ZoomIn size={18} />
+                    <span>คลิกเพื่อดูภาพขนาดเต็ม</span>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             <div className={css.empty}>
@@ -108,6 +125,22 @@ export default function InfographicPageLayout({
           </div>
         </aside>
       </div>
+
+      {/* Lightbox */}
+      {lightboxIndex !== null && images[lightboxIndex] && (
+        <div className={css.lightbox} onClick={() => setLightboxIndex(null)}>
+          <button className={css.lightboxClose} onClick={() => setLightboxIndex(null)}>
+            <X size={24} />
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={images[lightboxIndex]}
+            alt={`${pageTitle} Full View`}
+            className={css.lightboxImg}
+            onClick={(e) => e.stopPropagation()} // Prevent close when clicking image
+          />
+        </div>
+      )}
     </>
   );
 }

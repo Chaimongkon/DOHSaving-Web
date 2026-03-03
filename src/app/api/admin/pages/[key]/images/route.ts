@@ -19,10 +19,25 @@ export async function GET(
       where: { key: `page_${key}_image` },
     });
 
-    return NextResponse.json({ image: setting?.value || "" });
+    let images: string[] = [];
+    if (setting?.value) {
+      try {
+        const parsed = JSON.parse(setting.value);
+        if (Array.isArray(parsed)) {
+          images = parsed;
+        } else if (typeof parsed === "string") {
+          images = [parsed];
+        }
+      } catch {
+        // Fallback for old single string data
+        images = setting.value ? [setting.value] : [];
+      }
+    }
+
+    return NextResponse.json({ images });
   } catch (error) {
     console.error("Failed to fetch image:", error);
-    return NextResponse.json({ image: "" }, { status: 500 });
+    return NextResponse.json({ images: [] }, { status: 500 });
   }
 }
 
@@ -40,21 +55,21 @@ export async function PUT(
 
   try {
     const body = await req.json();
-    const { image } = body as { image: string };
+    const { images } = body as { images: string[] };
 
     await prisma.siteSetting.upsert({
       where: { key: `page_${key}_image` },
       create: {
         key: `page_${key}_image`,
-        value: image || "",
+        value: JSON.stringify(images || []),
         remark: `รูป infographic หน้า ${key}`,
       },
       update: {
-        value: image || "",
+        value: JSON.stringify(images || []),
       },
     });
 
-    return NextResponse.json({ success: true, image });
+    return NextResponse.json({ success: true, images });
   } catch (error) {
     console.error("Failed to save image:", error);
     return NextResponse.json({ error: "Failed to save" }, { status: 500 });

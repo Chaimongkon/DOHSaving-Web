@@ -82,13 +82,27 @@
   z-index: 1;
 }
 
-/* ── Action Row ── */
-.actionRow {
+/* ── Action Section (Downloads) ── */
+.actionSection {
+  margin-top: 48px;
+  animation: fadeInUp 0.5s ease-out 0.2s both;
+}
+
+.actionSectionTitle {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 10px;
-  margin-bottom: 24px;
-  animation: fadeInUp 0.5s ease-out;
+  font-size: 20px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 24px;
+}
+
+.actionRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  align-items: stretch;
 }
 
 .actionCard {
@@ -107,8 +121,8 @@
 }
 
 .actionCard:hover {
-  border-color: #E8652B;
-  box-shadow: 0 6px 24px rgba(232, 101, 43, 0.1);
+  border-color: #7dd3fc;
+  box-shadow: 0 8px 30px rgba(14, 165, 233, 0.1);
   transform: translateY(-2px);
 }
 
@@ -116,24 +130,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #E8652B, #d4551c);
-  color: #fff;
-  border-radius: 14px;
+  width: 56px;
+  height: 56px;
+  background: #f0f9ff;
+  border-radius: 16px;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(232, 101, 43, 0.25);
+  border: 1px solid #e0f2fe;
 }
 
 .actionIconDoc {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   background: #f0f9ff;
-  color: #0369a1;
-  border-radius: 14px;
+  border-radius: 16px;
   flex-shrink: 0;
   border: 1px solid #e0f2fe;
 }
@@ -164,7 +176,7 @@
 }
 
 .actionCard:hover .actionArrow {
-  color: #E8652B;
+  color: #0369a1;
   transform: translateX(4px);
 }
 
@@ -173,18 +185,22 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 10px;
+  padding: 16px;
+  height: 100%;
   color: #64748b;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   text-decoration: none;
-  border-radius: 10px;
+  border-radius: 16px;
   transition: all 0.2s;
+  background: #f8fafc;
+  border: 2px dashed #cbd5e1;
 }
 
 .allFormsChip:hover {
-  color: #E8652B;
-  background: #fff5f0;
+  color: #0369a1;
+  background: #f0f9ff;
+  border-color: #bae6fd;
 }
 
 /* ── Infographic ── */
@@ -344,18 +360,35 @@
 
 /* ── Animations ── */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ── Responsive ── */

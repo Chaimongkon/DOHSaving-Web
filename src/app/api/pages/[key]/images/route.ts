@@ -13,12 +13,27 @@ export async function GET(
       where: { key: `page_${key}_image` },
     });
 
+    let images: string[] = [];
+    if (setting?.value) {
+      try {
+        const parsed = JSON.parse(setting.value);
+        if (Array.isArray(parsed)) {
+          images = parsed;
+        } else if (typeof parsed === "string") {
+          images = [parsed];
+        }
+      } catch {
+        // Fallback for old single string data
+        images = setting.value ? [setting.value] : [];
+      }
+    }
+
     return NextResponse.json(
-      { image: setting?.value || "" },
+      { images },
       { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } }
     );
   } catch (error) {
     console.error("Failed to fetch image:", error);
-    return NextResponse.json({ image: "" }, { status: 500 });
+    return NextResponse.json({ images: [] }, { status: 500 });
   }
 }

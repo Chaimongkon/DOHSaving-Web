@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AboutPageLayout from "@/components/about/AboutPageLayout";
+import InfographicPageLayout from "@/components/about/InfographicPageLayout";
 
 export const metadata: Metadata = {
   title: "โครงสร้างองค์กร | สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
@@ -7,5 +7,11 @@ export const metadata: Metadata = {
 };
 
 export default function OrganizationPage() {
-  return <AboutPageLayout pageKey="organization" breadcrumbLabel="โครงสร้างองค์กร" />;
+  return (
+    <InfographicPageLayout
+      pageKey="organization"
+      pageTitle="โครงสร้างองค์กร"
+      breadcrumbLabel="โครงสร้างองค์กร"
+    />
+  );
 }

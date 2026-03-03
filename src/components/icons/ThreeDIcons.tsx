@@ -532,3 +532,32 @@ export const CheckSquare3D: React.FC<IconProps> = ({ size = 64, className = "" }
         </g>
     </svg>
 );
+
+export const Document3D: React.FC<IconProps> = ({ size = 64, className = "" }) => (
+    <svg width={size} height={size} viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="doc-body" x1="20" y1="10" x2="80" y2="90" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#38BDF8" /> {/* Light Blue 400 */}
+                <stop offset="100%" stopColor="#0284C7" /> {/* Light Blue 700 */}
+            </linearGradient>
+            <linearGradient id="doc-fold" x1="60" y1="10" x2="80" y2="30" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#7DD3FC" /> {/* Light Blue 300 */}
+                <stop offset="100%" stopColor="#0369A1" /> {/* Light Blue 800 */}
+            </linearGradient>
+            <filter id="shadow-doc" x="-10" y="-10" width="120" height="120" filterUnits="userSpaceOnUse">
+                <feDropShadow dx="0" dy="8" stdDeviation="6" floodColor="#0284C7" floodOpacity="0.3" />
+            </filter>
+        </defs>
+        <g filter="url(#shadow-doc)">
+            {/* Main Document Body */}
+            <path d="M25 15 C25 10 29 6 34 6 L62 6 L82 26 L82 86 C82 91 78 95 73 95 L34 95 C29 95 25 91 25 86 Z" fill="url(#doc-body)" />
+            {/* Folded Corner */}
+            <path d="M62 6 L82 26 L66 26 C64 26 62 24 62 22 Z" fill="url(#doc-fold)" />
+            {/* Lines on Document */}
+            <rect x="38" y="40" width="30" height="4" rx="2" fill="#E0F2FE" />
+            <rect x="38" y="52" width="40" height="4" rx="2" fill="#E0F2FE" />
+            <rect x="38" y="64" width="24" height="4" rx="2" fill="#E0F2FE" />
+            <rect x="38" y="76" width="36" height="4" rx="2" fill="#BAE6FD" opacity="0.6" />
+        </g>
+    </svg>
+);

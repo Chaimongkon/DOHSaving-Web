@@ -6,6 +6,7 @@ import Link from "next/link";
 import {
   Loader2, FileText, ChevronRight, Home, SearchX, Download, ZoomIn,
 } from "lucide-react";
+import { Document3D } from "@/components/icons/ThreeDIcons";
 import css from "./page.module.css";
 
 interface DownloadLink { label: string; url: string; }
@@ -118,53 +119,7 @@ export default function ServicePage() {
       </div>
 
       <div className={css.content}>
-        {/* Action Cards Row */}
-        {hasActions && (
-          <div className={css.actionRow}>
-            {/* Form download button */}
-            {formGroupKey && (
-              <Link href={`/forms?group=${formGroupKey}`} className={css.actionCard}>
-                <div className={css.actionIcon}>
-                  <Download size={22} />
-                </div>
-                <div className={css.actionInfo}>
-                  <h3 className={css.actionTitle}>{data.formGroup}</h3>
-                  <p className={css.actionDesc}>คลิกเพื่อดูและดาวน์โหลดแบบฟอร์ม แยกตามประเภทสมาชิก</p>
-                </div>
-                <ChevronRight size={20} className={css.actionArrow} />
-              </Link>
-            )}
-
-            {/* Download links */}
-            {links.map((link, idx) => (
-              <a
-                key={idx}
-                href={link.url}
-                target={link.url.startsWith("/") && !link.url.includes(".") ? undefined : "_blank"}
-                rel="noopener noreferrer"
-                className={css.actionCard}
-              >
-                <div className={css.actionIconDoc}>
-                  <FileText size={20} />
-                </div>
-                <div className={css.actionInfo}>
-                  <h3 className={css.actionTitle}>{link.label}</h3>
-                  <p className={css.actionDesc}>คลิกเพื่อดาวน์โหลดเอกสาร</p>
-                </div>
-                <ChevronRight size={20} className={css.actionArrow} />
-              </a>
-            ))}
-
-            {/* All forms link */}
-            {formGroupKey && (
-              <Link href="/forms" className={css.allFormsChip}>
-                ดูแบบฟอร์มทั้งหมด <ChevronRight size={14} />
-              </Link>
-            )}
-          </div>
-        )}
-
-        {/* Infographic */}
+        {/* Infographic (Now at the top) */}
         {data.infographicUrl && (
           <div className={css.infographicSection}>
             <div className={css.infographicCard} onClick={() => setLightbox(true)}>
@@ -174,6 +129,57 @@ export default function ServicePage() {
                 <ZoomIn size={18} />
                 <span>คลิกเพื่อดูภาพขนาดเต็ม</span>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Action Cards Row */}
+        {hasActions && (
+          <div className={css.actionSection}>
+            <h2 className={css.actionSectionTitle}>
+              <Download size={24} /> เอกสารและแบบฟอร์มที่เกี่ยวข้อง
+            </h2>
+            <div className={css.actionRow}>
+              {/* Form download button */}
+              {formGroupKey && (
+                <Link href={`/forms?group=${formGroupKey}`} className={css.actionCard}>
+                  <div className={css.actionIcon}>
+                    <Document3D size={32} />
+                  </div>
+                  <div className={css.actionInfo}>
+                    <h3 className={css.actionTitle}>{data.formGroup}</h3>
+                    <p className={css.actionDesc}>คลิกเพื่อดูและดาวน์โหลดแบบฟอร์ม แยกตามประเภทสมาชิก</p>
+                  </div>
+                  <ChevronRight size={20} className={css.actionArrow} />
+                </Link>
+              )}
+
+              {/* Download links */}
+              {links.map((link, idx) => (
+                <a
+                  key={idx}
+                  href={link.url}
+                  target={link.url.startsWith("/") && !link.url.includes(".") ? undefined : "_blank"}
+                  rel="noopener noreferrer"
+                  className={css.actionCard}
+                >
+                  <div className={css.actionIconDoc}>
+                    <Document3D size={28} />
+                  </div>
+                  <div className={css.actionInfo}>
+                    <h3 className={css.actionTitle}>{link.label}</h3>
+                    <p className={css.actionDesc}>คลิกเพื่อดาวน์โหลดเอกสาร</p>
+                  </div>
+                  <ChevronRight size={20} className={css.actionArrow} />
+                </a>
+              ))}
+
+              {/* All forms link */}
+              {formGroupKey && (
+                <Link href="/forms" className={css.allFormsChip}>
+                  ดูแบบฟอร์มทั้งหมด <ChevronRight size={14} />
+                </Link>
+              )}
             </div>
           </div>
         )}
