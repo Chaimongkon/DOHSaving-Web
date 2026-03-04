@@ -731,56 +731,218 @@
 }
 
 /* ─── Responsive ─── */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .hero {
-    padding: 32px 16px 52px;
+    padding: 24px 16px 40px;
+  }
+
+  .heroIcon {
+    font-size: 32px;
+    margin-bottom: 10px;
   }
 
   .heroTitle {
     font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .heroSub {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .infoBanner {
+    padding: 12px 14px;
+    font-size: 11px;
+    border-radius: 12px;
+    margin-bottom: 12px;
   }
 
   .content {
     padding: 0 12px 60px;
+    margin-top: -28px;
   }
 
+  /* Tabs */
   .tabs {
     padding: 4px 4px 0;
     border-radius: 14px 14px 0 0;
+    gap: 2px;
   }
 
-  .formSection {
-    padding: 20px 18px;
+  .tab {
+    padding: 11px 10px;
+    font-size: 12px;
+    gap: 5px;
+    border-radius: 10px 10px 0 0;
   }
 
+  /* Form */
   .formCard {
     border-radius: 0 0 18px 18px;
   }
 
+  .formSection {
+    padding: 18px 16px;
+  }
+
+  .formSectionTitle {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
   .formRow {
     grid-template-columns: 1fr;
+    gap: 0;
   }
 
+  .formLabel {
+    font-size: 11px;
+  }
+
+  .formInput,
+  .formSelect {
+    padding: 10px 14px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+
+  .formTextarea {
+    padding: 12px 14px;
+    font-size: 13px;
+    border-radius: 10px;
+    min-height: 120px;
+  }
+
+  .formHint {
+    font-size: 9px;
+    padding: 5px 8px;
+  }
+
+  /* PDPA */
+  .pdpaLabel {
+    padding: 12px 14px;
+    border-radius: 12px;
+    gap: 10px;
+  }
+
+  .pdpaText {
+    font-size: 11px;
+  }
+
+  /* Actions */
   .formActions {
-    padding: 8px 18px 0;
+    padding: 8px 16px 0;
     flex-direction: column;
+    gap: 8px;
   }
 
-  .submitBtn, .cancelBtn {
+  .submitBtn {
     width: 100%;
     justify-content: center;
+    padding: 13px 24px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+
+  .cancelBtn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 24px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+
+  /* Track */
+  .trackCard {
+    padding: 28px 16px;
+    border-radius: 0 0 18px 18px;
   }
 
   .trackInputRow {
     flex-direction: column;
+    gap: 8px;
   }
 
-  .trackCard {
-    padding: 32px 18px;
+  .trackInput {
+    font-size: 15px;
+    padding: 12px 16px;
+  }
+
+  .trackBtn {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .trackResult {
+    padding: 18px;
+  }
+
+  .trackRow {
+    font-size: 12px;
+    padding: 8px 0;
+  }
+
+  /* Success */
+  .success {
+    padding: 36px 20px;
+    border-radius: 18px;
+  }
+
+  .successIcon {
+    font-size: 44px;
+  }
+
+  .successTitle {
+    font-size: 20px;
+  }
+
+  .successSub {
+    font-size: 13px;
+  }
+
+  .trackingDisplay {
+    font-size: 18px;
+    padding: 12px 24px;
+    border-radius: 12px;
   }
 
   .successActions {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
+  }
+
+  .successBtn {
+    text-align: center;
+  }
+
+  /* Confirm dialog */
+  .confirmOverlay {
+    padding: 16px;
+  }
+
+  .confirmBox {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+
+  .confirmTitle {
+    font-size: 16px;
+  }
+
+  .confirmText {
+    font-size: 12px;
+  }
+
+  .confirmActions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .confirmBtnOk,
+  .confirmBtnCancel {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
   }
 }

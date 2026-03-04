@@ -181,17 +181,70 @@
 }
 
 /* ─── Responsive ─── */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .hero {
+    padding: 24px 16px 32px;
+  }
+
+  .heroTitle {
+    font-size: 20px;
+  }
+
+  .heroSub {
+    font-size: 12px;
+  }
+
   .content {
     padding: 0 12px 60px;
+    margin-top: -18px;
   }
 
   .formCard {
-    padding: 24px 20px;
+    padding: 20px 16px;
+    border-radius: 16px;
   }
 
   .formRow {
     grid-template-columns: 1fr;
     gap: 0;
+  }
+
+  .formLabel {
+    font-size: 12px;
+  }
+
+  .formInput {
+    padding: 10px 14px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+
+  .formTextarea {
+    padding: 12px 14px;
+    font-size: 13px;
+    border-radius: 10px;
+    min-height: 120px;
+  }
+
+  .formActions {
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .submitBtn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 24px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+
+  .backBtn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 24px;
+    font-size: 14px;
+    border-radius: 12px;
   }
 }

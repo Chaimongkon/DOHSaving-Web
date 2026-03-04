@@ -89,14 +89,12 @@ export default function ContactPage() {
             <div className={`${css.infoIcon} ${css.iconAddress}`}>
               <MapPinIcon size={42} />
             </div>
-            <p className={css.infoLabel}>ที่อยู่</p>
-            <p className={css.infoValue}>
-              2/486 อาคาร 26
-              <br />
-              ถนนศรีอยุธยา แขวงทุ่งพญาไท
-              <br />
-              เขตราชเทวี กรุงเทพฯ 10400
-            </p>
+            <div className={css.infoBody}>
+              <p className={css.infoLabel}>ที่อยู่</p>
+              <p className={css.infoValue}>
+                2/486 อาคาร 26 ถนนศรีอยุธยา แขวงทุ่งพญาไท เขตราชเทวี กรุงเทพฯ 10400
+              </p>
+            </div>
           </div>
 
           {/* Hours */}
@@ -104,13 +102,11 @@ export default function ContactPage() {
             <div className={`${css.infoIcon} ${css.iconHours}`}>
               <ClockIcon size={42} />
             </div>
-            <p className={css.infoLabel}>เวลาทำการ</p>
-            <p className={css.infoValue}>
-              วันจันทร์ – ศุกร์
-              <br />
-              08.30 – 16.30 น.
-            </p>
-            <p className={css.infoValueSm}>(การเงิน ปิดทำการเวลา 15.30 น.)</p>
+            <div className={css.infoBody}>
+              <p className={css.infoLabel}>เวลาทำการ</p>
+              <p className={css.infoValue}>วันจันทร์ – ศุกร์ 08.30 – 16.30 น.</p>
+              <p className={css.infoValueSm}>(การเงิน ปิดทำการเวลา 15.30 น.)</p>
+            </div>
           </div>
 
           {/* Phone */}
@@ -118,17 +114,19 @@ export default function ContactPage() {
             <div className={`${css.infoIcon} ${css.iconPhone}`}>
               <PhoneIcon size={42} />
             </div>
-            <p className={css.infoLabel}>โทรศัพท์</p>
-            <p className={css.infoValue}>
-              <a href="tel:022450668" className={css.phoneLink}>02-245-0668</a>
-            </p>
-            <p className={css.infoValueSm}>
-              <a href="tel:026447940" className={css.phoneLink}>02-644-7940-43</a>
-            </p>
-            <p className={css.infoValueSm}>
-              <a href="tel:026449243" className={css.phoneLink}>02-644-9243</a>,{" "}
-              <a href="tel:026444833" className={css.phoneLink}>02-644-4833</a>
-            </p>
+            <div className={css.infoBody}>
+              <p className={css.infoLabel}>โทรศัพท์</p>
+              <p className={css.infoValue}>
+                <a href="tel:022450668" className={css.phoneLink}>02-245-0668</a>
+              </p>
+              <p className={css.infoValueSm}>
+                <a href="tel:026447940" className={css.phoneLink}>02-644-7940-43</a>
+              </p>
+              <p className={css.infoValueSm}>
+                <a href="tel:026449243" className={css.phoneLink}>02-644-9243</a>,{" "}
+                <a href="tel:026444833" className={css.phoneLink}>02-644-4833</a>
+              </p>
+            </div>
           </div>
 
           {/* Email */}
@@ -136,16 +134,15 @@ export default function ContactPage() {
             <div className={`${css.infoIcon} ${css.iconEmail}`}>
               <MailIcon size={42} />
             </div>
-            <p className={css.infoLabel}>อีเมล</p>
-            <p className={css.infoValue}>
-              <a
-                href="mailto:dohcoop@hotmail.com"
-                className={css.contactItemLink}
-              >
-                dohcoop@hotmail.com
-              </a>
-            </p>
-            <p className={css.infoValueSm}>LINE Official: @dohsaving</p>
+            <div className={css.infoBody}>
+              <p className={css.infoLabel}>อีเมล</p>
+              <p className={css.infoValue}>
+                <a href="mailto:dohcoop@hotmail.com" className={css.contactItemLink}>
+                  dohcoop@hotmail.com
+                </a>
+              </p>
+              <p className={css.infoValueSm}>LINE Official: @dohsaving</p>
+            </div>
           </div>
         </div>
 

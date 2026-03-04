@@ -336,29 +336,169 @@
 }
 
 @media (max-width: 768px) {
-  .heading {
-    font-size: 22px;
+  .page {
+    padding: 28px 12px;
   }
 
+  .heading {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  .subheading {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  /* Toolbar */
   .toolbar {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .filterRow {
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+  }
+
+  .filterRow::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filterBtn {
+    padding: 6px 14px;
+    font-size: 12px;
+    border-radius: 16px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .searchWrap {
+    width: 100%;
   }
 
   .searchInput {
     width: 100%;
+    font-size: 13px;
+    padding: 9px 14px 9px 34px;
+    border-radius: 10px;
   }
 
+  .resultCount {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  /* Grid */
   .grid {
     grid-template-columns: 1fr;
+    gap: 14px;
   }
 
+  .card {
+    border-radius: 14px;
+  }
+
+  .thumb {
+    height: auto;
+    aspect-ratio: 16 / 10;
+    background: #f0f2f5;
+  }
+
+  .img {
+    object-fit: contain;
+    background: #f0f2f5;
+  }
+
+  .card:hover .img {
+    transform: none;
+  }
+
+  .thumbPlaceholder {
+    aspect-ratio: 16 / 10;
+    height: auto;
+  }
+
+  .tag {
+    font-size: 10px;
+    padding: 3px 10px;
+  }
+
+  .pinBadge {
+    font-size: 9px;
+    padding: 2px 8px;
+  }
+
+  .body {
+    padding: 12px 14px 14px;
+  }
+
+  .title {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .excerpt {
+    font-size: 12px;
+    margin-bottom: 8px;
+    -webkit-line-clamp: 2;
+  }
+
+  .meta {
+    gap: 12px;
+    font-size: 11px;
+  }
+
+  /* Pagination */
   .pagination {
+    margin-top: 24px;
+    padding-top: 16px;
+    gap: 4px;
     flex-wrap: wrap;
+    justify-content: center;
   }
 
   .pageBtn {
-    padding: 6px 12px;
+    padding: 7px 12px;
+    font-size: 11px;
+    border-radius: 8px;
+  }
+
+  .pageNumbers {
+    gap: 3px;
+  }
+
+  .pageNum {
+    width: 32px;
+    height: 32px;
     font-size: 12px;
+    border-radius: 8px;
+  }
+
+  .pageDots {
+    font-size: 12px;
+  }
+
+  /* Skeleton */
+  .skelThumb {
+    height: 170px;
+  }
+
+  .skelBody {
+    padding: 14px;
+  }
+
+  /* Empty */
+  .emptyState {
+    padding: 48px 16px;
+  }
+
+  .emptyText {
+    font-size: 13px;
   }
 }

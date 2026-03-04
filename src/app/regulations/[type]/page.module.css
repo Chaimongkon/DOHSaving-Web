@@ -553,44 +553,199 @@
 /* ── Responsive adjustments ── */
 @media (max-width: 768px) {
   .hero {
-    padding: 24px 16px 32px;
+    padding: 20px 16px 28px;
+  }
+
+  .breadcrumb {
+    font-size: 11px;
+    padding: 5px 12px;
+    margin-bottom: 10px;
+    gap: 5px;
+  }
+
+  .heroIconWrapper {
+    transform: scale(0.9);
   }
 
   .heroTitle {
-    font-size: 24px;
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .heroSub {
+    font-size: 12px;
+  }
+
+  .tabs {
+    margin-top: 12px;
+    padding: 4px;
+    gap: 4px;
+    border-radius: 30px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(8px);
+  }
+
+  .tab {
+    padding: 7px 12px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .blob1 {
+    width: 250px;
+    height: 250px;
+  }
+
+  .blob2 {
+    width: 300px;
+    height: 300px;
+  }
+
+  .blob3 {
+    width: 200px;
+    height: 150px;
   }
 
   .content {
-    padding: 0 16px 60px;
-    margin-top: -20px;
+    padding: 0 12px 48px;
+    margin-top: -18px;
+  }
+
+  /* Stats bar */
+  .statsBarWrapper {
+    margin-bottom: 24px;
   }
 
   .statsBar {
-    padding: 16px;
+    padding: 14px 16px;
     border-radius: 16px;
+    gap: 12px;
   }
 
   .statsIconContainer {
     width: 44px;
     height: 44px;
+    border-radius: 12px;
   }
 
-  .tabs {
-    background: transparent;
-    padding: 0;
-    border: none;
-    backdrop-filter: none;
-    margin-top: 12px;
+  .statsTitle {
+    font-size: 15px;
   }
 
-  .tab {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 8px 14px;
+  .statsCount {
+    font-size: 12px;
   }
 
+  /* Category groups */
+  .categoryGroup {
+    margin-bottom: 28px;
+  }
+
+  .categoryHeader {
+    margin-bottom: 14px;
+    gap: 12px;
+  }
+
+  .categoryTitle {
+    font-size: 17px;
+  }
+
+  /* Document grid */
   .docGrid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 12px;
+  }
+
+  .docCard {
+    padding: 18px;
+    border-radius: 16px;
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .docCard:hover {
+    transform: translateY(-2px);
+  }
+
+  .docCardHeader {
+    margin-bottom: 0;
+    width: auto;
+  }
+
+  .docImageWrapper {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+  }
+
+  .docIconSquare {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+  }
+
+  .docInfo {
+    margin-bottom: 0;
+    text-align: left;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .docTitle {
+    font-size: 13px;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .docDesc {
+    font-size: 11px;
+    margin-top: 4px;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .docFooter {
+    flex-shrink: 0;
+  }
+
+  .downloadBtn {
+    padding: 8px 14px;
+    font-size: 12px;
+    border-radius: 10px;
+    width: auto;
+    white-space: nowrap;
+  }
+
+  .viewBadge {
+    padding: 8px 14px;
+    font-size: 12px;
+    border-radius: 10px;
+    width: auto;
+    white-space: nowrap;
+  }
+
+  /* Empty / Loading */
+  .emptyState {
+    padding: 48px 20px;
+    border-radius: 18px;
+  }
+
+  .emptyIconWrapper {
+    width: 60px;
+    height: 60px;
+  }
+
+  .emptyTitle {
+    font-size: 17px;
+  }
+
+  .emptyDesc {
+    font-size: 13px;
   }
 }

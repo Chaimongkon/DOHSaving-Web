@@ -663,73 +663,292 @@
 
 @media (max-width: 768px) {
   .hero {
-    padding: 32px 16px 40px;
+    padding: 24px 16px 32px;
+  }
+
+  .heroIconHeader {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    margin-bottom: 12px;
   }
 
   .heroTitle {
-    font-size: 26px;
+    font-size: 24px;
   }
 
   .heroSubtitle {
-    font-size: 14px;
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+
+  .heroDate {
+    font-size: 11px;
+    padding: 5px 14px;
   }
 
   .heroStats {
-    padding: 16px;
-    flex-direction: column;
-    gap: 12px;
+    padding: 14px 16px;
+    flex-direction: row;
+    gap: 0;
+    border-radius: 14px;
+    margin-top: 14px;
+  }
+
+  .heroStatLabel {
+    font-size: 11px;
+  }
+
+  .heroStatValue {
+    font-size: 26px;
+  }
+
+  .heroStatValue small {
+    font-size: 14px;
+  }
+
+  .heroStatSubtext {
+    font-size: 11px;
   }
 
   .heroStatDivider {
-    width: 60%;
-    height: 1px;
-    margin: 4px 0;
+    width: 1px;
+    height: 44px;
+    margin: 0 16px;
+  }
+
+  .heroBlob1 {
+    width: 200px;
+    height: 200px;
+  }
+
+  .heroBlob2 {
+    width: 220px;
+    height: 220px;
+  }
+
+  /* Tabs */
+  .tabBar {
+    padding: 0 8px;
+    gap: 0;
   }
 
   .tab {
-    padding: 14px 16px;
-    font-size: 13px;
+    padding: 12px 12px;
+    font-size: 12px;
+    gap: 5px;
   }
 
+  .tabIcon {
+    font-size: 14px;
+  }
+
+  /* Content */
   .content {
-    padding: 24px 16px 60px;
+    padding: 20px 12px 48px;
   }
 
-  .rateItem {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 20px 16px;
+  .section {
+    margin-bottom: 28px;
   }
 
-  .rateItemRight {
-    align-self: flex-start;
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .singleRateBlock,
-  .dualRate {
-    align-items: flex-start;
-    justify-content: flex-start;
-  }
-
-  .dualRate {
-    flex-direction: column;
+  .sectionHeader {
+    padding: 12px;
     gap: 10px;
+    border-radius: 12px;
+    margin-bottom: 14px;
   }
 
-  .dualArrow {
+  .sectionIcon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .sectionTitle {
+    font-size: 16px;
+  }
+
+  .sectionSub {
+    font-size: 11px;
     display: none;
   }
 
+  .sectionCount {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+
+  /* Rate cards */
+  .rateList {
+    gap: 10px;
+  }
+
+  .rateItem {
+    padding: 16px 14px;
+    border-radius: 14px;
+    gap: 12px;
+  }
+
+  .rateItemLeft {
+    gap: 10px;
+  }
+
+  .rateIconWrapper {
+    width: 36px;
+    height: 36px;
+  }
+
+  .rateName {
+    font-size: 14px;
+  }
+
+  .rateCondition {
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  .badge {
+    font-size: 10px;
+    padding: 3px 10px;
+    right: 12px;
+  }
+
+  /* Rate values - keep on same row */
+  .rateItemRight {
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .ratePill {
+    padding: 4px 10px;
+    border-radius: 8px;
+  }
+
+  .ratePillNum {
+    font-size: 18px;
+  }
+
+  .ratePillBig .ratePillNum {
+    font-size: 20px;
+  }
+
+  .ratePillPct {
+    font-size: 12px;
+  }
+
+  .ratePillUnit {
+    font-size: 10px;
+  }
+
+  .dualLabel {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  /* Dual rate - horizontal compact */
+  .dualRate {
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .dualRateBlock {
+    gap: 3px;
+  }
+
+  .dualArrow {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .ratePillSecond {
+    padding: 4px 10px;
+  }
+
+  .ratePillSecond .ratePillNum {
+    font-size: 16px;
+  }
+
+  /* Notice */
   .notice {
     flex-direction: column;
     align-items: stretch;
-    padding: 20px;
+    padding: 16px;
+    border-radius: 14px;
+    margin-top: 28px;
+    gap: 14px;
+  }
+
+  .noticeIcon {
+    font-size: 22px;
+    padding: 6px;
+  }
+
+  .noticeTitle {
+    font-size: 14px;
+  }
+
+  .noticeText {
+    font-size: 12px;
+    line-height: 1.5;
   }
 
   .noticePhone {
     justify-content: center;
+    padding: 10px 20px;
+    font-size: 13px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroTitle {
+    font-size: 20px;
+  }
+
+  .heroStatValue {
+    font-size: 22px;
+  }
+
+  .heroStatDivider {
+    margin: 0 10px;
+  }
+
+  .tab {
+    padding: 10px 8px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .tabIcon {
+    font-size: 13px;
+  }
+
+  .rateItem {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 14px 12px;
+  }
+
+  .rateItemRight {
+    margin-left: 0;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 10px;
+  }
+
+  .singleRateBlock {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dualRate {
+    justify-content: space-between;
+  }
+
+  .dualArrow {
+    display: block;
+    font-size: 10px;
+    margin-bottom: 6px;
   }
 }

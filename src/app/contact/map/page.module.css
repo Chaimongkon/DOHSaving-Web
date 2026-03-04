@@ -437,34 +437,203 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .hero {
-    padding: 36px 16px 48px;
+    padding: 32px 16px 44px;
   }
 
   .heroTitle {
-    font-size: 24px;
+    font-size: 22px;
+  }
+
+  .heroSub {
+    font-size: 12px;
   }
 
   .content {
-    padding: 0 16px 40px;
+    padding: 0 12px 40px;
+    margin-top: -24px;
+  }
+
+  /* Map */
+  .mapContainer {
+    border-radius: 16px;
+    margin-bottom: 16px;
   }
 
   .mapFrame {
-    height: 300px;
+    height: 240px;
   }
 
   .mapBar {
+    padding: 12px 14px;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .mapAddress {
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .mapActions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .btnDirection {
+    justify-content: center;
+    padding: 10px 12px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+
+  /* Info cards */
+  .infoGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .card {
+    border-radius: 14px;
+  }
+
+  .cardHeader {
+    padding: 14px 14px 0;
+    gap: 10px;
+  }
+
+  .cardIcon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .cardTitle {
+    font-size: 14px;
+  }
+
+  .cardBody {
+    padding: 10px 14px 14px;
+  }
+
+  .cardText {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  /* Transport */
+  .transportGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .transportCard {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .transportHeader {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .transportIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .transportTitle {
+    font-size: 14px;
+  }
+
+  .transportSub {
+    font-size: 11px;
+  }
+
+  .transportSteps {
+    gap: 8px;
+  }
+
+  .stepNum {
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
+    border-radius: 7px;
+  }
+
+  .stepText {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  /* Landmarks */
+  .landmarkSection {
+    padding: 16px;
+    border-radius: 14px;
+    margin-bottom: 16px;
+  }
+
+  .landmarkTitle {
+    font-size: 14px;
+    margin-bottom: 12px;
   }
 
   .landmarkGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
   }
 
+  .landmark {
+    padding: 10px;
+    border-radius: 10px;
+    gap: 8px;
+  }
+
+  .landmarkIcon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+  }
+
+  .landmarkName {
+    font-size: 11px;
+  }
+
+  .landmarkDist {
+    font-size: 9px;
+  }
+
+  /* Quick contact */
   .quickContact {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    text-align: center;
+    padding: 20px 16px;
+    border-radius: 14px;
+    gap: 14px;
+  }
+
+  .quickContactTitle {
+    font-size: 15px;
+  }
+
+  .quickContactSub {
+    font-size: 11px;
+  }
+
+  .quickContactActions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .quickBtn {
+    justify-content: center;
+    padding: 12px 16px;
+    font-size: 13px;
+    border-radius: 10px;
   }
 }

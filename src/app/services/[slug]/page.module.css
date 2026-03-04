@@ -75,44 +75,61 @@
 
 /* ── Content ── */
 .content {
-  max-width: 780px;
-  margin: -32px auto 0;
+  max-width: 1080px;
+  margin: -48px auto 0;
   padding: 0 24px;
   position: relative;
   z-index: 1;
 }
 
+.contentGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+@media (min-width: 900px) {
+  .contentGrid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    align-items: start;
+  }
+}
+
 /* ── Action Section (Downloads) ── */
 .actionSection {
-  margin-top: 48px;
   animation: fadeInUp 0.5s ease-out 0.2s both;
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
 }
 
 .actionSectionTitle {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   color: #1e293b;
-  margin: 0 0 24px;
+  margin: 0 0 20px;
 }
 
 .actionRow {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .actionCard {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 18px 20px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
+  gap: 14px;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid transparent;
+  border-radius: 14px;
   text-decoration: none;
   color: #1e293b;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);

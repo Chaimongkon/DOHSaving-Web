@@ -468,7 +468,7 @@
   .heroInner {
     flex-direction: column;
     text-align: center;
-    gap: 24px;
+    gap: 20px;
     padding: 36px 24px 32px;
   }
 
@@ -485,37 +485,65 @@
   }
 
   .heroAppIcon {
-    width: 120px;
-    height: 120px;
-    border-radius: 28px;
+    width: 100px;
+    height: 100px;
+    border-radius: 24px;
   }
 
   .features {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
     margin-top: -16px;
+    margin-bottom: 32px;
   }
 
   .qrContent {
     grid-template-columns: 1fr;
+    gap: 24px;
   }
 
   .platformTabs {
     flex-direction: row;
-    overflow-x: auto;
+    gap: 8px;
   }
 
   .platformTab {
+    flex: 1;
     flex-direction: column;
     text-align: center;
-    min-width: 110px;
-    padding: 14px 16px;
-    gap: 8px;
+    padding: 12px 8px;
+    gap: 6px;
+    border-radius: 12px;
+  }
+
+  .platformTextWrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .platformLabel {
+    font-size: 13px;
+  }
+
+  .platformStore {
+    font-size: 11px;
   }
 
   .guideCard {
     flex-direction: column;
     text-align: center;
-    padding: 28px 24px;
+    padding: 24px 20px;
+    border-radius: 14px;
+  }
+
+  .guideTitle {
+    font-size: 17px;
+  }
+
+  .guideBtn {
+    padding: 12px 24px;
+    font-size: 14px;
   }
 
   .infoGrid {
@@ -524,48 +552,132 @@
 }
 
 @media (max-width: 640px) {
+  .hero {
+    padding-bottom: 32px;
+  }
+
+  .hero::before {
+    width: 300px;
+    height: 300px;
+    top: -100px;
+    right: -80px;
+  }
+
+  .heroInner {
+    padding: 28px 16px 24px;
+    gap: 16px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 12px;
+  }
+
   .heroTitle {
-    font-size: 24px;
+    font-size: 22px;
+    margin-bottom: 8px;
   }
 
   .heroDesc {
-    font-size: 14px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .storeButtons {
+    gap: 8px;
   }
 
   .storeImg {
-    height: 38px;
+    height: 36px;
+  }
+
+  .heroAppIcon {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .heroWave svg {
+    height: 36px;
+  }
+
+  .page {
+    padding: 0 16px 40px;
   }
 
   .features {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 8px;
+    margin-top: -12px;
+    margin-bottom: 24px;
   }
 
   .featureCard {
-    padding: 18px 14px;
+    padding: 16px 10px;
+    border-radius: 14px;
   }
 
   .featureIcon {
     width: 44px;
     height: 44px;
     font-size: 18px;
+    border-radius: 12px;
+    margin-bottom: 10px;
   }
 
   .featureTitle {
-    font-size: 13px;
+    font-size: 12px;
+    margin-bottom: 2px;
   }
 
   .featureDesc {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .qrSection {
-    padding: 24px 18px;
-    border-radius: 18px;
+    padding: 20px 16px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+  }
+
+  .qrHeader {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .qrHeaderIcon {
+    font-size: 24px;
   }
 
   .qrTitle {
-    font-size: 18px;
+    font-size: 16px;
+  }
+
+  .qrSubtitle {
+    font-size: 11px;
+  }
+
+  .platformTab {
+    padding: 10px 6px;
+    border-radius: 10px;
+  }
+
+  .platformIcon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .platformLabel {
+    font-size: 11px;
+  }
+
+  .platformStore {
+    font-size: 10px;
+  }
+
+  .qrCard {
+    padding: 20px;
+    border-radius: 14px;
   }
 
   .qrImage {
@@ -578,16 +690,50 @@
     height: 180px;
   }
 
+  .qrLabel {
+    font-size: 13px;
+  }
+
   .downloadBtn {
-    padding: 12px 24px;
-    font-size: 14px;
+    padding: 12px 28px;
+    font-size: 13px;
+    border-radius: 10px;
+    margin-top: 16px;
+  }
+
+  .infographicSection {
+    margin-bottom: 24px;
   }
 
   .infoTitle {
-    font-size: 20px;
+    font-size: 18px;
+  }
+
+  .infoSubtitle {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .infoCard {
+    border-radius: 14px;
   }
 
   .guideCard {
-    padding: 24px 20px;
+    padding: 20px 16px;
+    gap: 16px;
+  }
+
+  .guideTitle {
+    font-size: 15px;
+  }
+
+  .guideDesc {
+    font-size: 12px;
+  }
+
+  .guideBtn {
+    padding: 10px 20px;
+    font-size: 13px;
+    border-radius: 10px;
   }
 }

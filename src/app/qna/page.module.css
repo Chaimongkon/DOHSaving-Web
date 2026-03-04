@@ -493,40 +493,16 @@
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
   .hero {
-    padding: 28px 16px 36px;
+    padding: 24px 16px 32px;
   }
 
   .heroTitle {
-    font-size: 22px;
+    font-size: 20px;
   }
 
-  .toolbar {
-    flex-direction: column;
-    margin-top: -20px;
-    padding: 0 16px;
-  }
-
-  .searchBox {
-    width: 100%;
-  }
-
-  .createBtn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .content {
-    padding: 0 12px 60px;
-    margin-top: 16px;
-  }
-
-  .questionItem {
-    padding: 14px 14px;
-    gap: 10px;
-  }
-
-  .viewsChip {
-    display: none;
+  .heroSub {
+    font-size: 12px;
+    margin-bottom: 14px;
   }
 
   .heroStats {
@@ -534,16 +510,130 @@
   }
 
   .heroStat {
-    padding: 8px 14px;
-    min-width: 70px;
+    padding: 8px 12px;
+    min-width: 64px;
+    border-radius: 10px;
   }
 
   .heroStatNum {
     font-size: 18px;
   }
 
+  .heroStatLabel {
+    font-size: 9px;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    margin-top: -18px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .searchBox {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+  }
+
+  .searchInput {
+    font-size: 13px;
+  }
+
+  .createBtn {
+    width: 100%;
+    justify-content: center;
+    padding: 11px 20px;
+    font-size: 13px;
+    border-radius: 12px;
+  }
+
+  .content {
+    padding: 0 12px 60px;
+    margin-top: 14px;
+  }
+
   .filterBar {
     flex-direction: column;
     align-items: stretch;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .filterTabs {
+    padding: 2px;
+    border-radius: 8px;
+  }
+
+  .filterTab {
+    padding: 6px 12px;
+    font-size: 11px;
+    border-radius: 6px;
+  }
+
+  .sortSelect {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .questionList {
+    border-radius: 14px;
+  }
+
+  .questionItem {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .questionTitle {
+    font-size: 13px;
+    gap: 6px;
+  }
+
+  .pinBadge,
+  .closedBadge {
+    font-size: 8px;
+    padding: 2px 6px;
+  }
+
+  .questionMeta {
+    gap: 8px;
+    font-size: 10px;
+    margin-top: 3px;
+  }
+
+  .latestReply {
+    font-size: 10px;
+    padding: 5px 8px;
+    margin-top: 5px;
+  }
+
+  .replyChip {
+    min-width: 44px;
+    padding: 6px 4px;
+    border-radius: 10px;
+  }
+
+  .replyCount {
+    font-size: 14px;
+  }
+
+  .replyLabel {
+    font-size: 8px;
+  }
+
+  .viewsChip {
+    display: none;
+  }
+
+  .pagination {
+    gap: 4px;
+    margin-top: 16px;
+  }
+
+  .pageBtn {
+    padding: 7px 12px;
+    font-size: 12px;
+    border-radius: 8px;
   }
 }

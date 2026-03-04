@@ -561,3 +561,39 @@ export const Document3D: React.FC<IconProps> = ({ size = 64, className = "" }) =
         </g>
     </svg>
 );
+
+export const FileDownload3D: React.FC<IconProps> = ({ size = 64, className = "" }) => (
+    <svg width={size} height={size} viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="fd-bg" x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#A78BFA" /> {/* Violet 400 */}
+                <stop offset="100%" stopColor="#6D28D9" /> {/* Violet 700 */}
+            </linearGradient>
+            <linearGradient id="fd-fold" x1="60" y1="10" x2="80" y2="30" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#C4B5FD" /> {/* Violet 300 */}
+                <stop offset="100%" stopColor="#5B21B6" /> {/* Violet 800 */}
+            </linearGradient>
+            <linearGradient id="fd-arrow" x1="30" y1="40" x2="70" y2="80" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#FCD34D" /> {/* Amber 300 */}
+                <stop offset="100%" stopColor="#D97706" /> {/* Amber 600 */}
+            </linearGradient>
+            <filter id="shadow-fd" x="-10" y="-10" width="120" height="120" filterUnits="userSpaceOnUse">
+                <feDropShadow dx="-2" dy="8" stdDeviation="6" floodColor="#5B21B6" floodOpacity="0.3" />
+            </filter>
+            <filter id="shadow-fd-arrow" x="10" y="30" width="80" height="80" filterUnits="userSpaceOnUse">
+                <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#B45309" floodOpacity="0.4" />
+            </filter>
+        </defs>
+        <g filter="url(#shadow-fd)">
+            {/* File Body */}
+            <path d="M25 15 C25 10 29 6 34 6 L62 6 L82 26 L82 86 C82 91 78 95 73 95 L34 95 C29 95 25 91 25 86 Z" fill="url(#fd-bg)" />
+            {/* Folded Corner */}
+            <path d="M62 6 L82 26 L66 26 C64 26 62 24 62 22 Z" fill="url(#fd-fold)" />
+            {/* 3D Arrow */}
+            <g filter="url(#shadow-fd-arrow)">
+                <path d="M42 40 L58 40 L58 55 L68 55 L50 78 L32 55 L42 55 Z" fill="url(#fd-arrow)" />
+                <path d="M42 40 L58 40 L58 55 L68 55 L50 78 L32 55 L42 55 Z" stroke="#FEF3C7" strokeWidth="1" opacity="0.5" />
+            </g>
+        </g>
+    </svg>
+);

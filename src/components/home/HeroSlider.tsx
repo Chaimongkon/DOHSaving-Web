@@ -109,13 +109,12 @@ export default function HeroSlider() {
             {/* ถ้ามี urlLink แต่ไม่มี title (ไม่มี CTA ข้างใน) — ครอบทั้ง slide เป็น link */}
             {slide.urlLink && !slide.title ? (
               <Link href={slide.urlLink} className={css.slideLink}>
-                <div className={css.slide}>
+                <div className={`${css.slide} ${slide.title ? css.slideHasContent : ""}`}>
                   {renderSlideInner(slide)}
                 </div>
               </Link>
             ) : (
-              /* ถ้ามี title (มี CTA link ข้างใน) หรือไม่มี urlLink — ไม่ครอบ link */
-              <div className={css.slide}>
+              <div className={`${css.slide} ${slide.title ? css.slideHasContent : ""}`}>
                 {renderSlideInner(slide)}
               </div>
             )}

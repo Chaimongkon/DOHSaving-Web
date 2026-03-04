@@ -502,42 +502,170 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .hero {
-    padding: 36px 16px 48px;
+    padding: 32px 16px 44px;
   }
+
   .heroTitle {
     font-size: 22px;
   }
+
+  .heroSub {
+    font-size: 12px;
+  }
+
   .content {
-    padding: 0 16px 40px;
+    padding: 0 12px 40px;
+    margin-top: -24px;
   }
+
+  /* Year bar */
   .yearBar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 14px;
   }
-  .yearLeft {
-    justify-content: center;
+
+  .yearLabel {
+    font-size: 13px;
   }
-  .yearSelector {
-    align-self: center;
+
+  .yearBtn {
+    padding: 8px 14px;
+    font-size: 13px;
+    min-width: 90px;
   }
+
+  .itemCount {
+    font-size: 12px;
+  }
+
+  /* Month grid */
   .monthGrid {
     grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
   }
+
+  .card {
+    padding: 14px;
+    border-radius: 12px;
+    gap: 10px;
+  }
+
+  .cardInner {
+    gap: 12px;
+  }
+
+  .cardIcon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .monthTag {
+    font-size: 11px;
+    padding: 2px 8px;
+  }
+
+  .cardTitle {
+    font-size: 12px;
+  }
+
+  .cardDate {
+    font-size: 10px;
+  }
+
+  .cardBtn {
+    padding: 8px 0;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+
+  .cardNoFile {
+    padding: 8px 0;
+    font-size: 11px;
+  }
+
+  /* Info banner */
   .infoBanner {
     flex-direction: column;
     text-align: center;
+    padding: 20px 16px;
+    border-radius: 14px;
+    gap: 12px;
   }
-  .modalContent {
-    height: 95vh;
+
+  .infoBannerIcon {
+    width: 40px;
+    height: 40px;
     border-radius: 12px;
   }
-  .modalHeader {
-    flex-wrap: wrap;
+
+  .infoBannerTitle {
+    font-size: 14px;
   }
-  .modalActions {
+
+  .infoBannerSub {
+    font-size: 11px;
+  }
+
+  /* Modal */
+  .modalOverlay {
+    padding: 8px;
+  }
+
+  .modalContent {
+    height: 96vh;
+    border-radius: 14px;
+  }
+
+  .modalHeader {
+    padding: 12px 14px;
     flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .modalTitle {
+    font-size: 13px;
+    width: 100%;
+  }
+
+  .modalActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .modalBtn {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .modalClose {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 400px) {
+  .heroTitle {
+    font-size: 18px;
+  }
+
+  .yearBar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .yearLeft {
+    justify-content: center;
+  }
+
+  .yearSelector {
+    align-self: center;
   }
 }
