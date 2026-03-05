@@ -177,6 +177,7 @@ export async function GET(req: NextRequest) {
         category: true,
         subject: true,
         status: true,
+        adminNote: true,
         createdAt: true,
         resolvedAt: true,
       },

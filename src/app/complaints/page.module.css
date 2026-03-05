@@ -26,8 +26,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
   background-size: 44px 44px;
   pointer-events: none;
 }
@@ -43,7 +43,7 @@
   font-size: 40px;
   color: #a5b4fc;
   margin-bottom: 14px;
-  filter: drop-shadow(0 0 12px rgba(165,180,252,0.4));
+  filter: drop-shadow(0 0 12px rgba(165, 180, 252, 0.4));
 }
 
 .heroTitle {
@@ -56,7 +56,7 @@
 
 .heroSub {
   font-size: 14px;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255, 255, 255, 0.55);
   margin: 0 0 24px;
   line-height: 1.7;
   max-width: 480px;
@@ -69,13 +69,13 @@
   max-width: 560px;
   margin: 0 auto 16px;
   padding: 14px 18px;
-  background: rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 14px;
   text-align: left;
   font-size: 12px;
-  color: rgba(255,255,255,0.65);
+  color: rgba(255, 255, 255, 0.65);
   line-height: 1.7;
   position: relative;
   z-index: 1;
@@ -100,13 +100,13 @@
   display: flex;
   gap: 4px;
   margin-bottom: 0;
-  background: rgba(255,255,255,0.85);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   border-radius: 18px 18px 0 0;
   padding: 6px 6px 0;
-  border: 1px solid rgba(255,255,255,0.6);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-bottom: none;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
 }
 
 .tab {
@@ -130,13 +130,13 @@
 
 .tab:hover {
   color: #6366f1;
-  background: rgba(99,102,241,0.04);
+  background: rgba(99, 102, 241, 0.04);
 }
 
 .tabActive {
   background: #fff;
   color: #4f46e5;
-  box-shadow: 0 -1px 8px rgba(79,70,229,0.08);
+  box-shadow: 0 -1px 8px rgba(79, 70, 229, 0.08);
 }
 
 .tabActive::after {
@@ -157,7 +157,7 @@
   border-top: none;
   border-radius: 0 0 24px 24px;
   padding: 0 0 32px;
-  box-shadow: 0 12px 40px rgba(79,70,229,0.06);
+  box-shadow: 0 12px 40px rgba(79, 70, 229, 0.06);
   overflow: hidden;
 }
 
@@ -167,7 +167,7 @@
   padding: 24px 32px;
 }
 
-.formSection + .formSection {
+.formSection+.formSection {
   border-top: 1px solid #f3f0fa;
 }
 
@@ -260,7 +260,7 @@
 .formInput:focus {
   outline: none;
   border-color: #6366f1;
-  box-shadow: 0 0 0 4px rgba(99,102,241,0.08);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
   background: #fff;
 }
 
@@ -288,7 +288,7 @@
 .formSelect:focus {
   outline: none;
   border-color: #6366f1;
-  box-shadow: 0 0 0 4px rgba(99,102,241,0.08);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
 }
 
 .formTextarea {
@@ -316,7 +316,7 @@
 .formTextarea:focus {
   outline: none;
   border-color: #6366f1;
-  box-shadow: 0 0 0 4px rgba(99,102,241,0.08);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
   background: #fff;
 }
 
@@ -342,7 +342,7 @@
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
-  box-shadow: 0 6px 20px rgba(79,70,229,0.3), 0 2px 6px rgba(79,70,229,0.15);
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3), 0 2px 6px rgba(79, 70, 229, 0.15);
   transition: all 0.25s;
   position: relative;
   overflow: hidden;
@@ -352,14 +352,14 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
   opacity: 0;
   transition: opacity 0.3s;
 }
 
 .submitBtn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(79,70,229,0.4), 0 3px 8px rgba(79,70,229,0.2);
+  box-shadow: 0 8px 28px rgba(79, 70, 229, 0.4), 0 3px 8px rgba(79, 70, 229, 0.2);
 }
 
 .submitBtn:hover::after {
@@ -403,7 +403,7 @@
   border-top: none;
   border-radius: 0 0 24px 24px;
   padding: 48px 32px;
-  box-shadow: 0 12px 40px rgba(79,70,229,0.06);
+  box-shadow: 0 12px 40px rgba(79, 70, 229, 0.06);
   text-align: center;
 }
 
@@ -438,7 +438,7 @@
 .trackInput:focus {
   outline: none;
   border-color: #6366f1;
-  box-shadow: 0 0 0 4px rgba(99,102,241,0.08);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
   background: #fff;
 }
 
@@ -453,13 +453,13 @@
   cursor: pointer;
   font-family: inherit;
   white-space: nowrap;
-  box-shadow: 0 4px 14px rgba(79,70,229,0.25);
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
   transition: all 0.2s;
 }
 
 .trackBtn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(79,70,229,0.35);
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
 }
 
 .trackResult {
@@ -507,10 +507,56 @@
   font-weight: 700;
 }
 
-.statusPending { background: #fef3c7; color: #d97706; }
-.statusReviewing { background: #dbeafe; color: #2563eb; }
-.statusResolved { background: #dcfce7; color: #16a34a; }
-.statusRejected { background: #fee2e2; color: #dc2626; }
+.statusPending {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.statusReviewing {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.statusResolved {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.statusRejected {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* ─── Admin Reply ─── */
+.adminReplySection {
+  margin-top: 16px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #16a34a;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.adminReplyHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #16a34a;
+  background: rgba(22, 163, 106, 0.06);
+  border-bottom: 1px solid #bbf7d0;
+}
+
+.adminReplyBody {
+  padding: 14px 16px;
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
 
 /* ─── Success ─── */
 .success {
@@ -519,7 +565,7 @@
   background: #fff;
   border: 1px solid #e8e5f0;
   border-radius: 24px;
-  box-shadow: 0 12px 40px rgba(79,70,229,0.06);
+  box-shadow: 0 12px 40px rgba(79, 70, 229, 0.06);
   position: relative;
   overflow: hidden;
 }
@@ -538,7 +584,7 @@
   font-size: 56px;
   color: #16a34a;
   margin-bottom: 16px;
-  filter: drop-shadow(0 4px 12px rgba(22,163,106,0.2));
+  filter: drop-shadow(0 4px 12px rgba(22, 163, 106, 0.2));
 }
 
 .successTitle {
@@ -600,12 +646,12 @@
   background: linear-gradient(135deg, #4f46e5, #7c3aed);
   color: #fff;
   border-color: transparent;
-  box-shadow: 0 4px 14px rgba(79,70,229,0.25);
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
 }
 
 .successBtnPrimary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(79,70,229,0.35);
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
   background: linear-gradient(135deg, #4338ca, #6d28d9);
 }
 
@@ -645,7 +691,7 @@
 .confirmOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(4px);
   z-index: 2000;
   display: flex;
@@ -656,8 +702,13 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .confirmBox {
@@ -667,13 +718,20 @@
   max-width: 400px;
   width: 100%;
   text-align: center;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.15);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15);
   animation: slideUp 0.2s ease;
 }
 
 @keyframes slideUp {
-  from { transform: translateY(12px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .confirmIcon {
@@ -715,7 +773,7 @@
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
-  box-shadow: 0 4px 14px rgba(79,70,229,0.25);
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
 }
 
 .confirmBtnCancel {
@@ -881,6 +939,21 @@
   .trackRow {
     font-size: 12px;
     padding: 8px 0;
+  }
+
+  .adminReplySection {
+    margin-top: 12px;
+    border-radius: 10px;
+  }
+
+  .adminReplyHeader {
+    font-size: 12px;
+    padding: 10px 14px;
+  }
+
+  .adminReplyBody {
+    font-size: 12px;
+    padding: 12px 14px;
   }
 
   /* Success */

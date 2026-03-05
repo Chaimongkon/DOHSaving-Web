@@ -26,6 +26,7 @@ interface TrackResult {
   category: string;
   subject: string;
   status: string;
+  adminNote: string | null;
   createdAt: string;
   resolvedAt: string | null;
 }
@@ -421,6 +422,16 @@ export default function ComplaintsPage() {
                     <span className={css.trackValue}>{formatDate(trackResult.resolvedAt)}</span>
                   </div>
                 )}
+                {trackResult.adminNote && trackResult.status !== "pending" && (
+                  <div className={css.adminReplySection}>
+                    <div className={css.adminReplyHeader}>
+                      <CheckCircleOutlined /> คำตอบจากเจ้าหน้าที่
+                    </div>
+                    <div className={css.adminReplyBody}>
+                      {trackResult.adminNote}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -434,7 +445,7 @@ export default function ComplaintsPage() {
             <div className={css.confirmIcon}><ExclamationCircleOutlined /></div>
             <h3 className={css.confirmTitle}>ยืนยันการส่งข้อมูล</h3>
             <p className={css.confirmText}>
-              คุณต้องการส่งเรื่อง <strong>&quot;{subject}&quot;</strong> ใช่หรือไม่?<br/>
+              คุณต้องการส่งเรื่อง <strong>&quot;{subject}&quot;</strong> ใช่หรือไม่?<br />
               เมื่อส่งแล้วจะไม่สามารถแก้ไขได้
             </p>
             <div className={css.confirmActions}>
