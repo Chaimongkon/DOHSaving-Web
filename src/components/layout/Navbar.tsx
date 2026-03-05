@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { Button, Drawer, Menu } from "antd";
 import {
   MenuOutlined,
@@ -353,9 +353,30 @@ export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [openKey, setOpenKey] = useState<string | null>(null);
   const [pinnedKey, setPinnedKey] = useState<string | null>(null);
+  const [megaImages, setMegaImages] = useState<Record<string, string>>({});
   const pinnedRef = useRef<string | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navRef = useRef<HTMLDivElement>(null);
+
+  // Fetch dynamic mega images from API
+  useEffect(() => {
+    fetch("/api/site-images")
+      .then((res) => res.ok ? res.json() : {})
+      .then((data: Record<string, string>) => setMegaImages(data))
+      .catch(() => { });
+  }, []);
+
+  // Merge dynamic images into nav items
+  const mergedNavItems = useMemo(() => {
+    if (Object.keys(megaImages).length === 0) return navItems;
+    return navItems.map((item) => {
+      const dynamicImage = megaImages[`mega-${item.key}`];
+      if (dynamicImage) {
+        return { ...item, megaImage: dynamicImage };
+      }
+      return item;
+    });
+  }, [megaImages]);
 
   // Keep ref in sync with state
   useEffect(() => { pinnedRef.current = pinnedKey; }, [pinnedKey]);
@@ -430,7 +451,7 @@ export default function Navbar() {
 
         {/* Desktop Menu — Pill buttons with mega dropdowns */}
         <div className="navbar-menu-desktop" ref={navRef}>
-          {navItems.map((item) => (
+          {mergedNavItems.map((item) => (
             <MegaDropdown
               key={item.key}
               item={item}
@@ -459,18 +480,63 @@ export default function Navbar() {
 
         {/* Mobile Drawer */}
         <Drawer
-          title="เมนู"
           placement="right"
           onClose={() => setDrawerOpen(false)}
           open={drawerOpen}
           styles={{ wrapper: { width: 300 } }}
+          closable={false}
+          className="mobile-drawer"
+          title={null}
         >
-          <Menu
-            mode="inline"
-            items={mobileMenuItems}
-            onClick={() => setDrawerOpen(false)}
-            style={{ border: "none" }}
-          />
+          {/* Custom branded header */}
+          <div className="drawer-header">
+            <div className="drawer-header-left">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/logo/logo.png"
+                alt="Logo"
+                width={44}
+                height={44}
+                className="drawer-header-logo"
+              />
+              <div className="drawer-header-text">
+                <span className="drawer-header-title">สหกรณ์ออมทรัพย์</span>
+                <span className="drawer-header-title">กรมทางหลวง จำกัด</span>
+                <span className="drawer-header-sub">DOH Saving & Credit Cooperative</span>
+              </div>
+            </div>
+            <button
+              className="drawer-close-btn"
+              onClick={() => setDrawerOpen(false)}
+              aria-label="Close menu"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Menu */}
+          <div className="drawer-menu-wrap">
+            <Menu
+              mode="inline"
+              items={mobileMenuItems}
+              onClick={() => setDrawerOpen(false)}
+              style={{ border: "none" }}
+              className="drawer-menu"
+            />
+          </div>
+
+          {/* Bottom login CTA */}
+          <div className="drawer-footer">
+            <a
+              href="https://doh.icoopsiam.com/login"
+              className="drawer-login-btn"
+              onClick={() => setDrawerOpen(false)}
+            >
+              <LoginOutlined />
+              <span>เข้าสู่ระบบสมาชิก</span>
+            </a>
+            <p className="drawer-footer-info">ตรวจสอบยอด ทำธุรกรรม ได้ 24 ชม.</p>
+          </div>
         </Drawer>
       </div>
     </nav>

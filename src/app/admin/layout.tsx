@@ -46,6 +46,7 @@ const navItems = [
     group: "จัดการเนื้อหา",
     items: [
       { label: "สไลด์หน้าแรก", href: "/admin/slides", icon: <PictureOutlined /> },
+      { label: "รูปเมนูหลัก", href: "/admin/mega-images", icon: <PictureOutlined /> },
       { label: "ข่าวประชาสัมพันธ์", href: "/admin/news", icon: <FileTextOutlined /> },
       { label: "ป๊อปอัพแจ้งเตือน", href: "/admin/notifications", icon: <NotificationOutlined /> },
       { label: "วิดีโอ", href: "/admin/videos", icon: <VideoCameraOutlined /> },

@@ -67,7 +67,7 @@ img {
   height: 34px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .topbar-inner {
@@ -111,7 +111,7 @@ img {
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .navbar-inner {
@@ -280,7 +280,7 @@ img {
   display: flex;
   background: #ffffff;
   border-radius: 0 0 14px 14px;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   border-top: 3px solid #E8652B;
 }
@@ -391,7 +391,8 @@ img {
   position: fixed;
   left: 0;
   right: 0;
-  top: 98px; /* topbar 34px + navbar 64px */
+  top: 98px;
+  /* topbar 34px + navbar 64px */
   transform: none;
   padding-top: 0;
   width: 100%;
@@ -439,9 +440,11 @@ img {
   .navbar-menu-desktop {
     display: none !important;
   }
+
   .navbar-login-btn {
     display: none !important;
   }
+
   .navbar-hamburger {
     display: inline-flex !important;
     margin-left: auto;
@@ -449,11 +452,72 @@ img {
 }
 
 @media (max-width: 768px) {
-  .navbar-logo-text {
-    display: none;
+
+  /* Topbar — more compact */
+  .topbar {
+    height: 30px;
+    padding: 0 16px;
   }
+
+  .topbar-text {
+    font-size: 11px !important;
+  }
+
+  /* Navbar — show org name, reduce height */
   .navbar {
     padding: 0 16px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 4px 16px rgba(0, 0, 0, 0.25);
+    border-bottom: 2px solid #E8652B;
+  }
+
+  .navbar-inner {
+    height: 56px;
+    gap: 12px;
+  }
+
+  .navbar-logo {
+    gap: 10px;
+    margin-right: 0;
+  }
+
+  .navbar-logo img {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .navbar-logo-text {
+    display: flex;
+  }
+
+  .navbar-title {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .navbar-subtitle {
+    font-size: 7.5px;
+    letter-spacing: 0.4px;
+  }
+
+  .navbar-hamburger {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 10px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.2s !important;
+  }
+
+  .navbar-hamburger:hover,
+  .navbar-hamburger:active {
+    background: rgba(255, 255, 255, 0.15) !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .navbar-logo-text {
+    display: none;
   }
 }
 
@@ -508,3 +572,229 @@ img {
   min-height: calc(100vh - 68px - 34px - 300px);
 }
 
+/* ============================================================
+   Mobile Drawer — Premium Styling
+   ============================================================ */
+
+/* Remove default Ant Design Drawer padding */
+.mobile-drawer .ant-drawer-body {
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Drawer Header (branded) ── */
+.drawer-header {
+  background: linear-gradient(135deg, #0f1d36 0%, #1a3a5c 100%);
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 3px solid #E8652B;
+  position: relative;
+  overflow: hidden;
+}
+
+.drawer-header::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 101, 43, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.drawer-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.drawer-header-logo {
+  border-radius: 10px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.drawer-header-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.drawer-header-title {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.drawer-header-sub {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 8.5px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+.drawer-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.7);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.drawer-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+/* ── Menu area ── */
+.drawer-menu-wrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+/* Override Ant Design Menu inline styles */
+.drawer-menu.ant-menu-inline {
+  border-inline-end: none !important;
+}
+
+.drawer-menu .ant-menu-item {
+  margin: 2px 8px !important;
+  border-radius: 10px !important;
+  padding-left: 16px !important;
+  height: 44px !important;
+  line-height: 44px !important;
+  font-size: 14px !important;
+  color: #374151 !important;
+  transition: all 0.2s !important;
+}
+
+.drawer-menu .ant-menu-item:hover,
+.drawer-menu .ant-menu-item-active {
+  background: #fff5f0 !important;
+  color: #E8652B !important;
+}
+
+.drawer-menu .ant-menu-item-selected {
+  background: #fff5f0 !important;
+  color: #E8652B !important;
+  font-weight: 600 !important;
+}
+
+.drawer-menu .ant-menu-item .anticon {
+  font-size: 16px !important;
+  color: #E8652B;
+}
+
+.drawer-menu .ant-menu-submenu-title {
+  margin: 2px 8px !important;
+  border-radius: 10px !important;
+  padding-left: 16px !important;
+  height: 44px !important;
+  line-height: 44px !important;
+  font-size: 14px !important;
+  color: #374151 !important;
+  font-weight: 500 !important;
+}
+
+.drawer-menu .ant-menu-submenu-title:hover {
+  background: #f8fafc !important;
+  color: #E8652B !important;
+}
+
+.drawer-menu .ant-menu-submenu-title .anticon {
+  font-size: 16px !important;
+  color: #E8652B;
+}
+
+/* Sub-menu group titles */
+.drawer-menu .ant-menu-item-group-title {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #9ca3af !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  padding: 12px 24px 4px !important;
+}
+
+/* Sub-menu items */
+.drawer-menu .ant-menu-item-group-list .ant-menu-item {
+  font-size: 13px !important;
+  height: 38px !important;
+  line-height: 38px !important;
+  padding-left: 28px !important;
+  color: #6b7280 !important;
+}
+
+.drawer-menu .ant-menu-item-group-list .ant-menu-item:hover {
+  color: #E8652B !important;
+  background: #fff5f0 !important;
+}
+
+/* Divider between sections */
+.drawer-menu .ant-menu-submenu+.ant-menu-submenu,
+.drawer-menu .ant-menu-item+.ant-menu-submenu {
+  border-top: 1px solid #f0f0f0;
+  margin-top: 4px !important;
+  padding-top: 4px;
+}
+
+/* ── Footer (login CTA) ── */
+.drawer-footer {
+  padding: 16px 16px 20px;
+  border-top: 1px solid #f0f0f0;
+  background: #fafbfc;
+}
+
+.drawer-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #E8652B 0%, #f08050 100%);
+  color: #ffffff !important;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.25s;
+  box-shadow: 0 4px 16px rgba(232, 101, 43, 0.3);
+}
+
+.drawer-login-btn:hover {
+  background: linear-gradient(135deg, #d45a24 0%, #e07040 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(232, 101, 43, 0.4);
+  color: #ffffff !important;
+}
+
+.drawer-login-btn .anticon {
+  font-size: 16px;
+}
+
+.drawer-footer-info {
+  text-align: center;
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 8px 0 0 0;
+}

@@ -1,5 +1,5 @@
+/* ─────────── Base layout ─────────── */
 .page {
-  padding: 40px 24px 60px;
   min-height: 60vh;
   background: #f8f9fb;
 }
@@ -7,6 +7,7 @@
 .inner {
   max-width: 900px;
   margin: 0 auto;
+  padding: 0 24px 60px;
 }
 
 .loadingText {
@@ -15,7 +16,7 @@
   color: #9ca3af;
 }
 
-/* Error */
+/* ─────────── Error ─────────── */
 .errorWrap {
   text-align: center;
   padding: 80px 24px;
@@ -52,18 +53,57 @@
   color: #ffffff;
 }
 
-/* Breadcrumb */
+/* ─────────── Hero Banner ─────────── */
+.heroBanner {
+  background: linear-gradient(135deg, #0f1d36 0%, #1a3a5c 50%, #223d5e 100%);
+  padding: 40px 24px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroBanner::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 101, 43, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.heroBanner::after {
+  content: "";
+  position: absolute;
+  bottom: -40%;
+  left: -5%;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.heroInner {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Breadcrumb (inside hero) */
 .breadcrumb {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   font-size: 13px;
   flex-wrap: wrap;
 }
 
 .breadcrumbLink {
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.6);
   text-decoration: none;
   transition: color 0.15s;
 }
@@ -73,11 +113,11 @@
 }
 
 .breadcrumbSep {
-  color: #d1d5db;
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .breadcrumbCurrent {
-  color: #1f2937;
+  color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -85,20 +125,7 @@
   max-width: 400px;
 }
 
-/* Header card */
-.headerCard {
-  background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid #f0f0f0;
-  padding: 28px 32px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-}
-
-.headerTop {
-  margin-bottom: 16px;
-}
-
+/* Hero content */
 .tag {
   display: inline-block;
   color: #ffffff;
@@ -111,33 +138,43 @@
 }
 
 .title {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
-  color: #0f1d36;
-  margin: 0;
+  color: #ffffff;
+  margin: 0 0 16px;
   line-height: 1.4;
-}
-
-.headerBottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #f0f0f0;
 }
 
 .meta {
   display: flex;
   gap: 20px;
   font-size: 13px;
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .meta span {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+/* ─────────── Actions bar ─────────── */
+.actionsBar {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px 24px;
+  margin-top: -24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  position: relative;
+  z-index: 2;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .pdfBtn {
@@ -163,7 +200,59 @@
   transform: translateY(-1px);
 }
 
-/* PDF Viewer */
+/* Share */
+.shareGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.shareLabel {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-right: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.shareBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.shareBtn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.shareFb {
+  background: #1877f2;
+}
+
+.shareLine {
+  background: #06c755;
+}
+
+.shareLink {
+  background: #6b7280;
+}
+
+.shareCopied {
+  background: #16a34a;
+}
+
+/* ─────────── PDF Viewer ─────────── */
 .pdfViewer {
   border-radius: 16px;
   overflow: hidden;
@@ -181,7 +270,7 @@
   display: block;
 }
 
-/* Detail card (below PDF) */
+/* ─────────── Detail card (below PDF) ─────────── */
 .detailCard {
   background: #ffffff;
   border-radius: 16px;
@@ -201,7 +290,7 @@
   display: inline-block;
 }
 
-/* Article (non-PDF layout) */
+/* ─────────── Article (non-PDF) ─────────── */
 .article {
   background: #ffffff;
   border-radius: 16px;
@@ -236,55 +325,7 @@
   margin-bottom: 0;
 }
 
-/* Header actions (PDF + share) */
-.headerActions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-/* Share */
-.shareGroup {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.shareLabel {
-  font-size: 12px;
-  color: #9ca3af;
-  margin-right: 2px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.shareBtn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: none;
-  color: #ffffff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  transition: all 0.2s;
-}
-
-.shareBtn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.shareFb { background: #1877f2; }
-.shareLine { background: #06c755; }
-.shareLink { background: #6b7280; }
-.shareCopied { background: #16a34a; }
-
-/* Related news */
+/* ─────────── Related news ─────────── */
 .relatedSection {
   margin-top: 32px;
   padding-top: 24px;
@@ -356,6 +397,7 @@
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -368,7 +410,7 @@
   gap: 4px;
 }
 
-/* Loading skeleton */
+/* ─────────── Loading skeleton ─────────── */
 .skelBreadcrumb {
   height: 14px;
   width: 300px;
@@ -444,11 +486,16 @@
 }
 
 @keyframes detailShimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
-/* Back */
+/* ─────────── Back ─────────── */
 .backWrap {
   margin-top: 28px;
   padding-top: 20px;
@@ -469,63 +516,279 @@
   color: #E8652B;
 }
 
+/* ══════════ Tablet & Mobile ≤ 768px ══════════ */
 @media (max-width: 768px) {
-  .page {
-    padding: 24px 16px 48px;
+  .heroBanner {
+    padding: 24px 16px 36px;
   }
 
-  .headerCard {
-    padding: 20px;
+  .heroBanner::before {
+    width: 300px;
+    height: 300px;
+    top: -30%;
+    right: -15%;
+  }
+
+  /* Breadcrumb */
+  .breadcrumb {
+    font-size: 12px;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .breadcrumbCurrent {
+    max-width: 140px;
+    font-size: 12px;
   }
 
   .title {
-    font-size: 19px;
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 12px;
   }
 
-  .headerBottom {
-    flex-direction: column;
-    align-items: flex-start;
+  .meta {
     gap: 12px;
+    font-size: 12px;
+  }
+
+  /* Actions bar */
+  .actionsBar {
+    padding: 14px 16px;
+    margin-top: -20px;
+    margin-bottom: 16px;
+    border-radius: 12px;
   }
 
   .headerActions {
     width: 100%;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .meta {
-    flex-direction: column;
-    gap: 6px;
+    gap: 10px;
   }
 
   .pdfBtn {
     width: 100%;
     justify-content: center;
+    padding: 10px 16px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+
+  .shareGroup {
+    margin-left: 0;
+    gap: 8px;
+  }
+
+  .shareLabel {
+    font-size: 11px;
+  }
+
+  .shareBtn {
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+  }
+
+  .inner {
+    padding: 0 16px 40px;
+  }
+
+  /* PDF viewer */
+  .pdfViewer {
+    border-radius: 12px;
+    margin-bottom: 16px;
   }
 
   .pdfIframe {
-    height: 60vh;
-    min-height: 400px;
+    height: 55vh;
+    min-height: 380px;
   }
 
+  /* Detail card (below PDF) */
   .detailCard {
     padding: 20px;
+    border-radius: 14px;
   }
 
+  .detailHeading {
+    font-size: 15px;
+  }
+
+  /* Article (non-PDF) */
   .article {
     padding: 20px;
+    border-radius: 14px;
   }
 
-  .breadcrumbCurrent {
-    max-width: 160px;
+  .imageWrap {
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .content {
+    font-size: 14px;
+    line-height: 1.85;
+  }
+
+  .content p {
+    margin: 0 0 12px;
+  }
+
+  .content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+
+  .content table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    font-size: 13px;
+  }
+
+  /* Related news */
+  .relatedSection {
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+
+  .relatedHeading {
+    font-size: 16px;
+    margin-bottom: 14px;
   }
 
   .relatedGrid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
+  .relatedCard {
+    flex-direction: row;
+    border-radius: 12px;
+  }
+
+  .relatedThumb {
+    width: 110px;
+    min-width: 110px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+
+  .relatedBody {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .relatedTitle {
+    font-size: 13px;
+    margin: 0 0 4px;
+  }
+
+  .relatedDate {
+    font-size: 11px;
+  }
+
+  /* Back link */
+  .backWrap {
+    margin-top: 20px;
+    padding-top: 16px;
+  }
+
+  .backLink {
+    font-size: 13px;
+  }
+
+  /* Skeleton */
   .skelBreadcrumb {
-    width: 200px;
+    width: 180px;
+  }
+
+  .skelHeaderCard {
+    padding: 20px;
+  }
+
+  .skelContent {
+    padding: 20px;
+  }
+
+  .tag {
+    font-size: 10px;
+    padding: 3px 10px;
+    margin-bottom: 8px;
+  }
+}
+
+/* ══════════ Small phones ≤ 480px ══════════ */
+@media (max-width: 480px) {
+  .heroBanner {
+    padding: 20px 14px 32px;
+  }
+
+  .inner {
+    padding: 0 14px 36px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .meta {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .actionsBar {
+    padding: 12px 14px;
+    margin-top: -18px;
+    border-radius: 10px;
+  }
+
+  .pdfBtn {
+    font-size: 12px;
+    padding: 9px 14px;
+  }
+
+  .pdfIframe {
+    height: 50vh;
+    min-height: 320px;
+  }
+
+  .article {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .content {
+    font-size: 13px;
+  }
+
+  .detailCard {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .relatedCard {
+    border-radius: 10px;
+  }
+
+  .relatedThumb {
+    width: 90px;
+    min-width: 90px;
+  }
+
+  .relatedTitle {
+    font-size: 12px;
+  }
+
+  .shareBtn {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  .breadcrumbCurrent {
+    max-width: 100px;
   }
 }

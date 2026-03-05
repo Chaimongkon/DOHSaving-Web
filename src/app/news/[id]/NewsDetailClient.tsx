@@ -44,7 +44,7 @@ export default function NewsDetailClient() {
           .then((items) => {
             if (Array.isArray(items)) setRelated(items);
           })
-          .catch(() => {});
+          .catch(() => { });
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
@@ -114,59 +114,64 @@ export default function NewsDetailClient() {
 
   return (
     <div className={css.page}>
-      <div className={css.inner}>
-        {/* Breadcrumb */}
-        <nav className={css.breadcrumb}>
-          <Link href="/" className={css.breadcrumbLink}>หน้าแรก</Link>
-          <span className={css.breadcrumbSep}>/</span>
-          <Link href="/news" className={css.breadcrumbLink}>ข่าวประชาสัมพันธ์</Link>
-          <span className={css.breadcrumbSep}>/</span>
-          <span className={css.breadcrumbCurrent}>{news.title || "รายละเอียดข่าว"}</span>
-        </nav>
+      {/* Hero banner area */}
+      <div className={css.heroBanner}>
+        <div className={css.heroInner}>
+          {/* Breadcrumb */}
+          <nav className={css.breadcrumb}>
+            <Link href="/" className={css.breadcrumbLink}>หน้าแรก</Link>
+            <span className={css.breadcrumbSep}>/</span>
+            <Link href="/news" className={css.breadcrumbLink}>ข่าวประชาสัมพันธ์</Link>
+            <span className={css.breadcrumbSep}>/</span>
+            <span className={css.breadcrumbCurrent}>{news.title || "รายละเอียดข่าว"}</span>
+          </nav>
 
-        {/* Header card */}
-        <div className={css.headerCard}>
-          <div className={css.headerTop}>
+          {/* Title & meta in hero */}
+          <div className={css.heroContent}>
             {catInfo && (
               <span className={css.tag} style={{ background: catInfo.color }}>
                 {catInfo.label}
               </span>
             )}
             <h1 className={css.title}>{news.title}</h1>
-          </div>
-          <div className={css.headerBottom}>
             <div className={css.meta}>
               <span><CalendarOutlined /> {formatDate(news.createdAt)}</span>
               <span><EyeOutlined /> {formatViews(news.viewCount)} ครั้ง</span>
             </div>
-            <div className={css.headerActions}>
-              {news.pdfPath && (
-                <a
-                  href={news.pdfPath}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={css.pdfBtn}
-                >
-                  <FilePdfOutlined /> ดาวน์โหลด PDF
-                </a>
-              )}
-              {/* Share buttons */}
-              <div className={css.shareGroup}>
-                <span className={css.shareLabel}><ShareAltOutlined /> แชร์</span>
-                <button className={`${css.shareBtn} ${css.shareFb}`} onClick={handleShareFB} title="แชร์ Facebook">
-                  <FacebookOutlined />
-                </button>
-                <button className={`${css.shareBtn} ${css.shareLine}`} onClick={handleShareLine} title="แชร์ Line">
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 5.83 2 10.5c0 4.18 3.58 7.68 8.44 8.36.33.07.77.22.89.5.1.26.07.66.03.92l-.14.87c-.04.26-.2 1.02.89.56.55-.24 2.97-1.75 4.05-2.99C18.6 16.84 22 13.96 22 10.5 22 5.83 17.52 2 12 2z"/></svg>
-                </button>
-                <button
-                  className={`${css.shareBtn} ${css.shareLink} ${copied ? css.shareCopied : ""}`}
-                  onClick={handleCopyLink}
-                  title="คัดลอกลิงก์"
-                >
-                  {copied ? <CheckOutlined /> : <LinkOutlined />}
-                </button>
-              </div>
+          </div>
+        </div>
+      </div>
+
+      <div className={css.inner}>
+        {/* Actions bar */}
+        <div className={css.actionsBar}>
+          <div className={css.headerActions}>
+            {news.pdfPath && (
+              <a
+                href={news.pdfPath}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={css.pdfBtn}
+              >
+                <FilePdfOutlined /> ดาวน์โหลด PDF
+              </a>
+            )}
+            {/* Share buttons */}
+            <div className={css.shareGroup}>
+              <span className={css.shareLabel}><ShareAltOutlined /> แชร์</span>
+              <button className={`${css.shareBtn} ${css.shareFb}`} onClick={handleShareFB} title="แชร์ Facebook">
+                <FacebookOutlined />
+              </button>
+              <button className={`${css.shareBtn} ${css.shareLine}`} onClick={handleShareLine} title="แชร์ Line">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 5.83 2 10.5c0 4.18 3.58 7.68 8.44 8.36.33.07.77.22.89.5.1.26.07.66.03.92l-.14.87c-.04.26-.2 1.02.89.56.55-.24 2.97-1.75 4.05-2.99C18.6 16.84 22 13.96 22 10.5 22 5.83 17.52 2 12 2z" /></svg>
+              </button>
+              <button
+                className={`${css.shareBtn} ${css.shareLink} ${copied ? css.shareCopied : ""}`}
+                onClick={handleCopyLink}
+                title="คัดลอกลิงก์"
+              >
+                {copied ? <CheckOutlined /> : <LinkOutlined />}
+              </button>
             </div>
           </div>
         </div>

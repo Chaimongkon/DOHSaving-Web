@@ -19,7 +19,7 @@ export default function TopBar() {
         <Space size="large" className="topbar-left">
           <Space size={4}>
             <PhoneOutlined />
-            <Text className="topbar-text">02-354-6827</Text>
+            <Text className="topbar-text">02-644-4633 ต่อ 205</Text>
           </Space>
           <Space size={4}>
             <MailOutlined />
@@ -31,11 +31,11 @@ export default function TopBar() {
         <Space size="large" className="topbar-right">
           <Space size={4}>
             <ClockCircleOutlined />
-            <Text className="topbar-text">จ-ศ 08:30-16:30 น.</Text>
+            <Text className="topbar-text">จันทร์ - ศุกร์ 08:30 - 16:15 น.</Text>
           </Space>
           <Space size={4}>
             <EnvironmentOutlined />
-            <Text className="topbar-text">กรมทางหลวง ถ.ศรีอยุธยา กรุงเทพฯ</Text>
+            <Text className="topbar-text">สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด ถ.ศรีอยุธยา กรุงเทพฯ</Text>
           </Space>
         </Space>
       </div>

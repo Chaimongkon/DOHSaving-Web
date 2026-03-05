@@ -6,8 +6,6 @@ import {
   PhoneOutlined,
   PrinterOutlined,
   MailOutlined,
-  FacebookFilled,
-  MessageFilled,
   DownloadOutlined,
   RightOutlined,
   EyeOutlined,
@@ -42,7 +40,7 @@ export default function Footer() {
     fetch("/api/visitor-stats")
       .then((r) => r.json())
       .then((d) => setStats(d))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   return (
@@ -51,12 +49,12 @@ export default function Footer() {
         {/* Column 1 — Brand + Contact */}
         <div>
           <div className={css.brand}>
-          <img
-            src="/images/logo/logo.png"
-            alt="สหกรณ์ออมทรัพย์กรมทางหลวง"
-            width={52}
-            height={52}
-          />
+            <img
+              src="/images/logo/logo.png"
+              alt="สหกรณ์ออมทรัพย์กรมทางหลวง"
+              width={52}
+              height={52}
+            />
             <h3 className={css.brandName}>สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด</h3>
           </div>
           <p className={css.brandDesc}>
@@ -77,7 +75,7 @@ export default function Footer() {
             </div>
             <div className={css.contactItem}>
               <MailOutlined className={css.contactIcon} />
-              <span>dohcoop@hotmail.com</span>
+              <span><a href="mailto:[dohcoop@hotmail.com]">dohcoop@hotmail.com</a></span>
             </div>
           </div>
         </div>
@@ -116,48 +114,52 @@ export default function Footer() {
               href="https://www.facebook.com/DOHSaving"
               target="_blank"
               rel="noopener noreferrer"
-              className={`${css.socialBtn} ${css.socialFb}`}
-              aria-label="Facebook"
+              className={`${css.socialBtn}`}
+              aria-label="facebook"
             >
-              <FacebookFilled />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/logo/facebook.png" alt="facebook" width={82} height={82} style={{ borderRadius: 4 }} />
             </a>
             <a
               href="https://line.me/R/ti/p/@dohsaving"
               target="_blank"
               rel="noopener noreferrer"
-              className={`${css.socialBtn} ${css.socialLine}`}
-              aria-label="LINE"
+              className={`${css.socialBtn}`}
+              aria-label="line_oa"
             >
-              <MessageFilled />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/logo/line_oa.png" alt="line_oa" width={62} height={62} style={{ borderRadius: 4 }} />
             </a>
-                        <a
-              href="https://line.me/R/ti/p/@dohsaving"
+            <a
+              href="https://www.tiktok.com/@dohsaving"
               target="_blank"
               rel="noopener noreferrer"
-              className={`${css.socialBtn} ${css.socialLine}`}
-              aria-label="LINE"
+              className={`${css.socialBtn}`}
+              aria-label="tiktok"
             >
-              <MessageFilled />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/logo/tiktok.png" alt="tiktok" width={62} height={62} style={{ borderRadius: 4 }} />
             </a>
-                        <a
-              href="https://line.me/R/ti/p/@dohsaving"
+            <a
+              href="https://www.youtube.com/channel/UC2gIc9c6YHh0nE8fY_UP1UA"
               target="_blank"
               rel="noopener noreferrer"
-              className={`${css.socialBtn} ${css.socialLine}`}
-              aria-label="LINE"
+              className={`${css.socialBtn}`}
+              aria-label="youtube"
             >
-              <MessageFilled />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/logo/youtube.png" alt="youtube" width={62} height={62} style={{ borderRadius: 4 }} />
             </a>
           </div>
 
           <h4 className={css.socialTitle}>ดาวน์โหลดแอป</h4>
           <a href="#download-app" className={css.appCard}>
-            <div className={css.appIcon}>          
+            <div className={css.appIcon}>
               <img
-              src="/images/logo/logoapp.png"
-              alt="DOH Saving App"
-              className={css.iconImg}
-            /></div>
+                src="/images/logo/logoapp.png"
+                alt="DOH Saving App"
+                className={css.iconImg}
+              /></div>
             <div className={css.appText}>
               <span className={css.appTextTitle}>
                 <DownloadOutlined /> DOH Saving App
