@@ -55,14 +55,61 @@
   overflow-y: auto;
 }
 
+/* Collapsible group */
+.navGroup {
+  margin-bottom: 2px;
+}
+
 .navLabel {
-  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 13px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.35);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 16px 12px 6px;
+  letter-spacing: 0.8px;
+  padding: 10px 12px;
   margin: 0;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.navLabel:hover {
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.navLabelActive {
+  color: rgba(232, 101, 43, 0.7);
+}
+
+.navLabelActive:hover {
+  color: rgba(232, 101, 43, 0.85);
+}
+
+.navChevron {
+  font-size: 10px;
+  transition: transform 0.25s ease;
+}
+
+.navChevronOpen {
+  transform: rotate(90deg);
+}
+
+.navGroupItems {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.navGroupItemsOpen {
+  max-height: 600px;
 }
 
 .navItem {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   DashboardOutlined,
   PictureOutlined,
@@ -28,6 +28,7 @@ import {
   BookOutlined,
   GiftOutlined,
   DownloadOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,6 +39,7 @@ interface UserData {
   fullName: string;
   userRole: string;
   avatarPath: string | null;
+  menuPermissions: string[] | null;
 }
 
 const navItems = [
@@ -45,17 +47,20 @@ const navItems = [
   {
     group: "จัดการเนื้อหา",
     items: [
-      { label: "สไลด์หน้าแรก", href: "/admin/slides", icon: <PictureOutlined /> },
-      { label: "รูปเมนูหลัก", href: "/admin/mega-images", icon: <PictureOutlined /> },
       { label: "ข่าวประชาสัมพันธ์", href: "/admin/news", icon: <FileTextOutlined /> },
-      { label: "ป๊อปอัพแจ้งเตือน", href: "/admin/notifications", icon: <NotificationOutlined /> },
       { label: "วิดีโอ", href: "/admin/videos", icon: <VideoCameraOutlined /> },
       { label: "อัลบั้มภาพ", href: "/admin/photo-albums", icon: <CameraOutlined /> },
       { label: "สื่อสำหรับสมาชิก", href: "/admin/member-media", icon: <BookOutlined /> },
+    ],
+  },
+  {
+    group: "จัดการหน้าเว็บ",
+    items: [
+      { label: "สไลด์หน้าแรก", href: "/admin/slides", icon: <PictureOutlined /> },
+      { label: "ป๊อปอัพแจ้งเตือน", href: "/admin/notifications", icon: <NotificationOutlined /> },
       { label: "หน้าบริการ", href: "/admin/service-pages", icon: <PictureOutlined /> },
       { label: "วิธีใช้งาน App", href: "/admin/app-guide", icon: <FileTextOutlined /> },
       { label: "ดาวน์โหลดแอป", href: "/admin/download-app", icon: <DownloadOutlined /> },
-      { label: "ข้อบังคับ ระเบียบ ประกาศ", href: "/admin/regulations", icon: <AuditOutlined /> },
     ],
   },
   {
@@ -78,6 +83,12 @@ const navItems = [
     items: [
       { label: "อัตราดอกเบี้ย", href: "/admin/interest-rates", icon: <DollarOutlined /> },
       { label: "สินทรัพย์และหนี้สิน", href: "/admin/financial-summary", icon: <BankOutlined /> },
+    ],
+  },
+  {
+    group: "เอกสาร",
+    items: [
+      { label: "ข้อบังคับ ระเบียบ ประกาศ", href: "/admin/regulations", icon: <AuditOutlined /> },
       { label: "แบบฟอร์มต่างๆ", href: "/admin/forms", icon: <FormOutlined /> },
       { label: "รายงานประจำปี", href: "/admin/annual-reports", icon: <BookOutlined /> },
       { label: "เอกสารประกอบการประชุม", href: "/admin/meeting-documents", icon: <FileTextOutlined /> },
@@ -102,9 +113,11 @@ const navItems = [
   {
     group: "ระบบ",
     items: [
+      { label: "รูปเมนูหลัก", href: "/admin/mega-images", icon: <PictureOutlined /> },
       { label: "Festival Theme", href: "/admin/festivals", icon: <GiftOutlined /> },
       { label: "ผู้ใช้งาน", href: "/admin/users", icon: <TeamOutlined /> },
       { label: "Cookie Consent", href: "/admin/cookie-consent", icon: <SafetyCertificateOutlined /> },
+      { label: "ตั้งค่าแสดงชื่อ URL", href: "/admin/url-mappings", icon: <SettingOutlined /> },
       { label: "ตั้งค่า", href: "/admin/settings", icon: <SettingOutlined /> },
     ],
   },
@@ -115,6 +128,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
   const isLoginPage = pathname === "/admin/login";
 
   useEffect(() => {
@@ -130,6 +144,53 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       });
   }, [isLoginPage]);
 
+  const isActive = (href: string) => {
+    if (href === "/admin") return pathname === "/admin";
+    return pathname.startsWith(href);
+  };
+
+  // Auto-expand groups that contain the active item
+  useEffect(() => {
+    const activeGroups = new Set<string>();
+    navItems.forEach((section) => {
+      if ("group" in section && section.items) {
+        const hasActive = section.items.some((item) => isActive(item.href));
+        if (hasActive) activeGroups.add(section.group);
+      }
+    });
+    setExpandedGroups((prev) => {
+      const merged = new Set(prev);
+      activeGroups.forEach((g) => merged.add(g));
+      return merged;
+    });
+  }, [pathname]);
+
+  const toggleGroup = (group: string) => {
+    setExpandedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(group)) next.delete(group);
+      else next.add(group);
+      return next;
+    });
+  };
+
+  // กรองเมนูตามสิทธิ์ — admin เห็นทั้งหมด
+  const filteredNavItems = useMemo(() => {
+    if (!user || user.userRole === "admin") return navItems;
+    const allowed = new Set(user.menuPermissions || []);
+    return navItems
+      .map((section) => {
+        if ("href" in section) return section; // แดชบอร์ดเห็นเสมอ
+        if ("group" in section && section.items) {
+          const filtered = section.items.filter((item) => allowed.has(item.href));
+          if (filtered.length === 0) return null;
+          return { ...section, items: filtered };
+        }
+        return section;
+      })
+      .filter(Boolean) as typeof navItems;
+  }, [user]);
+
   // ถ้าอยู่หน้า login ไม่แสดง layout
   if (isLoginPage) {
     return <>{children}</>;
@@ -138,11 +199,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/admin/login");
-  };
-
-  const isActive = (href: string) => {
-    if (href === "/admin") return pathname === "/admin";
-    return pathname.startsWith(href);
   };
 
   return (
@@ -163,7 +219,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         <nav className={css.nav}>
-          {navItems.map((section, i) => {
+          {filteredNavItems.map((section, i) => {
             if ("href" in section && section.href) {
               const href = section.href;
               return (
@@ -178,21 +234,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </Link>
               );
             }
-            if ("group" in section) {
+            if ("group" in section && section.group) {
+              const groupName = section.group;
+              const isExpanded = expandedGroups.has(groupName);
+              const hasActiveChild = section.items?.some((item) => isActive(item.href));
               return (
-                <div key={i}>
-                  <p className={css.navLabel}>{section.group}</p>
-                  {section.items?.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`${css.navItem} ${isActive(item.href) ? css.navItemActive : ""}`}
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      <span className={css.navIcon}>{item.icon}</span>
-                      {item.label}
-                    </Link>
-                  ))}
+                <div key={i} className={css.navGroup}>
+                  <button
+                    className={`${css.navLabel} ${hasActiveChild ? css.navLabelActive : ""}`}
+                    onClick={() => toggleGroup(groupName)}
+                    type="button"
+                  >
+                    <span>{section.group}</span>
+                    <RightOutlined
+                      className={`${css.navChevron} ${isExpanded ? css.navChevronOpen : ""}`}
+                    />
+                  </button>
+                  <div
+                    className={`${css.navGroupItems} ${isExpanded ? css.navGroupItemsOpen : ""}`}
+                  >
+                    {section.items?.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`${css.navItem} ${isActive(item.href) ? css.navItemActive : ""}`}
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        <span className={css.navIcon}>{item.icon}</span>
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               );
             }

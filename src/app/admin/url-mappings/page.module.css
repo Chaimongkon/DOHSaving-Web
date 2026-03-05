@@ -1,0 +1,66 @@
+.container {
+    padding: 24px;
+    background: #f8fafc;
+    min-height: calc(100vh - 64px);
+    border-radius: 16px;
+}
+
+.pageTitle {
+    margin-top: 0 !important;
+    margin-bottom: 32px !important;
+    color: #1e293b !important;
+    font-weight: 800 !important;
+    font-size: 28px !important;
+    letter-spacing: -0.5px;
+}
+
+.formCard {
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+    background: #ffffff;
+}
+
+.tableCard {
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.urlText {
+    color: #3b82f6;
+    font-family: monospace;
+    font-size: 14px;
+    background: #eff6ff;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.editButton {
+    color: #64748b !important;
+}
+
+.editButton:hover {
+    color: #3b82f6 !important;
+    background: #eff6ff !important;
+}
+
+.deleteButton {
+    color: #ef4444 !important;
+}
+
+.deleteButton:hover {
+    color: #dc2626 !important;
+    background: #fef2f2 !important;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 16px;
+    }
+
+    .pageTitle {
+        font-size: 24px !important;
+        margin-bottom: 20px !important;
+    }
+}

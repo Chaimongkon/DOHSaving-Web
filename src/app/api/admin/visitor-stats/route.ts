@@ -32,10 +32,10 @@ export async function GET(req: NextRequest) {
       }),
       // Daily counts for last 7 days
       prisma.$queryRaw<{ day: string; count: bigint }[]>`
-        SELECT DATE(visitDate) as day, COUNT(*) as count
+        SELECT DATE_FORMAT(visitDate, '%Y-%m-%d') as day, COUNT(*) as count
         FROM visit_logs
         WHERE visitDate >= ${sevenDaysAgo}
-        GROUP BY DATE(visitDate)
+        GROUP BY DATE_FORMAT(visitDate, '%Y-%m-%d')
         ORDER BY day ASC
       `,
     ]);
@@ -65,6 +65,21 @@ export async function GET(req: NextRequest) {
       LIMIT 10
     `;
 
+    // Fetch dynamic URL translations
+    const urlTranslationsRaw = await prisma.siteSetting.findMany({
+      where: {
+        key: {
+          startsWith: "url_translation:",
+        },
+      },
+    });
+
+    const translations: Record<string, string> = {};
+    urlTranslationsRaw.forEach((setting) => {
+      const url = setting.key.replace("url_translation:", "");
+      translations[url] = setting.value || url;
+    });
+
     return NextResponse.json({
       total,
       today,
@@ -75,6 +90,7 @@ export async function GET(req: NextRequest) {
         pageUrl: p.pageUrl,
         count: Number(p.count),
       })),
+      translations,
     });
   } catch (error) {
     console.error("Failed to get admin visitor stats:", error);
