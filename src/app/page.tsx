@@ -52,7 +52,7 @@ const quickLinks = [
     icon: <WelfareIcon size={56} />,
     title: "สวัสดิการ",
     desc: "สิทธิประโยชน์สมาชิก",
-    href: "/services/welfare-a",
+    href: "/services/welfare",
     color: "#7c3aed",
     bg: "#f5f3ff",
   },
