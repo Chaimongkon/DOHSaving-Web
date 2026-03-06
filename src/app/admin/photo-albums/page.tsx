@@ -1,12 +1,40 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
-  PlusOutlined, EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined,
-  UploadOutlined, LoadingOutlined, PictureOutlined, CameraOutlined,
-  EyeOutlined, EyeInvisibleOutlined,
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  UploadOutlined,
+  LoadingOutlined,
+  PictureOutlined,
+  CameraOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined,
+  CheckCircleOutlined,
+  ArrowLeftOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
+import {
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  Switch,
+  DatePicker,
+  Typography,
+  message,
+  Drawer,
+  Tooltip,
+  Popconfirm,
+  Empty,
+} from "antd";
 import { ImagePlus, Trash2 } from "lucide-react";
+import dayjs from "dayjs";
+import css from "./page.module.css";
+
+const { Title } = Typography;
+const { TextArea } = Input;
 
 /* ── Types ── */
 interface Album {
@@ -28,12 +56,31 @@ interface Photo {
   sortOrder: number;
 }
 
-const empty: Album = { title: "", description: "", coverUrl: "", eventDate: "", sortOrder: 0, isActive: true };
+interface AlbumForm {
+  title: string;
+  description: string;
+  coverUrl: string;
+  eventDate: string;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+const defaultForm: AlbumForm = {
+  title: "",
+  description: "",
+  coverUrl: "",
+  eventDate: "",
+  sortOrder: 0,
+  isActive: true,
+};
 
 export default function AdminActivityAlbumsPage() {
   const [albums, setAlbums] = useState<Album[]>([]);
-  const [editing, setEditing] = useState<Album | null>(null);
-  const [isNew, setIsNew] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [formValues, setFormValues] = useState<AlbumForm>(defaultForm);
+  const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
   // Photo management
@@ -44,14 +91,30 @@ export default function AdminActivityAlbumsPage() {
 
   const coverInputRef = useRef<HTMLInputElement>(null);
   const photosInputRef = useRef<HTMLInputElement>(null);
+  const [form] = Form.useForm();
 
   /* ── Load albums ── */
   const load = useCallback(async () => {
-    const res = await fetch("/api/admin/activity-albums", { credentials: "include" });
-    if (res.ok) setAlbums(await res.json());
+    try {
+      const res = await fetch("/api/admin/activity-albums", { credentials: "include" });
+      if (res.ok) setAlbums(await res.json());
+      else message.error("ไม่สามารถโหลดข้อมูลอัลบั้มได้");
+    } catch {
+      message.error("เกิดข้อผิดพลาดในการเชื่อมต่อ");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  // Stats
+  const stats = useMemo(() => ({
+    total: albums.length,
+    active: albums.filter((a) => a.isActive).length,
+    hidden: albums.filter((a) => !a.isActive).length,
+    totalPhotos: albums.reduce((sum, a) => sum + (a._count?.photos || 0), 0),
+  }), [albums]);
 
   /* ── Load photos for album ── */
   const loadPhotos = useCallback(async (albumId: number) => {
@@ -59,40 +122,86 @@ export default function AdminActivityAlbumsPage() {
     if (res.ok) setPhotos(await res.json());
   }, []);
 
-  /* ── Save album ── */
-  const save = async () => {
-    if (!editing) return;
-    if (!editing.title.trim()) return alert("กรุณาระบุชื่ออัลบั้ม");
+  /* ── Drawer open/close ── */
+  const openCreate = () => {
+    setEditingId(null);
+    setFormValues(defaultForm);
+    form.setFieldsValue({ ...defaultForm, eventDate: null });
+    setDrawerOpen(true);
+  };
 
-    const method = isNew ? "POST" : "PATCH";
-    const payload: Record<string, unknown> = {
-      title: editing.title.trim(),
-      description: editing.description?.trim() || null,
-      coverUrl: editing.coverUrl || null,
-      eventDate: editing.eventDate || null,
-      sortOrder: editing.sortOrder,
-      isActive: editing.isActive,
+  const openEdit = (album: Album) => {
+    setEditingId(album.id || null);
+    const editForm: AlbumForm = {
+      title: album.title,
+      description: album.description || "",
+      coverUrl: album.coverUrl || "",
+      eventDate: album.eventDate || "",
+      sortOrder: album.sortOrder || 0,
+      isActive: album.isActive,
     };
-    if (!isNew && editing.id) payload.id = editing.id;
-
-    const res = await fetch("/api/admin/activity-albums", {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-      credentials: "include",
+    setFormValues(editForm);
+    form.setFieldsValue({
+      ...editForm,
+      eventDate: album.eventDate ? dayjs(album.eventDate) : null,
     });
-    if (res.ok) { setEditing(null); setIsNew(false); load(); }
-    else {
-      const err = await res.json().catch(() => ({}));
-      alert(err.error || "บันทึกไม่สำเร็จ");
+    setDrawerOpen(true);
+  };
+
+  const closeDrawer = () => {
+    setDrawerOpen(false);
+    setEditingId(null);
+    setFormValues(defaultForm);
+    form.resetFields();
+  };
+
+  /* ── Save album ── */
+  const handleSave = async (values: any) => {
+    setSaving(true);
+    try {
+      const method = editingId ? "PATCH" : "POST";
+      const payload: Record<string, unknown> = {
+        title: values.title.trim(),
+        description: values.description?.trim() || null,
+        coverUrl: formValues.coverUrl || null,
+        eventDate: values.eventDate ? dayjs(values.eventDate).format("YYYY-MM-DD") : null,
+        sortOrder: values.sortOrder || 0,
+        isActive: values.isActive ?? true,
+      };
+      if (editingId) payload.id = editingId;
+
+      const res = await fetch("/api/admin/activity-albums", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        credentials: "include",
+      });
+      if (res.ok) {
+        message.success("บันทึกข้อมูลเรียบร้อย");
+        closeDrawer();
+        load();
+      } else {
+        const err = await res.json().catch(() => ({}));
+        message.error(err.error || "บันทึกไม่สำเร็จ");
+      }
+    } catch {
+      message.error("เกิดข้อผิดพลาดในการบันทึก");
+    } finally {
+      setSaving(false);
     }
   };
 
   /* ── Delete album ── */
   const removeAlbum = async (id: number) => {
-    if (!confirm("ลบอัลบั้มนี้พร้อมรูปภาพทั้งหมด?")) return;
-    await fetch(`/api/admin/activity-albums?id=${id}`, { method: "DELETE", credentials: "include" });
-    load();
+    try {
+      const res = await fetch(`/api/admin/activity-albums?id=${id}`, { method: "DELETE", credentials: "include" });
+      if (res.ok) {
+        message.success("ลบอัลบั้มเรียบร้อย");
+        load();
+      } else message.error("ลบไม่สำเร็จ");
+    } catch {
+      message.error("เกิดข้อผิดพลาดในการลบ");
+    }
   };
 
   /* ── Upload cover ── */
@@ -105,9 +214,10 @@ export default function AdminActivityAlbumsPage() {
       const res = await fetch("/api/admin/upload", { method: "POST", body: fd, credentials: "include" });
       if (res.ok) {
         const data = await res.json();
-        if (editing) setEditing({ ...editing, coverUrl: data.url });
-      } else alert("อัปโหลดไม่สำเร็จ");
-    } catch { alert("อัปโหลดไม่สำเร็จ"); }
+        setFormValues((prev) => ({ ...prev, coverUrl: data.url }));
+        message.success("อัปโหลดภาพปกสำเร็จ");
+      } else message.error("อัปโหลดไม่สำเร็จ");
+    } catch { message.error("อัปโหลดไม่สำเร็จ"); }
     setUploading(false);
   };
 
@@ -134,18 +244,21 @@ export default function AdminActivityAlbumsPage() {
           body: JSON.stringify({ albumId: photoAlbumId, photos: urls }),
           credentials: "include",
         });
+        message.success(`เพิ่มรูปภาพ ${urls.length} รูปสำเร็จ`);
         loadPhotos(photoAlbumId);
-        load(); // refresh count
+        load();
       }
-    } catch { alert("อัปโหลดรูปไม่สำเร็จ"); }
+    } catch { message.error("อัปโหลดรูปไม่สำเร็จ"); }
     setUploadingPhotos(false);
   };
 
   /* ── Delete photo ── */
   const removePhoto = async (photoId: number) => {
-    if (!confirm("ลบรูปนี้?")) return;
-    await fetch(`/api/admin/activity-photos?id=${photoId}`, { method: "DELETE", credentials: "include" });
-    if (photoAlbumId) { loadPhotos(photoAlbumId); load(); }
+    try {
+      await fetch(`/api/admin/activity-photos?id=${photoId}`, { method: "DELETE", credentials: "include" });
+      message.success("ลบรูปเรียบร้อย");
+      if (photoAlbumId) { loadPhotos(photoAlbumId); load(); }
+    } catch { message.error("ลบรูปไม่สำเร็จ"); }
   };
 
   /* ── Set as cover ── */
@@ -156,57 +269,119 @@ export default function AdminActivityAlbumsPage() {
       body: JSON.stringify({ id: albumId, coverUrl: imageUrl }),
       credentials: "include",
     });
+    message.success("ตั้งเป็นภาพปกเรียบร้อย");
     load();
   };
 
-  const inputStyle: React.CSSProperties = { display: "block", width: "100%", padding: "8px 12px", border: "1px solid #d1d5db", borderRadius: 8, marginTop: 4, fontSize: 13, boxSizing: "border-box" };
-  const labelStyle: React.CSSProperties = { fontSize: 12, color: "#6b7280" };
-  const btnSm: React.CSSProperties = { display: "flex", alignItems: "center", gap: 4, padding: "5px 10px", border: "1px solid #d1d5db", borderRadius: 6, background: "#f9fafb", cursor: "pointer", fontSize: 11 };
+  // Skeleton loading
+  const renderSkeleton = () => (
+    <div className={css.loadingGrid}>
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className={css.skeletonCard}>
+          <div className={css.skeletonImage} />
+          <div className={css.skeletonBody}>
+            <div className={css.skeletonLine} />
+            <div className={css.skeletonLine} />
+            <div className={css.skeletonLine} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 
-  /* ── Photo manager overlay ── */
+  /* ══════════════════════════════════════════════
+     Photo Manager View
+     ══════════════════════════════════════════════ */
   if (photoAlbumId) {
     return (
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
-            <CameraOutlined /> จัดการรูปภาพ: {photoAlbumTitle}
-          </h2>
-          <div style={{ display: "flex", gap: 8 }}>
-            <input ref={photosInputRef} type="file" accept="image/*" multiple style={{ display: "none" }}
-              onChange={(e) => { if (e.target.files?.length) uploadPhotosHandler(e.target.files); }}
-            />
-            <button onClick={() => photosInputRef.current?.click()} disabled={uploadingPhotos}
-              style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", background: "#16a34a", color: "#fff", border: "none", borderRadius: 8, fontWeight: 600, cursor: "pointer", fontSize: 13 }}
-            >
-              {uploadingPhotos ? <LoadingOutlined spin /> : <ImagePlus size={16} />}
-              {uploadingPhotos ? "กำลังอัปโหลด..." : "เพิ่มรูปภาพ"}
-            </button>
-            <button onClick={() => { setPhotoAlbumId(null); setPhotos([]); }}
-              style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", background: "#f3f4f6", color: "#374151", border: "1px solid #d1d5db", borderRadius: 8, fontWeight: 600, cursor: "pointer", fontSize: 13 }}
-            >
-              <CloseOutlined /> กลับ
-            </button>
+      <div className={css.photoManager}>
+        {/* Header */}
+        <div className={css.photoHeader}>
+          <div className={css.photoHeaderTop}>
+            <div className={css.photoHeaderInfo}>
+              <Title level={3} className={css.photoHeaderTitle}>
+                <CameraOutlined style={{ marginRight: 8 }} />
+                {photoAlbumTitle}
+              </Title>
+              <p className={css.photoHeaderSub}>
+                จัดการรูปภาพในอัลบั้ม — {photos.length} รูป
+              </p>
+            </div>
+            <div className={css.photoHeaderActions}>
+              <input
+                ref={photosInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                style={{ display: "none" }}
+                onChange={(e) => { if (e.target.files?.length) uploadPhotosHandler(e.target.files); }}
+              />
+              <Button
+                type="primary"
+                icon={uploadingPhotos ? <LoadingOutlined spin /> : <ImagePlus size={15} />}
+                onClick={() => photosInputRef.current?.click()}
+                disabled={uploadingPhotos}
+                loading={uploadingPhotos}
+                className={css.uploadPhotosBtn}
+              >
+                {uploadingPhotos ? "กำลังอัปโหลด..." : "เพิ่มรูปภาพ"}
+              </Button>
+              <Button
+                icon={<ArrowLeftOutlined />}
+                onClick={() => { setPhotoAlbumId(null); setPhotos([]); }}
+                className={css.backBtn}
+              >
+                กลับ
+              </Button>
+            </div>
           </div>
         </div>
 
+        {/* Photo grid */}
         {photos.length === 0 ? (
-          <div style={{ textAlign: "center", padding: 80, color: "#9ca3af", background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb" }}>
-            <PictureOutlined style={{ fontSize: 48, marginBottom: 12 }} />
-            <p style={{ margin: 0 }}>ยังไม่มีรูปภาพในอัลบั้มนี้</p>
-            <p style={{ margin: "4px 0 0", fontSize: 13 }}>คลิก &quot;เพิ่มรูปภาพ&quot; เพื่ออัปโหลดรูปหลายรูปพร้อมกัน</p>
+          <div className={css.photoEmpty}>
+            <PictureOutlined className={css.photoEmptyIcon} />
+            <p className={css.photoEmptyText}>ยังไม่มีรูปภาพในอัลบั้มนี้</p>
+            <p className={css.photoEmptyHint}>
+              คลิก &quot;เพิ่มรูปภาพ&quot; เพื่ออัปโหลดรูปหลายรูปพร้อมกัน
+            </p>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 12 }}>
+          <div className={css.photoGrid}>
             {photos.map((p) => (
-              <div key={p.id} style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 10, overflow: "hidden", position: "relative" }}>
-                <img src={p.imageUrl} alt={p.caption || ""} style={{ width: "100%", height: 140, objectFit: "cover", display: "block" }} />
-                <div style={{ padding: "8px 10px", display: "flex", gap: 4, justifyContent: "space-between" }}>
-                  <button onClick={() => setAsCover(photoAlbumId, p.imageUrl)} style={{ ...btnSm, fontSize: 10, color: "#0369a1" }} title="ตั้งเป็นภาพปก">
-                    <PictureOutlined /> ปก
-                  </button>
-                  <button onClick={() => removePhoto(p.id)} style={{ ...btnSm, fontSize: 10, color: "#dc2626", borderColor: "#fecaca", background: "#fef2f2" }} title="ลบรูป">
-                    <Trash2 size={12} />
-                  </button>
+              <div key={p.id} className={css.photoCard}>
+                <div className={css.photoImageWrap}>
+                  <img
+                    src={p.imageUrl}
+                    alt={p.caption || ""}
+                    className={css.photoImage}
+                  />
+                </div>
+                <div className={css.photoActions}>
+                  <Button
+                    size="small"
+                    icon={<PictureOutlined />}
+                    onClick={() => setAsCover(photoAlbumId, p.imageUrl)}
+                    className={css.setCoverBtn}
+                  >
+                    ตั้งเป็นปก
+                  </Button>
+                  <Popconfirm
+                    title="ลบรูปนี้?"
+                    description="คุณแน่ใจว่าต้องการลบรูปนี้?"
+                    onConfirm={() => removePhoto(p.id)}
+                    okText="ลบ"
+                    cancelText="ยกเลิก"
+                    okButtonProps={{ danger: true }}
+                  >
+                    <Tooltip title="ลบรูป">
+                      <Button
+                        size="small"
+                        icon={<Trash2 size={13} />}
+                        className={css.deletePhotoBtn}
+                      />
+                    </Tooltip>
+                  </Popconfirm>
                 </div>
               </div>
             ))}
@@ -216,138 +391,376 @@ export default function AdminActivityAlbumsPage() {
     );
   }
 
-  /* ── Main album list ── */
+  /* ══════════════════════════════════════════════
+     Main Album List
+     ══════════════════════════════════════════════ */
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
-          <CameraOutlined /> ภาพกิจกรรมสหกรณ์
-        </h2>
-        <button onClick={() => { setEditing({ ...empty }); setIsNew(true); }}
-          style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", background: "#1e3a5f", color: "#fff", border: "none", borderRadius: 8, fontWeight: 600, cursor: "pointer", fontSize: 13 }}
-        >
-          <PlusOutlined /> สร้างอัลบั้ม
-        </button>
+    <div className={css.container}>
+      {/* ── Hero Header ── */}
+      <div className={css.heroHeader}>
+        <div className={css.heroTop}>
+          <div className={css.heroTitleWrap}>
+            <Title level={2} className={css.pageTitle}>
+              อัลบั้มภาพกิจกรรม
+            </Title>
+            <p className={css.pageSubtitle}>
+              จัดการอัลบั้มและรูปภาพกิจกรรมของสหกรณ์
+            </p>
+          </div>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={openCreate}
+            className={css.addBtn}
+          >
+            สร้างอัลบั้ม
+          </Button>
+        </div>
+
+        {/* Stats */}
+        <div className={css.statsRow}>
+          <div className={css.statCard}>
+            <div className={`${css.statIconWrap} ${css.statIconAll}`}>
+              <CameraOutlined />
+            </div>
+            <div className={css.statInfo}>
+              <span className={css.statValue}>{stats.total}</span>
+              <span className={css.statLabel}>อัลบั้มทั้งหมด</span>
+            </div>
+          </div>
+          <div className={css.statCard}>
+            <div className={`${css.statIconWrap} ${css.statIconActive}`}>
+              <CheckCircleOutlined />
+            </div>
+            <div className={css.statInfo}>
+              <span className={css.statValue}>{stats.active}</span>
+              <span className={css.statLabel}>กำลังแสดง</span>
+            </div>
+          </div>
+          <div className={css.statCard}>
+            <div className={`${css.statIconWrap} ${css.statIconHidden}`}>
+              <EyeInvisibleOutlined />
+            </div>
+            <div className={css.statInfo}>
+              <span className={css.statValue}>{stats.hidden}</span>
+              <span className={css.statLabel}>ซ่อนไว้</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* ── Edit Form ── */}
-      {editing && (
-        <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 24, marginBottom: 24, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-          <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>{isNew ? "สร้างอัลบั้มใหม่" : "แก้ไขอัลบั้ม"}</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            <div>
-              <label style={labelStyle}>ชื่ออัลบั้ม *</label>
-              <input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} style={inputStyle} placeholder="เช่น ประชุมใหญ่สามัญประจำปี 2568" />
-            </div>
-            <div>
-              <label style={labelStyle}>วันที่จัดกิจกรรม</label>
-              <input type="date" value={editing.eventDate ? editing.eventDate.split("T")[0] : ""} onChange={(e) => setEditing({ ...editing, eventDate: e.target.value })} style={inputStyle} />
-            </div>
-          </div>
-
-          <div style={{ marginTop: 16 }}>
-            <label style={labelStyle}>คำอธิบาย</label>
-            <textarea value={editing.description} onChange={(e) => setEditing({ ...editing, description: e.target.value })} style={{ ...inputStyle, minHeight: 60, resize: "vertical" }} placeholder="รายละเอียดกิจกรรม..." />
-          </div>
-
-          <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            <div>
-              <label style={labelStyle}>ภาพปก</label>
-              <div style={{ display: "flex", gap: 8, marginTop: 4, alignItems: "center" }}>
-                <input ref={coverInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => { if (e.target.files?.[0]) uploadCover(e.target.files[0]); }} />
-                <button onClick={() => coverInputRef.current?.click()} disabled={uploading}
-                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", border: "1px solid #d1d5db", borderRadius: 8, background: "#f9fafb", cursor: "pointer", fontSize: 12 }}
-                >
-                  {uploading ? <LoadingOutlined spin /> : <UploadOutlined />}
-                  {uploading ? "กำลังอัปโหลด..." : "เลือกภาพปก"}
-                </button>
-                {editing.coverUrl && <img src={editing.coverUrl} alt="cover" style={{ height: 40, borderRadius: 6, border: "1px solid #e5e7eb" }} />}
-              </div>
-            </div>
-            <div>
-              <label style={labelStyle}>ลำดับการแสดง</label>
-              <input type="number" value={editing.sortOrder} onChange={(e) => setEditing({ ...editing, sortOrder: Number(e.target.value) })} style={inputStyle} />
-            </div>
-          </div>
-
-          <div style={{ marginTop: 16, display: "flex", alignItems: "center", gap: 8 }}>
-            <input type="checkbox" checked={editing.isActive} onChange={(e) => setEditing({ ...editing, isActive: e.target.checked })} />
-            <label style={{ fontSize: 13 }}>เผยแพร่</label>
-          </div>
-
-          <div style={{ display: "flex", gap: 8, marginTop: 20 }}>
-            <button onClick={save} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 20px", background: "#16a34a", color: "#fff", border: "none", borderRadius: 8, fontWeight: 600, cursor: "pointer", fontSize: 13 }}>
-              <SaveOutlined /> บันทึก
-            </button>
-            <button onClick={() => { setEditing(null); setIsNew(false); }} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 20px", background: "#f3f4f6", color: "#374151", border: "1px solid #d1d5db", borderRadius: 8, fontWeight: 600, cursor: "pointer", fontSize: 13 }}>
-              <CloseOutlined /> ยกเลิก
-            </button>
-          </div>
+      {/* ── Toolbar ── */}
+      <div className={css.toolbar}>
+        <div className={css.resultCount}>
+          {albums.length} อัลบั้ม · {stats.totalPhotos} รูปภาพ
         </div>
-      )}
+      </div>
 
-      {/* ── Album list ── */}
-      {albums.length === 0 ? (
-        <div style={{ textAlign: "center", padding: 60, color: "#9ca3af" }}>
-          <CameraOutlined style={{ fontSize: 40, marginBottom: 12 }} />
-          <p>ยังไม่มีอัลบั้มภาพกิจกรรม</p>
-        </div>
+      {/* ── Content ── */}
+      {loading ? (
+        renderSkeleton()
+      ) : albums.length === 0 ? (
+        <Empty
+          image={<CameraOutlined style={{ fontSize: 56, color: "#cbd5e1" }} />}
+          description={<span style={{ color: "#94a3b8" }}>ยังไม่มีอัลบั้มภาพกิจกรรม</span>}
+          className={css.emptyState}
+        >
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreate} className={css.addBtn}>
+            สร้างอัลบั้มแรก
+          </Button>
+        </Empty>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
+        <div className={css.albumGrid}>
           {albums.map((album) => (
-            <div key={album.id} style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, overflow: "hidden", opacity: album.isActive ? 1 : 0.5, transition: "all 0.2s" }}>
+            <div
+              key={album.id}
+              className={`${css.albumCard} ${!album.isActive ? css.albumCardInactive : ""}`}
+            >
               {/* Cover */}
-              <div style={{ height: 160, background: album.coverUrl ? `url(${album.coverUrl}) center/cover` : "linear-gradient(135deg, #e0e7ff, #dbeafe)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
-                {!album.coverUrl && <CameraOutlined style={{ fontSize: 36, color: "#93c5fd" }} />}
-                <div style={{ position: "absolute", top: 8, right: 8, display: "flex", gap: 4 }}>
-                  {album.isActive ? (
-                    <span style={{ background: "rgba(22,163,74,0.9)", color: "#fff", padding: "2px 8px", borderRadius: 4, fontSize: 10, fontWeight: 600 }}>
-                      <EyeOutlined /> เผยแพร่
-                    </span>
-                  ) : (
-                    <span style={{ background: "rgba(220,38,38,0.9)", color: "#fff", padding: "2px 8px", borderRadius: 4, fontSize: 10, fontWeight: 600 }}>
-                      <EyeInvisibleOutlined /> ซ่อน
-                    </span>
-                  )}
-                </div>
-                <div style={{ position: "absolute", bottom: 8, left: 8, background: "rgba(0,0,0,0.6)", color: "#fff", padding: "2px 10px", borderRadius: 6, fontSize: 11, fontWeight: 600 }}>
-                  {album._count?.photos || 0} รูป
+              <div className={css.cardCoverWrap}>
+                {album.coverUrl ? (
+                  <img
+                    src={album.coverUrl}
+                    alt={album.title}
+                    className={css.cardCoverImage}
+                  />
+                ) : (
+                  <div className={css.cardCoverPlaceholder}>
+                    <CameraOutlined />
+                  </div>
+                )}
+                <div className={css.cardOverlayBadges}>
+                  <span className={css.photoCountBadge}>
+                    <PictureOutlined /> {album._count?.photos || 0} รูป
+                  </span>
+                  <span
+                    className={`${css.statusBadge} ${album.isActive ? css.statusPublished : css.statusHidden}`}
+                  >
+                    {album.isActive ? (
+                      <><EyeOutlined /> เผยแพร่</>
+                    ) : (
+                      <><EyeInvisibleOutlined /> ซ่อน</>
+                    )}
+                  </span>
                 </div>
               </div>
 
-              {/* Info */}
-              <div style={{ padding: "14px 16px" }}>
-                <h3 style={{ fontSize: 14, fontWeight: 600, margin: "0 0 4px" }}>{album.title}</h3>
+              {/* Body */}
+              <div className={css.cardBody}>
+                <h3 className={css.cardTitle}>{album.title}</h3>
                 {album.eventDate && (
-                  <p style={{ fontSize: 11, color: "#94a3b8", margin: 0 }}>
-                    {new Date(album.eventDate).toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric" })}
+                  <p className={css.cardDate}>
+                    <CalendarOutlined />
+                    {new Date(album.eventDate).toLocaleDateString("th-TH", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
                   </p>
                 )}
-                {album.description && <p style={{ fontSize: 12, color: "#6b7280", margin: "6px 0 0", lineHeight: 1.4 }}>{album.description}</p>}
+                {album.description && (
+                  <p className={css.cardDesc}>{album.description}</p>
+                )}
               </div>
 
-              {/* Actions */}
-              <div style={{ padding: "0 16px 14px", display: "flex", gap: 6, flexWrap: "wrap" }}>
-                <button onClick={() => { setPhotoAlbumId(album.id!); setPhotoAlbumTitle(album.title); loadPhotos(album.id!); }}
-                  style={{ ...btnSm, flex: 1, justifyContent: "center", background: "#eff6ff", borderColor: "#bfdbfe", color: "#1d4ed8" }}
+              {/* Footer */}
+              <div className={css.cardFooter}>
+                <Button
+                  size="small"
+                  icon={<PictureOutlined />}
+                  onClick={() => {
+                    setPhotoAlbumId(album.id!);
+                    setPhotoAlbumTitle(album.title);
+                    loadPhotos(album.id!);
+                  }}
+                  className={css.managePhotosBtn}
                 >
-                  <PictureOutlined /> จัดการรูป
-                </button>
-                <button onClick={() => { setEditing({ ...album, eventDate: album.eventDate ? new Date(album.eventDate).toISOString() : "" }); setIsNew(false); }}
-                  style={{ ...btnSm }}
-                >
-                  <EditOutlined /> แก้ไข
-                </button>
-                <button onClick={() => album.id && removeAlbum(album.id)}
-                  style={{ ...btnSm, borderColor: "#fecaca", background: "#fef2f2", color: "#dc2626" }}
-                >
-                  <DeleteOutlined /> ลบ
-                </button>
+                  จัดการรูป
+                </Button>
+                <div className={css.cardActions}>
+                  <Tooltip title="แก้ไข">
+                    <Button
+                      type="text"
+                      icon={<EditOutlined />}
+                      className={`${css.cardActionBtn} ${css.editBtn}`}
+                      onClick={() => openEdit(album)}
+                    />
+                  </Tooltip>
+                  <Popconfirm
+                    title="ลบอัลบั้มนี้?"
+                    description="ลบอัลบั้มพร้อมรูปภาพทั้งหมด"
+                    onConfirm={() => album.id && removeAlbum(album.id)}
+                    okText="ลบ"
+                    cancelText="ยกเลิก"
+                    okButtonProps={{ danger: true }}
+                  >
+                    <Tooltip title="ลบ">
+                      <Button
+                        type="text"
+                        icon={<DeleteOutlined />}
+                        className={`${css.cardActionBtn} ${css.deleteBtn}`}
+                      />
+                    </Tooltip>
+                  </Popconfirm>
+                </div>
               </div>
             </div>
           ))}
         </div>
       )}
+
+      {/* ══════════════════════════════════════════════
+          Drawer Form
+          ══════════════════════════════════════════════ */}
+      <Drawer
+        title={null}
+        open={drawerOpen}
+        onClose={closeDrawer}
+        styles={{ wrapper: { width: 540 } }}
+        destroyOnClose
+        maskClosable={false}
+        keyboard={false}
+        className={css.customDrawer}
+        closable={false}
+      >
+        {/* ── Gradient Hero Header ── */}
+        <div className={css.drawerHero}>
+          <div className={css.drawerHeroInner}>
+            <div className={css.drawerTitleIcon}>
+              {editingId ? <EditOutlined /> : <CameraOutlined />}
+            </div>
+            <div>
+              <div className={css.drawerTitle}>
+                {editingId ? "แก้ไขอัลบั้ม" : "สร้างอัลบั้มใหม่"}
+              </div>
+              <div className={css.drawerSubtitle}>
+                {editingId
+                  ? "แก้ไขรายละเอียดอัลบั้มภาพกิจกรรม"
+                  : "ระบุข้อมูลอัลบั้มภาพกิจกรรมใหม่"}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className={css.formContainer}>
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSave}
+            initialValues={defaultForm}
+            className={css.form}
+          >
+            {/* Section 1: Album info */}
+            <div className={css.formSection}>
+              <div className={css.sectionHeader}>
+                <div className={`${css.sectionIconWrap} ${css.sectionIconBlue}`}>
+                  <EditOutlined />
+                </div>
+                <div className={css.sectionTitle}>ข้อมูลอัลบั้ม</div>
+              </div>
+              <div className={css.sectionBody}>
+                <Form.Item
+                  name="title"
+                  label="ชื่ออัลบั้ม"
+                  rules={[{ required: true, message: "กรุณาระบุชื่ออัลบั้ม" }]}
+                >
+                  <Input
+                    placeholder="เช่น ประชุมใหญ่สามัญประจำปี 2568"
+                    size="middle"
+                  />
+                </Form.Item>
+
+                <Form.Item name="eventDate" label="วันที่จัดกิจกรรม">
+                  <DatePicker
+                    placeholder="เลือกวันที่"
+                    style={{ width: "100%" }}
+                    size="middle"
+                    format="DD/MM/YYYY"
+                  />
+                </Form.Item>
+
+                <Form.Item name="description" label="คำอธิบาย (ไม่บังคับ)">
+                  <TextArea
+                    rows={3}
+                    placeholder="รายละเอียดกิจกรรม..."
+                  />
+                </Form.Item>
+              </div>
+            </div>
+
+            {/* Section 2: Cover image */}
+            <div className={css.formSection}>
+              <div className={css.sectionHeader}>
+                <div className={`${css.sectionIconWrap} ${css.sectionIconPurple}`}>
+                  <PictureOutlined />
+                </div>
+                <div className={css.sectionTitle}>ภาพปก</div>
+              </div>
+              <div className={css.sectionBody}>
+                <input
+                  ref={coverInputRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    if (e.target.files?.[0]) uploadCover(e.target.files[0]);
+                  }}
+                />
+                <div
+                  className={`${css.coverUploadZone} ${formValues.coverUrl ? css.coverUploadZoneActive : ""}`}
+                  onClick={() => !uploading && coverInputRef.current?.click()}
+                >
+                  {formValues.coverUrl ? (
+                    <div className={css.coverHasImage}>
+                      <img
+                        src={formValues.coverUrl}
+                        alt="cover"
+                        className={css.coverLargeThumb}
+                      />
+                      <div className={css.coverOverlay}>
+                        <Button
+                          icon={<UploadOutlined />}
+                          className={css.coverChangeBtn}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            coverInputRef.current?.click();
+                          }}
+                        >
+                          เปลี่ยนภาพปก
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className={css.coverEmptyContent}>
+                      <div className={css.coverEmptyIconBg}>
+                        {uploading ? <LoadingOutlined spin /> : <UploadOutlined />}
+                      </div>
+                      <p className={css.coverEmptyTitle}>
+                        {uploading ? "กำลังอัปโหลด..." : "คลิกเพื่อเลือกภาพปก"}
+                      </p>
+                      <p className={css.coverEmptyHint}>
+                        รองรับไฟล์ JPG, PNG, WebP
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Section 3: Settings */}
+            <div className={css.formSection}>
+              <div className={css.sectionHeader}>
+                <div className={`${css.sectionIconWrap} ${css.sectionIconGreen}`}>
+                  <CheckCircleOutlined />
+                </div>
+                <div className={css.sectionTitle}>การตั้งค่า</div>
+              </div>
+              <div className={css.sectionBody}>
+                <div className={css.settingsRow}>
+                  <div className={css.settingCard}>
+                    <div className={`${css.settingCardIcon} ${css.settingCardIconSort}`}>
+                      <CalendarOutlined />
+                    </div>
+                    <div className={css.settingCardInfo}>
+                      <span className={css.settingCardLabel}>ลำดับการแสดงผล</span>
+                      <Form.Item name="sortOrder" noStyle>
+                        <InputNumber min={0} style={{ width: "100%" }} size="small" />
+                      </Form.Item>
+                    </div>
+                  </div>
+                  <div className={css.settingCard}>
+                    <div className={`${css.settingCardIcon} ${css.settingCardIconPublish}`}>
+                      <EyeOutlined />
+                    </div>
+                    <div className={css.settingCardInfo}>
+                      <span className={css.settingCardLabel}>สถานะเผยแพร่</span>
+                      <Form.Item name="isActive" valuePropName="checked" noStyle>
+                        <Switch size="small" />
+                      </Form.Item>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Form>
+        </div>
+
+        {/* ── Sticky Footer ── */}
+        <div className={css.drawerFooter}>
+          <Button onClick={closeDrawer} size="middle" className={css.cancelBtn}>
+            ยกเลิก
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => form.submit()}
+            loading={saving}
+            size="middle"
+            className={css.submitBtn}
+          >
+            {saving ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
+          </Button>
+        </div>
+      </Drawer>
     </div>
   );
 }

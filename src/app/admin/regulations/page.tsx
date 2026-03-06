@@ -1,12 +1,42 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
-  PlusOutlined, EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined,
-  UploadOutlined, FileTextOutlined, LoadingOutlined, PictureOutlined,
-  FilterOutlined,
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  UploadOutlined,
+  FileTextOutlined,
+  LoadingOutlined,
+  PictureOutlined,
+  CheckCircleOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined,
+  BookOutlined,
+  SoundOutlined,
+  SortAscendingOutlined,
+  LinkOutlined,
 } from "@ant-design/icons";
+import {
+  Button,
+  ConfigProvider,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  Switch,
+  Typography,
+  message,
+  Tooltip,
+  Popconfirm,
+  Empty,
+} from "antd";
+import css from "./page.module.css";
 
+const { Title } = Typography;
+const { TextArea } = Input;
+
+/* ── Types ── */
 interface RegItem {
   id?: number;
   title: string;
@@ -20,9 +50,17 @@ interface RegItem {
 }
 
 const TYPE_OPTIONS = [
-  { value: "statute", label: "ข้อบังคับ" },
-  { value: "rules", label: "ระเบียบ" },
-  { value: "announcements", label: "ประกาศ" },
+  { value: "statute", label: "ข้อบังคับ", icon: <BookOutlined /> },
+  { value: "rules", label: "ระเบียบ", icon: <FileTextOutlined /> },
+  { value: "announcements", label: "ประกาศ", icon: <SoundOutlined /> },
+];
+
+const MEMBER_TYPE_OPTIONS = [
+  "สมาชิกสามัญประเภท ก",
+  "สมาชิกสามัญประเภท ข",
+  "สมาชิกสมทบ",
+  "สมาชิกสามัญประเภท ก ข สมทบ",
+  "สหกรณ์ฯ",
 ];
 
 const empty: RegItem = {
@@ -30,44 +68,93 @@ const empty: RegItem = {
   description: "", sortOrder: 0, isActive: true,
 };
 
+const formInitial: Record<string, unknown> = {
+  title: "",
+  typeForm: "statute",
+  description: "",
+  sortOrder: 0,
+  isActive: true,
+};
+
 export default function AdminRegulationsPage() {
   const [items, setItems] = useState<RegItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<RegItem | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [filterType, setFilterType] = useState<string>("all");
+  const [saving, setSaving] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const imgRef = useRef<HTMLInputElement>(null);
+  const [form] = Form.useForm();
 
+  /* ── Load ── */
   const load = useCallback(async () => {
-    const res = await fetch("/api/admin/regulations", { credentials: "include" });
-    if (res.ok) setItems(await res.json());
+    setLoading(true);
+    try {
+      const res = await fetch("/api/admin/regulations", { credentials: "include" });
+      if (res.ok) setItems(await res.json());
+      else message.error("ไม่สามารถโหลดข้อมูลได้");
+    } catch {
+      message.error("เกิดข้อผิดพลาดในการเชื่อมต่อ");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { load(); }, [load]);
 
-  // Unique categories for autocomplete
-  const categories = Array.from(new Set(items.map((i) => i.typeMember).filter(Boolean)));
+  // Stats
+  const stats = useMemo(() => ({
+    total: items.length,
+    statute: items.filter((i) => i.typeForm === "statute").length,
+    rules: items.filter((i) => i.typeForm === "rules").length,
+    announcements: items.filter((i) => i.typeForm === "announcements").length,
+  }), [items]);
 
   const filtered = filterType === "all" ? items : items.filter((i) => i.typeForm === filterType);
 
   // Group by typeForm then typeMember
-  const grouped: { typeForm: string; typeLabel: string; groups: { typeMember: string; items: RegItem[] }[] }[] = [];
-  for (const item of filtered) {
-    const tf = item.typeForm || "(ไม่ระบุ)";
-    const tLabel = TYPE_OPTIONS.find((t) => t.value === tf)?.label || tf;
-    let typeGroup = grouped.find((g) => g.typeForm === tf);
-    if (!typeGroup) { typeGroup = { typeForm: tf, typeLabel: tLabel, groups: [] }; grouped.push(typeGroup); }
-    const tm = item.typeMember || "(ไม่ระบุกลุ่ม)";
-    let memberGroup = typeGroup.groups.find((g) => g.typeMember === tm);
-    if (!memberGroup) { memberGroup = { typeMember: tm, items: [] }; typeGroup.groups.push(memberGroup); }
-    memberGroup.items.push(item);
-  }
+  const grouped = useMemo(() => {
+    const result: { typeForm: string; typeLabel: string; groups: { typeMember: string; items: RegItem[] }[] }[] = [];
+    for (const item of filtered) {
+      const tf = item.typeForm || "(ไม่ระบุ)";
+      const tLabel = TYPE_OPTIONS.find((t) => t.value === tf)?.label || tf;
+      let typeGroup = result.find((g) => g.typeForm === tf);
+      if (!typeGroup) { typeGroup = { typeForm: tf, typeLabel: tLabel, groups: [] }; result.push(typeGroup); }
+      const tm = item.typeMember || "(ไม่ระบุกลุ่ม)";
+      let memberGroup = typeGroup.groups.find((g) => g.typeMember === tm);
+      if (!memberGroup) { memberGroup = { typeMember: tm, items: [] }; typeGroup.groups.push(memberGroup); }
+      memberGroup.items.push(item);
+    }
+    return result;
+  }, [filtered]);
 
-  const openNew = () => { setEditing({ ...empty }); setIsNew(true); };
-  const openEdit = (item: RegItem) => { setEditing({ ...item }); setIsNew(false); };
+  /* ── Open form ── */
+  const openNew = () => {
+    setEditing({ ...empty });
+    setIsNew(true);
+    form.resetFields();
+  };
 
+  const openEdit = (item: RegItem) => {
+    setEditing({ ...item });
+    setIsNew(false);
+    form.resetFields();
+    form.setFieldsValue({
+      ...item,
+      typeMember: item.typeMember || undefined,
+    });
+  };
+
+  const closeForm = () => {
+    setEditing(null);
+    setIsNew(false);
+    form.resetFields();
+  };
+
+  /* ── Upload ── */
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !editing) return;
@@ -80,8 +167,9 @@ export default function AdminRegulationsPage() {
       if (res.ok) {
         const data = await res.json();
         setEditing({ ...editing, filePath: data.url });
-      } else alert("อัปโหลดไม่สำเร็จ");
-    } catch { alert("อัปโหลดไม่สำเร็จ"); }
+        message.success("อัปโหลดไฟล์สำเร็จ");
+      } else message.error("อัปโหลดไม่สำเร็จ");
+    } catch { message.error("อัปโหลดไม่สำเร็จ"); }
     setUploadingFile(false);
     if (fileRef.current) fileRef.current.value = "";
   };
@@ -89,7 +177,7 @@ export default function AdminRegulationsPage() {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !editing) return;
-    if (!file.type.startsWith("image/")) { alert("รองรับเฉพาะไฟล์รูปภาพ"); return; }
+    if (!file.type.startsWith("image/")) { message.error("รองรับเฉพาะไฟล์รูปภาพ"); return; }
     setUploadingImage(true);
     try {
       const fd = new FormData();
@@ -99,217 +187,531 @@ export default function AdminRegulationsPage() {
       if (res.ok) {
         const data = await res.json();
         setEditing({ ...editing, imagePath: data.url });
-      } else alert("อัปโหลดไม่สำเร็จ");
-    } catch { alert("อัปโหลดไม่สำเร็จ"); }
+        message.success("อัปโหลดรูปสำเร็จ");
+      } else message.error("อัปโหลดไม่สำเร็จ");
+    } catch { message.error("อัปโหลดไม่สำเร็จ"); }
     setUploadingImage(false);
     if (imgRef.current) imgRef.current.value = "";
   };
 
-  const save = async () => {
+  /* ── Save ── */
+  const handleSave = async (values: any) => {
     if (!editing) return;
-    if (!editing.title?.trim()) return alert("กรุณาระบุชื่อเรื่อง");
+    setSaving(true);
+    try {
+      const method = isNew ? "POST" : "PATCH";
+      const payload: Record<string, unknown> = {
+        title: values.title.trim(),
+        typeForm: values.typeForm,
+        typeMember: values.typeMember?.trim() || null,
+        filePath: editing.filePath || null,
+        imagePath: editing.imagePath || null,
+        description: values.description?.trim() || null,
+        sortOrder: values.sortOrder ?? 0,
+        isActive: values.isActive ?? true,
+      };
+      if (!isNew && editing.id) payload.id = editing.id;
 
-    const method = isNew ? "POST" : "PATCH";
-    const payload: Record<string, unknown> = {
-      title: editing.title.trim(),
-      typeForm: editing.typeForm,
-      typeMember: editing.typeMember.trim() || null,
-      filePath: editing.filePath || null,
-      imagePath: editing.imagePath || null,
-      description: editing.description.trim() || null,
-      sortOrder: editing.sortOrder,
-      isActive: editing.isActive,
-    };
-    if (!isNew && editing.id) payload.id = editing.id;
-    const res = await fetch("/api/admin/regulations", {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-      credentials: "include",
-    });
-    if (res.ok) { setEditing(null); setIsNew(false); load(); }
-    else {
-      const err = await res.json().catch(() => ({}));
-      alert(err.error || "บันทึกไม่สำเร็จ");
+      const res = await fetch("/api/admin/regulations", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        credentials: "include",
+      });
+      if (res.ok) {
+        message.success("บันทึกเรียบร้อย");
+        closeForm();
+        load();
+      } else {
+        const err = await res.json().catch(() => ({}));
+        message.error(err.error || "บันทึกไม่สำเร็จ");
+      }
+    } catch {
+      message.error("เกิดข้อผิดพลาดในการบันทึก");
+    } finally {
+      setSaving(false);
     }
   };
 
-  const remove = async (id: number) => {
-    if (!confirm("ลบรายการนี้?")) return;
-    await fetch(`/api/admin/regulations?id=${id}`, { method: "DELETE", credentials: "include" });
-    load();
+  /* ── Delete ── */
+  const handleDelete = async (id: number) => {
+    try {
+      const res = await fetch(`/api/admin/regulations?id=${id}`, { method: "DELETE", credentials: "include" });
+      if (res.ok) {
+        message.success("ลบรายการเรียบร้อย");
+        load();
+      } else message.error("ลบไม่สำเร็จ");
+    } catch {
+      message.error("เกิดข้อผิดพลาดในการลบ");
+    }
   };
 
-  const inputStyle: React.CSSProperties = { display: "block", width: "100%", padding: "8px 12px", border: "1px solid #d1d5db", borderRadius: 8, marginTop: 4, fontSize: 13, boxSizing: "border-box" };
-  const labelStyle: React.CSSProperties = { fontSize: 12, color: "#6b7280", display: "block" };
-  const btnStyle = (bg: string, color: string): React.CSSProperties => ({ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", background: bg, color, border: "none", borderRadius: 8, cursor: "pointer", fontWeight: 600, fontSize: 12 });
-
-  return (
-    <div style={{ padding: 24 }}>
-      {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
-        <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>ข้อบังคับ ระเบียบ ประกาศ</h1>
-          <p style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>จัดการเอกสารข้อบังคับ ระเบียบ และประกาศของสหกรณ์</p>
+  // Skeleton
+  const renderSkeleton = () => (
+    <div className={css.loadingGrid}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} className={css.skeletonRow}>
+          <div className={css.skeletonAvatar} />
+          <div className={css.skeletonLines}>
+            <div className={css.skeletonLine} />
+            <div className={css.skeletonLine} />
+          </div>
         </div>
-        <button onClick={openNew} style={{ ...btnStyle("#E8652B", "#fff"), padding: "8px 16px", fontSize: 13 }}>
-          <PlusOutlined /> เพิ่มรายการ
-        </button>
+      ))}
+    </div>
+  );
+
+  /* ── Inline form panel ── */
+  const renderFormPanel = () => {
+    if (!editing) return null;
+    return (
+      <div className={css.formPanel}>
+        <div className={css.formPanelHeader}>
+          <div className={css.formPanelHeaderInfo}>
+            <div className={css.formPanelIcon}>
+              {isNew ? <FileTextOutlined /> : <EditOutlined />}
+            </div>
+            <div>
+              <h3 className={css.formPanelTitle}>
+                {isNew ? "เพิ่มรายการใหม่" : "แก้ไขรายการ"}
+              </h3>
+              <p className={css.formPanelSub}>
+                {isNew ? "กรอกข้อมูลข้อบังคับ ระเบียบ หรือประกาศใหม่" : "แก้ไขรายละเอียดเอกสาร"}
+              </p>
+            </div>
+          </div>
+          <div className={css.formPanelActions}>
+            <Button onClick={closeForm} className={css.closeFormBtn} size="small">
+              ยกเลิก
+            </Button>
+            <Button
+              type="primary"
+              onClick={() => form.submit()}
+              loading={saving}
+              className={css.submitBtn}
+              size="small"
+            >
+              {saving ? "กำลังบันทึก..." : "บันทึก"}
+            </Button>
+          </div>
+        </div>
+
+        <div className={css.formPanelBody}>
+          <ConfigProvider
+            theme={{
+              components: {
+                Select: {
+                  controlHeight: 34,
+                  borderRadius: 8,
+                  fontSize: 13,
+                  colorBorder: "#e2e8f0",
+                  colorPrimaryHover: "#3b82f6",
+                  controlOutline: "rgba(59,130,246,0.08)",
+                  colorTextPlaceholder: "#94a3b8",
+                },
+                Input: {
+                  controlHeight: 34,
+                  borderRadius: 8,
+                  fontSize: 13,
+                  colorBorder: "#e2e8f0",
+                  colorPrimaryHover: "#3b82f6",
+                  controlOutline: "rgba(59,130,246,0.08)",
+                },
+                InputNumber: {
+                  controlHeight: 34,
+                  borderRadius: 8,
+                  fontSize: 13,
+                  colorBorder: "#e2e8f0",
+                  colorPrimaryHover: "#3b82f6",
+                  controlOutline: "rgba(59,130,246,0.08)",
+                },
+              },
+            }}
+          >
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSave}
+            initialValues={formInitial}
+            className={css.form}
+          >
+            <div className={css.formBody}>
+              {/* Left column */}
+              <div>
+                {/* Section: Basic info */}
+                <div className={css.formSection}>
+                  <div className={css.sectionHeader}>
+                    <div className={`${css.sectionIconWrap} ${css.sectionIconBlue}`}>
+                      <EditOutlined />
+                    </div>
+                    <div className={css.sectionTitle}>ข้อมูลเอกสาร</div>
+                  </div>
+                  <div className={css.sectionBody}>
+                    <Form.Item
+                      name="title"
+                      label="ชื่อเรื่อง"
+                      rules={[{ required: true, message: "กรุณาระบุชื่อเรื่อง" }]}
+                    >
+                      <Input placeholder="เช่น ข้อบังคับสหกรณ์ พ.ศ.2562" />
+                    </Form.Item>
+
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                      <Form.Item
+                        name="typeForm"
+                        label="ประเภท"
+                        rules={[{ required: true }]}
+                      >
+                        <Select style={{ width: "100%" }}>
+                          {TYPE_OPTIONS.map((t) => (
+                            <Select.Option key={t.value} value={t.value}>{t.label}</Select.Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                      <Form.Item name="typeMember" label="กลุ่มสมาชิก / หมวดหมู่">
+                        <Select
+                          allowClear
+                          placeholder="เลือกกลุ่มสมาชิก"
+                          style={{ width: "100%" }}
+                        >
+                          {MEMBER_TYPE_OPTIONS.map((m) => (
+                            <Select.Option key={m} value={m}>{m}</Select.Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                    </div>
+
+                    <Form.Item name="description" label="รายละเอียด (ไม่บังคับ)">
+                      <TextArea rows={2} placeholder="คำอธิบายสั้นๆ..." />
+                    </Form.Item>
+                  </div>
+                </div>
+
+                {/* Section: File uploads */}
+                <div className={css.formSection}>
+                  <div className={css.sectionHeader}>
+                    <div className={`${css.sectionIconWrap} ${css.sectionIconOrange}`}>
+                      <UploadOutlined />
+                    </div>
+                    <div className={css.sectionTitle}>ไฟล์แนบ</div>
+                  </div>
+                  <div className={css.sectionBody}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                      {/* PDF */}
+                      <div>
+                        <label style={{ fontSize: 13, fontWeight: 600, color: "#334155", display: "block", marginBottom: 6 }}>ไฟล์เอกสาร (PDF)</label>
+                        <input ref={fileRef} type="file" accept=".pdf,.doc,.docx" onChange={handleFileUpload} style={{ display: "none" }} />
+                        <div
+                          className={`${css.uploadZone} ${editing.filePath ? css.uploadZoneHasFile : ""}`}
+                          onClick={() => !uploadingFile && !editing.filePath && fileRef.current?.click()}
+                          style={{ cursor: editing.filePath ? "default" : "pointer" }}
+                        >
+                          {editing.filePath ? (
+                            <div className={css.uploadedFileCard}>
+                              <div className={css.uploadedFileIconBg}>
+                                <CheckCircleOutlined />
+                              </div>
+                              <div className={css.uploadedFileInfo}>
+                                <span className={css.uploadedFileName}>
+                                  {editing.filePath.split("/").pop()}
+                                </span>
+                                <span className={css.uploadedFileStatus}>อัปโหลดแล้ว</span>
+                              </div>
+                              <Button
+                                size="small"
+                                danger
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditing({ ...editing, filePath: "" });
+                                }}
+                                className={css.uploadedFileRemove}
+                              >
+                                ลบ
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className={css.uploadEmpty}>
+                              <div className={`${css.uploadEmptyIconBg} ${css.uploadEmptyIconBgBlue}`}>
+                                {uploadingFile ? <LoadingOutlined spin /> : <FileTextOutlined />}
+                              </div>
+                              <p className={css.uploadEmptyTitle}>
+                                {uploadingFile ? "กำลังอัปโหลด..." : "คลิกเลือกไฟล์"}
+                              </p>
+                              <p className={css.uploadEmptyHint}>PDF, DOC</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Image */}
+                      <div>
+                        <label style={{ fontSize: 13, fontWeight: 600, color: "#334155", display: "block", marginBottom: 6 }}>รูปประกอบ (ไม่บังคับ)</label>
+                        <input ref={imgRef} type="file" accept="image/*" onChange={handleImageUpload} style={{ display: "none" }} />
+                        <div
+                          className={`${css.uploadZone} ${editing.imagePath ? css.uploadZoneHasFile : ""}`}
+                          onClick={() => !uploadingImage && !editing.imagePath && imgRef.current?.click()}
+                          style={{ cursor: editing.imagePath ? "default" : "pointer" }}
+                        >
+                          {editing.imagePath ? (
+                            <div className={css.uploadedFileCard}>
+                              <div className={css.uploadedFileIconBg}>
+                                <CheckCircleOutlined />
+                              </div>
+                              <div className={css.uploadedFileInfo}>
+                                <span className={css.uploadedFileName}>
+                                  {editing.imagePath.split("/").pop()}
+                                </span>
+                                <span className={css.uploadedFileStatus}>อัปโหลดแล้ว</span>
+                              </div>
+                              <Button
+                                size="small"
+                                danger
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditing({ ...editing, imagePath: "" });
+                                }}
+                                className={css.uploadedFileRemove}
+                              >
+                                ลบ
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className={css.uploadEmpty}>
+                              <div className={`${css.uploadEmptyIconBg} ${css.uploadEmptyIconBgPurple}`}>
+                                {uploadingImage ? <LoadingOutlined spin /> : <PictureOutlined />}
+                              </div>
+                              <p className={css.uploadEmptyTitle}>
+                                {uploadingImage ? "กำลังอัปโหลด..." : "คลิกเลือกรูป"}
+                              </p>
+                              <p className={css.uploadEmptyHint}>JPG, PNG, WebP</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right column — settings */}
+              <div>
+                <div className={css.formSection}>
+                  <div className={css.sectionHeader}>
+                    <div className={`${css.sectionIconWrap} ${css.sectionIconGreen}`}>
+                      <CheckCircleOutlined />
+                    </div>
+                    <div className={css.sectionTitle}>การตั้งค่า</div>
+                  </div>
+                  <div className={css.sectionBody}>
+                    <div className={css.settingCard} style={{ marginBottom: 10 }}>
+                      <div className={`${css.settingCardIcon} ${css.settingCardIconSort}`}>
+                        <SortAscendingOutlined />
+                      </div>
+                      <div className={css.settingCardInfo}>
+                        <span className={css.settingCardLabel}>ลำดับการแสดงผล</span>
+                        <Form.Item name="sortOrder" noStyle>
+                          <InputNumber min={0} style={{ width: "100%" }} />
+                        </Form.Item>
+                      </div>
+                    </div>
+                    <div className={css.settingCard}>
+                      <div className={`${css.settingCardIcon} ${css.settingCardIconPublish}`}>
+                        <EyeOutlined />
+                      </div>
+                      <div className={css.settingCardInfo}>
+                        <span className={css.settingCardLabel}>สถานะเผยแพร่</span>
+                        <Form.Item name="isActive" valuePropName="checked" noStyle>
+                          <Switch size="small" />
+                        </Form.Item>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Form>
+          </ConfigProvider>
+        </div>
+      </div>
+    );
+  };
+
+  /* ══════════════════════════════════════════════
+     LIST VIEW
+     ══════════════════════════════════════════════ */
+  return (
+    <div className={css.container}>
+      {/* Hero Header */}
+      <div className={css.heroHeader}>
+        <div className={css.heroTop}>
+          <div className={css.heroTitleWrap}>
+            <Title level={2} className={css.pageTitle}>
+              ข้อบังคับ ระเบียบ ประกาศ
+            </Title>
+            <p className={css.pageSubtitle}>
+              จัดการเอกสารข้อบังคับ ระเบียบ และประกาศของสหกรณ์
+            </p>
+          </div>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={openNew}
+            className={css.addBtn}
+          >
+            เพิ่มรายการ
+          </Button>
+        </div>
+
+        <div className={css.statsRow}>
+          <div className={css.statCard}>
+            <div className={`${css.statIconWrap} ${css.statIconAll}`}>
+              <FileTextOutlined />
+            </div>
+            <div className={css.statInfo}>
+              <span className={css.statValue}>{stats.total}</span>
+              <span className={css.statLabel}>ทั้งหมด</span>
+            </div>
+          </div>
+          <div className={css.statCard}>
+            <div className={`${css.statIconWrap} ${css.statIconStatute}`}>
+              <BookOutlined />
+            </div>
+            <div className={css.statInfo}>
+              <span className={css.statValue}>{stats.statute}</span>
+              <span className={css.statLabel}>ข้อบังคับ</span>
+            </div>
+          </div>
+          <div className={css.statCard}>
+            <div className={`${css.statIconWrap} ${css.statIconRules}`}>
+              <FileTextOutlined />
+            </div>
+            <div className={css.statInfo}>
+              <span className={css.statValue}>{stats.rules}</span>
+              <span className={css.statLabel}>ระเบียบ</span>
+            </div>
+          </div>
+          <div className={css.statCard}>
+            <div className={`${css.statIconWrap} ${css.statIconAnnounce}`}>
+              <SoundOutlined />
+            </div>
+            <div className={css.statInfo}>
+              <span className={css.statValue}>{stats.announcements}</span>
+              <span className={css.statLabel}>ประกาศ</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Filter */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
-        <FilterOutlined style={{ color: "#6b7280" }} />
-        <button onClick={() => setFilterType("all")} style={{ padding: "5px 14px", borderRadius: 20, border: filterType === "all" ? "2px solid #E8652B" : "1px solid #d1d5db", background: filterType === "all" ? "#FFF7ED" : "#fff", color: filterType === "all" ? "#E8652B" : "#6b7280", cursor: "pointer", fontWeight: 600, fontSize: 12 }}>ทั้งหมด ({items.length})</button>
+      {/* Inline form panel */}
+      {editing && renderFormPanel()}
+
+      {/* Filter tabs */}
+      <div className={css.tabsRow}>
+        <button
+          className={`${css.tabBtn} ${filterType === "all" ? css.tabBtnActive : ""}`}
+          onClick={() => setFilterType("all")}
+        >
+          ทั้งหมด ({items.length})
+        </button>
         {TYPE_OPTIONS.map((t) => {
           const count = items.filter((i) => i.typeForm === t.value).length;
-          const active = filterType === t.value;
           return (
-            <button key={t.value} onClick={() => setFilterType(t.value)} style={{ padding: "5px 14px", borderRadius: 20, border: active ? "2px solid #E8652B" : "1px solid #d1d5db", background: active ? "#FFF7ED" : "#fff", color: active ? "#E8652B" : "#6b7280", cursor: "pointer", fontWeight: 600, fontSize: 12 }}>
+            <button
+              key={t.value}
+              className={`${css.tabBtn} ${filterType === t.value ? css.tabBtnActive : ""}`}
+              onClick={() => setFilterType(t.value)}
+            >
               {t.label} ({count})
             </button>
           );
         })}
       </div>
 
-      {/* Edit Form */}
-      {editing && (
-        <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 24, marginBottom: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-          <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700 }}>{isNew ? "เพิ่มรายการใหม่" : "แก้ไขรายการ"}</h3>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 80px", gap: 12, maxWidth: 700 }}>
-            <div>
-              <label style={labelStyle}>ประเภท *</label>
-              <select value={editing.typeForm} onChange={(e) => setEditing({ ...editing, typeForm: e.target.value })} style={inputStyle}>
-                {TYPE_OPTIONS.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
-              </select>
-            </div>
-            <div>
-              <label style={labelStyle}>กลุ่มสมาชิก / หมวดหมู่</label>
-              <input
-                list="memberTypeList"
-                value={editing.typeMember}
-                onChange={(e) => setEditing({ ...editing, typeMember: e.target.value })}
-                placeholder='เช่น "สมาชิกสามัญประเภท ก"'
-                style={inputStyle}
-              />
-              <datalist id="memberTypeList">
-                {categories.map((c, i) => <option key={i} value={c} />)}
-              </datalist>
-            </div>
-            <div>
-              <label style={labelStyle}>ลำดับ</label>
-              <input type="number" value={editing.sortOrder} onChange={(e) => setEditing({ ...editing, sortOrder: parseInt(e.target.value) || 0 })} style={inputStyle} />
-            </div>
-          </div>
-
-          <div style={{ marginTop: 8, maxWidth: 700 }}>
-            <label style={labelStyle}>ชื่อเรื่อง *</label>
-            <input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} placeholder="เช่น ข้อบังคับสหกรณ์ พ.ศ.2562" style={inputStyle} />
-          </div>
-
-          <div style={{ marginTop: 8, maxWidth: 700 }}>
-            <label style={labelStyle}>รายละเอียดเพิ่มเติม (ไม่บังคับ)</label>
-            <textarea value={editing.description} onChange={(e) => setEditing({ ...editing, description: e.target.value })} rows={2} placeholder="คำอธิบายสั้นๆ" style={{ ...inputStyle, resize: "vertical" }} />
-          </div>
-
-          {/* File + Image upload */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 12, maxWidth: 700 }}>
-            {/* PDF File */}
-            <div style={{ padding: 14, background: "#f9fafb", borderRadius: 10, border: "1px dashed #d1d5db" }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: "#374151", margin: "0 0 6px" }}>
-                <FileTextOutlined style={{ color: "#E8652B", marginRight: 6 }} /> ไฟล์เอกสาร (PDF)
-              </p>
-              <input ref={fileRef} type="file" accept=".pdf,.doc,.docx" onChange={handleFileUpload} style={{ display: "none" }} />
-              <button onClick={() => fileRef.current?.click()} disabled={uploadingFile} style={btnStyle(uploadingFile ? "#d1d5db" : "#0369a1", "#fff")}>
-                {uploadingFile ? <><LoadingOutlined /> กำลังอัปโหลด...</> : <><UploadOutlined /> เลือกไฟล์</>}
-              </button>
-              {editing.filePath && (
-                <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6 }}>
-                  <a href={editing.filePath} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: "#0369a1", wordBreak: "break-all" }}>
-                    {editing.filePath.split("/").pop()}
-                  </a>
-                  <button onClick={() => setEditing({ ...editing, filePath: "" })} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 12 }}>✕</button>
-                </div>
-              )}
-            </div>
-
-            {/* Image */}
-            <div style={{ padding: 14, background: "#f9fafb", borderRadius: 10, border: "1px dashed #d1d5db" }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: "#374151", margin: "0 0 6px" }}>
-                <PictureOutlined style={{ color: "#E8652B", marginRight: 6 }} /> รูปประกอบ (ไม่บังคับ)
-              </p>
-              <input ref={imgRef} type="file" accept="image/*" onChange={handleImageUpload} style={{ display: "none" }} />
-              <button onClick={() => imgRef.current?.click()} disabled={uploadingImage} style={btnStyle(uploadingImage ? "#d1d5db" : "#0369a1", "#fff")}>
-                {uploadingImage ? <><LoadingOutlined /> กำลังอัปโหลด...</> : <><UploadOutlined /> เลือกรูป</>}
-              </button>
-              {editing.imagePath && (
-                <div style={{ marginTop: 8, position: "relative", display: "inline-block" }}>
-                  <img src={editing.imagePath} alt="" style={{ height: 80, borderRadius: 8, border: "1px solid #e5e7eb" }} />
-                  <button onClick={() => setEditing({ ...editing, imagePath: "" })} style={{ position: "absolute", top: -6, right: -6, width: 20, height: 20, borderRadius: "50%", background: "#ef4444", color: "#fff", border: "none", cursor: "pointer", fontSize: 10, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Active + Actions */}
-          <div style={{ marginTop: 16, display: "flex", alignItems: "center", gap: 8 }}>
-            <input type="checkbox" checked={editing.isActive} onChange={(e) => setEditing({ ...editing, isActive: e.target.checked })} />
-            <label style={{ fontSize: 13 }}>เผยแพร่</label>
-          </div>
-          <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
-            <button onClick={save} style={{ ...btnStyle("#16a34a", "#fff"), padding: "8px 20px", fontSize: 13 }}><SaveOutlined /> บันทึก</button>
-            <button onClick={() => { setEditing(null); setIsNew(false); }} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 20px", background: "#f3f4f6", color: "#374151", border: "1px solid #d1d5db", borderRadius: 8, cursor: "pointer", fontSize: 13 }}><CloseOutlined /> ยกเลิก</button>
-          </div>
-        </div>
-      )}
-
-      {/* Items List — grouped */}
-      {filtered.length === 0 ? (
-        <div style={{ textAlign: "center", padding: 60, color: "#9ca3af" }}>
-          <FileTextOutlined style={{ fontSize: 40, marginBottom: 12 }} />
-          <p>ยังไม่มีรายการ</p>
-        </div>
+      {/* Content */}
+      {loading ? (
+        renderSkeleton()
+      ) : filtered.length === 0 ? (
+        <Empty
+          image={<FileTextOutlined style={{ fontSize: 56, color: "#cbd5e1" }} />}
+          description={<span style={{ color: "#94a3b8" }}>ยังไม่มีรายการ</span>}
+          className={css.emptyState}
+        >
+          <Button type="primary" icon={<PlusOutlined />} onClick={openNew} className={css.addBtn}>
+            เพิ่มรายการแรก
+          </Button>
+        </Empty>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+        <div>
           {grouped.map((tg, tIdx) => (
-            <div key={tIdx}>
+            <div key={tIdx} className={css.groupSection}>
               {filterType === "all" && (
-                <h2 style={{ fontSize: 16, fontWeight: 700, color: "#1e293b", margin: "0 0 12px", paddingLeft: 12, borderLeft: "4px solid #E8652B" }}>
-                  {tg.typeLabel}
-                </h2>
+                <h2 className={css.groupTitle}>{tg.typeLabel}</h2>
               )}
               {tg.groups.map((mg, mIdx) => (
-                <div key={mIdx} style={{ marginBottom: 16, paddingLeft: filterType === "all" ? 16 : 0 }}>
-                  <h4 style={{ fontSize: 13, fontWeight: 700, color: "#475569", margin: "0 0 8px", paddingBottom: 4, borderBottom: "1px solid #e5e7eb" }}>
-                    {mg.typeMember}
-                  </h4>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                    {mg.items.map((item) => (
-                      <div key={item.id} style={{ display: "flex", alignItems: "center", gap: 12, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 10, padding: 12, opacity: item.isActive ? 1 : 0.5 }}>
-                        {item.imagePath ? (
-                          <img src={item.imagePath} alt="" style={{ width: 44, height: 44, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
-                        ) : (
-                          <div style={{ width: 44, height: 44, borderRadius: 8, background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                            <FileTextOutlined style={{ fontSize: 18, color: "#94a3b8" }} />
-                          </div>
+                <div
+                  key={mIdx}
+                  className={css.subGroup}
+                  style={{ paddingLeft: filterType === "all" ? 16 : 0 }}
+                >
+                  <h4 className={css.subGroupTitle}>{mg.typeMember}</h4>
+                  {mg.items.map((item) => (
+                    <div
+                      key={item.id}
+                      className={`${css.itemCard} ${!item.isActive ? css.itemCardInactive : ""}`}
+                    >
+                      {item.imagePath ? (
+                        <img src={item.imagePath} alt="" className={css.itemThumb} />
+                      ) : (
+                        <div className={css.itemPlaceholder}>
+                          <FileTextOutlined />
+                        </div>
+                      )}
+                      <div className={css.itemInfo}>
+                        <p className={css.itemTitle}>{item.title}</p>
+                        {item.description && (
+                          <p className={css.itemDesc}>{item.description}</p>
                         )}
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <p style={{ fontSize: 13, fontWeight: 600, margin: 0, color: "#1f2937", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.title}</p>
-                          {item.filePath && (
-                            <a href={item.filePath} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: "#0369a1" }}>ดูไฟล์</a>
-                          )}
-                        </div>
-                        <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 4, background: item.isActive ? "#d1fae5" : "#fee2e2", color: item.isActive ? "#065f46" : "#991b1b", flexShrink: 0 }}>
-                          {item.isActive ? "เผยแพร่" : "ซ่อน"}
-                        </span>
-                        <div style={{ flexShrink: 0 }}>
-                          <button onClick={() => openEdit(item)} style={{ background: "none", border: "none", color: "#0369a1", cursor: "pointer", fontSize: 15, marginRight: 4 }} title="แก้ไข"><EditOutlined /></button>
-                          <button onClick={() => item.id && remove(item.id)} style={{ background: "none", border: "none", color: "#dc2626", cursor: "pointer", fontSize: 15 }} title="ลบ"><DeleteOutlined /></button>
-                        </div>
+                        {item.filePath && (
+                          <a
+                            href={item.filePath}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={css.itemFileLink}
+                          >
+                            <LinkOutlined /> ดูไฟล์
+                          </a>
+                        )}
                       </div>
-                    ))}
-                  </div>
+                      <span className={`${css.itemStatusBadge} ${item.isActive ? css.badgeActive : css.badgeHidden}`}>
+                        {item.isActive ? "เผยแพร่" : "ซ่อน"}
+                      </span>
+                      <div className={css.itemActions}>
+                        <Tooltip title="แก้ไข">
+                          <Button
+                            type="text"
+                            icon={<EditOutlined />}
+                            className={`${css.itemActionBtn} ${css.editBtn}`}
+                            onClick={() => openEdit(item)}
+                          />
+                        </Tooltip>
+                        <Popconfirm
+                          title="ลบรายการนี้?"
+                          description="คุณแน่ใจว่าต้องการลบ?"
+                          onConfirm={() => item.id && handleDelete(item.id)}
+                          okText="ลบ"
+                          cancelText="ยกเลิก"
+                          okButtonProps={{ danger: true }}
+                        >
+                          <Tooltip title="ลบ">
+                            <Button
+                              type="text"
+                              icon={<DeleteOutlined />}
+                              className={`${css.itemActionBtn} ${css.deleteBtn}`}
+                            />
+                          </Tooltip>
+                        </Popconfirm>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ))}
             </div>

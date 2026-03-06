@@ -36,6 +36,10 @@ const theme = {
             borderRadius: 8,
             controlHeight: 40,
         },
+        Select: {
+            borderRadius: 8,
+            controlHeight: 40,
+        },
     },
 };
 

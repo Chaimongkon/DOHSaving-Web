@@ -153,7 +153,7 @@ export default function Footer() {
           </div>
 
           <h4 className={css.socialTitle}>ดาวน์โหลดแอป</h4>
-          <a href="#download-app" className={css.appCard}>
+          <a href="download-app" className={css.appCard}>
             <div className={css.appIcon}>
               <img
                 src="/images/logo/logoapp.png"
