@@ -36,7 +36,7 @@ export default function VideoAndRateSection() {
       .then((data: VideoItem[]) => {
         if (Array.isArray(data)) setVideos(data.slice(0, 4));
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   // Fetch interest rates from API
@@ -56,7 +56,7 @@ export default function VideoAndRateSection() {
           );
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const currentVideo = videos[activeVideo];
@@ -70,7 +70,7 @@ export default function VideoAndRateSection() {
         <div className={css.videoBlock}>
           <div className={css.blockHeader}>
             <div className={css.blockHeaderLeft}>
-              <span className={css.ytBadge}><YoutubeOutlined /></span>
+              <span><img src="/images/logo/youtube.png" alt="YouTube" width={42} height={42} style={{ objectFit: "contain" }} /></span>
               <h2 className="section-heading section-heading--left" style={{ marginBottom: 0 }}>
                 วิดีโอสหกรณ์
               </h2>

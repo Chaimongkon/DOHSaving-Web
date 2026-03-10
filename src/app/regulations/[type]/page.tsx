@@ -173,7 +173,7 @@ export default function RegulationsPage() {
                         </div>
                       ) : (
                         <div className={css.docIconSquare}>
-                          {React.cloneElement(config.icon as React.ReactElement<any>, { size: 64 })}
+                          {React.cloneElement(config.icon as React.ReactElement<any>, { size: 48 })}
                         </div>
                       )}
                     </div>
