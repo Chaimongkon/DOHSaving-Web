@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
-  PlusOutlined, EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined,
-  UploadOutlined, PictureOutlined, LoadingOutlined, LinkOutlined,
-  FileOutlined, FilterOutlined,
-} from "@ant-design/icons";
+  Plus, Edit2, Trash2, X, UploadCloud, Link as LinkIcon,
+  Image as ImageIcon, Filter, LayoutGrid
+} from "lucide-react";
+import css from "./page.module.css";
 
 const CATEGORIES = [
   "สมัครสมาชิก",
@@ -163,210 +163,302 @@ export default function AdminServicePagesPage() {
     load();
   };
 
-  const inputStyle: React.CSSProperties = { display: "block", width: "100%", padding: "8px 12px", border: "1px solid #d1d5db", borderRadius: 8, marginTop: 4, fontSize: 13 };
-  const labelStyle: React.CSSProperties = { fontSize: 12, color: "#6b7280", display: "block" };
-
   return (
-    <div style={{ padding: 24 }}>
+    <div className={css.container}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
-        <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>หน้าบริการ (Infographic)</h1>
-          <p style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>จัดการหน้าบริการ แต่ละหน้าแสดง infographic + ลิงก์ดาวน์โหลด</p>
+      <div className={css.header}>
+        <div className={css.headerTitleWrap}>
+          <div className={css.headerIcon}>
+            <LayoutGrid size={28} />
+          </div>
+          <div>
+            <h1 className={css.title}>จัดการหน้าบริการ</h1>
+            <p className={css.subtitle}>จัดการหน้าบริการ Infographic และเอกสารดาวน์โหลดต่างๆ ในระบบ</p>
+          </div>
         </div>
-        <button onClick={openNew} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#E8652B", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontWeight: 600, fontSize: 13 }}>
-          <PlusOutlined /> เพิ่มหน้าบริการ
+        <button onClick={openNew} className={css.addBtn}>
+          <Plus size={18} /> เพิ่มหน้าบริการ
         </button>
       </div>
 
       {/* Filters */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
-        <FilterOutlined style={{ color: "#9ca3af" }} />
-        <select value={filterCat} onChange={(e) => setFilterCat(e.target.value)} style={{ padding: "6px 12px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 12, fontWeight: 600 }}>
+      <div className={css.filters}>
+        <Filter size={18} color="#94a3b8" />
+        <select value={filterCat} onChange={(e) => setFilterCat(e.target.value)} className={css.filterSelect}>
           <option>ทั้งหมด</option>
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-        <span style={{ fontSize: 12, color: "#9ca3af" }}>({filtered.length} รายการ)</span>
+        <span className={css.filterCount}>({filtered.length} รายการ)</span>
       </div>
 
-      {/* Edit Form */}
+      {/* Edit Modal */}
       {editing && (
-        <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 24, marginBottom: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-          <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700 }}>{isNew ? "เพิ่มหน้าบริการใหม่" : "แก้ไขหน้าบริการ"}</h3>
-
-          {/* Row 1: slug, title, category */}
-          <div style={{ display: "grid", gridTemplateColumns: "180px 1fr 160px 80px", gap: 12 }}>
-            <div>
-              <label style={labelStyle}>Slug (URL path) *</label>
-              <input value={editing.slug} onChange={(e) => setEditing({ ...editing, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })} placeholder="เช่น savings" style={inputStyle} />
-            </div>
-            <div>
-              <label style={labelStyle}>ชื่อหน้า *</label>
-              <input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} placeholder="เช่น เงินฝากออมทรัพย์" style={inputStyle} />
-            </div>
-            <div>
-              <label style={labelStyle}>หมวดหมู่</label>
-              <select value={editing.category} onChange={(e) => setEditing({ ...editing, category: e.target.value })} style={inputStyle}>
-                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </div>
-            <div>
-              <label style={labelStyle}>ลำดับ</label>
-              <input type="number" value={editing.sortOrder} onChange={(e) => setEditing({ ...editing, sortOrder: parseInt(e.target.value) || 0 })} style={inputStyle} />
-            </div>
-          </div>
-
-          {/* Row 1.5: Form Group */}
-          <div style={{ marginTop: 12, maxWidth: 400 }}>
-            <label style={labelStyle}>แบบฟอร์มที่แสดงในหน้าบริการ</label>
-            <select value={editing.formGroup} onChange={(e) => setEditing({ ...editing, formGroup: e.target.value })} style={inputStyle}>
-              <option value="">— ไม่แสดงแบบฟอร์ม —</option>
-              {FORM_GROUPS.map((g) => <option key={g} value={g}>{g}</option>)}
-            </select>
-            <span style={{ fontSize: 11, color: "#9ca3af", marginTop: 2, display: "block" }}>
-              เลือกหมวดแบบฟอร์มที่จะแสดงด้านข้าง infographic (ดึงจากระบบแบบฟอร์มอัตโนมัติ)
-            </span>
-          </div>
-
-          <p style={{ fontSize: 11, color: "#9ca3af", margin: "4px 0 12px" }}>URL จะเป็น: /services/<strong>{editing.slug || "xxx"}</strong></p>
-
-          {/* Infographic Upload */}
-          <div style={{ marginTop: 8, padding: 20, background: "#f9fafb", borderRadius: 10, border: "1px dashed #d1d5db" }}>
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 16, flexWrap: "wrap" }}>
-              <div style={{ flex: 1, minWidth: 200 }}>
-                <p style={{ fontSize: 14, fontWeight: 700, color: "#374151", margin: "0 0 4px" }}>
-                  <PictureOutlined style={{ color: "#E8652B", marginRight: 6 }} />
-                  รูป Infographic
-                </p>
-                <p style={{ fontSize: 11, color: "#9ca3af", margin: "4px 0 8px" }}>
-                  อัปโหลดรูป infographic สำหรับหน้านี้ (รองรับ JPG, PNG, WebP ขนาดไม่เกิน 10MB)
-                </p>
-                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleUpload} style={{ display: "none" }} />
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={uploading}
-                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", background: uploading ? "#d1d5db" : "#0369a1", color: "#fff", border: "none", borderRadius: 8, cursor: uploading ? "not-allowed" : "pointer", fontWeight: 600, fontSize: 13 }}
-                >
-                  {uploading ? <><LoadingOutlined /> กำลังอัปโหลด...</> : <><UploadOutlined /> เลือกรูป Infographic</>}
-                </button>
-              </div>
-              {editing.infographicUrl && (
-                <div style={{ position: "relative" }}>
-                  <img
-                    src={editing.infographicUrl}
-                    alt="preview"
-                    style={{ maxHeight: 200, maxWidth: 300, borderRadius: 8, border: "1px solid #e5e7eb", objectFit: "contain", background: "#fff" }}
-                  />
-                  <button
-                    onClick={() => setEditing({ ...editing, infographicUrl: "" })}
-                    style={{ position: "absolute", top: -8, right: -8, width: 24, height: 24, borderRadius: "50%", background: "#ef4444", color: "#fff", border: "none", cursor: "pointer", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center" }}
-                  >✕</button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Download Links */}
-          <div style={{ marginTop: 16 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-              <p style={{ fontSize: 14, fontWeight: 700, color: "#374151", margin: 0 }}>
-                <LinkOutlined style={{ color: "#0369a1", marginRight: 6 }} />
-                ลิงก์ดาวน์โหลดเอกสาร
-              </p>
-              <button onClick={addLink} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 12px", background: "#eff6ff", color: "#0369a1", border: "1px solid #bfdbfe", borderRadius: 6, cursor: "pointer", fontSize: 12, fontWeight: 600 }}>
-                <PlusOutlined /> เพิ่มลิงก์
+        <div className={css.modalOverlay} onClick={() => { setEditing(null); setIsNew(false); }}>
+          <div className={css.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={css.modalHeader}>
+              <h3 className={css.modalTitle}>
+                {isNew ? "เพิ่มหน้าบริการใหม่" : "แก้ไขหน้าบริการ"}
+              </h3>
+              <button className={css.modalClose} onClick={() => { setEditing(null); setIsNew(false); }}>
+                <X size={20} />
               </button>
             </div>
-            {links.length === 0 && (
-              <p style={{ fontSize: 12, color: "#9ca3af", padding: "12px 0" }}>ยังไม่มีลิงก์ดาวน์โหลด กดปุ่ม &quot;เพิ่มลิงก์&quot; เพื่อเพิ่ม</p>
-            )}
-            {links.map((link, idx) => (
-              <div key={idx} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8 }}>
-                <span style={{ fontSize: 12, color: "#9ca3af", width: 20, textAlign: "center" }}>{idx + 1}</span>
-                <input
-                  value={link.label}
-                  onChange={(e) => updateLink(idx, "label", e.target.value)}
-                  placeholder="ชื่อเอกสาร เช่น แบบฟอร์มเงินฝากออมทรัพย์"
-                  style={{ ...inputStyle, marginTop: 0, flex: 1 }}
-                />
-                <input
-                  value={link.url}
-                  onChange={(e) => updateLink(idx, "url", e.target.value)}
-                  placeholder="URL เช่น /forms หรือ /uploads/xxx.pdf"
-                  style={{ ...inputStyle, marginTop: 0, flex: 1 }}
-                />
-                <button onClick={() => removeLink(idx)} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 16, padding: 4 }}>✕</button>
+
+            <div className={css.modalBody}>
+              {/* Left Column: Image Upload */}
+              <div className={css.leftCol}>
+                <div className={css.formGroup}>
+                  <label className={css.formLabel}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><ImageIcon size={16} color="#0369a1" /> รูป Infographic</span>
+                  </label>
+                  <p className={css.formHint} style={{ marginBottom: '8px', marginTop: 0 }}>
+                    อัปโหลดรูปภาพแนวตั้งเพื่อใช้แสดงผลบนหน้าบริการ (รองรับ JPG, PNG, WebP ขนาดไม่เกิน 10MB)
+                  </p>
+
+                  {editing.infographicUrl ? (
+                    <div className={css.uploadPreview}>
+                      <img
+                        src={editing.infographicUrl}
+                        alt="preview"
+                        className={css.uploadPreviewImg}
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholders/empty_service.png";
+                          e.currentTarget.style.opacity = "0.8";
+                          e.currentTarget.style.filter = "grayscale(0.2)";
+                        }}
+                      />
+                      <button
+                        className={css.uploadRemove}
+                        onClick={() => setEditing({ ...editing, infographicUrl: "" })}
+                        title="ลบรูปภาพ"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className={css.uploadArea} onClick={() => fileInputRef.current?.click()}>
+                      <UploadCloud className={css.uploadIcon} />
+                      <p className={css.uploadText}>
+                        {uploading ? "กำลังอัพโหลด..." : "คลิกเพื่อเลือกรูปภาพ"}
+                      </p>
+                      <p className={css.uploadHint}>แนะนำ: 800 x 1200 px</p>
+                    </div>
+                  )}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleUpload}
+                    style={{ display: "none" }}
+                  />
+                </div>
               </div>
-            ))}
-          </div>
 
-          {/* Active toggle */}
-          <div style={{ marginTop: 16, display: "flex", alignItems: "center", gap: 8 }}>
-            <input type="checkbox" checked={editing.isActive} onChange={(e) => setEditing({ ...editing, isActive: e.target.checked })} />
-            <label style={{ fontSize: 13 }}>เผยแพร่</label>
-          </div>
+              {/* Right Column: Settings */}
+              <div className={css.rightCol}>
+                <div className={css.formRow}>
+                  <div className={css.formGroup}>
+                    <label className={css.formLabel}>ชื่อหน้า <span style={{ color: '#ef4444' }}>*</span></label>
+                    <input
+                      className={css.formInput}
+                      value={editing.title}
+                      onChange={(e) => setEditing({ ...editing, title: e.target.value })}
+                      placeholder="เช่น เงินฝากออมทรัพย์"
+                    />
+                  </div>
+                  <div className={css.formGroup}>
+                    <label className={css.formLabel}>Slug (URL path) <span style={{ color: '#ef4444' }}>*</span></label>
+                    <input
+                      className={css.formInput}
+                      value={editing.slug}
+                      onChange={(e) => setEditing({ ...editing, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })}
+                      placeholder="เช่น savings"
+                    />
+                    <p className={css.formHint}>/services/<strong>{editing.slug || "xxx"}</strong></p>
+                  </div>
+                </div>
 
-          {/* Actions */}
-          <div style={{ display: "flex", gap: 8, marginTop: 20 }}>
-            <button onClick={save} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 20px", background: "#16a34a", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontWeight: 600, fontSize: 13 }}><SaveOutlined /> บันทึก</button>
-            <button onClick={() => { setEditing(null); setIsNew(false); }} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 20px", background: "#f3f4f6", color: "#374151", border: "1px solid #d1d5db", borderRadius: 8, cursor: "pointer", fontSize: 13 }}><CloseOutlined /> ยกเลิก</button>
+                <div className={css.formRow}>
+                  <div className={css.formGroup}>
+                    <label className={css.formLabel}>หมวดหมู่</label>
+                    <select
+                      className={css.formSelect}
+                      value={editing.category}
+                      onChange={(e) => setEditing({ ...editing, category: e.target.value })}
+                    >
+                      {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                  <div className={css.formGroup}>
+                    <label className={css.formLabel}>ลำดับ</label>
+                    <input
+                      type="number"
+                      className={css.formInput}
+                      value={editing.sortOrder}
+                      onChange={(e) => setEditing({ ...editing, sortOrder: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
+                </div>
+
+                <div className={css.formGroup} style={{ marginTop: '8px' }}>
+                  <label className={css.formLabel}>เลือกแบบฟอร์มที่แสดงแนบด้านข้าง</label>
+                  <select
+                    className={css.formSelect}
+                    value={editing.formGroup}
+                    onChange={(e) => setEditing({ ...editing, formGroup: e.target.value })}
+                  >
+                    <option value="">— ไม่แสดงแบบฟอร์ม —</option>
+                    {FORM_GROUPS.map((g) => <option key={g} value={g}>{g}</option>)}
+                  </select>
+                </div>
+
+                <div className={css.formGroup} style={{ marginTop: '16px' }}>
+                  <div className={css.dynamicLinksHeader}>
+                    <label className={css.formLabel} style={{ marginBottom: 0 }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><LinkIcon size={16} color="#f97316" /> ลิงก์ดาวน์โหลดเอกสารเสริม</span>
+                    </label>
+                    <button onClick={addLink} className={css.addLinkBtn}>
+                      <Plus size={14} /> เพิ่มลิงก์
+                    </button>
+                  </div>
+
+                  {links.length === 0 ? (
+                    <div style={{ padding: '16px', textAlign: 'center', background: '#f8fafc', borderRadius: '10px', border: '1px dashed #cbd5e1' }}>
+                      <p className={css.formHint}>ยังไม่มีลิงก์ดาวน์โหลดเสริม</p>
+                    </div>
+                  ) : (
+                    <div style={{ maxHeight: '200px', overflowY: 'auto', paddingRight: '8px' }}>
+                      {links.map((link, idx) => (
+                        <div key={idx} className={css.linkRow}>
+                          <span className={css.linkIndex}>{idx + 1}</span>
+                          <div className={css.linkInputGroup}>
+                            <input
+                              className={css.formInput}
+                              value={link.label}
+                              onChange={(e) => updateLink(idx, "label", e.target.value)}
+                              placeholder="ชื่อเอกสาร (เช่น แบบฟอร์มเงินฝาก)"
+                              style={{ padding: '8px 12px' }}
+                            />
+                            <input
+                              className={css.formInput}
+                              value={link.url}
+                              onChange={(e) => updateLink(idx, "url", e.target.value)}
+                              placeholder="URL (เช่น /uploads/doc.pdf)"
+                              style={{ padding: '8px 12px' }}
+                            />
+                          </div>
+                          <button onClick={() => removeLink(idx)} className={css.removeLinkBtn}>
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className={css.formGroup}>
+                  <label className={css.formLabel}>การเผยแพร่</label>
+                  <div className={css.toggle} onClick={() => setEditing({ ...editing, isActive: !editing.isActive })}>
+                    <button
+                      type="button"
+                      className={`${css.toggleSwitch} ${editing.isActive ? css.toggleOn : css.toggleOff}`}
+                    />
+                    <span className={css.toggleLabel}>
+                      {editing.isActive ? "เผยแพร่แล้ว (เปิดใช้งาน)" : "ซ่อนไว้ก่อน (Draft)"}
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div className={css.modalFooter}>
+              <button
+                className={css.cancelBtn}
+                onClick={() => { setEditing(null); setIsNew(false); }}
+              >
+                ยกเลิก
+              </button>
+              <button className={css.saveBtn} onClick={save}>
+                บันทึกการเปลี่ยนแปลง
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Table */}
-      <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ background: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
-              <th style={{ padding: "10px 16px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>หมวดหมู่</th>
-              <th style={{ padding: "10px 16px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>ชื่อหน้า</th>
-              <th style={{ padding: "10px 16px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>Slug</th>
-              <th style={{ padding: "10px 16px", textAlign: "center", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>Infographic</th>
-              <th style={{ padding: "10px 16px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>แบบฟอร์ม</th>
-              <th style={{ padding: "10px 16px", textAlign: "center", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>ลิงก์</th>
-              <th style={{ padding: "10px 16px", textAlign: "center", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>สถานะ</th>
-              <th style={{ padding: "10px 16px", textAlign: "center", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>จัดการ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((item) => {
-              let linkCount = 0;
-              try { linkCount = JSON.parse(item.downloadLinks || "[]").length; } catch { /* */ }
-              return (
-                <tr key={item.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
-                  <td style={{ padding: "10px 16px" }}>
-                    <span style={{ display: "inline-block", padding: "3px 10px", borderRadius: 6, fontSize: 11, fontWeight: 700, background: "#dbeafe", color: "#1e40af" }}>{item.category}</span>
-                  </td>
-                  <td style={{ padding: "10px 16px", fontSize: 13, fontWeight: 600, color: "#1f2937" }}>{item.title}</td>
-                  <td style={{ padding: "10px 16px", fontSize: 12, color: "#6b7280", fontFamily: "monospace" }}>/services/{item.slug}</td>
-                  <td style={{ padding: "10px 16px", textAlign: "center" }}>
-                    {item.infographicUrl ? (
-                      <img src={item.infographicUrl} alt="" style={{ height: 40, borderRadius: 4, border: "1px solid #e5e7eb" }} />
-                    ) : (
-                      <span style={{ color: "#d1d5db", fontSize: 12 }}><FileOutlined /> -</span>
-                    )}
-                  </td>
-                  <td style={{ padding: "10px 16px", fontSize: 11, color: "#6b7280" }}>{item.formGroup || <span style={{ color: "#d1d5db" }}>-</span>}</td>
-                  <td style={{ padding: "10px 16px", textAlign: "center", fontSize: 12, color: "#6b7280" }}>{linkCount} ลิงก์</td>
-                  <td style={{ padding: "10px 16px", textAlign: "center" }}>
-                    <span style={{ fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 4, background: item.isActive ? "#d1fae5" : "#fee2e2", color: item.isActive ? "#065f46" : "#991b1b" }}>
+      {/* Grid */}
+      {filtered.length === 0 ? (
+        <div className={css.empty}>
+          <div className={css.emptyIcon}><LayoutGrid size={48} /></div>
+          <p className={css.emptyText}>ยังไม่มีหน้าบริการในหมวดหมู่นี้</p>
+        </div>
+      ) : (
+        <div className={css.grid}>
+          {filtered.map((item) => {
+            let linkCount = 0;
+            try { linkCount = JSON.parse(item.downloadLinks || "[]").length; } catch { /* */ }
+            return (
+              <div key={item.id} className={css.card}>
+                <div className={css.imageWrap}>
+                  {item.infographicUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={item.infographicUrl}
+                      alt={item.title}
+                      className={css.cardImage}
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholders/empty_service.png";
+                        e.currentTarget.style.opacity = "0.8";
+                        e.currentTarget.style.filter = "grayscale(0.2)";
+                      }}
+                    />
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src="/images/placeholders/empty_service.png" alt="No Image" className={css.cardImage} style={{ opacity: 0.8, filter: 'grayscale(0.2)' }} />
+                  )}
+                  <div className={css.badgesWrap}>
+                    <span className={css.categoryBadge}>{item.category}</span>
+                    <span className={`${css.badge} ${item.isActive ? css.badgeActive : css.badgeInactive}`}>
                       {item.isActive ? "เผยแพร่" : "ซ่อน"}
                     </span>
-                  </td>
-                  <td style={{ padding: "10px 16px", textAlign: "center" }}>
-                    <button onClick={() => openEdit(item)} style={{ background: "none", border: "none", color: "#0369a1", cursor: "pointer", fontSize: 15, marginRight: 8 }} title="แก้ไข"><EditOutlined /></button>
-                    <button onClick={() => item.id && remove(item.id)} style={{ background: "none", border: "none", color: "#dc2626", cursor: "pointer", fontSize: 15 }} title="ลบ"><DeleteOutlined /></button>
-                  </td>
-                </tr>
-              );
-            })}
-            {filtered.length === 0 && (
-              <tr><td colSpan={8} style={{ padding: 40, textAlign: "center", color: "#9ca3af", fontSize: 13 }}>ยังไม่มีหน้าบริการ</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+                  </div>
+                </div>
+
+                <div className={css.cardBody}>
+                  <div className={css.cardContent}>
+                    <h3 className={css.cardName}>{item.title}</h3>
+                    <p className={css.cardInfo} style={{ fontFamily: 'monospace' }}>
+                      <LinkIcon size={14} /> /services/{item.slug}
+                    </p>
+                    <p className={css.cardInfo}>
+                      <LayoutGrid size={14} /> {item.formGroup || "ไม่แสดงแบบฟอร์ม"}
+                    </p>
+                  </div>
+
+                  <div className={css.cardStats}>
+                    <a href={`/services/${item.slug}`} target="_blank" rel="noopener noreferrer" className={css.cardLink}>
+                      <LinkIcon size={14} /> ดูหน้าเว็บ
+                    </a>
+                    <span className={css.cardInfo} style={{ margin: 0, fontWeight: 600, color: '#f97316' }}>
+                      {linkCount} ลิงก์ดาวน์โหลด
+                    </span>
+                  </div>
+                </div>
+
+                <div className={css.actions}>
+                  <button className={css.actionBtn} onClick={() => openEdit(item)}>
+                    <Edit2 size={16} /> แก้ไข
+                  </button>
+                  <button className={`${css.actionBtn} ${css.deleteBtn}`} onClick={() => item.id && remove(item.id)}>
+                    <Trash2 size={16} /> ลบ
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
