@@ -3,15 +3,18 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
-  SearchOutlined,
-  MessageOutlined,
-  EyeOutlined,
-  PushpinOutlined,
-  LockOutlined,
-  DeleteOutlined,
-  EyeInvisibleOutlined,
-  SendOutlined,
-} from "@ant-design/icons";
+  Search,
+  MessageCircle,
+  Eye,
+  EyeOff,
+  Pin,
+  Lock,
+  Trash2,
+  MessageSquareDiff,
+  X,
+  Send,
+  Loader2
+} from "lucide-react";
 import css from "./page.module.css";
 
 interface AdminQuestion {
@@ -124,11 +127,21 @@ export default function AdminQnaPage() {
     });
 
   return (
-    <>
+    <div className={css.page}>
+      {/* ── Hero Header ── */}
       <div className={css.header}>
-        <h1 className={css.title}>จัดการกระดานถาม-ตอบ</h1>
+        <div className={css.headerTitleWrap}>
+          <div className={css.headerIcon}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/financial-icons/qna.png" alt="QnA" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+          </div>
+          <div>
+            <h1 className={css.title}>จัดการกระดานถาม-ตอบ</h1>
+            <p className={css.subtitle}>ดูแลและตอบปัญหาสมาชิกในระบบถาม-ตอบของสหกรณ์</p>
+          </div>
+        </div>
         <div className={css.searchBox}>
-          <SearchOutlined style={{ color: "#9ca3af" }} />
+          <Search size={18} color="#94a3b8" />
           <input
             className={css.searchInput}
             placeholder="ค้นหากระทู้..."
@@ -141,125 +154,121 @@ export default function AdminQnaPage() {
         </div>
       </div>
 
+      {/* ── Data Table ── */}
       {loading ? (
-        <div className={css.loading}>กำลังโหลด...</div>
+        <div className={css.loading}>
+          <Loader2 className="animate-spin" size={24} color="#3b82f6" />
+          <span>กำลังโหลดข้อมูล...</span>
+        </div>
       ) : questions.length === 0 ? (
-        <div className={css.empty}>ไม่มีกระทู้</div>
+        <div className={css.emptyStateContainer}>
+          <div className={css.emptyState}>
+            <MessageSquareDiff size={48} color="#cbd5e1" style={{ marginBottom: 12 }} />
+            <p style={{ margin: 0 }}>ไม่พบกระทู้ถาม-ตอบในระบบ</p>
+          </div>
+        </div>
       ) : (
         <>
-          <table className={css.table}>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>หัวข้อ</th>
-                <th>ผู้ถาม</th>
-                <th>สถานะ</th>
-                <th><MessageOutlined /> ตอบ</th>
-                <th><EyeOutlined /> เข้าชม</th>
-                <th>วันที่</th>
-                <th>จัดการ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {questions.map((q) => (
-                <tr key={q.id}>
-                  <td>{q.id}</td>
-                  <td className={css.titleCell}>
-                    <Link href={`/qna/${q.id}`} className={css.titleLink} target="_blank">
-                      {q.title}
-                    </Link>
-                  </td>
-                  <td className={css.authorCell}>
-                    {q.authorName}
-                    {q.memberCode && <div>รหัส {q.memberCode}</div>}
-                  </td>
-                  <td>
-                    {q.isPinned && <span className={`${css.badge} ${css.badgePin}`}>ปักหมุด</span>}
-                    {q.isClosed && <span className={`${css.badge} ${css.badgeClosed}`}>ปิด</span>}
-                    {!q.isActive && <span className={`${css.badge} ${css.badgeHidden}`}>ซ่อน</span>}
-                  </td>
-                  <td>
-                    <span className={css.countChip}>{q.replyCount}</span>
-                  </td>
-                  <td>{q.views}</td>
-                  <td style={{ fontSize: 11, color: "#9ca3af", whiteSpace: "nowrap" }}>
-                    {formatDate(q.createdAt)}
-                  </td>
-                  <td>
-                    <div className={css.actions}>
-                      <button
-                        className={`${css.actionBtn} ${q.isPinned ? css.actionBtnActive : ""}`}
-                        title="ปักหมุด"
-                        onClick={() => updateQuestion(q.id, { isPinned: !q.isPinned })}
-                      >
-                        <PushpinOutlined />
-                      </button>
-                      <button
-                        className={`${css.actionBtn} ${q.isClosed ? css.actionBtnActive : ""}`}
-                        title="ปิดกระทู้"
-                        onClick={() => updateQuestion(q.id, { isClosed: !q.isClosed })}
-                      >
-                        <LockOutlined />
-                      </button>
-                      <button
-                        className={css.actionBtn}
-                        title="ซ่อน/แสดง"
-                        onClick={() => updateQuestion(q.id, { isActive: !q.isActive })}
-                      >
-                        <EyeInvisibleOutlined />
-                      </button>
-                      <button
-                        className={css.actionBtn}
-                        title="ตอบ (ในนาม admin)"
-                        onClick={() => setReplyingId(replyingId === q.id ? null : q.id)}
-                      >
-                        <MessageOutlined />
-                      </button>
-                      <button
-                        className={`${css.actionBtn} ${css.actionBtnDanger}`}
-                        title="ลบ"
-                        onClick={() => deleteQuestion(q.id)}
-                      >
-                        <DeleteOutlined />
-                      </button>
-                    </div>
-                  </td>
+          <div className={css.tableContainer}>
+            <table className={css.table}>
+              <thead>
+                <tr>
+                  <th className={css.th} style={{ width: "5%" }}>ID</th>
+                  <th className={css.th} style={{ width: "30%" }}>หัวข้อ</th>
+                  <th className={css.th} style={{ width: "15%" }}>ผู้ถาม</th>
+                  <th className={css.th} style={{ width: "10%" }}>สถานะ</th>
+                  <th className={css.th} style={{ width: "8%", textAlign: "center" }} title="จำนวนการตอบ">
+                    <MessageCircle size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />
+                    ตอบ
+                  </th>
+                  <th className={css.th} style={{ width: "8%", textAlign: "center" }} title="จำนวนผู้เข้าชม">
+                    <Eye size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />
+                    เข้าชม
+                  </th>
+                  <th className={css.th} style={{ width: "12%" }}>วันที่ตั้งกระทู้</th>
+                  <th className={css.th} style={{ width: "12%", textAlign: "center" }}>จัดการ</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {questions.map((q) => (
+                  <tr key={q.id} className={css.tableRow}>
+                    <td className={css.td} style={{ color: "#64748b", fontWeight: 500 }}>{q.id}</td>
+                    <td className={css.td}>
+                      <div className={css.titleCell}>
+                        <Link href={`/qna/${q.id}`} className={css.titleLink} target="_blank" title="เปิดดูกระทู้ (หน้าต่างใหม่)">
+                          {q.title}
+                        </Link>
+                      </div>
+                    </td>
+                    <td className={css.td}>
+                      <div className={css.authorCell}>
+                        {q.authorName}
+                        {q.memberCode && <div className={css.authorCode}>รหัส: {q.memberCode}</div>}
+                      </div>
+                    </td>
+                    <td className={css.td}>
+                      <div className={css.badgeWrap}>
+                        {q.isPinned && <span className={`${css.badge} ${css.badgePin}`}>ปักหมุด</span>}
+                        {q.isClosed && <span className={`${css.badge} ${css.badgeClosed}`}>ปิดกระทู้</span>}
+                        {!q.isActive && <span className={`${css.badge} ${css.badgeHidden}`}>ซ่อนอยู่</span>}
+                      </div>
+                    </td>
+                    <td className={css.td} style={{ textAlign: "center" }}>
+                      <span className={css.countChip}>{q.replyCount}</span>
+                    </td>
+                    <td className={css.td} style={{ textAlign: "center", color: "#64748b", fontWeight: 500 }}>
+                      {q.views}
+                    </td>
+                    <td className={css.td} style={{ fontSize: 13, color: "#64748b" }}>
+                      {formatDate(q.createdAt)}
+                    </td>
+                    <td className={css.td} style={{ textAlign: "center" }}>
+                      <div className={css.actions}>
+                        <button
+                          className={`${css.actionBtn} ${q.isPinned ? css.actionBtnActive : ""}`}
+                          title={q.isPinned ? "เลิกปักหมุด" : "ปักหมุดกระทู้"}
+                          onClick={() => updateQuestion(q.id, { isPinned: !q.isPinned })}
+                        >
+                          <Pin size={16} />
+                        </button>
+                        <button
+                          className={`${css.actionBtn} ${q.isClosed ? css.actionBtnActive : ""}`}
+                          title={q.isClosed ? "เปิดกระทู้" : "ปิดกระทู้ (ล็อกไม่ให้ตอบ)"}
+                          onClick={() => updateQuestion(q.id, { isClosed: !q.isClosed })}
+                        >
+                          <Lock size={16} />
+                        </button>
+                        <button
+                          className={`${css.actionBtn} ${!q.isActive ? css.actionBtnActive : ""}`}
+                          title={q.isActive ? "ซ่อนกระทู้จากหน้าเว็บ" : "แสดงกระทู้บนหน้าเว็บ"}
+                          onClick={() => updateQuestion(q.id, { isActive: !q.isActive })}
+                        >
+                          {q.isActive ? <Eye size={16} /> : <EyeOff size={16} />}
+                        </button>
+                        <button
+                          className={css.actionBtn}
+                          title="ตอบกระทู้ในนามเจ้าหน้าที่ (Admin)"
+                          style={{ color: "#0284c7" }}
+                          onClick={() => setReplyingId(replyingId === q.id ? null : q.id)}
+                        >
+                          <MessageCircle size={16} />
+                        </button>
+                        <button
+                          className={`${css.actionBtn} ${css.actionBtnDanger}`}
+                          title="ลบกระทู้ (ลบถาวร)"
+                          onClick={() => deleteQuestion(q.id)}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-          {/* Inline reply panel */}
-          {replyingId && (
-            <div className={css.replySection}>
-              <h3 className={css.replySectionTitle}>
-                ตอบกระทู้ #{replyingId} ในนามเจ้าหน้าที่
-              </h3>
-              <textarea
-                className={css.replyTextarea}
-                placeholder="พิมพ์คำตอบ..."
-                value={replyBody}
-                onChange={(e) => setReplyBody(e.target.value)}
-              />
-              <div className={css.replyActions}>
-                <button
-                  className={css.replySubmitBtn}
-                  onClick={submitReply}
-                  disabled={replying || !replyBody.trim()}
-                >
-                  <SendOutlined /> {replying ? "กำลังส่ง..." : "ส่งคำตอบ"}
-                </button>
-                <button
-                  className={css.replyCancelBtn}
-                  onClick={() => { setReplyingId(null); setReplyBody(""); }}
-                >
-                  ยกเลิก
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Pagination */}
+          {/* ── Pagination ── */}
           {totalPages > 1 && (
             <div className={css.pagination}>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
@@ -276,7 +285,56 @@ export default function AdminQnaPage() {
         </>
       )}
 
+      {/* ── Reply Modal ── */}
+      {replyingId && (
+        <div className={css.modalOverlay} onClick={() => { setReplyingId(null); setReplyBody(""); }}>
+          <div className={css.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={css.modalHeader}>
+              <h3 className={css.modalTitle}>
+                <MessageCircle size={20} color="#0284c7" />
+                ตอบกระทู้ #{replyingId}
+              </h3>
+              <button className={css.closeBtn} onClick={() => { setReplyingId(null); setReplyBody(""); }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className={css.modalBody}>
+              <textarea
+                className={css.replyTextarea}
+                placeholder="พิมพ์ข้อความตอบกลับในนามเจ้าหน้าที่..."
+                value={replyBody}
+                onChange={(e) => setReplyBody(e.target.value)}
+                autoFocus
+              />
+            </div>
+            <div className={css.modalFooter}>
+              <button
+                className={css.cancelBtn}
+                onClick={() => { setReplyingId(null); setReplyBody(""); }}
+              >
+                ยกเลิก
+              </button>
+              <button
+                className={css.submitBtn}
+                onClick={submitReply}
+                disabled={replying || !replyBody.trim()}
+              >
+                {replying ? (
+                  <>
+                    <Loader2 className="animate-spin" size={16} /> กำลังส่ง...
+                  </>
+                ) : (
+                  <>
+                    <Send size={16} /> ส่งคำตอบ
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {toast && <div className={css.toast}>{toast}</div>}
-    </>
+    </div>
   );
 }

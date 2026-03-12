@@ -2,17 +2,17 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  CloseOutlined,
-  CloudUploadOutlined,
-  NotificationOutlined,
-  LinkOutlined,
-  CalendarOutlined,
-  EyeOutlined,
-  ThunderboltOutlined,
-} from "@ant-design/icons";
+  Plus,
+  Edit2,
+  Trash2,
+  X,
+  UploadCloud,
+  BellRing,
+  Link,
+  Calendar,
+  Eye,
+  Zap,
+} from "lucide-react";
 import css from "./page.module.css";
 
 interface Notification {
@@ -199,16 +199,24 @@ export default function NotificationsPage() {
     <div>
       {/* Header */}
       <div className={css.header}>
-        <h1 className={css.title}>จัดการป๊อปอัพแจ้งเตือน</h1>
+        <div className={css.headerTitleWrap}>
+          <div className={css.headerIcon}>
+            <BellRing size={28} />
+          </div>
+          <div>
+            <h1 className={css.title}>จัดการป๊อปอัพแจ้งเตือน</h1>
+            <p className={css.subtitle}>ตั้งค่ารูปภาพป๊อปอัพและแบนเนอร์ต่างๆ ที่จะเด้งขึ้นมาบนหน้าแรกของระบบ</p>
+          </div>
+        </div>
         <button className={css.addBtn} onClick={openCreate}>
-          <PlusOutlined /> เพิ่มป๊อปอัพ
+          <Plus size={18} /> เพิ่มป๊อปอัพ
         </button>
       </div>
 
       {/* Grid */}
       {items.length === 0 ? (
         <div className={css.empty}>
-          <div className={css.emptyIcon}><NotificationOutlined /></div>
+          <div className={css.emptyIcon}><BellRing size={48} /></div>
           <p className={css.emptyText}>ยังไม่มีป๊อปอัพ — กดปุ่ม &quot;เพิ่มป๊อปอัพ&quot; เพื่อเริ่มต้น</p>
         </div>
       ) : (
@@ -224,43 +232,49 @@ export default function NotificationsPage() {
                     className={css.cardImage}
                   />
                 ) : (
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "#d1d5db" }}>
-                    <NotificationOutlined style={{ fontSize: 40 }} />
+                  <div className={css.noImagePlaceholder}>
+                    <BellRing size={40} />
                   </div>
                 )}
-                <span className={`${css.badge} ${item.isActive ? css.badgeActive : css.badgeInactive}`}>
-                  {item.isActive ? "แสดง" : "ซ่อน"}
-                </span>
+
+                <div className={css.badgesWrap}>
+                  <span className={css.orderBadge}>#{item.sortOrder}</span>
+                  <span className={`${css.badge} ${item.isActive ? css.badgeActive : css.badgeInactive}`}>
+                    {item.isActive ? "แสดง" : "ซ่อน"}
+                  </span>
+                </div>
               </div>
               <div className={css.cardBody}>
-                <p className={css.cardName}>{item.title || `Popup #${item.id}`}</p>
-                <p className={css.cardInfo}>
-                  <CalendarOutlined /> {formatDate(item.createdAt)} • โดย: {item.createdBy || "—"}
-                </p>
-                {item.startDate || item.endDate ? (
-                  <p className={css.cardSchedule}>
-                    <ThunderboltOutlined /> {item.startDate ? formatDate(item.startDate) : "—"} ถึง {item.endDate ? formatDate(item.endDate) : "ไม่จำกัด"}
+                <div className={css.cardContent}>
+                  <h3 className={css.cardName}>{item.title || `Popup #${item.id}`}</h3>
+                  <p className={css.cardInfo}>
+                    <Calendar size={14} /> สร้างเมื่อ: {formatDate(item.createdAt)}
                   </p>
-                ) : null}
-                <div className={css.cardStats}>
-                  {item.urlLink ? (
+                  {item.startDate || item.endDate ? (
+                    <div className={css.cardSchedule}>
+                      <Zap size={14} /> {item.startDate ? formatDate(item.startDate) : "เริ่มทันที"} — {item.endDate ? formatDate(item.endDate) : "ไม่มีสิ้นสุด"}
+                    </div>
+                  ) : null}
+
+                  {item.urlLink && (
                     <a href={item.urlLink} target="_blank" rel="noopener noreferrer" className={css.cardLink}>
-                      <LinkOutlined /> ลิงก์
+                      <Link size={14} /> {item.urlLink.replace(/^https?:\/\//, '')}
                     </a>
-                  ) : (
-                    <span className={css.noLink}>ไม่มีลิงก์</span>
                   )}
+                </div>
+
+                <div className={css.cardStats}>
                   <span className={css.clickStat}>
-                    <EyeOutlined /> {item.clickCount} คลิก
+                    <Eye size={14} /> {item.clickCount} วิว
                   </span>
                 </div>
               </div>
               <div className={css.actions}>
                 <button className={css.actionBtn} onClick={() => openEdit(item)}>
-                  <EditOutlined /> แก้ไข
+                  <Edit2 size={16} /> แก้ไข
                 </button>
                 <button className={`${css.actionBtn} ${css.deleteBtn}`} onClick={() => handleDelete(item.id)}>
-                  <DeleteOutlined /> ลบ
+                  <Trash2 size={16} /> ลบ
                 </button>
               </div>
             </div>
@@ -277,138 +291,124 @@ export default function NotificationsPage() {
                 {editingId ? "แก้ไขป๊อปอัพ" : "เพิ่มป๊อปอัพใหม่"}
               </h3>
               <button className={css.modalClose} onClick={closeModal}>
-                <CloseOutlined />
+                <X size={20} />
               </button>
             </div>
 
             <div className={css.modalBody}>
-              {/* Title */}
-              <div className={css.formGroup}>
-                <label className={css.formLabel}>ชื่อ/หมายเหตุ (สำหรับ admin)</label>
-                <input
-                  type="text"
-                  className={css.formInput}
-                  placeholder="เช่น แคมเปญ มี.ค. 2568"
-                  value={form.title}
-                  onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
-                />
-              </div>
-
-              {/* Image upload */}
-              <div className={css.formGroup}>
-                <label className={css.formLabel}>รูปภาพป๊อปอัพ *</label>
-                {form.imagePath ? (
-                  <div className={css.uploadPreview}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={form.imagePath}
-                      alt="Preview"
-                      className={css.uploadPreviewImg}
-                    />
-                    <button
-                      className={css.uploadRemove}
-                      onClick={() => setForm((prev) => ({ ...prev, imagePath: "" }))}
-                    >
-                      <CloseOutlined />
-                    </button>
-                  </div>
-                ) : (
-                  <div
-                    className={css.uploadArea}
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    <div className={css.uploadIcon}>
-                      <CloudUploadOutlined />
-                    </div>
-                    <p className={css.uploadText}>
-                      {uploading ? "กำลังอัพโหลด..." : "คลิกเพื่อเลือกรูปภาพ (JPG, PNG, WebP)"}
-                    </p>
-                    <p className={css.uploadHint}>แนะนำ: 520 x 600 px (แนวตั้ง)</p>
-                  </div>
-                )}
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handleUploadImage}
-                />
-              </div>
-
-              {/* URL Link */}
-              <div className={css.formGroup}>
-                <label className={css.formLabel}>ลิงก์ (ไม่บังคับ)</label>
-                <input
-                  type="text"
-                  className={css.formInput}
-                  placeholder="https://example.com — คลิกรูปแล้วเปิดลิงก์นี้"
-                  value={form.urlLink}
-                  onChange={(e) => setForm((prev) => ({ ...prev, urlLink: e.target.value }))}
-                />
-              </div>
-
-              {/* Sort order */}
-              <div className={css.formGroup}>
-                <label className={css.formLabel}>ลำดับแสดง (ยิ่งน้อยยิ่งแสดงก่อน)</label>
-                <input
-                  type="number"
-                  className={css.formInput}
-                  value={form.sortOrder}
-                  min={0}
-                  onChange={(e) => setForm((prev) => ({ ...prev, sortOrder: parseInt(e.target.value) || 0 }))}
-                />
-              </div>
-
-              {/* Schedule */}
-              <div className={css.formRow}>
+              {/* Left Column: Image & Preview */}
+              <div className={css.leftCol}>
                 <div className={css.formGroup}>
-                  <label className={css.formLabel}>วันเริ่มแสดง</label>
-                  <input
-                    type="date"
-                    className={css.formInput}
-                    value={form.startDate}
-                    onChange={(e) => setForm((prev) => ({ ...prev, startDate: e.target.value }))}
-                  />
-                </div>
-                <div className={css.formGroup}>
-                  <label className={css.formLabel}>วันสิ้นสุด</label>
-                  <input
-                    type="date"
-                    className={css.formInput}
-                    value={form.endDate}
-                    onChange={(e) => setForm((prev) => ({ ...prev, endDate: e.target.value }))}
-                  />
-                </div>
-              </div>
-              <p className={css.formHint}>เว้นว่างทั้งสองช่อง = แสดงตลอดเวลา</p>
-
-              {/* Active toggle */}
-              <div className={css.formGroup}>
-                <label className={css.formLabel}>สถานะ</label>
-                <div className={css.toggle}>
-                  <button
-                    type="button"
-                    className={`${css.toggleSwitch} ${form.isActive ? css.toggleOn : css.toggleOff}`}
-                    onClick={() => setForm((prev) => ({ ...prev, isActive: !prev.isActive }))}
-                  />
-                  <span className={css.toggleLabel}>
-                    {form.isActive ? "แสดง — ผู้ใช้จะเห็นป๊อปอัพนี้เมื่อเปิดเว็บ" : "ซ่อน — ไม่แสดงให้ผู้ใช้"}
-                  </span>
-                </div>
-              </div>
-
-              {/* Preview */}
-              {form.imagePath && (
-                <div className={css.formGroup}>
-                  <label className={css.formLabel}>ตัวอย่างป๊อปอัพ</label>
-                  <div className={css.previewDialog}>
-                    <div className={css.previewImgWrap}>
+                  <label className={css.formLabel}>รูปภาพป๊อปอัพ <span style={{ color: '#ef4444' }}>*</span></label>
+                  {form.imagePath ? (
+                    <div className={css.uploadPreview}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={form.imagePath} alt="Preview" className={css.previewImg} />
+                      <img
+                        src={form.imagePath}
+                        alt="Preview"
+                        className={css.uploadPreviewImg}
+                      />
+                      <button
+                        className={css.uploadRemove}
+                        onClick={() => setForm((prev) => ({ ...prev, imagePath: "" }))}
+                        title="ลบรูปภาพ"
+                      >
+                        <X size={16} />
+                      </button>
                     </div>
+                  ) : (
+                    <div
+                      className={css.uploadArea}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <UploadCloud className={css.uploadIcon} />
+                      <p className={css.uploadText}>
+                        {uploading ? "กำลังอัพโหลด..." : "คลิกเพื่อเลือกรูปภาพ"}
+                      </p>
+                      <p className={css.uploadHint}>รองรับ JPG, PNG, WebP (แนะนำ: 520 x 600 px)</p>
+                    </div>
+                  )}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handleUploadImage}
+                  />
+                </div>
+              </div>
+
+              {/* Right Column: Details & Settings */}
+              <div className={css.rightCol}>
+                <div className={css.formGroup}>
+                  <label className={css.formLabel}>ชื่อ/หมายเหตุ (สำหรับแอดมิน)</label>
+                  <input
+                    type="text"
+                    className={css.formInput}
+                    placeholder="เช่น แคมเปญต้อนรับปีใหม่ 2568"
+                    value={form.title}
+                    onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
+                  />
+                </div>
+
+                <div className={css.formGroup}>
+                  <label className={css.formLabel}>ลิงก์ปลายทาง (เมื่อผู้ใช้คลิก)</label>
+                  <input
+                    type="text"
+                    className={css.formInput}
+                    placeholder="https://example.com"
+                    value={form.urlLink}
+                    onChange={(e) => setForm((prev) => ({ ...prev, urlLink: e.target.value }))}
+                  />
+                </div>
+
+                <div className={css.formGroup}>
+                  <label className={css.formLabel}>ลำดับการแสดงผล</label>
+                  <input
+                    type="number"
+                    className={css.formInput}
+                    value={form.sortOrder}
+                    min={0}
+                    onChange={(e) => setForm((prev) => ({ ...prev, sortOrder: parseInt(e.target.value) || 0 }))}
+                  />
+                  <p className={css.formHint}>ค่าน้อยจะถูกแสดงก่อนค่ามาก</p>
+                </div>
+
+                <div className={css.formRow}>
+                  <div className={css.formGroup}>
+                    <label className={css.formLabel}>เริ่มแสดงวันที่</label>
+                    <input
+                      type="date"
+                      className={css.formInput}
+                      value={form.startDate}
+                      onChange={(e) => setForm((prev) => ({ ...prev, startDate: e.target.value }))}
+                    />
+                  </div>
+                  <div className={css.formGroup}>
+                    <label className={css.formLabel}>สิ้นสุดวันที่</label>
+                    <input
+                      type="date"
+                      className={css.formInput}
+                      value={form.endDate}
+                      onChange={(e) => setForm((prev) => ({ ...prev, endDate: e.target.value }))}
+                    />
                   </div>
                 </div>
-              )}
+                <p className={css.formHint} style={{ marginTop: '-8px', marginBottom: '8px' }}>หากเว้นว่างไว้ จะแสดงผลตลอดเวลา</p>
+
+                <div className={css.formGroup} style={{ marginTop: 'auto' }}>
+                  <label className={css.formLabel}>สถานะการเผยแพร่</label>
+                  <div className={css.toggle} onClick={() => setForm((prev) => ({ ...prev, isActive: !prev.isActive }))} style={{ cursor: 'pointer' }}>
+                    <button
+                      type="button"
+                      className={`${css.toggleSwitch} ${form.isActive ? css.toggleOn : css.toggleOff}`}
+                    />
+                    <span className={css.toggleLabel}>
+                      {form.isActive ? "แสดงผลอยู่" : "ซ่อนไว้"}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className={css.modalFooter}>
@@ -418,7 +418,7 @@ export default function NotificationsPage() {
                 onClick={handleSave}
                 disabled={saving || !form.imagePath}
               >
-                {saving ? "กำลังบันทึก..." : "บันทึก"}
+                {saving ? "กำลังบันทึก..." : "เก็บบันทึก"}
               </button>
             </div>
           </div>

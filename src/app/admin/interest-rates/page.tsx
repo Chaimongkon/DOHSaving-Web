@@ -1,12 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  PlusOutlined,
-  DeleteOutlined,
-  SaveOutlined,
-  CalendarOutlined,
-} from "@ant-design/icons";
+import { Plus, Trash2, Save, Calendar, Landmark, Coins } from "lucide-react";
 import css from "./page.module.css";
 
 interface Rate {
@@ -52,7 +47,7 @@ export default function AdminInterestRatesPage() {
         const firstDate = mapped.find((r) => r.interestDate)?.interestDate;
         if (firstDate) setGlobalDate(firstDate);
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false));
   }, []);
 
@@ -144,132 +139,173 @@ export default function AdminInterestRatesPage() {
 
   return (
     <div className={css.page}>
+      {/* ── Hero Header ── */}
       <div className={css.header}>
-        <h1 className={css.title}>จัดการอัตราดอกเบี้ย</h1>
+        <div className={css.headerTitleWrap}>
+          <div className={css.headerIcon}>
+            <Landmark size={28} />
+          </div>
+          <div>
+            <h1 className={css.title}>จัดการอัตราดอกเบี้ย</h1>
+            <p className={css.subtitle}>กำหนดอัตราดอกเบี้ยเงินฝากและเงินกู้ รวมถึงวันที่เริ่มมีผลบังคับใช้</p>
+          </div>
+        </div>
         <div className={css.headerActions}>
           <button className={css.addBtn} onClick={() => handleAdd(activeTab === "loan" ? "loan" : "deposit")}>
-            <PlusOutlined /> เพิ่มรายการ
+            <Plus size={18} /> เพิ่มอัตราใหม่
           </button>
           <button className={css.saveBtn} onClick={handleSave} disabled={saving}>
-            <SaveOutlined /> {saving ? "กำลังบันทึก..." : "บันทึกทั้งหมด"}
+            <Save size={18} /> {saving ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
           </button>
         </div>
       </div>
 
-      {/* Global date */}
-      <div className={css.dateRow}>
-        <CalendarOutlined />
-        <span className={css.dateLabel}>วันที่มีผล:</span>
-        <input
-          type="date"
-          className={css.dateInput}
-          value={globalDate}
-          onChange={(e) => setGlobalDate(e.target.value)}
-        />
-      </div>
-
-      {/* Tabs */}
-      <div className={css.tabs}>
-        {([
-          { key: "all", label: "ทั้งหมด" },
-          { key: "deposit", label: "เงินฝาก" },
-          { key: "loan", label: "เงินกู้" },
-        ] as { key: Tab; label: string }[]).map((t) => (
-          <button
-            key={t.key}
-            className={`${css.tab} ${activeTab === t.key ? css.tabActive : ""}`}
-            onClick={() => setActiveTab(t.key)}
-          >
-            {t.label} ({rates.filter((r) => t.key === "all" || r.interestType === t.key).length})
-          </button>
-        ))}
-      </div>
-
-      {/* Table */}
-      <div className={css.rateTable}>
-        <div className={css.rateTableHead}>
-          <span>ชื่อ / เงื่อนไข</span>
-          <span>ประเภท</span>
-          <span>ดอกเบี้ย %</span>
-          <span>เรท 2 %</span>
-          <span>สถานะ</span>
-          <span></span>
+      {/* ── Settings Bar (Date & Tabs) ── */}
+      <div className={css.settingsBar}>
+        <div className={css.dateRow}>
+          <Calendar size={18} color="#0284c7" />
+          <span className={css.dateLabel}>วันที่เริ่มมีผลบังคับใช้:</span>
+          <input
+            type="date"
+            className={css.dateInput}
+            value={globalDate}
+            onChange={(e) => setGlobalDate(e.target.value)}
+          />
         </div>
 
-        {filtered.length === 0 ? (
-          <div className={css.empty}>ยังไม่มีข้อมูล — กดปุ่ม &quot;เพิ่มรายการ&quot;</div>
-        ) : (
-          filtered.map((rate, _fi) => {
-            const realIndex = rates.indexOf(rate);
-            return (
-              <div key={rate.id || `new-${_fi}`} className={css.rateRow}>
-                {/* Name + Conditions */}
-                <div>
-                  <input
-                    className={css.rateInput}
-                    placeholder="ชื่อ เช่น ออมทรัพย์, เงินกู้สามัญ"
-                    value={rate.name}
-                    onChange={(e) => update(realIndex, "name", e.target.value)}
-                  />
-                  <input
-                    className={css.rateInput}
-                    placeholder="เงื่อนไข (ถ้ามี)"
-                    value={rate.conditions}
-                    onChange={(e) => update(realIndex, "conditions", e.target.value)}
-                    style={{ marginTop: 4, fontSize: 11, color: "#9ca3af" }}
-                  />
-                </div>
+        <div className={css.tabs}>
+          {(
+            [
+              { key: "all", label: "ทั้งหมด", icon: null },
+              { key: "deposit", label: "เงินฝาก", icon: "/images/financial-icons/deposit.png" },
+              { key: "loan", label: "เงินกู้", icon: "/images/financial-icons/loan.png" },
+            ] as const
+          ).map((t) => (
+            <button
+              key={t.key}
+              className={`${css.tab} ${activeTab === t.key ? css.tabActive : ""}`}
+              onClick={() => setActiveTab(t.key)}
+            >
+              {t.icon && <img src={t.icon} alt={t.label} />}
+              {t.label} ({rates.filter((r) => t.key === "all" || r.interestType === t.key).length})
+            </button>
+          ))}
+        </div>
+      </div>
 
-                {/* Type */}
-                <select
-                  className={css.rateInput}
-                  value={rate.interestType}
-                  onChange={(e) => update(realIndex, "interestType", e.target.value)}
-                >
-                  <option value="deposit">เงินฝาก</option>
-                  <option value="loan">เงินกู้</option>
-                </select>
+      {/* ── Rate Table ── */}
+      <div className={css.tableContainer}>
+        <table className={css.table}>
+          <thead>
+            <tr>
+              <th className={css.th}>ชื่อรายการ / เงื่อนไข</th>
+              <th className={css.th} style={{ width: "15%" }}>ประเภท</th>
+              <th className={css.th} style={{ width: "15%", textAlign: "right" }}>ดอกเบี้ย (%)</th>
+              <th className={css.th} style={{ width: "15%", textAlign: "right" }}>เรทปี 3 (%)</th>
+              <th className={css.th} style={{ width: "10%", textAlign: "center" }}>สถานะ</th>
+              <th className={css.th} style={{ width: "8%", textAlign: "center" }}>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan={6}>
+                  <div className={css.emptyState}>
+                    <Coins size={48} color="#cbd5e1" style={{ marginBottom: 12 }} />
+                    <p style={{ margin: 0 }}>ยังไม่มีข้อมูลอัตราดอกเบี้ย — กดปุ่ม "เพิ่มอัตราใหม่"</p>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              filtered.map((rate, _fi) => {
+                const realIndex = rates.indexOf(rate);
+                return (
+                  <tr key={rate.id || `new-${_fi}`} className={`${css.tableRow} ${rate._new ? css.tableRowNew : ""}`}>
+                    {/* Name + Conditions */}
+                    <td className={css.td}>
+                      <input
+                        className={css.rateInput}
+                        placeholder="ชื่อรายการ เช่น ออมทรัพย์, เงินกู้สามัญ"
+                        value={rate.name}
+                        onChange={(e) => update(realIndex, "name", e.target.value)}
+                        style={{ fontWeight: 600, color: "#1e293b" }}
+                      />
+                      <input
+                        className={css.rateInput}
+                        placeholder="เงื่อนไข (ถ้ามี) เช่น ตั้งแต่บาทแรก"
+                        value={rate.conditions}
+                        onChange={(e) => update(realIndex, "conditions", e.target.value)}
+                        style={{ marginTop: 4, fontSize: 12, color: "#64748b", background: "#f8fafc" }}
+                      />
+                    </td>
 
-                {/* Rate 1 */}
-                <div>
-                  <input
-                    className={css.rateInputSmall}
-                    placeholder="0.00"
-                    value={rate.interestRate}
-                    onChange={(e) => update(realIndex, "interestRate", e.target.value)}
-                  />
-                  {rate.interestRateDual && (
-                    <div className={css.dualLabel}>ปีแรก</div>
-                  )}
-                </div>
+                    {/* Type */}
+                    <td className={css.td}>
+                      <select
+                        className={css.rateInput}
+                        value={rate.interestType}
+                        onChange={(e) => update(realIndex, "interestType", e.target.value)}
+                        style={{ background: "#f8fafc", fontWeight: 600, color: rate.interestType === 'deposit' ? '#059669' : '#0284c7' }}
+                      >
+                        <option value="deposit">เงินฝาก</option>
+                        <option value="loan">เงินกู้</option>
+                      </select>
+                    </td>
 
-                {/* Rate 2 (dual) */}
-                <div>
-                  <input
-                    className={css.rateInputSmall}
-                    placeholder="—"
-                    value={rate.interestRateDual}
-                    onChange={(e) => update(realIndex, "interestRateDual", e.target.value)}
-                  />
-                  {rate.interestRateDual && (
-                    <div className={css.dualLabel}>ตั้งแต่ปีที่ 3</div>
-                  )}
-                </div>
+                    {/* Rate 1 */}
+                    <td className={css.td}>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                        <input
+                          className={css.rateInputSmall}
+                          placeholder="0.00"
+                          value={rate.interestRate}
+                          onChange={(e) => update(realIndex, "interestRate", e.target.value)}
+                        />
+                        {rate.interestRateDual && (
+                          <span className={css.dualLabel}>ปีแรก</span>
+                        )}
+                      </div>
+                    </td>
 
-                {/* Active toggle */}
-                <button
-                  className={`${css.toggleBtn} ${rate.isActive ? css.toggleOn : css.toggleOff}`}
-                  onClick={() => update(realIndex, "isActive", !rate.isActive)}
-                />
+                    {/* Rate 2 */}
+                    <td className={css.td}>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                        <input
+                          className={css.rateInputSmall}
+                          placeholder="—"
+                          value={rate.interestRateDual}
+                          onChange={(e) => update(realIndex, "interestRateDual", e.target.value)}
+                        />
+                        {rate.interestRateDual && (
+                          <span className={css.dualLabel}>ตั้งแต่ปีที่ 3</span>
+                        )}
+                      </div>
+                    </td>
 
-                {/* Delete */}
-                <button className={css.deleteBtn} onClick={() => handleDelete(realIndex)}>
-                  <DeleteOutlined />
-                </button>
-              </div>
-            );
-          })
-        )}
+                    {/* Active Toggle */}
+                    <td className={css.td} style={{ textAlign: "center" }}>
+                      <div className={css.toggleWrap}>
+                        <button
+                          className={`${css.toggleBtn} ${rate.isActive ? css.toggleOn : css.toggleOff}`}
+                          onClick={() => update(realIndex, "isActive", !rate.isActive)}
+                          title={rate.isActive ? "เปิดใช้งาน" : "ปิดใช้งาน"}
+                          type="button"
+                        />
+                      </div>
+                    </td>
+
+                    {/* Delete */}
+                    <td className={css.td} style={{ textAlign: "center" }}>
+                      <button className={css.deleteBtn} onClick={() => handleDelete(realIndex)} title="ลบรายการ">
+                        <Trash2 size={18} />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
       </div>
 
       {toast && <div className={css.toast}>{toast}</div>}

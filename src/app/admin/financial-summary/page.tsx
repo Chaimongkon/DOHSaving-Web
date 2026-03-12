@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { PlusOutlined, EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, FileOutlined, UploadOutlined, FilePdfOutlined, LoadingOutlined } from "@ant-design/icons";
+import { Plus, Edit2, Trash2, X, UploadCloud, Link as LinkIcon, Download, FileText, CheckCircle, XCircle, LayoutGrid, Settings2, ChevronDown } from "lucide-react";
+import css from "./page.module.css";
 
 const MONTHS_SHORT = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
 const MONTHS_FULL = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
@@ -133,118 +134,234 @@ export default function AdminFinancialSummaryPage() {
     load();
   };
 
-  const inputStyle: React.CSSProperties = { display: "block", width: "100%", padding: "8px 12px", border: "1px solid #d1d5db", borderRadius: 8, marginTop: 4, fontSize: 13 };
-  const labelStyle: React.CSSProperties = { fontSize: 12, color: "#6b7280" };
+  // Helper func to format number with commas
+  const formatNumberForInput = (val: string | number | null | undefined) => {
+    if (!val) return "";
+    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
   return (
-    <div style={{ padding: 24 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
-        <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>รายการย่อแสดงสินทรัพย์และหนี้สิน</h1>
-          <p style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>เลือกเดือน → อัปโหลด PDF → บันทึก</p>
+    <div className={css.container}>
+      {/* ── Hero Header ── */}
+      <div className={css.header}>
+        <div className={css.headerTitleWrap}>
+          <div className={css.headerIcon}>
+            <LayoutGrid size={28} />
+          </div>
+          <div>
+            <h1 className={css.title}>รายการย่อแสดงสินทรัพย์และหนี้สิน</h1>
+            <p className={css.subtitle}>จัดการภาพรวมงบการเงิน อัปโหลดไฟล์ PDF รายเดือน และข้อมูลสรุปตัวเลขสถานะการเงิน</p>
+          </div>
         </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <select value={filterYear} onChange={(e) => setFilterYear(Number(e.target.value))} style={{ padding: "8px 12px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 13, fontWeight: 600 }}>
+
+        <div className={css.headerControls}>
+          <select value={filterYear} onChange={(e) => setFilterYear(Number(e.target.value))} className={css.filterSelect}>
             {years.map((y) => <option key={y} value={y}>ปี พ.ศ. {y}</option>)}
           </select>
-          <button onClick={() => { setEditing({ ...empty, year: filterYear }); setIsNew(true); }} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#E8652B", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontWeight: 600, fontSize: 13 }}>
-            <PlusOutlined /> เพิ่มเดือน
+          <button onClick={() => { setEditing({ ...empty, year: filterYear }); setIsNew(true); }} className={css.addBtn}>
+            <Plus size={18} /> เพิ่มเดือนใหม่
           </button>
         </div>
       </div>
 
-      {/* ── Edit / Create Form ── */}
+      {/* ── Edit / Create Modal ── */}
       {editing && (
-        <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 20, marginBottom: 20 }}>
-          <h3 style={{ margin: "0 0 16px", fontSize: 15, fontWeight: 700 }}>{isNew ? "เพิ่มรายการใหม่" : "แก้ไขรายการ"}</h3>
+        <div className={css.modalOverlay} onClick={() => { setEditing(null); setIsNew(false); }}>
+          <div className={css.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={css.modalHeader}>
+              <h3 className={css.modalTitle}>{isNew ? "เพิ่มข้อมูลรายการย่อแสดงสินทรัพย์และหนี้สินใหม่" : "แก้ไขข้อมูลรายการย่อแสดงสินทรัพย์และหนี้สิน"}</h3>
+              <button className={css.modalClose} onClick={() => { setEditing(null); setIsNew(false); }} title="ปิดหน้าต่าง">
+                <X size={20} />
+              </button>
+            </div>
 
-          {/* Row 1: Year + Month */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, maxWidth: 400 }}>
-            <label style={labelStyle}>ปี พ.ศ.
-              <input type="number" value={editing.year} onChange={(e) => setEditing({ ...editing, year: parseInt(e.target.value) || currentBE })} style={inputStyle} />
-            </label>
-            <label style={labelStyle}>เดือน
-              <select value={editing.month} onChange={(e) => setEditing({ ...editing, month: parseInt(e.target.value) })} style={inputStyle}>
-                {MONTHS_FULL.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
-              </select>
-            </label>
-          </div>
+            <div className={css.modalBody}>
+              {/* Left Column: PDF Upload */}
+              <div className={css.leftCol}>
+                <div className={css.formGroup}>
+                  <label className={css.formLabel}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FileText size={16} color="#0369a1" /> ไฟล์ PDF รายงาน</span>
+                  </label>
+                  <p className={css.formHint} style={{ marginBottom: '8px', marginTop: 0 }}>
+                    อัปโหลดไฟล์เอกสาร (PDF) รายการย่อแสดงสินทรัพย์และหนี้สินประจำเดือน
+                  </p>
 
-          {/* Auto-generated title preview */}
-          <p style={{ fontSize: 11, color: "#6b7280", margin: "8px 0 0", background: "#f9fafb", padding: "6px 10px", borderRadius: 6, display: "inline-block" }}>
-            ชื่อรายการ: <strong style={{ color: "#374151" }}>{autoTitle(editing.month, editing.year)}</strong>
-          </p>
-
-          {/* Row 2: PDF Upload */}
-          <div style={{ marginTop: 16, padding: 16, background: "#f9fafb", borderRadius: 10, border: "1px dashed #d1d5db" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 13, fontWeight: 700, color: "#374151", margin: "0 0 4px" }}>
-                  <FilePdfOutlined style={{ color: "#dc2626", marginRight: 6 }} />
-                  ไฟล์ PDF รายงาน
-                </p>
-                {editing.fileUrl ? (
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
-                    <span style={{ fontSize: 12, color: "#16a34a", fontWeight: 600 }}>✓ อัปโหลดแล้ว</span>
-                    <a href={editing.fileUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: "#0369a1", textDecoration: "underline" }}>ดูไฟล์</a>
-                    <button onClick={() => setEditing({ ...editing, fileUrl: "" })} style={{ fontSize: 11, color: "#dc2626", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>ลบไฟล์</button>
-                  </div>
-                ) : (
-                  <p style={{ fontSize: 11, color: "#9ca3af", margin: "4px 0 0" }}>รองรับ PDF และรูปภาพ ขนาดไม่เกิน 10MB</p>
-                )}
+                  {editing.fileUrl ? (
+                    <div className={css.uploadedFile}>
+                      <img src="/images/pdf-placeholder.png" alt="PDF" className={css.pdfIconLarge} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                      <span style={{ fontSize: '14px', color: '#16a34a', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <CheckCircle size={16} /> อัปโหลดไฟล์เรียบร้อย
+                      </span>
+                      <div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
+                        <a href={editing.fileUrl} target="_blank" rel="noopener noreferrer" className={css.pdfBtn}>
+                          <Download size={14} /> เปิดดูไฟล์
+                        </a>
+                        <button onClick={() => setEditing({ ...editing, fileUrl: "" })} style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 600, transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <Trash2 size={14} /> ลบไฟล์ออก
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className={css.uploadSection} onClick={() => fileInputRef.current?.click()}>
+                      <UploadCloud size={48} className={css.uploadIcon} />
+                      <p style={{ fontSize: '15px', fontWeight: 600, color: '#334155', margin: '0 0 4px 0' }}>
+                        {uploading ? "กำลังอัพโหลด..." : "คลิกหรือลากไฟล์ PDF มาวางที่นี่"}
+                      </p>
+                      <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0 }}>รองรับไฟล์ .PDF หรือภาพ JPG/PNG ขนาดไม่เกิน 10MB</p>
+                    </div>
+                  )}
+                  <input ref={fileInputRef} type="file" accept=".pdf,image/*" onChange={handleUpload} style={{ display: "none" }} />
+                </div>
               </div>
-              <div>
-                <input ref={fileInputRef} type="file" accept=".pdf,image/*" onChange={handleUpload} style={{ display: "none" }} />
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={uploading}
-                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 20px", background: uploading ? "#d1d5db" : "#0369a1", color: "#fff", border: "none", borderRadius: 8, cursor: uploading ? "not-allowed" : "pointer", fontWeight: 600, fontSize: 13 }}
-                >
-                  {uploading ? <><LoadingOutlined /> กำลังอัปโหลด...</> : <><UploadOutlined /> เลือกไฟล์ PDF</>}
-                </button>
+
+              {/* Right Column: Information & Manual Data Override */}
+              <div className={css.rightCol}>
+                <div className={css.formRow}>
+                  <div className={css.formGroup}>
+                    <label className={css.formLabel}>เลือกเดือน</label>
+                    <select className={css.formInput} value={editing.month} onChange={(e) => setEditing({ ...editing, month: parseInt(e.target.value) })}>
+                      {MONTHS_FULL.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
+                    </select>
+                  </div>
+                  <div className={css.formGroup}>
+                    <label className={css.formLabel}>ปี พ.ศ.</label>
+                    <input className={css.formInput} type="number" value={editing.year} onChange={(e) => setEditing({ ...editing, year: parseInt(e.target.value) || currentBE })} />
+                  </div>
+                </div>
+
+                <div className={css.dateTitleBox}>
+                  ระบบจะสร้างชื่อรายการอัตโนมัติ: <br />
+                  <strong>{autoTitle(editing.month, editing.year)}</strong>
+                </div>
+
+                <details className={css.advancedToggle}>
+                  <summary className={css.advancedSummary}>
+                    <Settings2 size={16} color="#0284c7" />
+                    การตั้งค่าขั้นสูง (Advanced Settings)
+                    <ChevronDown size={16} color="#94a3b8" style={{ marginLeft: "auto" }} />
+                  </summary>
+
+                  <div className={css.advancedContent}>
+                    <div>
+                      <div className={css.statHeader}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="/images/financial-icons/assets.png" alt="Assets" />
+                        <div>
+                          <h4 className={css.statHeaderTitle}>หมวดสินทรัพย์ (Assets)</h4>
+                          <p className={css.statHeaderSubtitle}>กรณีต้องการให้แสดงตัวเลขสรุปในหน้าเว็บ (ไม่บังคับ)</p>
+                        </div>
+                      </div>
+                      <div className={css.formGroup}>
+                        <label className={css.formLabel}>รวมสินทรัพย์ (บาท)</label>
+                        <div className={css.currencyWrap}>
+                          <span className={css.currencySymbol}>฿</span>
+                          <input className={css.formInputCurrency} placeholder="เช่น 1,234,567.89" type="text" value={editing.totalAssets || ""} onChange={(e) => setEditing({ ...editing, totalAssets: e.target.value })} />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style={{ marginTop: '24px' }}>
+                      <div className={css.statHeader}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="/images/financial-icons/liabilities.png" alt="Liabilities" />
+                        <div>
+                          <h4 className={css.statHeaderTitle}>หมวดหนี้สินและทุน (Liabilities & Equity)</h4>
+                          <p className={css.statHeaderSubtitle}>กรณีต้องการให้แสดงตัวเลขสรุปในหน้าเว็บ (ไม่บังคับ)</p>
+                        </div>
+                      </div>
+                      <div className={css.formRow}>
+                        <div className={css.formGroup}>
+                          <label className={css.formLabel}>รวมหนี้สิน</label>
+                          <div className={css.currencyWrap}>
+                            <span className={css.currencySymbol}>฿</span>
+                            <input className={css.formInputCurrency} placeholder="0.00" type="text" value={editing.totalLiabilities || ""} onChange={(e) => setEditing({ ...editing, totalLiabilities: e.target.value })} />
+                          </div>
+                        </div>
+                        <div className={css.formGroup}>
+                          <label className={css.formLabel}>รวมทุน</label>
+                          <div className={css.currencyWrap}>
+                            <span className={css.currencySymbol}>฿</span>
+                            <input className={css.formInputCurrency} placeholder="0.00" type="text" value={editing.totalEquity || ""} onChange={(e) => setEditing({ ...editing, totalEquity: e.target.value })} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+
               </div>
             </div>
-          </div>
 
-          {/* Actions */}
-          <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
-            <button onClick={save} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 20px", background: "#16a34a", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontWeight: 600, fontSize: 13 }}><SaveOutlined /> บันทึก</button>
-            <button onClick={() => { setEditing(null); setIsNew(false); }} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 20px", background: "#f3f4f6", color: "#374151", border: "1px solid #d1d5db", borderRadius: 8, cursor: "pointer", fontSize: 13 }}><CloseOutlined /> ยกเลิก</button>
+            <div className={css.modalFooter}>
+              <button className={css.cancelBtn} onClick={() => { setEditing(null); setIsNew(false); }}>
+                ยกเลิกการเปลี่ยนแปลง
+              </button>
+              <button className={css.saveBtn} onClick={save}>
+                บันทึกบัญชีรายการย่อ
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* ── Table ── */}
-      <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      {/* ── Data Table ── */}
+      <div className={css.tableContainer}>
+        <table className={css.table}>
           <thead>
-            <tr style={{ background: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
-              <th style={{ padding: "10px 16px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>เดือน</th>
-              <th style={{ padding: "10px 16px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>ชื่อรายการ</th>
-              <th style={{ padding: "10px 16px", textAlign: "center", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>ไฟล์ PDF</th>
-              <th style={{ padding: "10px 16px", textAlign: "center", fontSize: 11, fontWeight: 700, color: "#6b7280" }}>จัดการ</th>
+            <tr>
+              <th className={css.th}>เดือน / ปี</th>
+              <th className={css.th}>ชื่อรายการ (อ้างอิงรายเดือน)</th>
+              <th className={css.th} style={{ textAlign: "center" }}>เอกสารแนบ</th>
+              <th className={css.th} style={{ textAlign: "center" }}>จัดการ</th>
             </tr>
           </thead>
           <tbody>
             {filtered.sort((a, b) => a.month - b.month).map((item) => (
-              <tr key={item.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
-                <td style={{ padding: "10px 16px", fontWeight: 600, fontSize: 13 }}>{MONTHS_SHORT[item.month - 1]} {item.year}</td>
-                <td style={{ padding: "10px 16px", fontSize: 12, color: "#374151" }}>{item.title || autoTitle(item.month, item.year)}</td>
-                <td style={{ padding: "10px 16px", textAlign: "center" }}>
-                  {item.fileUrl ? (
-                    <a href={item.fileUrl} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 10px", background: "#eff6ff", borderRadius: 6, color: "#0369a1", fontSize: 11, fontWeight: 600, textDecoration: "none" }}>
-                      <FilePdfOutlined /> ดู PDF
-                    </a>
-                  ) : <span style={{ color: "#d1d5db", fontSize: 12 }}><FileOutlined /> ยังไม่มี</span>}
+              <tr key={item.id} className={css.tableRow}>
+                <td className={css.td} style={{ width: "15%" }}>
+                  <span className={css.monthBadge}>
+                    {MONTHS_SHORT[item.month - 1]} {item.year}
+                  </span>
                 </td>
-                <td style={{ padding: "10px 16px", textAlign: "center" }}>
-                  <button onClick={() => { setEditing({ ...item, totalAssets: item.totalAssets?.toString() || "", totalLiabilities: item.totalLiabilities?.toString() || "", totalEquity: item.totalEquity?.toString() || "", totalMembers: item.totalMembers?.toString() || "" }); setIsNew(false); }} style={{ background: "none", border: "none", color: "#0369a1", cursor: "pointer", fontSize: 15, marginRight: 8 }} title="แก้ไข"><EditOutlined /></button>
-                  <button onClick={() => item.id && remove(item.id)} style={{ background: "none", border: "none", color: "#dc2626", cursor: "pointer", fontSize: 15 }} title="ลบ"><DeleteOutlined /></button>
+                <td className={css.td} style={{ width: "45%" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ width: "40px", height: "40px", background: "#f1f5f9", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", color: "#64748b" }}>
+                      <FileText size={20} />
+                    </div>
+                    <p className={css.itemTitle}>{item.title || autoTitle(item.month, item.year)}</p>
+                  </div>
+                </td>
+                <td className={css.td} style={{ textAlign: "center", width: "20%" }}>
+                  {item.fileUrl ? (
+                    <a href={item.fileUrl} target="_blank" rel="noopener noreferrer" className={css.pdfBtn}>
+                      <FileText size={16} /> โหลด PDF
+                    </a>
+                  ) : <span className={css.noPdf}><XCircle size={16} /> ไม่มีไฟล์แนบ</span>}
+                </td>
+                <td className={css.td} style={{ textAlign: "center", width: "20%" }}>
+                  <div className={css.actions}>
+                    <button className={`${css.actionIconBtn} ${css.editBtn}`} onClick={() => { setEditing({ ...item, totalAssets: item.totalAssets?.toString() || "", totalLiabilities: item.totalLiabilities?.toString() || "", totalEquity: item.totalEquity?.toString() || "", totalMembers: item.totalMembers?.toString() || "" }); setIsNew(false); }} title="แก้ไขข้อมูลตัวเลข/PDF">
+                      <Edit2 size={18} />
+                    </button>
+                    <button className={`${css.actionIconBtn} ${css.deleteBtn}`} onClick={() => item.id && remove(item.id)} title="ลบรายการนี้ทิ้ง">
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
             {filtered.length === 0 && (
-              <tr><td colSpan={4} style={{ padding: 40, textAlign: "center", color: "#9ca3af", fontSize: 13 }}>ยังไม่มีข้อมูลปี พ.ศ. {filterYear}</td></tr>
+              <tr>
+                <td colSpan={4} className={css.emptyState}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', padding: '40px 0' }}>
+                    <LayoutGrid size={48} color="#cbd5e1" />
+                    <p style={{ margin: 0, fontSize: "15px", color: "#64748b" }}>ไม่มีรายการย่อแสดงสินทรัพย์และหนี้สิน สำหรับปี พ.ศ. {filterYear}</p>
+                    <button onClick={() => { setEditing({ ...empty, year: filterYear }); setIsNew(true); }} className={css.addBtn} style={{ marginTop: "8px" }}>
+                      <Plus size={16} /> เพิ่มรายการแรกของปีนี้
+                    </button>
+                  </div>
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

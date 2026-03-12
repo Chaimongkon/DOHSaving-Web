@@ -2,14 +2,17 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  CloseOutlined,
-  CloudUploadOutlined,
-  PictureOutlined,
-  LinkOutlined,
-} from "@ant-design/icons";
+  Plus,
+  Edit2,
+  Trash2,
+  X,
+  CloudUpload,
+  Image as ImageIcon,
+  Link as LinkIcon,
+  CheckCircle2,
+  AlertCircle,
+  LayoutTemplate
+} from "lucide-react";
 import css from "./page.module.css";
 
 interface Slide {
@@ -40,12 +43,10 @@ interface SlideForm {
 }
 
 const gradientPresets = [
-  { label: "ไม่ใช้", value: "" },
-  { label: "น้ำเงินเข้ม", value: "linear-gradient(135deg, rgba(15,29,54,0.85) 0%, rgba(26,58,92,0.75) 40%, rgba(232,101,43,0.6) 100%)" },
-  { label: "น้ำเงิน-ส้ม", value: "linear-gradient(135deg, rgba(26,58,92,0.85) 0%, rgba(15,29,54,0.8) 50%, rgba(45,24,16,0.7) 100%)" },
-  { label: "ส้ม-น้ำเงิน", value: "linear-gradient(135deg, rgba(45,24,16,0.85) 0%, rgba(232,101,43,0.7) 40%, rgba(26,58,92,0.8) 100%)" },
-  { label: "ขาวโปร่ง", value: "linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.2) 100%)" },
-  { label: "ดำโปร่ง", value: "linear-gradient(to right, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)" },
+  { label: "ไม่มี", value: "" },
+  { label: "Dark Blue", value: "linear-gradient(135deg, rgba(15,29,54,0.85) 0%, rgba(26,58,92,0.7) 100%)" },
+  { label: "Blue Orange", value: "linear-gradient(135deg, rgba(26,58,92,0.85) 0%, rgba(232,101,43,0.7) 100%)" },
+  { label: "Dark Fade", value: "linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)" },
 ];
 
 const defaultForm: SlideForm = {
@@ -54,7 +55,7 @@ const defaultForm: SlideForm = {
   title: "",
   subtitle: "",
   description: "",
-  bgGradient: "linear-gradient(135deg, rgba(15,29,54,0.85) 0%, rgba(26,58,92,0.75) 40%, rgba(232,101,43,0.6) 100%)",
+  bgGradient: "linear-gradient(135deg, rgba(15,29,54,0.85) 0%, rgba(26,58,92,0.7) 100%)",
   ctaText: "",
   sortOrder: 0,
   isActive: true,
@@ -114,8 +115,10 @@ export default function SlidesPage() {
 
   const closeModal = () => {
     setModalOpen(false);
-    setEditingId(null);
-    setForm(defaultForm);
+    setTimeout(() => {
+      setEditingId(null);
+      setForm(defaultForm);
+    }, 200); // wait for exit animation
   };
 
   // Upload image
@@ -137,10 +140,10 @@ export default function SlidesPage() {
       if (res.ok) {
         setForm((prev) => ({ ...prev, imagePath: data.url }));
       } else {
-        alert(data.error || "อัพโหลดไม่สำเร็จ");
+        alert(data.error || "อัปโหลดไม่สำเร็จ");
       }
     } catch {
-      alert("อัพโหลดไม่สำเร็จ");
+      alert("อัปโหลดไม่สำเร็จ");
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -150,7 +153,7 @@ export default function SlidesPage() {
   // Save (create or update)
   const handleSave = async () => {
     if (!form.imagePath) {
-      alert("กรุณาอัพโหลดรูปภาพ");
+      alert("กรุณาอัปโหลดรูปภาพ");
       return;
     }
 
@@ -183,7 +186,7 @@ export default function SlidesPage() {
 
   // Delete
   const handleDelete = async (id: number) => {
-    if (!confirm("ต้องการลบสไลด์นี้?")) return;
+    if (!confirm("ลบสไลด์นี้? การกระทำนี้ไม่สามารถย้อนกลับได้")) return;
 
     try {
       const res = await fetch(`/api/admin/slides/${id}`, { method: "DELETE" });
@@ -195,34 +198,48 @@ export default function SlidesPage() {
     }
   };
 
-  // Format date
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString("th-TH", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  };
-
   if (loading) {
-    return <div className={css.loading}>กำลังโหลด...</div>;
+    return (
+      <div className={css.loadingContainer}>
+        <div className={css.loader}></div>
+        <p>กำลังโหลดข้อมูล...</p>
+      </div>
+    );
   }
 
   return (
-    <div>
+    <div className={css.container}>
       {/* Header */}
       <div className={css.header}>
-        <h1 className={css.title}>จัดการสไลด์หน้าแรก</h1>
+        <div className={css.headerTitleWrap}>
+          <div className={css.headerIcon}>
+            <LayoutTemplate size={24} />
+          </div>
+          <div>
+            <h1 className={css.title}>จัดการสไลด์โชว์</h1>
+            <p className={css.subtitle}>
+              ปรับแต่งรูปภาพและแบนเนอร์ต่างๆ บนหน้าแรกของเว็บไซต์
+            </p>
+          </div>
+        </div>
         <button className={css.addBtn} onClick={openCreate}>
-          <PlusOutlined /> เพิ่มสไลด์
+          <Plus size={18} />
+          <span>เพิ่มสไลด์</span>
         </button>
       </div>
 
       {/* Slide grid */}
       {slides.length === 0 ? (
-        <div className={css.empty}>
-          <div className={css.emptyIcon}><PictureOutlined /></div>
-          <p className={css.emptyText}>ยังไม่มีสไลด์ — กดปุ่ม &quot;เพิ่มสไลด์&quot; เพื่อเริ่มต้น</p>
+        <div className={css.emptyState}>
+          <div className={css.emptyIconWrap}>
+            <ImageIcon size={48} className={css.emptyIcon} />
+            <div className={css.emptyIconBg} />
+          </div>
+          <h3 className={css.emptyTitle}>คุณยังไม่มีสไลด์ในระบบ</h3>
+          <p className={css.emptyText}>เพิ่มสไลด์ใหม่เพื่อทำให้เว็บไซต์น่าสนใจขึ้น</p>
+          <button className={css.emptyBtn} onClick={openCreate}>
+            <Plus size={18} /> เพิ่มสไลด์ใหม่
+          </button>
         </div>
       ) : (
         <div className={css.grid}>
@@ -236,237 +253,271 @@ export default function SlidesPage() {
                     className={css.slideImage}
                   />
                 ) : (
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "#d1d5db" }}>
-                    <PictureOutlined style={{ fontSize: 40 }} />
+                  <div className={css.noImagePlaceholder}>
+                    <ImageIcon size={32} />
                   </div>
                 )}
-                <span className={`${css.badge} ${slide.isActive ? css.badgeActive : css.badgeInactive}`}>
-                  {slide.isActive ? "แสดง" : "ซ่อน"}
-                </span>
-                <span className={css.orderBadge}>{slide.sortOrder}</span>
+
+                <div className={css.badgesWrap}>
+                  <div className={css.orderBadge}>#{slide.sortOrder}</div>
+                  <div className={`${css.statusBadge} ${slide.isActive ? css.statusActive : css.statusInactive}`}>
+                    {slide.isActive ? <CheckCircle2 size={12} /> : <AlertCircle size={12} />}
+                    {slide.isActive ? "แสดงผล" : "ซ่อน"}
+                  </div>
+                </div>
               </div>
+
               <div className={css.cardBody}>
-                {slide.title && <p className={css.cardTitle}>{slide.title}</p>}
-                <p className={css.cardUrl}>
-                  <LinkOutlined /> {slide.urlLink || "ไม่มีลิงก์"}
-                </p>
-                <p className={css.cardMeta}>
-                  อัพเดท: {formatDate(slide.updatedAt)} • โดย: {slide.createdBy || "—"}
-                </p>
-              </div>
-              <div className={css.actions}>
-                <button className={css.actionBtn} onClick={() => openEdit(slide)}>
-                  <EditOutlined /> แก้ไข
-                </button>
-                <button className={`${css.actionBtn} ${css.deleteBtn}`} onClick={() => handleDelete(slide.id)}>
-                  <DeleteOutlined /> ลบ
-                </button>
+                <div className={css.cardContent}>
+                  <h3 className={css.cardTitle} title={slide.title || "ไม่มีหัวข้อ"}>
+                    {slide.title || "ไม่มีหัวข้อ (แสดงรูปภาพอย่างเดียว)"}
+                  </h3>
+                  {slide.urlLink && (
+                    <div className={css.cardUrl} title={slide.urlLink}>
+                      <LinkIcon size={12} />
+                      <span>{slide.urlLink}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className={css.cardFooter}>
+                  <div className={css.actions}>
+                    <button
+                      className={css.actionBtnEdit}
+                      onClick={() => openEdit(slide)}
+                      title="แก้ไข"
+                    >
+                      <Edit2 size={16} /> แก้ไข
+                    </button>
+                    <button
+                      className={css.actionBtnDelete}
+                      onClick={() => handleDelete(slide.id)}
+                      title="ลบ"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Modal */}
+      {/* Compact Two-Column Modal */}
       {modalOpen && (
-        <div className={css.modalOverlay} onClick={closeModal}>
-          <div className={css.modal} onClick={(e) => e.stopPropagation()}>
+        <div className={`${css.modalOverlay} ${modalOpen ? css.modalOverlayEnter : ''}`} onClick={closeModal}>
+          <div className={`${css.modal} ${modalOpen ? css.modalEnter : ''}`} onClick={(e) => e.stopPropagation()}>
             <div className={css.modalHeader}>
-              <h3 className={css.modalTitle}>
-                {editingId ? "แก้ไขสไลด์" : "เพิ่มสไลด์ใหม่"}
-              </h3>
+              <div>
+                <h3 className={css.modalTitle}>
+                  {editingId ? "แก้ไขสไลด์โชว์" : "เพิ่มสไลด์โชว์ใหม่"}
+                </h3>
+              </div>
               <button className={css.modalClose} onClick={closeModal}>
-                <CloseOutlined />
+                <X size={18} />
               </button>
             </div>
 
             <div className={css.modalBody}>
-              {/* Image upload */}
-              <div className={css.formGroup}>
-                <label className={css.formLabel}>รูปภาพ *</label>
-                {form.imagePath ? (
-                  <div className={css.uploadPreview}>
-                    <img
-                      src={form.imagePath}
-                      alt="Preview"
-                      className={css.uploadPreviewImg}
-                    />
-                    <button
-                      className={css.uploadRemove}
-                      onClick={() => setForm((prev) => ({ ...prev, imagePath: "" }))}
-                    >
-                      <CloseOutlined />
-                    </button>
-                  </div>
-                ) : (
-                  <div
-                    className={css.uploadArea}
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    <div className={css.uploadIcon}>
-                      <CloudUploadOutlined />
-                    </div>
-                    <p className={css.uploadText}>
-                      {uploading ? "กำลังอัพโหลด..." : "คลิกเพื่อเลือกรูปภาพ (JPG, PNG, WebP)"}
-                    </p>
-                    <p className={css.uploadHint}>แนะนำ: 1920 x 600 px</p>
-                  </div>
-                )}
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handleUpload}
-                />
-              </div>
-
-              {/* Title */}
-              <div className={css.formGroup}>
-                <label className={css.formLabel}>หัวข้อ</label>
-                <input
-                  type="text"
-                  className={css.formInput}
-                  placeholder="เช่น สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด"
-                  value={form.title}
-                  onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
-                />
-              </div>
-
-              {/* Subtitle */}
-              <div className={css.formGroup}>
-                <label className={css.formLabel}>หัวข้อรอง</label>
-                <input
-                  type="text"
-                  className={css.formInput}
-                  placeholder="เช่น DOH Saving & Credit Cooperative, Ltd."
-                  value={form.subtitle}
-                  onChange={(e) => setForm((prev) => ({ ...prev, subtitle: e.target.value }))}
-                />
-              </div>
-
-              {/* Description */}
-              <div className={css.formGroup}>
-                <label className={css.formLabel}>รายละเอียด</label>
-                <textarea
-                  className={css.formTextarea}
-                  placeholder="คำอธิบายสั้นๆ..."
-                  rows={3}
-                  value={form.description}
-                  onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
-                />
-              </div>
-
-              {/* bgGradient */}
-              <div className={css.formGroup}>
-                <label className={css.formLabel}>สีไล่ระดับ (Gradient)</label>
-                <div className={css.presetRow}>
-                  {gradientPresets.map((p) => (
-                    <button
-                      key={p.label}
-                      type="button"
-                      className={`${css.presetBtn} ${form.bgGradient === p.value ? css.presetActive : ""}`}
-                      onClick={() => setForm((prev) => ({ ...prev, bgGradient: p.value }))}
-                    >
-                      {p.value ? (
-                        <span className={css.presetSwatch} style={{ background: p.value }} />
-                      ) : (
-                        <span className={css.presetSwatch} style={{ background: "#f3f4f6" }}>✕</span>
-                      )}
-                      <span>{p.label}</span>
-                    </button>
-                  ))}
-                </div>
-                <input
-                  type="text"
-                  className={css.formInput}
-                  placeholder="หรือพิมพ์ CSS gradient เอง..."
-                  value={form.bgGradient}
-                  onChange={(e) => setForm((prev) => ({ ...prev, bgGradient: e.target.value }))}
-                  style={{ marginTop: 8 }}
-                />
-              </div>
-
-              {/* URL Link */}
-              <div className={css.formGroup}>
-                <label className={css.formLabel}>ลิงก์ (ไม่บังคับ)</label>
-                <input
-                  type="url"
-                  className={css.formInput}
-                  placeholder="https://..."
-                  value={form.urlLink}
-                  onChange={(e) => setForm((prev) => ({ ...prev, urlLink: e.target.value }))}
-                />
-              </div>
-
-              {/* CTA Text */}
-              <div className={css.formGroup}>
-                <label className={css.formLabel}>ข้อความปุ่ม (ต้องมีลิงก์ด้วย)</label>
-                <input
-                  type="text"
-                  className={css.formInput}
-                  placeholder="เช่น สมัครสมาชิก, ดูอัตราดอกเบี้ย"
-                  value={form.ctaText}
-                  onChange={(e) => setForm((prev) => ({ ...prev, ctaText: e.target.value }))}
-                />
-              </div>
-
-              {/* Sort order */}
-              <div className={css.formGroup}>
-                <label className={css.formLabel}>ลำดับ</label>
-                <input
-                  type="number"
-                  className={css.formInput}
-                  value={form.sortOrder}
-                  onChange={(e) => setForm((prev) => ({ ...prev, sortOrder: parseInt(e.target.value) || 0 }))}
-                  min={0}
-                />
-              </div>
-
-              {/* Active toggle */}
-              <div className={css.formGroup}>
-                <label className={css.formLabel}>สถานะ</label>
-                <div className={css.toggle}>
-                  <button
-                    type="button"
-                    className={`${css.toggleSwitch} ${form.isActive ? css.toggleOn : css.toggleOff}`}
-                    onClick={() => setForm((prev) => ({ ...prev, isActive: !prev.isActive }))}
-                  />
-                  <span className={css.toggleLabel}>
-                    {form.isActive ? "แสดง" : "ซ่อน"}
-                  </span>
-                </div>
-              </div>
-
-              {/* Preview */}
-              {form.imagePath && (
-                <div className={css.formGroup}>
-                  <label className={css.formLabel}>ตัวอย่าง</label>
-                  <div className={css.previewWrap}>
-                    <img src={form.imagePath} alt="Preview" className={css.previewImg} />
-                    {form.bgGradient && (
-                      <div className={css.previewOverlay} style={{ background: form.bgGradient }} />
-                    )}
-                    {form.title && (
-                      <div className={css.previewContent}>
-                        <p className={css.previewTitle}>{form.title}</p>
-                        {form.subtitle && <p className={css.previewSubtitle}>{form.subtitle}</p>}
-                        {form.ctaText && <span className={css.previewCta}>{form.ctaText}</span>}
+              <div className={css.splitLayout}>
+                {/* Left Column: Image & Preview */}
+                <div className={css.leftCol}>
+                  <div className={css.formGroup}>
+                    <label className={css.formLabel}>รูปภาพ (แนะนำ 1920x600px)</label>
+                    {form.imagePath ? (
+                      <div className={css.uploadPreview}>
+                        <img
+                          src={form.imagePath}
+                          alt="Preview"
+                          className={css.uploadPreviewImg}
+                        />
+                        <button
+                          className={css.uploadRemove}
+                          onClick={() => setForm((prev) => ({ ...prev, imagePath: "" }))}
+                          title="เปลี่ยนรูปภาพ"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div
+                        className={`${css.uploadAreaCompact} ${uploading ? css.uploading : ''}`}
+                        onClick={() => !uploading && fileInputRef.current?.click()}
+                      >
+                        <CloudUpload size={28} className={css.uploadIcon} />
+                        <div className={css.uploadTextStack}>
+                          <span className={css.uploadTextPrimary}>
+                            {uploading ? "กำลังอัปโหลด..." : "คลิกเพื่ออัปโหลดรูปภาพ"}
+                          </span>
+                          <span className={css.uploadTextSecondary}>JPG, PNG, WebP</span>
+                        </div>
                       </div>
                     )}
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={handleUpload}
+                      disabled={uploading}
+                    />
+                    {!form.imagePath && <p className={css.errorText}>* จำเป็นต้องมีรูปภาพ</p>}
+                  </div>
+
+                  {/* Settings specific to visuals (Gradient) */}
+                  <div className={css.formGroup}>
+                    <label className={css.formLabel}>ฟิลเตอร์สี (เพื่อให้อ่านข้อความง่ายขึ้น)</label>
+                    <div className={css.presetRow}>
+                      {gradientPresets.map((p) => (
+                        <button
+                          key={p.label}
+                          type="button"
+                          className={`${css.presetBtn} ${form.bgGradient === p.value ? css.presetActive : ""}`}
+                          onClick={() => setForm((prev) => ({ ...prev, bgGradient: p.value }))}
+                        >
+                          {p.value ? (
+                            <span className={css.presetSwatch} style={{ background: p.value }} />
+                          ) : (
+                            <span className={css.presetSwatch} style={{ background: "#f1f5f9" }}><X size={10} color="#94a3b8" /></span>
+                          )}
+                          <span>{p.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Status & Order */}
+                  <div className={`${css.formGroup} ${css.inlineGroup}`}>
+                    <div className={css.flex1}>
+                      <label className={css.formLabel}>ลำดับแสดงผล</label>
+                      <input
+                        type="number"
+                        className={css.formInput}
+                        value={form.sortOrder}
+                        onChange={(e) => setForm((prev) => ({ ...prev, sortOrder: parseInt(e.target.value) || 0 }))}
+                        min={0}
+                      />
+                    </div>
+                    <div className={css.flex1}>
+                      <label className={css.formLabel}>สถานะสไลด์</label>
+                      <div
+                        className={`${css.customToggle} ${form.isActive ? css.customToggleActive : css.customToggleInactive}`}
+                        onClick={() => setForm((prev) => ({ ...prev, isActive: !prev.isActive }))}
+                      >
+                        <div className={css.toggleKnob} />
+                        <span className={css.toggleText}>
+                          {form.isActive ? "แสดง" : "ซ่อน"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Content Preview (Live) */}
+                  {form.imagePath && (
+                    <div className={css.formGroup} style={{ marginTop: 'auto' }}>
+                      <label className={css.formLabel}>ตัวอย่างการแสดงผล</label>
+                      <div className={css.previewWrap}>
+                        <img src={form.imagePath} alt="Preview" className={css.previewImg} />
+                        {form.bgGradient && (
+                          <div className={css.previewOverlay} style={{ background: form.bgGradient }} />
+                        )}
+                        {(form.title || form.subtitle || form.description || form.ctaText) && (
+                          <div className={css.previewContent}>
+                            {form.title && <h2 className={css.previewTitle}>{form.title}</h2>}
+                            {form.subtitle && <h3 className={css.previewSubtitle}>{form.subtitle}</h3>}
+                            {form.description && <p className={css.previewDesc}>{form.description}</p>}
+                            {form.ctaText && <span className={css.previewCta}>{form.ctaText}</span>}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                </div>
+
+                {/* Right Column: Text & Links */}
+                <div className={css.rightCol}>
+                  <div className={css.formGroup}>
+                    <label className={css.formLabel}>หัวข้อหลัก</label>
+                    <input
+                      type="text"
+                      className={css.formInput}
+                      placeholder="เช่น ข่าวประชาสัมพันธ์ใหม่..."
+                      value={form.title}
+                      onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
+                    />
+                  </div>
+
+                  <div className={css.formGroup}>
+                    <label className={css.formLabel}>หัวข้อรอง</label>
+                    <input
+                      type="text"
+                      className={css.formInput}
+                      placeholder="อธิบายย่อ..."
+                      value={form.subtitle}
+                      onChange={(e) => setForm((prev) => ({ ...prev, subtitle: e.target.value }))}
+                    />
+                  </div>
+
+                  <div className={css.formGroup}>
+                    <label className={css.formLabel}>ลิงก์ปลายทาง (URL)</label>
+                    <div className={css.inputWithIcon}>
+                      <span className={css.inputIcon}><LinkIcon size={14} /></span>
+                      <input
+                        type="url"
+                        className={`${css.formInput} ${css.formInputWithIcon}`}
+                        placeholder="https://..."
+                        value={form.urlLink}
+                        onChange={(e) => setForm((prev) => ({ ...prev, urlLink: e.target.value }))}
+                      />
+                    </div>
+                  </div>
+
+                  <div className={css.formGroup}>
+                    <label className={css.formLabel}>ข้อความบนปุ่ม (ปุ่มจะแสดงเมื่อใส่ลิงก์)</label>
+                    <input
+                      type="text"
+                      className={css.formInput}
+                      placeholder="เช่น อ่านเพิ่มเติม..."
+                      value={form.ctaText}
+                      onChange={(e) => setForm((prev) => ({ ...prev, ctaText: e.target.value }))}
+                    />
+                  </div>
+
+                  <div className={css.formGroup} style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                    <label className={css.formLabel}>รายละเอียดแบบยาว (ตัวเลือก)</label>
+                    <textarea
+                      className={css.formTextarea}
+                      style={{ flexGrow: 1 }}
+                      placeholder="หากต้องการใส่รายละเอียดเพิ่มเติม..."
+                      value={form.description}
+                      onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
+                    />
                   </div>
                 </div>
-              )}
+              </div>
             </div>
 
             <div className={css.modalFooter}>
-              <button className={css.cancelBtn} onClick={closeModal}>ยกเลิก</button>
+              <button className={css.cancelBtn} onClick={closeModal}>
+                ยกเลิก
+              </button>
               <button
-                className={css.saveBtn}
+                className={`${css.saveBtn} ${saving ? css.saveBtnLoading : ''}`}
                 onClick={handleSave}
                 disabled={saving || !form.imagePath}
               >
-                {saving ? "กำลังบันทึก..." : "บันทึก"}
+                {saving ? (
+                  <>
+                    <div className={css.btnSpinner} />
+                    บันทึก...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 size={16} />
+                    {editingId ? "บันทึก" : "เพิ่ม"}สไลด์ใหม่
+                  </>
+                )}
               </button>
             </div>
           </div>

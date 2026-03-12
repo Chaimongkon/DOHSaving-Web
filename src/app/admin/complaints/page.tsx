@@ -2,13 +2,15 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import {
-  SearchOutlined,
-  EyeOutlined,
-  DeleteOutlined,
-  CloseOutlined,
-  PrinterOutlined,
-  DownloadOutlined,
-} from "@ant-design/icons";
+  Search,
+  Eye,
+  Trash2,
+  X,
+  Printer,
+  Download,
+  Loader2,
+  MessageSquareDiff
+} from "lucide-react";
 import css from "./page.module.css";
 
 interface ComplaintRecord {
@@ -192,7 +194,7 @@ export default function AdminComplaintsPage() {
   const exportCsv = () => {
     if (complaints.length === 0) return;
     const BOM = "\uFEFF";
-    const header = ["รหัสติดตาม","ประเภท","เรื่อง","ชื่อผู้แจ้ง","เลขสมาชิก","เบอร์โทร","อีเมล","สถานะ","รายละเอียด","หมายเหตุเจ้าหน้าที่","วันที่แจ้ง","วันที่เสร็จ"].join(",");
+    const header = ["รหัสติดตาม", "ประเภท", "เรื่อง", "ชื่อผู้แจ้ง", "เลขสมาชิก", "เบอร์โทร", "อีเมล", "สถานะ", "รายละเอียด", "หมายเหตุเจ้าหน้าที่", "วันที่แจ้ง", "วันที่เสร็จ"].join(",");
     const rows = complaints.map(c => [
       c.trackingCode,
       categoryLabels[c.category] || c.category,
@@ -227,12 +229,22 @@ export default function AdminComplaintsPage() {
     });
 
   return (
-    <>
+    <div className={css.page}>
+      {/* ── Hero Header ── */}
       <div className={css.header}>
-        <h1 className={css.title}>จัดการเรื่องร้องเรียน / ข้อเสนอแนะ</h1>
+        <div className={css.headerTitleWrap}>
+          <div className={css.headerIcon}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/financial-icons/complaints.png" alt="Complaints" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+          </div>
+          <div>
+            <h1 className={css.title}>จัดการเรื่องร้องเรียน / ข้อเสนอแนะ</h1>
+            <p className={css.subtitle}>ระบบรับฟังและบริหารจัดการข้อเสนอแนะ ข้อร้องเรียนจากสมาชิก</p>
+          </div>
+        </div>
         <div className={css.toolbar}>
           <div className={css.searchBox}>
-            <SearchOutlined style={{ color: "#9ca3af" }} />
+            <Search size={18} color="#94a3b8" />
             <input
               className={css.searchInput}
               placeholder="ค้นหารหัส ชื่อ หัวข้อ..."
@@ -251,21 +263,21 @@ export default function AdminComplaintsPage() {
             <option value="resolved">เสร็จสิ้น</option>
             <option value="rejected">ไม่รับพิจารณา</option>
           </select>
-          <button className={css.actionBtn} onClick={exportCsv} title="ส่งออก CSV">
-            <DownloadOutlined /> CSV
+          <button className={css.exportBtn} onClick={exportCsv} title="ส่งออกข้อมูลเป็น CSV">
+            <Download size={16} /> ส่งออก CSV
           </button>
         </div>
       </div>
 
-      {/* Stats */}
+      {/* ── Stats Row ── */}
       <div className={css.stats}>
         <div className={`${css.statCard} ${css.statTotal}`}>
           <div className={css.statNum}>{total}</div>
-          <div className={css.statLabel}>ทั้งหมด</div>
+          <div className={css.statLabel}>เรื่องทั้งหมด</div>
         </div>
         <div className={`${css.statCard} ${css.statPending}`}>
           <div className={css.statNum}>{statPending}</div>
-          <div className={css.statLabel}>รอดำเนินการ</div>
+          <div className={css.statLabel}>รอการดำเนินการ</div>
         </div>
         <div className={`${css.statCard} ${css.statReviewing}`}>
           <div className={css.statNum}>{statReviewing}</div>
@@ -273,66 +285,84 @@ export default function AdminComplaintsPage() {
         </div>
         <div className={`${css.statCard} ${css.statResolved}`}>
           <div className={css.statNum}>{statResolved}</div>
-          <div className={css.statLabel}>เสร็จสิ้น</div>
+          <div className={css.statLabel}>ดำเนินการเสร็จสิ้น</div>
         </div>
       </div>
 
+      {/* ── Data Table ── */}
       {loading ? (
-        <div className={css.loading}>กำลังโหลด...</div>
+        <div className={css.loading}>
+          <Loader2 className="animate-spin" size={24} color="#6366f1" />
+          <span>กำลังโหลดข้อมูล...</span>
+        </div>
       ) : complaints.length === 0 ? (
-        <div className={css.empty}>ไม่มีรายการ</div>
+        <div className={css.emptyStateContainer}>
+          <div className={css.emptyState}>
+            <MessageSquareDiff size={48} color="#cbd5e1" style={{ marginBottom: 12 }} />
+            <p style={{ margin: 0 }}>ไม่มีรายการร้องเรียนหรือข้อเสนอแนะในขณะนี้</p>
+          </div>
+        </div>
       ) : (
         <>
-          <table className={css.table}>
-            <thead>
-              <tr>
-                <th>รหัส</th>
-                <th>ประเภท</th>
-                <th>เรื่อง</th>
-                <th>ผู้แจ้ง</th>
-                <th>สถานะ</th>
-                <th>วันที่</th>
-                <th>จัดการ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {complaints.map((c) => (
-                <tr key={c.id}>
-                  <td className={css.codeCell}>{c.trackingCode}</td>
-                  <td>
-                    <span className={`${css.categoryBadge} ${categoryClass[c.category] || ""}`}>
-                      {categoryLabels[c.category] || c.category}
-                    </span>
-                  </td>
-                  <td className={css.subjectCell}>{c.subject || "-"}</td>
-                  <td className={css.nameCell}>
-                    {c.name || "ไม่ระบุ"}
-                    {c.memberId && <div style={{ fontSize: 10, color: "#9ca3af" }}>รหัส {c.memberId}</div>}
-                  </td>
-                  <td>
-                    <span className={`${css.statusBadge} ${statusClass[c.status] || ""}`}>
-                      {statusLabels[c.status] || c.status}
-                    </span>
-                  </td>
-                  <td className={css.dateCell}>{formatDate(c.createdAt)}</td>
-                  <td>
-                    <div className={css.actions}>
-                      <button className={css.actionBtn} title="ดูรายละเอียด" onClick={() => { setSelected(c); setAdminNote(c.adminNote || ""); }}>
-                        <EyeOutlined />
-                      </button>
-                      <button className={css.actionBtn} title="พิมพ์ PDF" onClick={() => printPdf(c)}>
-                        <PrinterOutlined />
-                      </button>
-                      <button className={`${css.actionBtn} ${css.actionBtnDanger}`} title="ลบ" onClick={() => deleteComplaint(c.id)}>
-                        <DeleteOutlined />
-                      </button>
-                    </div>
-                  </td>
+          <div className={css.tableContainer}>
+            <table className={css.table}>
+              <thead>
+                <tr>
+                  <th className={css.th} style={{ width: "12%" }}>รหัสติดตาม</th>
+                  <th className={css.th} style={{ width: "10%" }}>ประเภท</th>
+                  <th className={css.th} style={{ width: "25%" }}>เรื่อง</th>
+                  <th className={css.th} style={{ width: "15%" }}>ผู้แจ้ง</th>
+                  <th className={css.th} style={{ width: "12%" }}>สถานะ</th>
+                  <th className={css.th} style={{ width: "14%" }}>วันที่แจ้ง</th>
+                  <th className={css.th} style={{ width: "12%", textAlign: "center" }}>จัดการ</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {complaints.map((c) => (
+                  <tr key={c.id} className={css.tableRow}>
+                    <td className={css.td}>
+                      <span className={css.codeCell}>{c.trackingCode}</span>
+                    </td>
+                    <td className={css.td}>
+                      <span className={`${css.badge} ${categoryClass[c.category] || ""}`}>
+                        {categoryLabels[c.category] || c.category}
+                      </span>
+                    </td>
+                    <td className={css.td}>
+                      <div className={css.subjectCell} title={c.subject || ""}>{c.subject || "-"}</div>
+                    </td>
+                    <td className={css.td}>
+                      <div className={css.nameCell}>{c.name || "ผู้ไม่ประสงค์ออกนาม"}</div>
+                      {c.memberId && <div className={css.memberCode}>รหัส: {c.memberId}</div>}
+                    </td>
+                    <td className={css.td}>
+                      <span className={`${css.badge} ${statusClass[c.status] || ""}`}>
+                        {statusLabels[c.status] || c.status}
+                      </span>
+                    </td>
+                    <td className={css.td}>
+                      <span className={css.dateCell}>{formatDate(c.createdAt)}</span>
+                    </td>
+                    <td className={css.td} style={{ textAlign: "center" }}>
+                      <div className={css.actions}>
+                        <button className={css.actionBtn} title="ดูรายละเอียดและจัดการ" onClick={() => { setSelected(c); setAdminNote(c.adminNote || ""); }}>
+                          <Eye size={18} color="#0284c7" />
+                        </button>
+                        <button className={css.actionBtn} title="พิมพ์หน้าต่าง PDF" onClick={() => printPdf(c)}>
+                          <Printer size={18} />
+                        </button>
+                        <button className={`${css.actionBtn} ${css.actionBtnDanger}`} title="ลบเรื่องนี้ (ถาวร)" onClick={() => deleteComplaint(c.id)}>
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
+          {/* ── Pagination ── */}
           {totalPages > 1 && (
             <div className={css.pagination}>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
@@ -349,74 +379,89 @@ export default function AdminComplaintsPage() {
         </>
       )}
 
-      {/* Detail Modal */}
+      {/* ── Detail Modal ── */}
       {selected && (
         <div className={css.modalOverlay} onClick={() => setSelected(null)}>
-          <div className={css.modal} onClick={(e) => e.stopPropagation()}>
+          <div className={css.modalContent} onClick={(e) => e.stopPropagation()}>
             <div className={css.modalHeader}>
-              <h2 className={css.modalTitle}>รายละเอียดเรื่อง #{selected.trackingCode}</h2>
-              <button className={css.modalClose} onClick={() => setSelected(null)}><CloseOutlined /></button>
+              <h2 className={css.modalTitle}>
+                รายละเอียดการแจ้งเรื่อง <span style={{ color: '#6366f1' }}>#{selected.trackingCode}</span>
+              </h2>
+              <button className={css.closeBtn} onClick={() => setSelected(null)}>
+                <X size={20} />
+              </button>
             </div>
+
             <div className={css.modalBody}>
-              <div className={css.detailRow}>
-                <span className={css.detailLabel}>ประเภท</span>
-                <span className={css.detailValue}>{categoryLabels[selected.category] || selected.category}</span>
-              </div>
-              <div className={css.detailRow}>
-                <span className={css.detailLabel}>เรื่อง</span>
-                <span className={css.detailValue}>{selected.subject || "-"}</span>
-              </div>
-              <div className={css.detailRow}>
-                <span className={css.detailLabel}>ผู้แจ้ง</span>
-                <span className={css.detailValue}>{selected.name || "ไม่ระบุ"}</span>
-              </div>
-              <div className={css.detailRow}>
-                <span className={css.detailLabel}>เลขสมาชิก</span>
-                <span className={css.detailValue}>{selected.memberId || "-"}</span>
-              </div>
-              <div className={css.detailRow}>
-                <span className={css.detailLabel}>เบอร์โทร</span>
-                <span className={css.detailValue}>{selected.tel || "-"}</span>
-              </div>
-              <div className={css.detailRow}>
-                <span className={css.detailLabel}>อีเมล</span>
-                <span className={css.detailValue}>{selected.email || "-"}</span>
-              </div>
-              <div className={css.detailRow}>
-                <span className={css.detailLabel}>สถานะ</span>
-                <span className={`${css.statusBadge} ${statusClass[selected.status] || ""}`}>
-                  {statusLabels[selected.status] || selected.status}
-                </span>
-              </div>
-              <div className={css.detailRow}>
-                <span className={css.detailLabel}>วันที่แจ้ง</span>
-                <span className={css.detailValue}>{formatDate(selected.createdAt)}</span>
+              <div className={css.detailGrid}>
+                <div className={css.detailRow}>
+                  <span className={css.detailLabel}>ประเภท</span>
+                  <span className={`${css.badge} ${categoryClass[selected.category] || ""}`} style={{ width: 'fit-content', marginTop: 4 }}>
+                    {categoryLabels[selected.category] || selected.category}
+                  </span>
+                </div>
+                <div className={css.detailRow}>
+                  <span className={css.detailLabel}>สถานะปัจจุบัน</span>
+                  <span className={`${css.badge} ${statusClass[selected.status] || ""}`} style={{ width: 'fit-content', marginTop: 4 }}>
+                    {statusLabels[selected.status] || selected.status}
+                  </span>
+                </div>
+                <div className={css.detailRow}>
+                  <span className={css.detailLabel}>ผู้แจ้ง (ผู้ส่งเรื่อง)</span>
+                  <span className={css.detailValue}>{selected.name || "ผู้ไม่ประสงค์ออกนาม"}</span>
+                </div>
+                <div className={css.detailRow}>
+                  <span className={css.detailLabel}>รหัสสมาชิก</span>
+                  <span className={css.detailValue}>{selected.memberId || "-"}</span>
+                </div>
+                <div className={css.detailRow}>
+                  <span className={css.detailLabel}>เบอร์ติดต่อ</span>
+                  <span className={css.detailValue}>{selected.tel || "-"}</span>
+                </div>
+                <div className={css.detailRow}>
+                  <span className={css.detailLabel}>อีเมล</span>
+                  <span className={css.detailValue}>{selected.email || "-"}</span>
+                </div>
+                <div className={css.detailRow} style={{ gridColumn: 'span 2' }}>
+                  <span className={css.detailLabel}>วันที่รับเรื่อง</span>
+                  <span className={css.detailValue}>{formatDate(selected.createdAt)}</span>
+                </div>
               </div>
 
-              <div className={css.detailBody}>{selected.complaint || "ไม่มีรายละเอียด"}</div>
+              <div className={css.detailContent}>
+                <div className={css.detailContentHeader}>
+                  <MessageSquareDiff size={18} color="#6366f1" />
+                  หัวข้อ: {selected.subject || "-"}
+                </div>
+                <pre className={css.detailContentText}>
+                  {selected.complaint || "ไม่มีรายละเอียดประกอบ"}
+                </pre>
+              </div>
 
-              <div style={{ marginTop: 16 }}>
-                <label style={{ fontSize: 12, fontWeight: 700, color: "#6b7280" }}>หมายเหตุเจ้าหน้าที่:</label>
+              <div className={css.noteBox}>
+                <label className={css.noteLabel}>บันทึกหมายเหตุชี้แจงจากเจ้าหน้าที่ (เฉพาะภายในหรือผู้ติดตาม):</label>
                 <textarea
                   className={css.noteTextarea}
                   value={adminNote}
                   onChange={(e) => setAdminNote(e.target.value)}
-                  placeholder="บันทึกหมายเหตุ..."
+                  placeholder="เพิ่มบันทึกความคืบหน้า หรือการแก้ไขปัญหาเพื่อแจ้งให้ผู้ร้องเรียนทราบเวลาติดตามเรื่อง..."
                 />
               </div>
             </div>
-            <div className={css.modalActions}>
-              <button className={css.modalActionBtn} onClick={() => updateStatus(selected.id, "reviewing", adminNote)}>
-                กำลังตรวจสอบ
+
+            <div className={css.modalFooter}>
+              <button className={`${css.modalActionBtn} ${css.modalActionReviewing}`} onClick={() => updateStatus(selected.id, "reviewing", adminNote)}>
+                อัปเดตสถานะ: กำลังตรวจสอบ
               </button>
-              <button className={`${css.modalActionBtn} ${css.modalActionBtnPrimary}`} onClick={() => updateStatus(selected.id, "resolved", adminNote)}>
-                ✓ ดำเนินการเสร็จ
+              <button className={`${css.modalActionBtn} ${css.modalActionPrimary}`} onClick={() => updateStatus(selected.id, "resolved", adminNote)}>
+                <span style={{ fontSize: 16 }}>✓</span> ดำเนินการเสร็จสิ้น
               </button>
-              <button className={css.modalActionBtn} onClick={() => updateStatus(selected.id, "rejected", adminNote)}>
+              <div style={{ flex: 1 }}></div>
+              <button className={`${css.modalActionBtn} ${css.modalActionReject}`} onClick={() => updateStatus(selected.id, "rejected", adminNote)}>
                 ไม่รับพิจารณา
               </button>
-              <button className={css.modalActionBtn} onClick={() => printPdf(selected)}>
-                <PrinterOutlined /> พิมพ์ PDF
+              <button className={css.modalActionBtn} onClick={() => printPdf(selected)} style={{ marginLeft: 8 }}>
+                <Printer size={16} style={{ marginRight: 6 }} /> พิมพ์รายงาน
               </button>
             </div>
           </div>
@@ -424,6 +469,6 @@ export default function AdminComplaintsPage() {
       )}
 
       {toast && <div className={css.toast}>{toast}</div>}
-    </>
+    </div>
   );
 }
