@@ -13,6 +13,7 @@ import {
     message,
     Popconfirm,
     Tag,
+    Select,
 } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
@@ -21,6 +22,7 @@ interface LoanType {
     id: number;
     name: string;
     code: string;
+    category: string;
     interestRate: number;
     maxAmount: number | null;
     maxTerm: number;
@@ -65,7 +67,7 @@ export default function AdminLoanTypesPage() {
         } else {
             setEditing(null);
             form.resetFields();
-            form.setFieldsValue({ isActive: true, sortOrder: 0, maxTerm: 12, defaultTerm: 12 });
+            form.setFieldsValue({ isActive: true, sortOrder: 0, maxTerm: 12, defaultTerm: 12, category: "ordinary" });
         }
         setModalOpen(true);
     };
@@ -119,6 +121,20 @@ export default function AdminLoanTypesPage() {
                     <div style={{ fontSize: 12, color: "#888" }}>{r.code}</div>
                 </div>
             ),
+        },
+        {
+            title: "หมวด",
+            dataIndex: "category",
+            width: 100,
+            align: "center",
+            render: (category: string) => {
+                const colors: Record<string, string> = {
+                    emergency: "red",
+                    ordinary: "green",
+                    special: "blue",
+                };
+                return <Tag color={colors[category] || "default"}>{category}</Tag>;
+            },
         },
         {
             title: "อัตราดอกเบี้ย (%/ปี)",
@@ -232,6 +248,17 @@ export default function AdminLoanTypesPage() {
                         rules={[{ required: true, message: "กรุณากรอกรหัส" }]}
                     >
                         <Input placeholder="เช่น emergency" />
+                    </Form.Item>
+                    <Form.Item
+                        name="category"
+                        label="หมวด"
+                        rules={[{ required: true, message: "กรุณาเลือกหมวด" }]}
+                    >
+                        <Select placeholder="เลือกหมวด">
+                            <Select.Option value="emergency">ฉุกเฉิน</Select.Option>
+                            <Select.Option value="ordinary">สามัญ</Select.Option>
+                            <Select.Option value="special">พิเศษ</Select.Option>
+                        </Select>
                     </Form.Item>
                     <Space size="middle" style={{ width: "100%" }}>
                         <Form.Item

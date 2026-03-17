@@ -16,6 +16,7 @@ interface LoanTypeOption {
     id: number;
     name: string;
     code: string;
+    category: string;
     interestRate: number; // % per year
     maxAmount: number | null;
     maxTerm: number;
@@ -165,6 +166,7 @@ export default function LoanCalculatorPage() {
     const [existingDebt, setExistingDebt] = useState<string>("");
     const [terms, setTerms] = useState<string>("");
     const [paymentType, setPaymentType] = useState<PaymentType>("annuity");
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
 
     const fetchLoanTypes = useCallback(async () => {
         setLoading(true);
@@ -195,8 +197,8 @@ export default function LoanCalculatorPage() {
     }, [fetchLoanTypes]);
 
     const currentLoanType = loanTypes.find((t) => t.id === selectedType);
-    const isEmergency = currentLoanType?.code?.toLowerCase() === "emergency";
-    const isOrdinary = currentLoanType?.code?.toLowerCase() === "ordinary";
+    const isEmergency = currentLoanType?.category === "emergency";
+    const isOrdinary = currentLoanType?.category === "ordinary";
 
     // For emergency loan: loan amount = salary × 2, rounded down to nearest 100
     const computedEmergencyAmount = (() => {
@@ -224,7 +226,8 @@ export default function LoanCalculatorPage() {
         parsedAmount > 0 &&
         parsedTerms > 0 &&
         !termsError &&
-        !amountError;
+        !amountError &&
+        acceptedTerms;
 
     // ── Manual calculate (triggered by button) ──
     const [calcResult, setCalcResult] = useState<{
@@ -350,6 +353,11 @@ export default function LoanCalculatorPage() {
         setCalcResult(null);
     };
 
+    const handleTermsAcceptance = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setAcceptedTerms(e.target.checked);
+        setCalcResult(null);
+    };
+
     return (
         <>
             {/* ── Hero Section ── */}
@@ -446,10 +454,10 @@ export default function LoanCalculatorPage() {
                                                 id="emergency-amount"
                                                 className={css.formInput}
                                                 type="text"
-                                                readOnly
-                                                value={computedEmergencyAmount > 0 ? fmt(computedEmergencyAmount) : ""}
-                                                placeholder="กรอกเงินเดือนเพื่อคำนวณ"
-                                                style={{ backgroundColor: "#f5f5f5", cursor: "not-allowed" }}
+                                                inputMode="decimal"
+                                                placeholder="เช่น 66,300"
+                                                value={loanAmount}
+                                                onChange={handleAmountChange}
                                             />
                                             {amountError ? (
                                                 <span className={css.formError}>{amountError}</span>
@@ -582,6 +590,34 @@ export default function LoanCalculatorPage() {
                                             ต้นเท่ากัน
                                         </button>
                                     </div>
+                                </div>
+                            </div>
+
+                            {/* Disclaimer and Terms */}
+                            <div className={css.disclaimerSection}>
+                                <div className={css.disclaimerBox}>
+                                    <h4 className={css.disclaimerTitle}>
+                                        <InfoCircleOutlined /> ข้อสังเกต
+                                    </h4>
+                                    <p className={css.disclaimerText}>
+                                        ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น ยอดชำระจริงอาจแตกต่างเล็กน้อยขึ้นอยู่กับการปัดเศษและเงื่อนไขของสหกรณ์ 
+                                        กรุณาติดต่อฝ่ายสินเชื่อเพื่อข้อมูลที่ถูกต้องแม่นยำ
+                                        <br />
+                                        <strong>เบอร์สินเชื่อ:</strong> 098-998-3274, 065-937-8275 | <strong>LINE OA:</strong> @dohsaving
+                                    </p>
+                                </div>
+                                
+                                <div className={css.termsCheckbox}>
+                                    <label className={css.checkboxLabel}>
+                                        <input
+                                            type="checkbox"
+                                            checked={acceptedTerms}
+                                            onChange={handleTermsAcceptance}
+                                        />
+                                        <span className={css.checkboxText}>
+                                            ฉันได้อ่านและยอมรับข้อสังเกตข้างต้น และเข้าใจว่าผลการคำนวณเป็นเพียงการประมาณการ
+                                        </span>
+                                    </label>
                                 </div>
                             </div>
 

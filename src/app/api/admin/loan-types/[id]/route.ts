@@ -21,6 +21,7 @@ export async function PUT(
             data: {
                 name: body.name,
                 code: body.code,
+                category: body.category,
                 interestRate: body.interestRate,
                 maxAmount: body.maxAmount ?? null,
                 maxTerm: body.maxTerm,

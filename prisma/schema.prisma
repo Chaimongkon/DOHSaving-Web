@@ -897,6 +897,7 @@ model LoanType {
   id            Int       @id @default(autoincrement())
   name          String    @db.VarChar(255)         // เช่น "กู้ฉุกเฉิน"
   code          String    @unique @db.VarChar(50)  // เช่น "emergency"
+  category      String    @default("ordinary") @db.VarChar(50)  // emergency, ordinary, special
   interestRate  Decimal   @db.Decimal(5, 2)        // อัตราดอกเบี้ยต่อปี เช่น 5.50
   maxAmount     Decimal?  @db.Decimal(18, 2)       // วงเงินกู้สูงสุด
   maxTerm       Int       @default(12)             // จำนวนงวดสูงสุด

@@ -10,6 +10,7 @@ export async function GET() {
                 id: true,
                 name: true,
                 code: true,
+                category: true,
                 interestRate: true,
                 maxAmount: true,
                 maxTerm: true,

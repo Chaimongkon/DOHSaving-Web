@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
             data: {
                 name: body.name || "",
                 code: body.code || "",
+                category: body.category || "ordinary",
                 interestRate: body.interestRate || 0,
                 maxAmount: body.maxAmount || null,
                 maxTerm: body.maxTerm || 12,

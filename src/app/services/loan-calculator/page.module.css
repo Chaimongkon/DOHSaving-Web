@@ -300,6 +300,66 @@
     box-shadow: none;
 }
 
+/* Disclaimer Section */
+.disclaimerSection {
+    margin: 24px 0;
+    padding: 0;
+}
+
+.disclaimerBox {
+    background: #fef2c8;
+    border: 1px solid #f59e0b;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.disclaimerTitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #92400e;
+}
+
+.disclaimerText {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #78350f;
+}
+
+.termsCheckbox {
+    padding: 12px 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.checkboxLabel input[type="checkbox"] {
+    margin-top: 2px;
+    width: 16px;
+    height: 16px;
+    accent-color: #2563eb;
+}
+
+.checkboxText {
+    font-size: 14px;
+    line-height: 1.4;
+    color: #475569;
+    flex: 1;
+}
+
 /* ─── Results Section ─── */
 .resultSection {
     animation: fadeUp 0.35s ease both;
