@@ -12,7 +12,8 @@ import {
   QnAIcon,
   ContactIcon,
   AlertIcon,
-  BankAccountIcon
+  BankAccountIcon,
+  LoanCalcIcon
 } from "@/components/icons/HomeIcons";
 import HeroSlider from "@/components/home/HeroSlider";
 import AppDownloadBar from "@/components/home/AppDownloadBar";
@@ -87,6 +88,14 @@ const quickLinks = [
     href: "/bank-accounts",
     color: "#0d9488",
     bg: "#f0fdfa",
+  },
+  {
+    icon: <LoanCalcIcon size={56} />,
+    title: "คำนวณเงินกู้",
+    desc: "ประมาณการผ่อนชำระ",
+    href: "/services/loan-calculator",
+    color: "#d97706",
+    bg: "#fffbeb",
   },
 ];
 

@@ -158,6 +158,30 @@ export const BankAccountIcon = ({ size = 48, ...props }: IconProps) => (
   </svg>
 );
 
+// 10. คำนวณเงินกู้ (Loan Calculator - Amber/Gold)
+export const LoanCalcIcon = ({ size = 48, ...props }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ overflow: "visible" }} {...props}>
+    <defs>
+      <linearGradient id="calcGrad" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#fbbf24" />
+        <stop offset="1" stopColor="#d97706" />
+      </linearGradient>
+      <filter id="calcShadow" x="-10" y="-10" width="84" height="84" filterUnits="userSpaceOnUse">
+        <feDropShadow dx="0" dy="6" stdDeviation="6" floodColor="#d97706" floodOpacity="0.4" />
+      </filter>
+    </defs>
+    <circle cx="32" cy="32" r="24" fill="url(#calcGrad)" filter="url(#calcShadow)" />
+    <rect x="22" y="18" width="20" height="28" rx="3" stroke="white" strokeWidth="2.5" fill="none" />
+    <rect x="25" y="21" width="14" height="6" rx="1.5" fill="white" opacity="0.9" />
+    <circle cx="27" cy="33" r="2" fill="white" />
+    <circle cx="32" cy="33" r="2" fill="white" />
+    <circle cx="37" cy="33" r="2" fill="white" />
+    <circle cx="27" cy="39" r="2" fill="white" />
+    <circle cx="32" cy="39" r="2" fill="white" />
+    <rect x="35" y="37" width="4" height="4" rx="1" fill="white" />
+  </svg>
+);
+
 // 9. ร้องเรียน/เสนอแนะ (Complaint - Red)
 export const AlertIcon = ({ size = 48, ...props }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ overflow: "visible" }} {...props}>

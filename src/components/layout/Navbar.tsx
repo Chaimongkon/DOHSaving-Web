@@ -114,6 +114,7 @@ const navItems: NavItem[] = [
           { label: "เงินกู้ฉุกเฉิน", href: "/services/emergency-loan" },
           { label: "เงินกู้สามัญ", href: "/services/general-loan" },
           { label: "เงินกู้พิเศษ", href: "/services/special-loan" },
+          { label: "คำนวณเงินกู้", href: "/services/loan-calculator" },
         ],
       },
       {

@@ -889,3 +889,28 @@ model AppGuideSection {
   @@map("app_guide_sections")
 }
 
+// ============================================================
+// 💰 Loan Types (ประเภทเงินกู้)
+// ============================================================
+
+model LoanType {
+  id            Int       @id @default(autoincrement())
+  name          String    @db.VarChar(255)         // เช่น "กู้ฉุกเฉิน"
+  code          String    @unique @db.VarChar(50)  // เช่น "emergency"
+  interestRate  Decimal   @db.Decimal(5, 2)        // อัตราดอกเบี้ยต่อปี เช่น 5.50
+  maxAmount     Decimal?  @db.Decimal(18, 2)       // วงเงินกู้สูงสุด
+  maxTerm       Int       @default(12)             // จำนวนงวดสูงสุด
+  defaultTerm   Int       @default(12)             // จำนวนงวด default
+  description   String?   @db.Text
+  sortOrder     Int       @default(0)
+  isActive      Boolean   @default(true)
+  createdBy     String?   @db.VarChar(255)
+  updatedBy     String?   @db.VarChar(255)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([code])
+  @@index([isActive])
+  @@index([sortOrder])
+  @@map("loan_types")
+}

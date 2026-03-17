@@ -9,6 +9,7 @@ import {
   VideoCameraOutlined,
   CameraOutlined,
   DollarOutlined,
+  CalculatorOutlined,
   TeamOutlined,
   SafetyCertificateOutlined,
   SettingOutlined,
@@ -82,6 +83,7 @@ const navItems = [
     group: "การเงิน",
     items: [
       { label: "อัตราดอกเบี้ย", href: "/admin/interest-rates", icon: <DollarOutlined /> },
+      { label: "ประเภทเงินกู้", href: "/admin/loan-types", icon: <CalculatorOutlined /> },
       { label: "สินทรัพย์และหนี้สิน", href: "/admin/financial-summary", icon: <BankOutlined /> },
     ],
   },
