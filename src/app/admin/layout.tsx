@@ -115,6 +115,7 @@ const navItems = [
   {
     group: "ระบบ",
     items: [
+      { label: "ยอดนิยมเดือนนี้", href: "/admin/page-analytics", icon: <EyeOutlined /> },
       { label: "รูปเมนูหลัก", href: "/admin/mega-images", icon: <PictureOutlined /> },
       { label: "Festival Theme", href: "/admin/festivals", icon: <GiftOutlined /> },
       { label: "ผู้ใช้งาน", href: "/admin/users", icon: <TeamOutlined /> },

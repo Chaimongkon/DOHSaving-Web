@@ -33,6 +33,7 @@
     "react-dom": "19.2.3",
     "react-pageflip": "^2.0.3",
     "react-quill-new": "^3.8.3",
+    "recharts": "^3.8.0",
     "uuid": "^13.0.0"
   },
   "prisma": {
