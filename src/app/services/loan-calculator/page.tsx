@@ -167,6 +167,7 @@ export default function LoanCalculatorPage() {
     const [terms, setTerms] = useState<string>("");
     const [paymentType, setPaymentType] = useState<PaymentType>("annuity");
     const [acceptedTerms, setAcceptedTerms] = useState(false);
+    const [shareCount, setShareCount] = useState<string>("");
 
     const fetchLoanTypes = useCallback(async () => {
         setLoading(true);
@@ -199,6 +200,11 @@ export default function LoanCalculatorPage() {
     const currentLoanType = loanTypes.find((t) => t.id === selectedType);
     const isEmergency = currentLoanType?.category === "emergency";
     const isOrdinary = currentLoanType?.category === "ordinary";
+    const isShareBased = currentLoanType?.category === "special";
+    
+    // Constants for share calculation
+    const SHARE_VALUE = 100; // มูลค่าหุ้นละ 100 บาท
+    const SHARE_LOAN_PERCENTAGE = 0.9; // กู้ได้ 90% ของมูลค่าหุ้น
 
     // For emergency loan: loan amount = salary × 2, rounded down to nearest 100
     const computedEmergencyAmount = (() => {
@@ -207,9 +213,20 @@ export default function LoanCalculatorPage() {
         return Math.floor((sal * 2) / 100) * 100;
     })();
 
+    // For share-based loan: loan amount = share value / 100 × 100 × 90% = share value × 90%
+    const computedShareAmount = (() => {
+        const shareValue = parseFloat(stripCommas(shareCount));
+        if (!shareValue || shareValue <= 0) return 0;
+        const rawAmount = shareValue * SHARE_LOAN_PERCENTAGE;
+        // Floor to nearest 100 to get exactly 68,500 from 76,200
+        return Math.floor(rawAmount / 100) * 100;
+    })();
+
     // ── Derived values for validation ──
     const parsedAmount = isEmergency
-        ? computedEmergencyAmount
+        ? (parseFloat(stripCommas(loanAmount)) || computedEmergencyAmount)
+        : isShareBased
+        ? (parseFloat(stripCommas(loanAmount)) || computedShareAmount)
         : parseFloat(stripCommas(loanAmount)) || 0;
     const parsedTerms = parseInt(terms) || 0;
     const maxTerm = currentLoanType?.maxTerm ?? 999;
@@ -221,6 +238,10 @@ export default function LoanCalculatorPage() {
         : null;
     const amountError = maxAmount && parsedAmount > maxAmount
         ? `ยอดเงินกู้เกินวงเงินสูงสุด (${fmt(maxAmount)} บาท)`
+        : isEmergency && parsedAmount > computedEmergencyAmount
+        ? `ยอดเงินกู้เกินที่กำหนด (สูงสุด ${fmt(computedEmergencyAmount)} บาท)`
+        : isShareBased && parsedAmount > computedShareAmount
+        ? `ยอดเงินกู้เกินที่กำหนด (สูงสุด ${fmt(computedShareAmount)} บาท)`
         : null;
     const hasValidInput =
         parsedAmount > 0 &&
@@ -326,6 +347,7 @@ export default function LoanCalculatorPage() {
         setSalary("");
         setLoanAmount("");
         setExistingDebt("");
+        setShareCount("");
         setCalcResult(null);
     };
 
@@ -338,6 +360,12 @@ export default function LoanCalculatorPage() {
     const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const raw = e.target.value.replace(/[^0-9.]/g, "");
         setSalary(formatWithCommas(raw));
+        // Auto-update loan amount for emergency loan
+        const sal = parseFloat(raw);
+        if (sal && sal > 0 && isEmergency) {
+            const computed = Math.floor((sal * 2) / 100) * 100;
+            setLoanAmount(fmt(computed));
+        }
         setCalcResult(null);
     };
 
@@ -355,6 +383,18 @@ export default function LoanCalculatorPage() {
 
     const handleTermsAcceptance = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAcceptedTerms(e.target.checked);
+        setCalcResult(null);
+    };
+
+    const handleShareCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const raw = e.target.value.replace(/[^0-9.]/g, "");
+        setShareCount(formatWithCommas(raw));
+        // Auto-update loan amount for share-based loan
+        const shareValue = parseFloat(raw);
+        if (shareValue && shareValue > 0 && isShareBased) {
+            const computed = Math.floor((shareValue * SHARE_LOAN_PERCENTAGE) / 100) * 100;
+            setLoanAmount(fmt(computed));
+        }
         setCalcResult(null);
     };
 
@@ -426,7 +466,7 @@ export default function LoanCalculatorPage() {
                                     </select>
                                 </div>
 
-                                {/* Salary (emergency) or Loan Amount */}
+                                {/* Emergency, Share-based, or Ordinary Loan Amount */}
                                 {isEmergency ? (
                                     <>
                                         <div className={css.formGroup}>
@@ -456,17 +496,124 @@ export default function LoanCalculatorPage() {
                                                 type="text"
                                                 inputMode="decimal"
                                                 placeholder="เช่น 66,300"
-                                                value={loanAmount}
+                                                value={loanAmount || (computedEmergencyAmount > 0 ? fmt(computedEmergencyAmount) : "")}
                                                 onChange={handleAmountChange}
                                             />
                                             {amountError ? (
                                                 <span className={css.formError}>{amountError}</span>
-                                            ) : currentLoanType?.maxAmount ? (
-                                                <span className={css.formHint}>
-                                                    วงเงินสูงสุด: {fmt(currentLoanType.maxAmount)} บาท
-                                                </span>
-                                            ) : null}
+                                            ) : (
+                                                <>
+                                                    {currentLoanType?.maxAmount && (
+                                                        <span className={css.formHint}>
+                                                            วงเงินสูงสุด: {fmt(currentLoanType.maxAmount)} บาท
+                                                        </span>
+                                                    )}
+                                                    <span className={css.formHint}>
+                                                        สูงสุดตามการคำนวน: {fmt(computedEmergencyAmount)} บาท
+                                                    </span>
+                                                </>
+                                            )}
                                         </div>
+                                    </>
+                                ) : isShareBased ? (
+                                    <>
+                                        <div className={css.formGroup}>
+                                            <label htmlFor="share-count" className={`${css.formLabel} ${css.formLabelRequired}`}>
+                                                มูลค่าหุ้นค้ำประกัน (บาท)
+                                            </label>
+                                            <input
+                                                id="share-count"
+                                                className={css.formInput}
+                                                type="text"
+                                                inputMode="decimal"
+                                                placeholder="เช่น 76,200.00"
+                                                value={shareCount}
+                                                onChange={handleShareCountChange}
+                                            />
+                                            <span className={css.formHint}>
+                                                กรอกมูลค่าหุ้นทั้งหมด • กู้ได้สูงสุด {Math.round(SHARE_LOAN_PERCENTAGE * 100)}% ของมูลค่าหุ้น
+                                            </span>
+                                        </div>
+                                        <div className={css.formGroup}>
+                                            <label htmlFor="share-amount" className={css.formLabel}>
+                                                ยอดเงินกู้ที่สามารถกู้ได้ (บาท)
+                                            </label>
+                                            <input
+                                                id="share-amount"
+                                                className={css.formInput}
+                                                type="text"
+                                                inputMode="decimal"
+                                                placeholder="เช่น 68,500"
+                                                value={loanAmount || (shareCount ? (computedShareAmount > 0 ? fmt(computedShareAmount) : "") : "")}
+                                                onChange={handleAmountChange}
+                                            />
+                                            {amountError ? (
+                                                <span className={css.formError}>{amountError}</span>
+                                            ) : (
+                                                <>
+                                                    {currentLoanType?.maxAmount && (
+                                                        <span className={css.formHint}>
+                                                            วงเงินสูงสุด: {fmt(currentLoanType.maxAmount)} บาท
+                                                        </span>
+                                                    )}
+                                                    <span className={css.formHint}>
+                                                        สูงสุดตามการคำนวน: {fmt(computedShareAmount)} บาท
+                                                    </span>
+                                                </>
+                                            )}
+                                        </div>
+                                        {isOrdinary && (
+                                            <>
+                                                <div className={css.formGroup}>
+                                                    <label htmlFor="existing-debt" className={css.formLabel}>
+                                                        หนี้เดิมคงเหลือ (บาท)
+                                                    </label>
+                                                    <input
+                                                        id="existing-debt"
+                                                        className={css.formInput}
+                                                        type="text"
+                                                        inputMode="decimal"
+                                                        placeholder="เช่น 100,000 (ไม่บังคับ)"
+                                                        value={existingDebt}
+                                                        onChange={handleDebtChange}
+                                                    />
+                                                    <span className={css.formHint}>
+                                                        กรอกยอดหนี้เงินกู้เดิมที่ยังค้างชำระ (ถ้ามี)
+                                                    </span>
+                                                </div>
+                                                {parsedAmount > 0 && parseFloat(stripCommas(existingDebt)) > 0 && (
+                                                    <div className={css.formGroup}>
+                                                        <label htmlFor="net-amount" className={css.formLabel}>
+                                                            ยอดสุทธิที่จะได้รับ (บาท)
+                                                        </label>
+                                                        <input
+                                                            id="net-amount"
+                                                            className={css.formInput}
+                                                            type="text"
+                                                            readOnly
+                                                            value={(() => {
+                                                                const net = parsedAmount - (parseFloat(stripCommas(existingDebt)) || 0);
+                                                                return net > 0 ? fmt(net) : "0.00";
+                                                            })()}
+                                                            style={{
+                                                                backgroundColor: "#f0fdf4",
+                                                                cursor: "not-allowed",
+                                                                color: parsedAmount - (parseFloat(stripCommas(existingDebt)) || 0) > 0 ? "#16a34a" : "#dc2626",
+                                                                fontWeight: 700,
+                                                            }}
+                                                        />
+                                                        {parsedAmount - (parseFloat(stripCommas(existingDebt)) || 0) <= 0 && (
+                                                            <span className={css.formError}>
+                                                                หนี้เดิมมากกว่าหรือเท่ากับยอดเงินกู้ ไม่มียอดสุทธิที่จะได้รับ
+                                                            </span>
+                                                        )}
+                                                        <span className={css.formHintWarning}>
+                                                            * ยอดสุทธิที่จะได้รับจริงอาจน้อยกว่านี้ เนื่องจากต้องหักค่าเบี้ยประกัน และเงินค้ำประกันกองทุนเงินกู้อีกด้วย
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
                                     </>
                                 ) : (
                                     <>
@@ -850,19 +997,7 @@ export default function LoanCalculatorPage() {
                                     </div>
                                 </div>
 
-                                {/* Notice */}
-                                <div className={css.notice}>
-                                    <InfoCircleOutlined className={css.noticeIcon} />
-                                    <div className={css.noticeContent}>
-                                        <p className={css.noticeTitle}>หมายเหตุ</p>
-                                        <p className={css.noticeText}>
-                                            ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
-                                            ยอดชำระจริงอาจแตกต่างเล็กน้อยขึ้นอยู่กับการปัดเศษและเงื่อนไขของสหกรณ์
-                                            กรุณาติดต่อฝ่ายสินเชื่อเพื่อข้อมูลที่ถูกต้องแม่นยำ
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                                                            </div>
                         )}
                     </>
                 )}

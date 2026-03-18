@@ -131,9 +131,14 @@ export default function AdminLoanTypesPage() {
                 const colors: Record<string, string> = {
                     emergency: "red",
                     ordinary: "green",
-                    special: "blue",
+                    special: "orange",
                 };
-                return <Tag color={colors[category] || "default"}>{category}</Tag>;
+                const labels: Record<string, string> = {
+                    emergency: "ฉุกเฉิน",
+                    ordinary: "สามัญ",
+                    special: "กู้สามัญเฉพาะกิจ",
+                };
+                return <Tag color={colors[category] || "default"}>{labels[category] || category}</Tag>;
             },
         },
         {
@@ -257,7 +262,7 @@ export default function AdminLoanTypesPage() {
                         <Select placeholder="เลือกหมวด">
                             <Select.Option value="emergency">ฉุกเฉิน</Select.Option>
                             <Select.Option value="ordinary">สามัญ</Select.Option>
-                            <Select.Option value="special">พิเศษ</Select.Option>
+                            <Select.Option value="special">กู้สามัญเฉพาะกิจ</Select.Option>
                         </Select>
                     </Form.Item>
                     <Space size="middle" style={{ width: "100%" }}>
