@@ -107,6 +107,15 @@ export default function QnaPage() {
       day: "numeric",
     });
 
+  const decodeHtml = (text: string) =>
+    text
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
+      .replace(/&#x27;/g, "'")
+      .replace(/&#x2F;/g, "/");
+
   const truncate = (s: string, len: number) =>
     s.length > len ? s.slice(0, len) + "..." : s;
 
@@ -237,7 +246,7 @@ export default function QnaPage() {
                         <span className={css.latestReplyAuthor}>
                           {q.latestReply.isAdmin ? <><SafetyCertificateOutlined /> เจ้าหน้าที่:</> : <><MessageOutlined /> {q.latestReply.authorName}:</>}
                         </span>
-                        <span className={css.latestReplyBody}>{truncate(q.latestReply.body, 80)}</span>
+                        <span className={css.latestReplyBody}>{truncate(decodeHtml(q.latestReply.body), 80)}</span>
                       </div>
                     )}
                   </div>

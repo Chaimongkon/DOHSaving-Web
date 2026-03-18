@@ -103,6 +103,30 @@ export default function QnaThreadPage() {
     }
   };
 
+  const decodeHtml = (text: string) =>
+    text
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
+      .replace(/&#x27;/g, "'")
+      .replace(/&#x2F;/g, "/");
+
+  const renderBody = (text: string) => {
+    const decoded = decodeHtml(text);
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = decoded.split(urlRegex);
+    return parts.map((part, i) =>
+      /^https?:\/\//.test(part) ? (
+        <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: '#0d9488', textDecoration: 'underline', wordBreak: 'break-all' }}>
+          {part}
+        </a>
+      ) : (
+        <React.Fragment key={i}>{part}</React.Fragment>
+      )
+    );
+  };
+
   const formatDate = (d: string) =>
     new Date(d).toLocaleDateString("th-TH", {
       year: "numeric",
@@ -183,7 +207,7 @@ export default function QnaThreadPage() {
             </div>
           </div>
 
-          <div className={css.questionBody}>{question.body}</div>
+          <div className={css.questionBody}>{renderBody(question.body)}</div>
 
           <div className={css.questionStats}>
             <span className={css.statItem}>
@@ -225,7 +249,7 @@ export default function QnaThreadPage() {
                       <div className={css.replyDate}>{formatDate(reply.createdAt)}</div>
                     </div>
                   </div>
-                  <div className={css.replyBody}>{reply.body}</div>
+                  <div className={css.replyBody}>{renderBody(reply.body)}</div>
                 </div>
               ))}
             </div>
