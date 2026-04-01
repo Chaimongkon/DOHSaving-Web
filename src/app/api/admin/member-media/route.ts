@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { authenticateRequest } from "@/lib/auth";
+import { requireAdminRouteAccess } from "@/lib/adminAuth";
 
 // GET /api/admin/member-media — ดึงทั้งหมด (รวม inactive)
 export async function GET(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) {
+    return user;
   }
 
   try {
@@ -22,9 +22,9 @@ export async function GET(req: NextRequest) {
 
 // POST /api/admin/member-media — สร้างรายการใหม่
 export async function POST(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) {
+    return user;
   }
 
   try {

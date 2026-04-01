@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { authenticateRequest } from "@/lib/auth";
+import { requireAdminRouteAccess } from "@/lib/adminAuth";
 
 const DB_KEY = "page_board_members";
 
@@ -18,9 +18,9 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const user = authenticateRequest(req);
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) {
+    return user;
   }
 
   try {

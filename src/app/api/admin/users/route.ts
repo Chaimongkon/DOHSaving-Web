@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { authenticateRequest, hashPassword } from "@/lib/auth";
+import { hashPassword } from "@/lib/auth";
+import { requireAdmin } from "@/lib/adminAuth";
 
 // GET /api/admin/users — ดึงรายชื่อผู้ใช้ทั้งหมด (admin only)
 export async function GET(req: NextRequest) {
-  const payload = authenticateRequest(req);
-  if (!payload || payload.userRole !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  const payload = await requireAdmin(req);
+  if (payload instanceof NextResponse) return payload;
 
   try {
     const users = await prisma.user.findMany({
@@ -35,10 +34,8 @@ export async function GET(req: NextRequest) {
 
 // POST /api/admin/users — สร้างผู้ใช้ใหม่ (admin only)
 export async function POST(req: NextRequest) {
-  const payload = authenticateRequest(req);
-  if (!payload || payload.userRole !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  const payload = await requireAdmin(req);
+  if (payload instanceof NextResponse) return payload;
 
   try {
     const body = await req.json();

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { v4 as uuidv4 } from "uuid";
+import { getClientIp } from "@/lib/requestIp";
 
 // POST /api/cookie-consent — บันทึกความยินยอม cookie
 export async function POST(req: NextRequest) {
@@ -14,10 +15,7 @@ export async function POST(req: NextRequest) {
       visitorId = uuidv4();
     }
 
-    const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      req.headers.get("x-real-ip") ||
-      "unknown";
+    const ip = getClientIp(req);
     const userAgent = req.headers.get("user-agent") || null;
 
     // Upsert — อัปเดตถ้ามี visitorId เดิม

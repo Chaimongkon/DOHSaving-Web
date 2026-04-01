@@ -1,11 +1,30 @@
 import DOMPurify from "isomorphic-dompurify";
 
+let hooksConfigured = false;
+
+function configureHooks() {
+  if (hooksConfigured) return;
+
+  DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+    if ("getAttribute" in node && "setAttribute" in node) {
+      const target = node.getAttribute("target");
+      if (target === "_blank") {
+        node.setAttribute("rel", "noopener noreferrer");
+      }
+    }
+  });
+
+  hooksConfigured = true;
+}
+
 /**
  * Sanitize HTML content to prevent XSS attacks.
  * Allows safe tags (headings, lists, links, images, tables, formatting)
  * but strips scripts, event handlers, and dangerous attributes.
  */
 export function sanitizeHtml(dirty: string): string {
+  configureHooks();
+
   return DOMPurify.sanitize(dirty, {
     ALLOWED_TAGS: [
       "h1", "h2", "h3", "h4", "h5", "h6",
@@ -21,7 +40,7 @@ export function sanitizeHtml(dirty: string): string {
     ALLOWED_ATTR: [
       "href", "target", "rel",
       "src", "alt", "width", "height",
-      "class", "style",
+      "class",
       "colspan", "rowspan",
     ],
     ALLOW_DATA_ATTR: false,

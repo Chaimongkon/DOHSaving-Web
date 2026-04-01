@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { authenticateRequest } from "@/lib/auth";
+import { requireAdminRouteAccess } from "@/lib/adminAuth";
 
 // ─── XSS Sanitizer ───
 function sanitize(input: string | null | undefined): string {
@@ -15,9 +15,9 @@ function sanitize(input: string | null | undefined): string {
 
 // GET /api/admin/complaints — list all complaints
 export async function GET(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) {
+    return user;
   }
 
   try {
@@ -63,9 +63,9 @@ export async function GET(req: NextRequest) {
 
 // PATCH /api/admin/complaints — update complaint status / admin note
 export async function PATCH(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) {
+    return user;
   }
 
   try {
@@ -102,9 +102,9 @@ export async function PATCH(req: NextRequest) {
 
 // DELETE /api/admin/complaints — delete complaint
 export async function DELETE(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) {
+    return user;
   }
 
   try {

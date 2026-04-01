@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { authenticateRequest } from "@/lib/auth";
+import { requireAdminRouteAccess } from "@/lib/adminAuth";
 
 // PUT /api/admin/loan-types/[id] — update loan type
 export async function PUT(
     req: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
-    const user = authenticateRequest(req);
-    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const user = await requireAdminRouteAccess(req);
+    if (user instanceof NextResponse) return user;
 
     try {
         const { id } = await params;
@@ -44,8 +44,8 @@ export async function DELETE(
     req: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
-    const user = authenticateRequest(req);
-    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const user = await requireAdminRouteAccess(req);
+    if (user instanceof NextResponse) return user;
 
     try {
         const { id } = await params;

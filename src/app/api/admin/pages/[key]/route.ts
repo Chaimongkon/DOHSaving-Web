@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { authenticateRequest } from "@/lib/auth";
+import { requireAdminRouteAccess } from "@/lib/adminAuth";
 
 // GET /api/admin/pages/:key — ดึงเนื้อหาหน้าเพจ
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ key: string }> }
 ) {
-  const user = authenticateRequest(req);
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) {
+    return user;
   }
 
   const { key } = await params;
@@ -36,9 +36,9 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ key: string }> }
 ) {
-  const user = authenticateRequest(req);
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) {
+    return user;
   }
 
   const { key } = await params;

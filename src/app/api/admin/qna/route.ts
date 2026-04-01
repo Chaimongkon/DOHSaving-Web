@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { authenticateRequest } from "@/lib/auth";
+import { requireAdminRouteAccess } from "@/lib/adminAuth";
 
 // GET /api/admin/qna — list all questions (admin)
 export async function GET(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) {
+    return user;
   }
 
   try {
@@ -49,9 +49,9 @@ export async function GET(req: NextRequest) {
 
 // PATCH /api/admin/qna — update question (pin, close, hide)
 export async function PATCH(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) {
+    return user;
   }
 
   try {
@@ -83,9 +83,9 @@ export async function PATCH(req: NextRequest) {
 
 // DELETE /api/admin/qna — delete question
 export async function DELETE(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) {
+    return user;
   }
 
   try {

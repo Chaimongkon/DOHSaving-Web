@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { comparePassword, signToken } from "@/lib/auth";
+import { getClientIp } from "@/lib/requestIp";
+import { clearSessionCookies, setSessionCookie } from "@/lib/sessionCookie";
 
 export async function POST(req: NextRequest) {
   try {
@@ -74,7 +76,7 @@ export async function POST(req: NextRequest) {
         lockedUntil: null,
         lastLoginAt: new Date(),
         loginCount: { increment: 1 },
-        ipAddress: req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || null,
+        ipAddress: getClientIp(req),
         sessionToken: token,
       },
     });
@@ -92,13 +94,8 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    response.cookies.set("token", token, {
-      httpOnly: true,
-      secure: false, // TODO: เปลี่ยนกลับเป็น true เมื่อติดตั้ง SSL แล้ว
-      sameSite: "lax",
-      maxAge: 8 * 60 * 60, // 8 hours
-      path: "/",
-    });
+    clearSessionCookies(response);
+    setSessionCookie(response, token);
 
     return response;
   } catch (error) {

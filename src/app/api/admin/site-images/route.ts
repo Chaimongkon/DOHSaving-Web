@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { authenticateRequest } from "@/lib/auth";
+import { requireAdminRouteAccess } from "@/lib/adminAuth";
 import prisma from "@/lib/prisma";
 
 // GET /api/admin/site-images — get all mega image settings
 export async function GET(req: NextRequest) {
-    const user = authenticateRequest(req);
-    if (!user) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const user = await requireAdminRouteAccess(req);
+    if (user instanceof NextResponse) {
+        return user;
     }
 
     const items = await prisma.siteSetting.findMany({
@@ -19,9 +19,9 @@ export async function GET(req: NextRequest) {
 
 // POST /api/admin/site-images — upsert a mega image by key
 export async function POST(req: NextRequest) {
-    const user = authenticateRequest(req);
-    if (!user) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const user = await requireAdminRouteAccess(req);
+    if (user instanceof NextResponse) {
+        return user;
     }
 
     const body = await req.json();

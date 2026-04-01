@@ -1,16 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { authenticateRequest, hashPassword } from "@/lib/auth";
+import { hashPassword } from "@/lib/auth";
+import { requireAdmin } from "@/lib/adminAuth";
 
 // GET /api/admin/users/[id] — ดึงข้อมูลผู้ใช้รายคน
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const payload = authenticateRequest(req);
-  if (!payload || payload.userRole !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  const payload = await requireAdmin(req);
+  if (payload instanceof NextResponse) return payload;
 
   const { id } = await params;
 
@@ -47,10 +46,8 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const payload = authenticateRequest(req);
-  if (!payload || payload.userRole !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  const payload = await requireAdmin(req);
+  if (payload instanceof NextResponse) return payload;
 
   const { id } = await params;
 
@@ -70,6 +67,11 @@ export async function PUT(
     if (password && password.trim()) {
       updateData.password = await hashPassword(password);
       updateData.mustChangePassword = true;
+      updateData.sessionToken = null;
+    }
+
+    if (isActive === false) {
+      updateData.sessionToken = null;
     }
 
     const user = await prisma.user.update({
@@ -99,10 +101,8 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const payload = authenticateRequest(req);
-  if (!payload || payload.userRole !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  const payload = await requireAdmin(req);
+  if (payload instanceof NextResponse) return payload;
 
   const { id } = await params;
   const userId = Number(id);

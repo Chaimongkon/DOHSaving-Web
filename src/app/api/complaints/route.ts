@@ -1,5 +1,7 @@
 import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
+import { getClientIp } from "@/lib/requestIp";
+import { consumeRateLimit } from "@/lib/rateLimit";
 
 // ─── XSS Sanitizer — strip dangerous HTML/script tags ───
 function sanitize(input: string | null | undefined): string {
@@ -28,36 +30,11 @@ function truncate(val: string, max: number): string {
 }
 
 // ─── Simple in-memory rate limiter ───
-const rateLimitMap = new Map<string, number[]>();
 const RATE_LIMIT = 3;
-const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+const RATE_WINDOW_SECONDS = 60 * 60;
 
-// Track lookup rate limiter (10 per minute per IP — anti brute-force)
-const trackLimitMap = new Map<string, number[]>();
 const TRACK_LIMIT = 10;
-const TRACK_WINDOW_MS = 60 * 1000;
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const timestamps = rateLimitMap.get(ip) || [];
-  const recent = timestamps.filter((t) => now - t < RATE_WINDOW_MS);
-  rateLimitMap.set(ip, recent);
-  if (recent.length >= RATE_LIMIT) return true;
-  recent.push(now);
-  rateLimitMap.set(ip, recent);
-  return false;
-}
-
-function isTrackLimited(ip: string): boolean {
-  const now = Date.now();
-  const timestamps = trackLimitMap.get(ip) || [];
-  const recent = timestamps.filter((t) => now - t < TRACK_WINDOW_MS);
-  trackLimitMap.set(ip, recent);
-  if (recent.length >= TRACK_LIMIT) return true;
-  recent.push(now);
-  trackLimitMap.set(ip, recent);
-  return false;
-}
+const TRACK_WINDOW_SECONDS = 60;
 
 function generateTrackingCode(): string {
   const now = new Date();
@@ -78,11 +55,20 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Security Layer 2: Rate limit ──
-    const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
-    if (isRateLimited(ip)) {
+    const ip = getClientIp(req);
+    const submitLimit = await consumeRateLimit({
+      scope: "complaints-submit",
+      identifier: ip,
+      limit: RATE_LIMIT,
+      windowSeconds: RATE_WINDOW_SECONDS,
+    });
+    if (submitLimit.limited) {
       return Response.json(
         { error: "ส่งเรื่องได้สูงสุด 3 เรื่องต่อชั่วโมง กรุณาลองใหม่ภายหลัง" },
-        { status: 429 }
+        {
+          status: 429,
+          headers: { "Retry-After": String(submitLimit.retryAfterSeconds) },
+        }
       );
     }
 
@@ -150,11 +136,20 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     // Anti brute-force rate limit
-    const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
-    if (isTrackLimited(ip)) {
+    const ip = getClientIp(req);
+    const trackingLimit = await consumeRateLimit({
+      scope: "complaints-track",
+      identifier: ip,
+      limit: TRACK_LIMIT,
+      windowSeconds: TRACK_WINDOW_SECONDS,
+    });
+    if (trackingLimit.limited) {
       return Response.json(
         { error: "ค้นหาได้สูงสุด 10 ครั้งต่อนาที กรุณาลองใหม่ภายหลัง" },
-        { status: 429 }
+        {
+          status: 429,
+          headers: { "Retry-After": String(trackingLimit.retryAfterSeconds) },
+        }
       );
     }
 

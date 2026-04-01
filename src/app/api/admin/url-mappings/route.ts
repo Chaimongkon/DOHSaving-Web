@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { requireAdminRouteAccess } from "@/lib/adminAuth";
 
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
 const prisma = new PrismaClient({ adapter });
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+    const user = await requireAdminRouteAccess(request);
+    if (user instanceof NextResponse) return user;
+
     try {
         const rawMappings = await prisma.siteSetting.findMany({
             where: { key: { startsWith: "url_translation:" } },
@@ -28,6 +32,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+    const user = await requireAdminRouteAccess(request);
+    if (user instanceof NextResponse) return user;
+
     try {
         const { url, thaiName } = await request.json();
         if (!url || !thaiName) {
@@ -56,6 +63,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+    const user = await requireAdminRouteAccess(request);
+    if (user instanceof NextResponse) return user;
+
     try {
         const { searchParams } = new URL(request.url);
         const id = searchParams.get("id");

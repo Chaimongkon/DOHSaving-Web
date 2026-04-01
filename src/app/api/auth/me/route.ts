@@ -4,7 +4,7 @@ import { authenticateRequest } from "@/lib/auth";
 
 // GET /api/auth/me — ดึงข้อมูล user ปัจจุบัน
 export async function GET(req: NextRequest) {
-  const payload = authenticateRequest(req);
+  const payload = await authenticateRequest(req);
 
   if (!payload) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });

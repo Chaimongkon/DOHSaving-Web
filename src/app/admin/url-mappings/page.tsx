@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Button, Card, Col, Form, Input, Popconfirm, Row, Space, Spin, Table, Typography, message } from "antd";

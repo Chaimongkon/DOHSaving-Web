@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getClientIp } from "@/lib/requestIp";
+import { consumeRateLimit } from "@/lib/rateLimit";
 
 // ─── Security helpers ───
 function sanitize(input: string | null | undefined): string {
@@ -16,17 +18,8 @@ function truncate(val: string, max: number): string {
   return val.length > max ? val.slice(0, max) : val;
 }
 
-// Rate limit: 10 replies per hour per IP
-const replyLimitMap = new Map<string, number[]>();
-function isReplyLimited(ip: string): boolean {
-  const now = Date.now();
-  const ts = (replyLimitMap.get(ip) || []).filter((t) => now - t < 3600000);
-  replyLimitMap.set(ip, ts);
-  if (ts.length >= 10) return true;
-  ts.push(now);
-  replyLimitMap.set(ip, ts);
-  return false;
-}
+const REPLY_LIMIT = 10;
+const REPLY_WINDOW_SECONDS = 60 * 60;
 
 // GET /api/qna/[id] — get single question + replies
 export async function GET(
@@ -106,11 +99,20 @@ export async function POST(
     }
 
     // ── Security: Rate limit ──
-    const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
-    if (isReplyLimited(ip)) {
+    const ip = getClientIp(req);
+    const replyLimit = await consumeRateLimit({
+      scope: "qna-reply",
+      identifier: ip,
+      limit: REPLY_LIMIT,
+      windowSeconds: REPLY_WINDOW_SECONDS,
+    });
+    if (replyLimit.limited) {
       return NextResponse.json(
         { error: "ตอบกระทู้ได้สูงสุด 10 ครั้งต่อชั่วโมง" },
-        { status: 429 }
+        {
+          status: 429,
+          headers: { "Retry-After": String(replyLimit.retryAfterSeconds) },
+        }
       );
     }
 

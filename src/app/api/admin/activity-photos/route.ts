@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { authenticateRequest } from "@/lib/auth";
+import { requireAdminRouteAccess } from "@/lib/adminAuth";
 
 // GET /api/admin/activity-photos?albumId=1 — photos for an album
 export async function GET(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) return user;
 
   const { searchParams } = new URL(req.url);
   const albumId = parseInt(searchParams.get("albumId") || "0");
@@ -26,8 +26,8 @@ export async function GET(req: NextRequest) {
 // POST /api/admin/activity-photos — add photos (supports batch)
 // body: { albumId, photos: [{ imageUrl, caption?, sortOrder? }] }
 export async function POST(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) return user;
 
   try {
     const body = await req.json();
@@ -57,8 +57,8 @@ export async function POST(req: NextRequest) {
 
 // PATCH /api/admin/activity-photos — update single photo caption/order
 export async function PATCH(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) return user;
 
   try {
     const body = await req.json();
@@ -79,8 +79,8 @@ export async function PATCH(req: NextRequest) {
 
 // DELETE /api/admin/activity-photos?id=1
 export async function DELETE(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) return user;
 
   try {
     const { searchParams } = new URL(req.url);

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { authenticateRequest } from "@/lib/auth";
+import { requireAdminRouteAccess } from "@/lib/adminAuth";
 
 // GET /api/admin/line-contacts
 export async function GET(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) return user;
 
   try {
     const contacts = await prisma.lineContact.findMany({ orderBy: { sortOrder: "asc" } });
@@ -18,8 +18,8 @@ export async function GET(req: NextRequest) {
 
 // POST /api/admin/line-contacts — create
 export async function POST(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) return user;
 
   try {
     const { name, lineUrl, sortOrder } = await req.json();
@@ -37,8 +37,8 @@ export async function POST(req: NextRequest) {
 
 // PATCH /api/admin/line-contacts — update
 export async function PATCH(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) return user;
 
   try {
     const body = await req.json();
@@ -62,8 +62,8 @@ export async function PATCH(req: NextRequest) {
 
 // DELETE /api/admin/line-contacts?id=X
 export async function DELETE(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) return user;
 
   try {
     const id = parseInt(new URL(req.url).searchParams.get("id") || "");

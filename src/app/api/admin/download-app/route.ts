@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { authenticateRequest } from "@/lib/auth";
+import { requireAdminRouteAccess } from "@/lib/adminAuth";
 
 // GET — fetch current download app settings (single row)
 export async function GET(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) return user;
 
   try {
     let data = await prisma.downloadApp.findFirst();
@@ -29,8 +29,8 @@ export async function GET(req: NextRequest) {
 
 // PATCH — update download app settings
 export async function PATCH(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) return user;
 
   try {
     const body = await req.json();

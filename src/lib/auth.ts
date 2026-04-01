@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { NextRequest } from "next/server";
+import prisma from "@/lib/prisma";
+import { getSessionCookieValue } from "@/lib/sessionCookie";
 
 if (!process.env.JWT_SECRET) {
   throw new Error("FATAL: JWT_SECRET environment variable is not set. Server cannot start safely.");
@@ -53,13 +55,35 @@ export function getTokenFromRequest(req: NextRequest): string | null {
   }
 
   // ลอง cookie
-  const token = req.cookies.get("token")?.value;
+  const token = getSessionCookieValue(req);
   return token || null;
 }
 
 // ตรวจสอบสิทธิ์จาก request
-export function authenticateRequest(req: NextRequest): JwtPayload | null {
+export async function authenticateRequest(
+  req: NextRequest
+): Promise<JwtPayload | null> {
   const token = getTokenFromRequest(req);
   if (!token) return null;
-  return verifyToken(token);
+
+  const payload = verifyToken(token);
+  if (!payload) return null;
+
+  const user = await prisma.user.findUnique({
+    where: { id: payload.userId },
+    select: {
+      isActive: true,
+      sessionToken: true,
+    },
+  });
+
+  if (!user || !user.isActive || !user.sessionToken) {
+    return null;
+  }
+
+  if (user.sessionToken !== token) {
+    return null;
+  }
+
+  return payload;
 }

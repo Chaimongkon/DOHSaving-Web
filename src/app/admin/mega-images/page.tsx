@@ -191,7 +191,7 @@ export default function MegaImagesPage() {
                                             ? "กำลังอัพโหลด..."
                                             : "คลิกเพื่อเลือกรูปภาพ"}
                                     </p>
-                                    <p className={css.uploadHint}>PNG, JPG, SVG, WebP</p>
+                                    <p className={css.uploadHint}>PNG, JPG, JPEG, GIF, WebP</p>
                                 </div>
                             )}
 

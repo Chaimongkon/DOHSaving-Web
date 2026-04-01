@@ -1,6 +1,11 @@
 import React from "react";
 
-export const LineIcon = ({ size = 24, color = "currentColor", ...props }: { size?: number; color?: string;[key: string]: any }) => {
+type LineIconProps = React.SVGProps<SVGSVGElement> & {
+    size?: number;
+    color?: string;
+};
+
+export const LineIcon = ({ size = 24, color = "currentColor", ...props }: LineIconProps) => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"

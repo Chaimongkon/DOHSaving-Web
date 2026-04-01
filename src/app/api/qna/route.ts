@@ -1,5 +1,7 @@
 import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
+import { getClientIp } from "@/lib/requestIp";
+import { consumeRateLimit } from "@/lib/rateLimit";
 
 // ─── Security helpers ───
 function sanitize(input: string | null | undefined): string {
@@ -16,17 +18,8 @@ function truncate(val: string, max: number): string {
   return val.length > max ? val.slice(0, max) : val;
 }
 
-// Rate limit: 5 questions per hour per IP
-const qnaLimitMap = new Map<string, number[]>();
-function isQnaLimited(ip: string): boolean {
-  const now = Date.now();
-  const ts = (qnaLimitMap.get(ip) || []).filter((t) => now - t < 3600000);
-  qnaLimitMap.set(ip, ts);
-  if (ts.length >= 5) return true;
-  ts.push(now);
-  qnaLimitMap.set(ip, ts);
-  return false;
-}
+const QNA_LIMIT = 5;
+const QNA_WINDOW_SECONDS = 60 * 60;
 
 // GET /api/qna — list questions (public)
 export async function GET(req: NextRequest) {
@@ -118,11 +111,20 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Security Layer 2: Rate limit ──
-    const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
-    if (isQnaLimited(ip)) {
+    const ip = getClientIp(req);
+    const qnaLimit = await consumeRateLimit({
+      scope: "qna-question",
+      identifier: ip,
+      limit: QNA_LIMIT,
+      windowSeconds: QNA_WINDOW_SECONDS,
+    });
+    if (qnaLimit.limited) {
       return Response.json(
         { error: "ตั้งกระทู้ได้สูงสุด 5 กระทู้ต่อชั่วโมง" },
-        { status: 429 }
+        {
+          status: 429,
+          headers: { "Retry-After": String(qnaLimit.retryAfterSeconds) },
+        }
       );
     }
 

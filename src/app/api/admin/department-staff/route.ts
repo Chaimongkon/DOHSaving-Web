@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { authenticateRequest } from "@/lib/auth";
+import { requireAdminRouteAccess } from "@/lib/adminAuth";
 
 function dbKey(dept: string) {
   return `dept_staff_${dept}`;
@@ -17,9 +17,9 @@ export interface StaffMember {
 
 // GET /api/admin/department-staff?dept=managers
 export async function GET(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) {
+    return user;
   }
 
   const dept = req.nextUrl.searchParams.get("dept");
@@ -42,9 +42,9 @@ export async function GET(req: NextRequest) {
 
 // PUT /api/admin/department-staff?dept=managers
 export async function PUT(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) {
+    return user;
   }
 
   const dept = req.nextUrl.searchParams.get("dept");

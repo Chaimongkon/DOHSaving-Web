@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { authenticateRequest } from "@/lib/auth";
+import { requireAdminRouteAccess } from "@/lib/adminAuth";
 
 // GET /api/admin/activity-albums — all albums with photo count
 export async function GET(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) return user;
 
   try {
     const items = await prisma.activityAlbum.findMany({
@@ -21,8 +21,8 @@ export async function GET(req: NextRequest) {
 
 // POST /api/admin/activity-albums — create album
 export async function POST(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) return user;
 
   try {
     const body = await req.json();
@@ -51,8 +51,8 @@ export async function POST(req: NextRequest) {
 
 // PATCH /api/admin/activity-albums — update album
 export async function PATCH(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) return user;
 
   try {
     const body = await req.json();
@@ -78,8 +78,8 @@ export async function PATCH(req: NextRequest) {
 
 // DELETE /api/admin/activity-albums?id=1
 export async function DELETE(req: NextRequest) {
-  const user = authenticateRequest(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) return user;
 
   try {
     const { searchParams } = new URL(req.url);
