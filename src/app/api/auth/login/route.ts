@@ -3,49 +3,76 @@ import prisma from "@/lib/prisma";
 import { comparePassword, signToken } from "@/lib/auth";
 import { getClientIp } from "@/lib/requestIp";
 import { clearSessionCookies, setSessionCookie } from "@/lib/sessionCookie";
+import { writeAuditLog } from "@/lib/auditLog";
 
 export async function POST(req: NextRequest) {
   try {
+    const ipAddress = getClientIp(req);
     const { userName, password } = await req.json();
 
     if (!userName || !password) {
+      await writeAuditLog({
+        action: "login_failed",
+        tableName: "auth_sessions",
+        ipAddress,
+        newValues: { userName: userName || null, reason: "missing_credentials" },
+      });
+
       return NextResponse.json(
         { error: "กรุณากรอกชื่อผู้ใช้และรหัสผ่าน" },
         { status: 400 }
       );
     }
 
-    // ค้นหา user
     const user = await prisma.user.findUnique({
       where: { userName },
     });
 
     if (!user || !user.isActive) {
+      await writeAuditLog({
+        userId: user?.id ?? null,
+        action: "login_failed",
+        tableName: "auth_sessions",
+        ipAddress,
+        newValues: { userName, reason: "invalid_user" },
+      });
+
       return NextResponse.json(
         { error: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง" },
         { status: 401 }
       );
     }
 
-    // ตรวจสอบ account locked
     if (user.lockedUntil && user.lockedUntil > new Date()) {
+      await writeAuditLog({
+        userId: user.id,
+        action: "login_blocked",
+        tableName: "auth_sessions",
+        ipAddress,
+        newValues: {
+          userName,
+          reason: "account_locked",
+          lockedUntil: user.lockedUntil,
+        },
+      });
+
       return NextResponse.json(
         { error: "บัญชีถูกล็อคชั่วคราว กรุณาลองใหม่ภายหลัง" },
         { status: 423 }
       );
     }
 
-    // ตรวจสอบ password
     const isValid = await comparePassword(password, user.password);
 
     if (!isValid) {
-      // เพิ่ม failed attempts
       const failedAttempts = user.failedLoginAttempts + 1;
-      const updateData: Record<string, unknown> = {
+      const updateData: {
+        failedLoginAttempts: number;
+        lockedUntil?: Date;
+      } = {
         failedLoginAttempts: failedAttempts,
       };
 
-      // ล็อคบัญชีหลัง 5 ครั้ง (30 นาที)
       if (failedAttempts >= 5) {
         updateData.lockedUntil = new Date(Date.now() + 30 * 60 * 1000);
       }
@@ -55,13 +82,25 @@ export async function POST(req: NextRequest) {
         data: updateData,
       });
 
+      await writeAuditLog({
+        userId: user.id,
+        action: "login_failed",
+        tableName: "auth_sessions",
+        ipAddress,
+        newValues: {
+          userName,
+          reason: "invalid_password",
+          failedLoginAttempts: failedAttempts,
+          lockedUntil: updateData.lockedUntil ?? null,
+        },
+      });
+
       return NextResponse.json(
         { error: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง" },
         { status: 401 }
       );
     }
 
-    // Login สำเร็จ — reset failed attempts + update session
     const token = signToken({
       userId: user.id,
       userName: user.userName,
@@ -76,12 +115,22 @@ export async function POST(req: NextRequest) {
         lockedUntil: null,
         lastLoginAt: new Date(),
         loginCount: { increment: 1 },
-        ipAddress: getClientIp(req),
+        ipAddress,
         sessionToken: token,
       },
     });
 
-    // ส่ง token ใน cookie + response
+    await writeAuditLog({
+      userId: user.id,
+      action: "login_success",
+      tableName: "auth_sessions",
+      ipAddress,
+      newValues: {
+        userName: user.userName,
+        userRole: user.userRole || "viewer",
+      },
+    });
+
     const response = NextResponse.json({
       success: true,
       user: {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
 // GET /api/admin/forms — fetch all (including inactive)
 export async function GET(req: NextRequest) {
@@ -24,6 +25,7 @@ export async function POST(req: NextRequest) {
   if (user instanceof NextResponse) return user;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const body = await req.json();
     if (!body.category || !body.group || !body.title) {
       return NextResponse.json({ error: "กรุณาระบุประเภทสมาชิก หมวดหมู่ และชื่อแบบฟอร์ม" }, { status: 400 });
@@ -42,6 +44,15 @@ export async function POST(req: NextRequest) {
         updatedBy,
       },
     });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "create",
+      tableName: "forms",
+      recordId: item.id,
+      ipAddress,
+      newValues: item,
+    });
     return NextResponse.json(item, { status: 201 });
   } catch (error) {
     console.error("Failed to create form:", error);
@@ -55,9 +66,15 @@ export async function PATCH(req: NextRequest) {
   if (user instanceof NextResponse) return user;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const body = await req.json();
     const id = Number(body.id);
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+
+    const existingItem = await prisma.form.findUnique({ where: { id } });
+    if (!existingItem) {
+      return NextResponse.json({ error: "Form not found" }, { status: 404 });
+    }
 
     const updatedBy = String((user as unknown as Record<string, unknown>).userId ?? "");
     const data: Record<string, unknown> = { updatedBy };
@@ -70,6 +87,16 @@ export async function PATCH(req: NextRequest) {
     if (body.isActive !== undefined) data.isActive = body.isActive;
 
     const item = await prisma.form.update({ where: { id }, data });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "update",
+      tableName: "forms",
+      recordId: item.id,
+      ipAddress,
+      oldValues: existingItem,
+      newValues: item,
+    });
     return NextResponse.json(item);
   } catch (error) {
     console.error("Failed to update form:", error);
@@ -83,11 +110,26 @@ export async function DELETE(req: NextRequest) {
   if (user instanceof NextResponse) return user;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const { searchParams } = new URL(req.url);
     const id = parseInt(searchParams.get("id") || "0");
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
+    const existingItem = await prisma.form.findUnique({ where: { id } });
+    if (!existingItem) {
+      return NextResponse.json({ error: "Form not found" }, { status: 404 });
+    }
+
     await prisma.form.delete({ where: { id } });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "delete",
+      tableName: "forms",
+      recordId: id,
+      ipAddress,
+      oldValues: existingItem,
+    });
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Failed to delete form:", error);

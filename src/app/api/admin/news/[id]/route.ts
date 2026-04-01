@@ -3,6 +3,7 @@ import { unlink } from "fs/promises";
 import path from "path";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
 // ลบไฟล์จาก disk (ถ้าเป็น local upload)
 async function deleteFile(filePath: string | null) {
@@ -54,15 +55,25 @@ export async function PUT(
   }
 
   const { id } = await params;
+  const newsId = parseInt(id, 10);
 
   try {
+    const ipAddress = getAuditIpAddress(req);
+    const existingNews = await prisma.news.findUnique({
+      where: { id: newsId },
+    });
+
+    if (!existingNews) {
+      return NextResponse.json({ error: "News not found" }, { status: 404 });
+    }
+
     const body = await req.json();
     const { title, details, imagePath, pdfPath, legacyPath, category, isPinned, isActive } = body;
 
     // ลบไฟล์เก่าถ้าเปลี่ยนภาพหรือ PDF
     if (imagePath !== undefined || pdfPath !== undefined) {
       const oldNews = await prisma.news.findUnique({
-        where: { id: parseInt(id) },
+        where: { id: newsId },
         select: { imagePath: true, pdfPath: true },
       });
       if (oldNews) {
@@ -76,7 +87,7 @@ export async function PUT(
     }
 
     const news = await prisma.news.update({
-      where: { id: parseInt(id) },
+      where: { id: newsId },
       data: {
         ...(title !== undefined && { title }),
         ...(details !== undefined && { details: details || null }),
@@ -88,6 +99,16 @@ export async function PUT(
         ...(isActive !== undefined && { isActive }),
         updatedBy: user.userName,
       },
+    });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "update",
+      tableName: "news",
+      recordId: news.id,
+      ipAddress,
+      oldValues: existingNews,
+      newValues: news,
     });
 
     return NextResponse.json(news);
@@ -108,15 +129,20 @@ export async function DELETE(
   }
 
   const { id } = await params;
+  const newsId = parseInt(id, 10);
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const news = await prisma.news.findUnique({
-      where: { id: parseInt(id) },
-      select: { imagePath: true, pdfPath: true },
+      where: { id: newsId },
     });
 
+    if (!news) {
+      return NextResponse.json({ error: "News not found" }, { status: 404 });
+    }
+
     await prisma.news.delete({
-      where: { id: parseInt(id) },
+      where: { id: newsId },
     });
 
     // ลบไฟล์ออกจาก disk
@@ -124,6 +150,15 @@ export async function DELETE(
       await deleteFile(news.imagePath);
       await deleteFile(news.pdfPath);
     }
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "delete",
+      tableName: "news",
+      recordId: newsId,
+      ipAddress,
+      oldValues: news,
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
 // GET /api/admin/news — ดึงรายการข่าวทั้งหมด
 export async function GET(req: NextRequest) {
@@ -28,6 +29,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const body = await req.json();
     const { title, details, imagePath, pdfPath, legacyPath, category, isPinned, isActive } = body;
 
@@ -48,6 +50,15 @@ export async function POST(req: NextRequest) {
         createdBy: user.userName,
         updatedBy: user.userName,
       },
+    });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "create",
+      tableName: "news",
+      recordId: news.id,
+      ipAddress,
+      newValues: news,
     });
 
     return NextResponse.json(news, { status: 201 });

@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { hashPassword } from "@/lib/auth";
 import { requireAdmin } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
-// GET /api/admin/users — ดึงรายชื่อผู้ใช้ทั้งหมด (admin only)
 export async function GET(req: NextRequest) {
   const payload = await requireAdmin(req);
   if (payload instanceof NextResponse) return payload;
@@ -32,12 +32,12 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST /api/admin/users — สร้างผู้ใช้ใหม่ (admin only)
 export async function POST(req: NextRequest) {
   const payload = await requireAdmin(req);
   if (payload instanceof NextResponse) return payload;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const body = await req.json();
     const { fullName, userName, password, userRole, department, phone, menuPermissions } = body;
 
@@ -48,7 +48,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ตรวจสอบ userName ซ้ำ
     const existing = await prisma.user.findUnique({ where: { userName } });
     if (existing) {
       return NextResponse.json(
@@ -78,6 +77,15 @@ export async function POST(req: NextRequest) {
         menuPermissions: true,
         createdAt: true,
       },
+    });
+
+    await writeAuditLog({
+      userId: payload.userId,
+      action: "create",
+      tableName: "users",
+      recordId: user.id,
+      ipAddress,
+      newValues: user,
     });
 
     return NextResponse.json(user, { status: 201 });

@@ -2,8 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { hashPassword } from "@/lib/auth";
 import { requireAdmin } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
-// GET /api/admin/users/[id] — ดึงข้อมูลผู้ใช้รายคน
+const userSelect = {
+  id: true,
+  fullName: true,
+  userName: true,
+  userRole: true,
+  department: true,
+  phone: true,
+  isActive: true,
+  menuPermissions: true,
+  lastLoginAt: true,
+  createdAt: true,
+} as const;
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -16,18 +29,7 @@ export async function GET(
   try {
     const user = await prisma.user.findUnique({
       where: { id: Number(id) },
-      select: {
-        id: true,
-        fullName: true,
-        userName: true,
-        userRole: true,
-        department: true,
-        phone: true,
-        isActive: true,
-        menuPermissions: true,
-        lastLoginAt: true,
-        createdAt: true,
-      },
+      select: userSelect,
     });
 
     if (!user) {
@@ -41,7 +43,6 @@ export async function GET(
   }
 }
 
-// PUT /api/admin/users/[id] — แก้ไขผู้ใช้
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -50,8 +51,19 @@ export async function PUT(
   if (payload instanceof NextResponse) return payload;
 
   const { id } = await params;
+  const userId = Number(id);
 
   try {
+    const ipAddress = getAuditIpAddress(req);
+    const existingUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: userSelect,
+    });
+
+    if (!existingUser) {
+      return NextResponse.json({ error: "ไม่พบผู้ใช้" }, { status: 404 });
+    }
+
     const body = await req.json();
     const { fullName, userRole, department, phone, isActive, menuPermissions, password } = body;
 
@@ -63,7 +75,6 @@ export async function PUT(
     if (isActive !== undefined) updateData.isActive = isActive;
     if (menuPermissions !== undefined) updateData.menuPermissions = menuPermissions;
 
-    // ถ้าส่ง password มาด้วย ให้ hash ใหม่
     if (password && password.trim()) {
       updateData.password = await hashPassword(password);
       updateData.mustChangePassword = true;
@@ -75,18 +86,19 @@ export async function PUT(
     }
 
     const user = await prisma.user.update({
-      where: { id: Number(id) },
+      where: { id: userId },
       data: updateData,
-      select: {
-        id: true,
-        fullName: true,
-        userName: true,
-        userRole: true,
-        department: true,
-        phone: true,
-        isActive: true,
-        menuPermissions: true,
-      },
+      select: userSelect,
+    });
+
+    await writeAuditLog({
+      userId: payload.userId,
+      action: "update",
+      tableName: "users",
+      recordId: user.id,
+      ipAddress,
+      oldValues: existingUser,
+      newValues: user,
     });
 
     return NextResponse.json(user);
@@ -96,7 +108,6 @@ export async function PUT(
   }
 }
 
-// DELETE /api/admin/users/[id] — ลบผู้ใช้
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -107,7 +118,6 @@ export async function DELETE(
   const { id } = await params;
   const userId = Number(id);
 
-  // ห้ามลบตัวเอง
   if (userId === payload.userId) {
     return NextResponse.json(
       { error: "ไม่สามารถลบบัญชีตัวเองได้" },
@@ -116,7 +126,27 @@ export async function DELETE(
   }
 
   try {
+    const ipAddress = getAuditIpAddress(req);
+    const existingUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: userSelect,
+    });
+
+    if (!existingUser) {
+      return NextResponse.json({ error: "ไม่พบผู้ใช้" }, { status: 404 });
+    }
+
     await prisma.user.delete({ where: { id: userId } });
+
+    await writeAuditLog({
+      userId: payload.userId,
+      action: "delete",
+      tableName: "users",
+      recordId: userId,
+      ipAddress,
+      oldValues: existingUser,
+    });
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Delete user error:", error);

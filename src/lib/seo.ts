@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const SITE_NAME = "Department of Highways Saving Cooperative Ltd.";
 export const SITE_SHORT_NAME = "DOHSaving";
@@ -12,13 +12,30 @@ function normalizeUrl(url: string) {
 
 export function getSiteUrl() {
   const rawUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  const isProduction = process.env.NODE_ENV === "production";
 
   if (rawUrl) {
     try {
-      return normalizeUrl(new URL(rawUrl).toString());
-    } catch {
-      // Fall back to local development URL when env is invalid.
+      const parsedUrl = new URL(rawUrl);
+
+      if (isProduction && parsedUrl.protocol !== "https:") {
+        throw new Error("NEXT_PUBLIC_SITE_URL must use https in production");
+      }
+
+      return normalizeUrl(parsedUrl.toString());
+    } catch (error) {
+      if (isProduction) {
+        throw new Error(
+          `Invalid NEXT_PUBLIC_SITE_URL for production: ${
+            error instanceof Error ? error.message : "unknown error"
+          }`
+        );
+      }
     }
+  }
+
+  if (isProduction) {
+    throw new Error("NEXT_PUBLIC_SITE_URL is required in production");
   }
 
   return "http://localhost:3000";

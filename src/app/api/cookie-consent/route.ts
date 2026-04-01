@@ -3,13 +3,13 @@ import prisma from "@/lib/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { getClientIp } from "@/lib/requestIp";
 
-// POST /api/cookie-consent — บันทึกความยินยอม cookie
+const isSecureCookie = process.env.NODE_ENV === "production";
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { consentStatus, cookieCategories } = body;
 
-    // ใช้ cookie เก็บ visitorId สำหรับ anonymous user
     let visitorId = req.cookies.get("visitor_id")?.value;
     if (!visitorId) {
       visitorId = uuidv4();
@@ -18,45 +18,41 @@ export async function POST(req: NextRequest) {
     const ip = getClientIp(req);
     const userAgent = req.headers.get("user-agent") || null;
 
-    // Upsert — อัปเดตถ้ามี visitorId เดิม
     const existing = await prisma.cookieConsent.findFirst({
       where: { userId: visitorId },
       orderBy: { createdAt: "desc" },
     });
 
-    let record;
-    if (existing) {
-      record = await prisma.cookieConsent.update({
-        where: { id: existing.id },
-        data: {
-          consentStatus,
-          cookieCategories: cookieCategories || null,
-          ipAddress: ip,
-          userAgent: userAgent?.slice(0, 255) || null,
-        },
-      });
-    } else {
-      record = await prisma.cookieConsent.create({
-        data: {
-          userId: visitorId,
-          consentStatus,
-          cookieCategories: cookieCategories || null,
-          ipAddress: ip,
-          userAgent: userAgent?.slice(0, 255) || null,
-        },
-      });
-    }
+    const record = existing
+      ? await prisma.cookieConsent.update({
+          where: { id: existing.id },
+          data: {
+            consentStatus,
+            cookieCategories: cookieCategories || null,
+            ipAddress: ip,
+            userAgent: userAgent?.slice(0, 255) || null,
+          },
+        })
+      : await prisma.cookieConsent.create({
+          data: {
+            userId: visitorId,
+            consentStatus,
+            cookieCategories: cookieCategories || null,
+            ipAddress: ip,
+            userAgent: userAgent?.slice(0, 255) || null,
+          },
+        });
 
     const res = NextResponse.json({ success: true, id: record.id });
-    // Set visitor_id cookie (1 year)
     res.cookies.set("visitor_id", visitorId, {
       httpOnly: true,
+      secure: isSecureCookie,
       maxAge: 365 * 24 * 60 * 60,
       path: "/",
       sameSite: "lax",
     });
-    // Set cookie_consent cookie สำหรับ frontend ตรวจสอบ
     res.cookies.set("cookie_consent", consentStatus ? "accepted" : "rejected", {
+      secure: isSecureCookie,
       maxAge: 365 * 24 * 60 * 60,
       path: "/",
       sameSite: "lax",
@@ -69,7 +65,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET /api/cookie-consent — ตรวจสอบสถานะ cookie consent
 export async function GET(req: NextRequest) {
   try {
     const visitorId = req.cookies.get("visitor_id")?.value;

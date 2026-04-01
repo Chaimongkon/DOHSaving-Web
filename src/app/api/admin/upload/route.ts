@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
 const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
 const IMAGE_MIME_TYPES = new Set([
@@ -18,6 +19,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
     const rawFolder = (formData.get("folder") as string) || "general";
@@ -71,9 +73,26 @@ export async function POST(req: NextRequest) {
     const filePath = path.join(uploadDir, fileName);
     await writeFile(filePath, buffer);
 
+    const url = `/uploads/${folder}/${fileName}`;
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "upload",
+      tableName: "uploads",
+      ipAddress,
+      newValues: {
+        folder,
+        fileName,
+        originalName: file.name,
+        mimeType: file.type,
+        size: file.size,
+        url,
+      },
+    });
+
     return NextResponse.json({
       success: true,
-      url: `/uploads/${folder}/${fileName}`,
+      url,
       fileName,
     });
   } catch (error) {
