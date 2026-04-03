@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
 // GET — fetch current download app settings (single row)
 export async function GET(req: NextRequest) {
@@ -33,10 +34,12 @@ export async function PATCH(req: NextRequest) {
   if (user instanceof NextResponse) return user;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const body = await req.json();
     const updatedBy = String((user as unknown as Record<string, unknown>).userId ?? "");
 
     let existing = await prisma.downloadApp.findFirst();
+    const previousValues = existing;
     if (!existing) {
       existing = await prisma.downloadApp.create({ data: { updatedBy } });
     }
@@ -57,6 +60,17 @@ export async function PATCH(req: NextRequest) {
       where: { id: existing.id },
       data,
     });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: previousValues ? "update" : "create",
+      tableName: "download_app",
+      recordId: updated.id,
+      ipAddress,
+      oldValues: previousValues ?? undefined,
+      newValues: updated,
+    });
+
     return NextResponse.json(updated);
   } catch (error) {
     console.error("Failed to update download app:", error);

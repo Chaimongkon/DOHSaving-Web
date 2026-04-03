@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
 // GET /api/admin/financial-summary — fetch all (with inactive)
 export async function GET(req: NextRequest) {
@@ -24,6 +25,7 @@ export async function POST(req: NextRequest) {
   if (user instanceof NextResponse) return user;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const body = await req.json();
     const year = Number(body.year);
     const month = Number(body.month);
@@ -43,11 +45,26 @@ export async function POST(req: NextRequest) {
       updatedBy,
     };
 
+    const existingItem = await prisma.financialSummary.findUnique({
+      where: { year_month: { year, month } },
+    });
+
     const item = await prisma.financialSummary.upsert({
       where: { year_month: { year, month } },
       create: { year, month, ...data },
       update: data,
     });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: existingItem ? "update" : "create",
+      tableName: "financial_summaries",
+      recordId: item.id,
+      ipAddress,
+      oldValues: existingItem ?? undefined,
+      newValues: item,
+    });
+
     return NextResponse.json(item, { status: 201 });
   } catch (error) {
     console.error("Failed to create financial summary:", error);
@@ -61,9 +78,15 @@ export async function PATCH(req: NextRequest) {
   if (user instanceof NextResponse) return user;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const body = await req.json();
     const id = Number(body.id);
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+
+    const existingItem = await prisma.financialSummary.findUnique({ where: { id } });
+    if (!existingItem) {
+      return NextResponse.json({ error: "Financial summary not found" }, { status: 404 });
+    }
 
     const updatedBy = String((user as unknown as Record<string, unknown>).userId ?? "");
     const data = {
@@ -80,6 +103,17 @@ export async function PATCH(req: NextRequest) {
     };
 
     const item = await prisma.financialSummary.update({ where: { id }, data });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "update",
+      tableName: "financial_summaries",
+      recordId: item.id,
+      ipAddress,
+      oldValues: existingItem,
+      newValues: item,
+    });
+
     return NextResponse.json(item);
   } catch (error) {
     console.error("Failed to update financial summary:", error);
@@ -93,11 +127,27 @@ export async function DELETE(req: NextRequest) {
   if (user instanceof NextResponse) return user;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const { searchParams } = new URL(req.url);
     const id = parseInt(searchParams.get("id") || "0");
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
+    const existingItem = await prisma.financialSummary.findUnique({ where: { id } });
+    if (!existingItem) {
+      return NextResponse.json({ error: "Financial summary not found" }, { status: 404 });
+    }
+
     await prisma.financialSummary.delete({ where: { id } });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "delete",
+      tableName: "financial_summaries",
+      recordId: id,
+      ipAddress,
+      oldValues: existingItem,
+    });
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Failed to delete financial summary:", error);

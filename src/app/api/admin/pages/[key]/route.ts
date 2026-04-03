@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
-// GET /api/admin/pages/:key — ดึงเนื้อหาหน้าเพจ
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ key: string }> }
@@ -31,7 +31,6 @@ export async function GET(
   }
 }
 
-// PUT /api/admin/pages/:key — บันทึก/อัปเดตเนื้อหาหน้าเพจ
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ key: string }> }
@@ -44,6 +43,10 @@ export async function PUT(
   const { key } = await params;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
+    const existingSetting = await prisma.siteSetting.findUnique({
+      where: { key: `page_${key}` },
+    });
     const body = await req.json();
     const { content, remark } = body;
 
@@ -58,6 +61,16 @@ export async function PUT(
         value: content || "",
         ...(remark !== undefined && { remark }),
       },
+    });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: existingSetting ? "update" : "create",
+      tableName: "site_settings",
+      recordId: setting.id,
+      ipAddress,
+      oldValues: existingSetting ?? undefined,
+      newValues: setting,
     });
 
     return NextResponse.json({

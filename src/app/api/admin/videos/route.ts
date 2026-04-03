@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
-/** Extract YouTube video ID from various URL formats */
 function extractYoutubeId(url: string): string | null {
   const patterns = [
     /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/,
@@ -11,14 +11,13 @@ function extractYoutubeId(url: string): string | null {
     /(?:youtube\.com\/v\/)([a-zA-Z0-9_-]{11})/,
     /(?:youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
   ];
-  for (const p of patterns) {
-    const m = url.match(p);
-    if (m) return m[1];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
   }
   return null;
 }
 
-// GET /api/admin/videos — all videos
 export async function GET(req: NextRequest) {
   const user = await requireAdminRouteAccess(req);
   if (user instanceof NextResponse) return user;
@@ -34,12 +33,12 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST /api/admin/videos — create video
 export async function POST(req: NextRequest) {
   const user = await requireAdminRouteAccess(req);
   if (user instanceof NextResponse) return user;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const body = await req.json();
     if (!body.title || !body.youtubeUrl) {
       return NextResponse.json({ error: "กรุณาระบุชื่อและลิงก์ YouTube" }, { status: 400 });
@@ -65,6 +64,16 @@ export async function POST(req: NextRequest) {
         updatedBy,
       },
     });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "create",
+      tableName: "coop_videos",
+      recordId: video.id,
+      ipAddress,
+      newValues: video,
+    });
+
     return NextResponse.json(video, { status: 201 });
   } catch (error) {
     console.error("Failed to create video:", error);
@@ -72,15 +81,20 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// PATCH /api/admin/videos — update video
 export async function PATCH(req: NextRequest) {
   const user = await requireAdminRouteAccess(req);
   if (user instanceof NextResponse) return user;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const body = await req.json();
     const id = Number(body.id);
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+
+    const existingVideo = await prisma.coopVideo.findUnique({ where: { id } });
+    if (!existingVideo) {
+      return NextResponse.json({ error: "Video not found" }, { status: 404 });
+    }
 
     const updatedBy = String((user as unknown as Record<string, unknown>).userId ?? "");
     const data: Record<string, unknown> = { updatedBy };
@@ -90,7 +104,6 @@ export async function PATCH(req: NextRequest) {
     if (body.sortOrder !== undefined) data.sortOrder = Number(body.sortOrder);
     if (body.isActive !== undefined) data.isActive = body.isActive;
 
-    // If youtubeUrl changed, re-extract ID & thumbnail
     if (body.youtubeUrl !== undefined) {
       const youtubeId = extractYoutubeId(body.youtubeUrl);
       if (!youtubeId) {
@@ -102,6 +115,17 @@ export async function PATCH(req: NextRequest) {
     }
 
     const video = await prisma.coopVideo.update({ where: { id }, data });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "update",
+      tableName: "coop_videos",
+      recordId: video.id,
+      ipAddress,
+      oldValues: existingVideo,
+      newValues: video,
+    });
+
     return NextResponse.json(video);
   } catch (error) {
     console.error("Failed to update video:", error);
@@ -109,17 +133,32 @@ export async function PATCH(req: NextRequest) {
   }
 }
 
-// DELETE /api/admin/videos?id=1
 export async function DELETE(req: NextRequest) {
   const user = await requireAdminRouteAccess(req);
   if (user instanceof NextResponse) return user;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const { searchParams } = new URL(req.url);
-    const id = parseInt(searchParams.get("id") || "0");
+    const id = parseInt(searchParams.get("id") || "0", 10);
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
+    const existingVideo = await prisma.coopVideo.findUnique({ where: { id } });
+    if (!existingVideo) {
+      return NextResponse.json({ error: "Video not found" }, { status: 404 });
+    }
+
     await prisma.coopVideo.delete({ where: { id } });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "delete",
+      tableName: "coop_videos",
+      recordId: id,
+      ipAddress,
+      oldValues: existingVideo,
+    });
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Failed to delete video:", error);

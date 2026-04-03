@@ -3,19 +3,18 @@ import { unlink } from "fs/promises";
 import path from "path";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
-// ลบไฟล์ภาพจาก disk (ถ้าเป็น local upload)
 async function deleteImageFile(imagePath: string | null) {
   if (!imagePath || !imagePath.startsWith("/uploads/")) return;
   try {
     const filePath = path.join(process.cwd(), "public", imagePath);
     await unlink(filePath);
   } catch {
-    // ไฟล์อาจถูกลบไปแล้ว หรือไม่มีอยู่
+    // Ignore missing files.
   }
 }
 
-// GET /api/admin/slides/:id — ดึง slide ตาม id
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -26,10 +25,11 @@ export async function GET(
   }
 
   const { id } = await params;
+  const slideId = parseInt(id, 10);
 
   try {
     const slide = await prisma.slide.findUnique({
-      where: { id: parseInt(id) },
+      where: { id: slideId },
     });
 
     if (!slide) {
@@ -43,7 +43,6 @@ export async function GET(
   }
 }
 
-// PUT /api/admin/slides/:id — อัพเดท slide
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -54,21 +53,27 @@ export async function PUT(
   }
 
   const { id } = await params;
+  const slideId = parseInt(id, 10);
 
   try {
+    const ipAddress = getAuditIpAddress(req);
+    const existingSlide = await prisma.slide.findUnique({
+      where: { id: slideId },
+    });
+
+    if (!existingSlide) {
+      return NextResponse.json({ error: "Slide not found" }, { status: 404 });
+    }
+
     const body = await req.json();
     const { imagePath, urlLink, title, subtitle, description, bgGradient, ctaText, sortOrder, isActive } = body;
 
-    // ลบไฟล์ภาพเก่าถ้าเปลี่ยนภาพใหม่
-    if (imagePath !== undefined) {
-      const oldSlide = await prisma.slide.findUnique({ where: { id: parseInt(id) }, select: { imagePath: true } });
-      if (oldSlide?.imagePath && oldSlide.imagePath !== imagePath) {
-        await deleteImageFile(oldSlide.imagePath);
-      }
+    if (imagePath !== undefined && existingSlide.imagePath && existingSlide.imagePath !== imagePath) {
+      await deleteImageFile(existingSlide.imagePath);
     }
 
     const slide = await prisma.slide.update({
-      where: { id: parseInt(id) },
+      where: { id: slideId },
       data: {
         ...(imagePath !== undefined && { imagePath }),
         ...(urlLink !== undefined && { urlLink: urlLink || null }),
@@ -83,6 +88,16 @@ export async function PUT(
       },
     });
 
+    await writeAuditLog({
+      userId: user.userId,
+      action: "update",
+      tableName: "slides",
+      recordId: slide.id,
+      ipAddress,
+      oldValues: existingSlide,
+      newValues: slide,
+    });
+
     return NextResponse.json(slide);
   } catch (error) {
     console.error("Failed to update slide:", error);
@@ -90,7 +105,6 @@ export async function PUT(
   }
 }
 
-// DELETE /api/admin/slides/:id — ลบ slide
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -101,17 +115,32 @@ export async function DELETE(
   }
 
   const { id } = await params;
+  const slideId = parseInt(id, 10);
 
   try {
-    // ดึงข้อมูลภาพก่อนลบ
-    const slide = await prisma.slide.findUnique({ where: { id: parseInt(id) }, select: { imagePath: true } });
-
-    await prisma.slide.delete({
-      where: { id: parseInt(id) },
+    const ipAddress = getAuditIpAddress(req);
+    const slide = await prisma.slide.findUnique({
+      where: { id: slideId },
     });
 
-    // ลบไฟล์ภาพออกจาก disk
-    if (slide) await deleteImageFile(slide.imagePath);
+    if (!slide) {
+      return NextResponse.json({ error: "Slide not found" }, { status: 404 });
+    }
+
+    await prisma.slide.delete({
+      where: { id: slideId },
+    });
+
+    await deleteImageFile(slide.imagePath);
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "delete",
+      tableName: "slides",
+      recordId: slideId,
+      ipAddress,
+      oldValues: slide,
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

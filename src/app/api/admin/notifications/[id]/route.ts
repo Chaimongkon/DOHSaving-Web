@@ -3,19 +3,18 @@ import { unlink } from "fs/promises";
 import path from "path";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
-// ลบไฟล์จาก disk (ถ้าเป็น local upload)
 async function deleteFile(filePath: string | null) {
   if (!filePath || !filePath.startsWith("/uploads/")) return;
   try {
     const fullPath = path.join(process.cwd(), "public", filePath);
     await unlink(fullPath);
   } catch {
-    // ไฟล์อาจถูกลบไปแล้ว
+    // Ignore missing files.
   }
 }
 
-// GET /api/admin/notifications/:id
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -26,10 +25,11 @@ export async function GET(
   }
 
   const { id } = await params;
+  const notificationId = parseInt(id, 10);
 
   try {
     const notification = await prisma.notification.findUnique({
-      where: { id: parseInt(id) },
+      where: { id: notificationId },
     });
 
     if (!notification) {
@@ -43,7 +43,6 @@ export async function GET(
   }
 }
 
-// PUT /api/admin/notifications/:id — อัพเดท
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -54,24 +53,27 @@ export async function PUT(
   }
 
   const { id } = await params;
+  const notificationId = parseInt(id, 10);
 
   try {
+    const ipAddress = getAuditIpAddress(req);
+    const existingNotification = await prisma.notification.findUnique({
+      where: { id: notificationId },
+    });
+
+    if (!existingNotification) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
     const body = await req.json();
     const { title, imagePath, urlLink, sortOrder, startDate, endDate, isActive } = body;
 
-    // ลบรูปเก่าถ้าเปลี่ยนรูป
-    if (imagePath !== undefined) {
-      const old = await prisma.notification.findUnique({
-        where: { id: parseInt(id) },
-        select: { imagePath: true },
-      });
-      if (old && old.imagePath && old.imagePath !== imagePath) {
-        await deleteFile(old.imagePath);
-      }
+    if (imagePath !== undefined && existingNotification.imagePath && existingNotification.imagePath !== imagePath) {
+      await deleteFile(existingNotification.imagePath);
     }
 
     const notification = await prisma.notification.update({
-      where: { id: parseInt(id) },
+      where: { id: notificationId },
       data: {
         ...(title !== undefined && { title: title || null }),
         ...(imagePath !== undefined && { imagePath: imagePath || null }),
@@ -84,6 +86,16 @@ export async function PUT(
       },
     });
 
+    await writeAuditLog({
+      userId: user.userId,
+      action: "update",
+      tableName: "notifications",
+      recordId: notification.id,
+      ipAddress,
+      oldValues: existingNotification,
+      newValues: notification,
+    });
+
     return NextResponse.json(notification);
   } catch (error) {
     console.error("Failed to update notification:", error);
@@ -91,7 +103,6 @@ export async function PUT(
   }
 }
 
-// DELETE /api/admin/notifications/:id — ลบ
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -102,21 +113,32 @@ export async function DELETE(
   }
 
   const { id } = await params;
+  const notificationId = parseInt(id, 10);
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const notification = await prisma.notification.findUnique({
-      where: { id: parseInt(id) },
-      select: { imagePath: true },
+      where: { id: notificationId },
     });
+
+    if (!notification) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
 
     await prisma.notification.delete({
-      where: { id: parseInt(id) },
+      where: { id: notificationId },
     });
 
-    // ลบไฟล์ออกจาก disk
-    if (notification) {
-      await deleteFile(notification.imagePath);
-    }
+    await deleteFile(notification.imagePath);
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "delete",
+      tableName: "notifications",
+      recordId: notificationId,
+      ipAddress,
+      oldValues: notification,
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

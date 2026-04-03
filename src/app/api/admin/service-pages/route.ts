@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
-// GET /api/admin/service-pages — fetch all
 export async function GET(req: NextRequest) {
   const user = await requireAdminRouteAccess(req);
   if (user instanceof NextResponse) return user;
@@ -18,12 +18,12 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST /api/admin/service-pages — create
 export async function POST(req: NextRequest) {
   const user = await requireAdminRouteAccess(req);
   if (user instanceof NextResponse) return user;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const body = await req.json();
     if (!body.slug || !body.title || !body.category) {
       return NextResponse.json({ error: "กรุณาระบุ slug, ชื่อหน้า และหมวดหมู่" }, { status: 400 });
@@ -43,6 +43,16 @@ export async function POST(req: NextRequest) {
         updatedBy,
       },
     });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "create",
+      tableName: "service_pages",
+      recordId: item.id,
+      ipAddress,
+      newValues: item,
+    });
+
     return NextResponse.json(item, { status: 201 });
   } catch (error) {
     console.error("Failed to create service page:", error);
@@ -50,15 +60,20 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// PATCH /api/admin/service-pages — update
 export async function PATCH(req: NextRequest) {
   const user = await requireAdminRouteAccess(req);
   if (user instanceof NextResponse) return user;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const body = await req.json();
     const id = Number(body.id);
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+
+    const existingItem = await prisma.servicePage.findUnique({ where: { id } });
+    if (!existingItem) {
+      return NextResponse.json({ error: "Service page not found" }, { status: 404 });
+    }
 
     const updatedBy = String((user as unknown as Record<string, unknown>).userId ?? "");
     const data: Record<string, unknown> = { updatedBy };
@@ -72,6 +87,17 @@ export async function PATCH(req: NextRequest) {
     if (body.isActive !== undefined) data.isActive = body.isActive;
 
     const item = await prisma.servicePage.update({ where: { id }, data });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "update",
+      tableName: "service_pages",
+      recordId: item.id,
+      ipAddress,
+      oldValues: existingItem,
+      newValues: item,
+    });
+
     return NextResponse.json(item);
   } catch (error) {
     console.error("Failed to update service page:", error);
@@ -79,17 +105,32 @@ export async function PATCH(req: NextRequest) {
   }
 }
 
-// DELETE /api/admin/service-pages?id=1
 export async function DELETE(req: NextRequest) {
   const user = await requireAdminRouteAccess(req);
   if (user instanceof NextResponse) return user;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const { searchParams } = new URL(req.url);
-    const id = parseInt(searchParams.get("id") || "0");
+    const id = parseInt(searchParams.get("id") || "0", 10);
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
+    const existingItem = await prisma.servicePage.findUnique({ where: { id } });
+    if (!existingItem) {
+      return NextResponse.json({ error: "Service page not found" }, { status: 404 });
+    }
+
     await prisma.servicePage.delete({ where: { id } });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "delete",
+      tableName: "service_pages",
+      recordId: id,
+      ipAddress,
+      oldValues: existingItem,
+    });
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Failed to delete service page:", error);

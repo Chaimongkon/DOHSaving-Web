@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
-// GET /api/admin/pages/:key/images — ดึงรูป infographic (single image)
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ key: string }> }
@@ -29,7 +29,6 @@ export async function GET(
           images = [parsed];
         }
       } catch {
-        // Fallback for old single string data
         images = setting.value ? [setting.value] : [];
       }
     }
@@ -41,7 +40,6 @@ export async function GET(
   }
 }
 
-// PUT /api/admin/pages/:key/images — บันทึกรูป infographic (single URL string)
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ key: string }> }
@@ -54,10 +52,14 @@ export async function PUT(
   const { key } = await params;
 
   try {
+    const ipAddress = getAuditIpAddress(req);
+    const existingSetting = await prisma.siteSetting.findUnique({
+      where: { key: `page_${key}_image` },
+    });
     const body = await req.json();
     const { images } = body as { images: string[] };
 
-    await prisma.siteSetting.upsert({
+    const setting = await prisma.siteSetting.upsert({
       where: { key: `page_${key}_image` },
       create: {
         key: `page_${key}_image`,
@@ -67,6 +69,16 @@ export async function PUT(
       update: {
         value: JSON.stringify(images || []),
       },
+    });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: existingSetting ? "update" : "create",
+      tableName: "site_settings",
+      recordId: setting.id,
+      ipAddress,
+      oldValues: existingSetting ?? undefined,
+      newValues: setting,
     });
 
     return NextResponse.json({ success: true, images });

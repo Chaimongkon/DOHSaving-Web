@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
-// GET /api/admin/notifications — ดึงรายการทั้งหมด
 export async function GET(req: NextRequest) {
   const user = await requireAdminRouteAccess(req);
   if (user instanceof NextResponse) {
@@ -20,7 +20,6 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST /api/admin/notifications — สร้างใหม่
 export async function POST(req: NextRequest) {
   const user = await requireAdminRouteAccess(req);
   if (user instanceof NextResponse) {
@@ -28,11 +27,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const body = await req.json();
     const { title, imagePath, urlLink, sortOrder, startDate, endDate, isActive } = body;
 
     if (!imagePath) {
-      return NextResponse.json({ error: "กรุณาอัพโหลดรูปภาพ" }, { status: 400 });
+      return NextResponse.json({ error: "กรุณาอัปโหลดรูปภาพ" }, { status: 400 });
     }
 
     const notification = await prisma.notification.create({
@@ -47,6 +47,15 @@ export async function POST(req: NextRequest) {
         createdBy: user.userName,
         updatedBy: user.userName,
       },
+    });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "create",
+      tableName: "notifications",
+      recordId: notification.id,
+      ipAddress,
+      newValues: notification,
     });
 
     return NextResponse.json(notification, { status: 201 });

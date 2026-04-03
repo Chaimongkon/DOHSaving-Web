@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
 // PUT /api/admin/member-media/[id] — อัปเดตรายการ
 export async function PUT(
@@ -13,8 +14,14 @@ export async function PUT(
   }
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const { id } = await params;
     const itemId = parseInt(id, 10);
+    const existingItem = await prisma.memberMedia.findUnique({ where: { id: itemId } });
+    if (!existingItem) {
+      return NextResponse.json({ error: "Member media not found" }, { status: 404 });
+    }
+
     const body = await req.json();
     const { title, description, category, coverUrl, filePath, fileType, legacyPath, sortOrder, isActive } = body;
 
@@ -33,6 +40,16 @@ export async function PUT(
     const item = await prisma.memberMedia.update({
       where: { id: itemId },
       data,
+    });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "update",
+      tableName: "member_media",
+      recordId: item.id,
+      ipAddress,
+      oldValues: existingItem,
+      newValues: item,
     });
 
     return NextResponse.json(item);
@@ -54,9 +71,24 @@ export async function DELETE(
 
   try {
     const { id } = await params;
-    await prisma.memberMedia.delete({
-      where: { id: parseInt(id, 10) },
+    const itemId = parseInt(id, 10);
+    const ipAddress = getAuditIpAddress(req);
+    const existingItem = await prisma.memberMedia.findUnique({ where: { id: itemId } });
+    if (!existingItem) {
+      return NextResponse.json({ error: "Member media not found" }, { status: 404 });
+    }
+
+    await prisma.memberMedia.delete({ where: { id: itemId } });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "delete",
+      tableName: "member_media",
+      recordId: itemId,
+      ipAddress,
+      oldValues: existingItem,
     });
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Failed to delete member media:", error);

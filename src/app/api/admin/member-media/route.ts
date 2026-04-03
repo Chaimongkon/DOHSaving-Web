@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
 // GET /api/admin/member-media — ดึงทั้งหมด (รวม inactive)
 export async function GET(req: NextRequest) {
@@ -28,6 +29,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const ipAddress = getAuditIpAddress(req);
     const body = await req.json();
     const { title, description, category, coverUrl, filePath, fileType, legacyPath, sortOrder, isActive } = body;
 
@@ -47,6 +49,15 @@ export async function POST(req: NextRequest) {
         sortOrder: sortOrder ?? 0,
         isActive: isActive ?? true,
       },
+    });
+
+    await writeAuditLog({
+      userId: user.userId,
+      action: "create",
+      tableName: "member_media",
+      recordId: item.id,
+      ipAddress,
+      newValues: item,
     });
 
     return NextResponse.json(item, { status: 201 });
