@@ -7,6 +7,7 @@ import { loadHeartShape } from "@tsparticles/shape-heart";
 import { FESTIVAL_THEMES, EFFECT_TO_THEME_KEY } from "./themes";
 import CustomAnimation from "./CustomAnimation";
 import LottieEffect from "./LottieEffect";
+import IconEffect from "./IconEffect";
 
 interface FestivalData {
   id: number;
@@ -22,6 +23,11 @@ interface FestivalData {
   animation: string;
   animationUrl: string | null;
   animationScale: number;
+  iconUrls: string | null;
+  iconMode: string;
+  iconSize: number;
+  iconCount: number;
+  iconSpeed: number;
 }
 
 export default function FestivalOverlay() {
@@ -71,7 +77,15 @@ export default function FestivalOverlay() {
   const hasLottieEffect = hasEffect && !!festival.effectUrl;
   const hasParticleEffect = hasEffect && !festival.effectUrl && engineReady;
   const hasAnimation = festival.animation !== "none";
-  if (!hasEffect && !hasAnimation) return null;
+  const hasIcons = festival.iconMode !== "none" && !!festival.iconUrls;
+  let parsedIconUrls: string[] = [];
+  if (hasIcons) {
+    try {
+      parsedIconUrls = JSON.parse(festival.iconUrls!);
+    } catch { /* ignore */ }
+  }
+  const showIcons = hasIcons && parsedIconUrls.length > 0;
+  if (!hasEffect && !hasAnimation && !showIcons) return null;
 
   return (
     <>
@@ -105,6 +119,15 @@ export default function FestivalOverlay() {
           animation={festival.animation}
           animationUrl={festival.animationUrl}
           scale={festival.animationScale}
+        />
+      )}
+      {showIcons && (
+        <IconEffect
+          iconUrls={parsedIconUrls}
+          mode={festival.iconMode as "falling" | "bouncing"}
+          size={festival.iconSize}
+          count={festival.iconCount}
+          speed={festival.iconSpeed}
         />
       )}
     </>

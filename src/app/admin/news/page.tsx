@@ -703,7 +703,14 @@ export default function NewsPage() {
                 </h3>
                 {item.details && (
                   <p className={css.cardDesc}>
-                    {sanitizeHtml(item.details).replace(/<[^>]+>/g, "")}
+                    {sanitizeHtml(item.details)
+                      .replace(/<[^>]+>/g, "")
+                      .replace(/&nbsp;/g, " ")
+                      .replace(/&amp;/g, "&")
+                      .replace(/&lt;/g, "<")
+                      .replace(/&gt;/g, ">")
+                      .replace(/&quot;/g, '"')
+                      .replace(/&#39;/g, "'")}
                   </p>
                 )}
               </div>

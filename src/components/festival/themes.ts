@@ -214,6 +214,27 @@ export const FESTIVAL_THEMES: Record<string, FestivalThemeConfig> = {
     defaultBg: "#f5f5f5",
     particles: confettiParticles,
   },
+  "labor-day": {
+    label: "วันแรงงาน",
+    emoji: "⚒️",
+    defaultColor: "#d32f2f",
+    defaultBg: "#ffebee",
+    particles: confettiParticles,
+  },
+  coronation: {
+    label: "วันฉัตรมงคล",
+    emoji: "👑",
+    defaultColor: "#f9a825",
+    defaultBg: "#fff8e1",
+    particles: confettiParticles,
+  },
+  ploughing: {
+    label: "วันพืชมงคล",
+    emoji: "🌾",
+    defaultColor: "#43a047",
+    defaultBg: "#e8f5e9",
+    particles: confettiParticles,
+  },
 };
 
 export const EFFECT_OPTIONS = [
@@ -227,13 +248,92 @@ export const EFFECT_OPTIONS = [
 ];
 
 export const THEME_KEY_OPTIONS = [
+  { value: "songkran", label: "💧 สงกรานต์" },
+  { value: "labor-day", label: "⚒️ วันแรงงาน" },
+  { value: "coronation", label: "👑 วันฉัตรมงคล" },
+  { value: "ploughing", label: "🌾 วันพืชมงคล" },
   { value: "valentine", label: "💕 วาเลนไทน์" },
   { value: "newyear", label: "🎆 ปีใหม่" },
-  { value: "songkran", label: "💧 สงกรานต์" },
   { value: "christmas", label: "🎄 คริสต์มาส" },
   { value: "loy-krathong", label: "🏮 ลอยกระทง" },
   { value: "confetti", label: "🎉 Confetti / ฉลองทั่วไป" },
 ];
+
+// ────── Preset colors per themeKey ──────
+// Auto-fills banner + web theme colors when admin selects a themeKey
+export interface ThemePreset {
+  bannerBg: string;
+  bannerTextColor: string;
+  bannerEmoji: string;
+  colorPrimary: string;
+  colorBg: string;
+}
+
+export const THEME_PRESETS: Record<string, ThemePreset> = {
+  songkran: {
+    bannerBg: "#0097a7",
+    bannerTextColor: "#ffffff",
+    bannerEmoji: "💧",
+    colorPrimary: "#00bcd4",
+    colorBg: "#0a3d5c",
+  },
+  "labor-day": {
+    bannerBg: "#c62828",
+    bannerTextColor: "#ffffff",
+    bannerEmoji: "⚒️",
+    colorPrimary: "#d32f2f",
+    colorBg: "#3e1a1a",
+  },
+  coronation: {
+    bannerBg: "#f9a825",
+    bannerTextColor: "#3e2723",
+    bannerEmoji: "👑",
+    colorPrimary: "#f9a825",
+    colorBg: "#1a237e",
+  },
+  ploughing: {
+    bannerBg: "#2e7d32",
+    bannerTextColor: "#ffffff",
+    bannerEmoji: "🌾",
+    colorPrimary: "#43a047",
+    colorBg: "#1b3a1b",
+  },
+  valentine: {
+    bannerBg: "#c2185b",
+    bannerTextColor: "#ffffff",
+    bannerEmoji: "💕",
+    colorPrimary: "#e91e63",
+    colorBg: "#3e1a2e",
+  },
+  newyear: {
+    bannerBg: "#f57f17",
+    bannerTextColor: "#ffffff",
+    bannerEmoji: "🎆",
+    colorPrimary: "#ffd700",
+    colorBg: "#1a1a2e",
+  },
+  christmas: {
+    bannerBg: "#b71c1c",
+    bannerTextColor: "#ffffff",
+    bannerEmoji: "🎄",
+    colorPrimary: "#c62828",
+    colorBg: "#1b3a20",
+  },
+  "loy-krathong": {
+    bannerBg: "#e65100",
+    bannerTextColor: "#ffffff",
+    bannerEmoji: "🏮",
+    colorPrimary: "#ff8f00",
+    colorBg: "#1a1a2e",
+  },
+  confetti: {
+    bannerBg: "#E8652B",
+    bannerTextColor: "#ffffff",
+    bannerEmoji: "🎉",
+    colorPrimary: "#E8652B",
+    colorBg: "#0f1d36",
+  },
+};
 
 export const ANIMATION_OPTIONS = [
   { value: "none", label: "ไม่มี animation" },

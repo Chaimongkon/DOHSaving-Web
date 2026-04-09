@@ -2,18 +2,68 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
 
-// ─── XSS Sanitizer ───
 function sanitize(input: string | null | undefined): string {
   if (!input) return "";
   return input
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
+    .replace(/\"/g, "&quot;")
     .replace(/'/g, "&#x27;")
     .replace(/\//g, "&#x2F;");
 }
 
-// POST /api/admin/qna/[id] — admin reply to a question
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const user = await requireAdminRouteAccess(req);
+  if (user instanceof NextResponse) {
+    return user;
+  }
+
+  try {
+    const { id } = await params;
+    const qid = parseInt(id, 10);
+    if (Number.isNaN(qid)) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
+
+    const question = await prisma.qnaQuestion.findUnique({
+      where: { id: qid },
+      include: {
+        replies: {
+          orderBy: { createdAt: "asc" },
+          select: {
+            id: true,
+            authorName: true,
+            memberCode: true,
+            body: true,
+            isAdmin: true,
+            isActive: true,
+            createdAt: true,
+          },
+        },
+        _count: { select: { replies: true } },
+      },
+    });
+
+    if (!question) {
+      return NextResponse.json({ error: "Question not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      question: {
+        ...question,
+        replyCount: question._count.replies,
+        _count: undefined,
+      },
+    });
+  } catch (error) {
+    console.error("Admin QnA detail error:", error);
+    return NextResponse.json({ error: "Failed to fetch question" }, { status: 500 });
+  }
+}
+
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -25,8 +75,8 @@ export async function POST(
 
   try {
     const { id } = await params;
-    const qid = parseInt(id);
-    if (isNaN(qid)) {
+    const qid = parseInt(id, 10);
+    if (Number.isNaN(qid)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
@@ -53,7 +103,6 @@ export async function POST(
   }
 }
 
-// DELETE /api/admin/qna/[id] — admin delete a reply
 export async function DELETE(req: NextRequest) {
   const user = await requireAdminRouteAccess(req);
   if (user instanceof NextResponse) {
@@ -62,9 +111,9 @@ export async function DELETE(req: NextRequest) {
 
   try {
     const { searchParams } = new URL(req.url);
-    const replyId = parseInt(searchParams.get("replyId") || "");
+    const replyId = parseInt(searchParams.get("replyId") || "", 10);
 
-    if (isNaN(replyId)) {
+    if (Number.isNaN(replyId)) {
       return NextResponse.json({ error: "Invalid reply ID" }, { status: 400 });
     }
 

@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { name, themeKey, isActive, startDate, endDate, colorPrimary, colorBg, effect, effectUrl, intensity, effectScale, effectColor, effectCount, effectDelay, animation, animationUrl, animationScale } = body;
+    const { name, themeKey, isActive, startDate, endDate, colorPrimary, colorBg, effect, effectUrl, intensity, effectScale, effectColor, effectCount, effectDelay, animation, animationUrl, animationScale, iconUrls, iconMode, iconSize, iconCount, iconSpeed, bannerText, bannerEmoji, bannerBg, bannerTextColor, festivalLogoUrl } = body;
 
     if (!name || !themeKey || !startDate || !endDate) {
       return NextResponse.json({ error: "กรุณากรอกข้อมูลที่จำเป็น" }, { status: 400 });
@@ -69,6 +69,16 @@ export async function POST(req: NextRequest) {
         animation: animation || "none",
         animationUrl: animationUrl || null,
         animationScale: animationScale ?? 50,
+        iconUrls: iconUrls || null,
+        iconMode: iconMode || "none",
+        iconSize: iconSize ?? 50,
+        iconCount: iconCount ?? 15,
+        iconSpeed: iconSpeed ?? 50,
+        bannerText: bannerText || null,
+        bannerEmoji: bannerEmoji || null,
+        bannerBg: bannerBg || null,
+        bannerTextColor: bannerTextColor || null,
+        festivalLogoUrl: festivalLogoUrl || null,
         createdBy: user.userName,
         updatedBy: user.userName,
       },

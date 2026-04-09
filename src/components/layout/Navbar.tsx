@@ -355,6 +355,7 @@ export default function Navbar() {
   const [openKey, setOpenKey] = useState<string | null>(null);
   const [pinnedKey, setPinnedKey] = useState<string | null>(null);
   const [megaImages, setMegaImages] = useState<Record<string, string>>({});
+  const [festivalLogo, setFestivalLogo] = useState<string | null>(null);
   const pinnedRef = useRef<string | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navRef = useRef<HTMLDivElement>(null);
@@ -365,6 +366,20 @@ export default function Navbar() {
       .then((res) => res.ok ? res.json() : {})
       .then((data: Record<string, string>) => setMegaImages(data))
       .catch(() => { });
+  }, []);
+
+  // Fetch active festival logo
+  useEffect(() => {
+    fetch("/api/festival/active")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.festivalLogoUrl) {
+          setFestivalLogo(data.festivalLogoUrl);
+        } else {
+          setFestivalLogo(null);
+        }
+      })
+      .catch(() => setFestivalLogo(null));
   }, []);
 
   // Merge dynamic images into nav items
@@ -437,7 +452,7 @@ export default function Navbar() {
         <Link href="/" className="navbar-logo">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/logo/logo.png"
+            src={festivalLogo || "/images/logo/logo.png"}
             alt="สหกรณ์ออมทรัพย์กรมทางหลวง"
             width={52}
             height={52}
@@ -494,7 +509,7 @@ export default function Navbar() {
             <div className="drawer-header-left">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/images/logo/logo.png"
+                src={festivalLogo || "/images/logo/logo.png"}
                 alt="Logo"
                 width={44}
                 height={44}

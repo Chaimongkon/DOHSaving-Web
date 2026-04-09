@@ -4,12 +4,13 @@ import path from "path";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
 import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
 
-const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
+const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg"]);
 const IMAGE_MIME_TYPES = new Set([
   "image/jpeg",
   "image/png",
   "image/webp",
   "image/gif",
+  "image/svg+xml",
 ]);
 
 export async function POST(req: NextRequest) {

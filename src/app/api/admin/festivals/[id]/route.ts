@@ -16,7 +16,7 @@ export async function PUT(
     const { id } = await params;
     const themeId = parseInt(id, 10);
     const body = await req.json();
-    const { name, themeKey, isActive, startDate, endDate, colorPrimary, colorBg, effect, effectUrl, intensity, effectScale, effectColor, effectCount, effectDelay, animation, animationUrl, animationScale } = body;
+    const { name, themeKey, isActive, startDate, endDate, colorPrimary, colorBg, effect, effectUrl, intensity, effectScale, effectColor, effectCount, effectDelay, animation, animationUrl, animationScale, iconUrls, iconMode, iconSize, iconCount, iconSpeed, bannerText, bannerEmoji, bannerBg, bannerTextColor, festivalLogoUrl } = body;
 
     // ถ้าเปิด active ให้ปิด theme อื่นที่ช่วงวันซ้อนกัน
     if (isActive && startDate && endDate) {
@@ -52,6 +52,16 @@ export async function PUT(
     if (animation !== undefined) data.animation = animation;
     if (animationUrl !== undefined) data.animationUrl = animationUrl || null;
     if (animationScale !== undefined) data.animationScale = animationScale;
+    if (iconUrls !== undefined) data.iconUrls = iconUrls || null;
+    if (iconMode !== undefined) data.iconMode = iconMode;
+    if (iconSize !== undefined) data.iconSize = iconSize;
+    if (iconCount !== undefined) data.iconCount = iconCount;
+    if (iconSpeed !== undefined) data.iconSpeed = iconSpeed;
+    if (bannerText !== undefined) data.bannerText = bannerText || null;
+    if (bannerEmoji !== undefined) data.bannerEmoji = bannerEmoji || null;
+    if (bannerBg !== undefined) data.bannerBg = bannerBg || null;
+    if (bannerTextColor !== undefined) data.bannerTextColor = bannerTextColor || null;
+    if (festivalLogoUrl !== undefined) data.festivalLogoUrl = festivalLogoUrl || null;
 
     const theme = await prisma.festivalTheme.update({
       where: { id: themeId },

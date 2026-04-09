@@ -536,6 +536,16 @@ model FestivalTheme {
   animation     String    @default("none") @db.VarChar(50) // santa-sleigh, rocket, cupid, none
   animationUrl  String?   @db.VarChar(500)        // custom image URL สำหรับ animation
   animationScale Int      @default(50)            // ขนาด animation 0-100 (เล็ก→ใหญ่)
+  festivalLogoUrl String? @db.VarChar(500)        // URL logo ชั่วคราวสำหรับเทศกาล
+  bannerText    String?   @db.VarChar(500)        // ข้อความแถบอวยพร เช่น "สวัสดีปีใหม่ไทย 2569"
+  bannerEmoji   String?   @db.VarChar(50)         // อิโมจิซ้าย-ขวา เช่น "💧"
+  bannerBg      String?   @db.VarChar(20)         // สีพื้น banner เช่น #00bcd4
+  bannerTextColor String? @db.VarChar(20)         // สีตัวอักษร banner
+  iconUrls      String?   @db.Text                // JSON array ของ URL รูปไอคอน เช่น ["/uploads/festival-icons/xxx.png"]
+  iconMode      String    @default("none") @db.VarChar(50) // none, falling, bouncing
+  iconSize      Int       @default(50)            // ขนาดไอคอน 20-120 px
+  iconCount     Int       @default(15)            // จำนวนไอคอนบนหน้าจอ
+  iconSpeed     Int       @default(50)            // ความเร็ว 10-100
   createdBy     String?   @db.VarChar(255)
   updatedBy     String?   @db.VarChar(255)
   createdAt     DateTime  @default(now())

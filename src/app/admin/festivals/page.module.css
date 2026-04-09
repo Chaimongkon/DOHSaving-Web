@@ -697,6 +697,347 @@
   cursor: not-allowed;
 }
 
+/* Logo preview */
+.logoPreviewWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logoPreview {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.logoPreviewImg {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+/* Theme preview */
+.themePreview {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.themePreviewBar {
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Banner preview */
+.bannerPreviewText {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.bannerPreview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.bannerPreview::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 120% at 10% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 100% at 90% 50%, rgba(255, 255, 255, 0.10) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.bannerPreview::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.12) 45%,
+    rgba(255, 255, 255, 0.18) 50%,
+    rgba(255, 255, 255, 0.12) 55%,
+    transparent 65%
+  );
+  background-size: 250% 100%;
+  animation: shimmer 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* Icon grid */
+.iconGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 10px;
+}
+
+.iconThumb {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.iconThumbImg {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.iconThumbRemove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(239, 68, 68, 0.85);
+  color: #ffffff;
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.iconThumb:hover .iconThumbRemove {
+  opacity: 1;
+}
+
+/* ═══ Section 7: Full Preview ═══ */
+.previewFrame {
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f5f5f5;
+  font-size: 12px;
+  position: relative;
+}
+
+.previewBanner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.previewBanner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 120% at 10% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 100% at 90% 50%, rgba(255, 255, 255, 0.10) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.previewBanner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.12) 45%,
+    rgba(255, 255, 255, 0.18) 50%,
+    rgba(255, 255, 255, 0.12) 55%,
+    transparent 65%
+  );
+  background-size: 250% 100%;
+  animation: shimmer 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.previewTopbar {
+  padding: 4px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.previewNavbar {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.previewNavLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.previewLogo {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.previewNavTitle {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.previewNavSub {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 8px;
+  display: block;
+}
+
+.previewNavMenu {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.previewNavPill {
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 9px;
+  border: none;
+}
+
+.previewNavLogin {
+  padding: 3px 10px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 600;
+  border: none;
+}
+
+.previewContent {
+  padding: 20px 16px;
+  min-height: 100px;
+  background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+}
+
+.previewContentLabel {
+  color: #b0b0b0;
+  font-size: 11px;
+  text-align: center;
+}
+
+.previewEffectBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.previewEffectBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: #e0e7ff;
+  color: #4338ca;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.previewIconStrip {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 240px;
+}
+
+.previewIconItem {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.previewFooter {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.previewFooterText {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 9px;
+}
+
+.previewFooterAccent {
+  height: 2px;
+  width: 100%;
+}
+
+.previewEmpty {
+  padding: 24px;
+  text-align: center;
+  color: #b0b0b0;
+  font-size: 12px;
+}
+
 /* Loading */
 .loading {
   text-align: center;

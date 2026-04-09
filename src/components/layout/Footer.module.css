@@ -1,5 +1,5 @@
 .footer {
-  background: linear-gradient(180deg, #0c1829 0%, #0f1d36 100%);
+  background: linear-gradient(180deg, var(--color-footer-bg) 0%, var(--color-footer-bg-end) 100%);
   padding: 0;
   position: relative;
 }
@@ -9,7 +9,7 @@
   content: "";
   display: block;
   height: 3px;
-  background: linear-gradient(90deg, #E8652B 0%, #f09060 50%, #E8652B 100%);
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-light) 50%, var(--color-primary) 100%);
 }
 
 .top {
@@ -60,7 +60,7 @@
 }
 
 .contactIcon {
-  color: #E8652B;
+  color: var(--color-primary);
   font-size: 13px;
   width: 16px;
   text-align: center;
@@ -84,7 +84,7 @@
   left: 0;
   width: 24px;
   height: 2px;
-  background: #E8652B;
+  background: var(--color-primary);
   border-radius: 2px;
 }
 
@@ -106,7 +106,7 @@
 }
 
 .link:hover {
-  color: #E8652B;
+  color: var(--color-primary);
   padding-left: 6px;
   gap: 4px;
 }
@@ -245,7 +245,7 @@
 }
 
 .bottomLink:hover {
-  color: #E8652B;
+  color: var(--color-primary);
 }
 
 /* ── Visitor Stats Bar ── */
@@ -274,7 +274,7 @@
 
 .visitorIcon {
   font-size: 15px;
-  color: #E8652B;
+  color: var(--color-primary);
 }
 
 .visitorCount {

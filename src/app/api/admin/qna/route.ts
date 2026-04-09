@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("search") || "";
     const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
-    const limit = 20;
+    const limit = 5;
     const skip = (page - 1) * limit;
 
     const where = search ? { title: { contains: search } } : {};
