@@ -35,8 +35,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "กรุณากรอกข้อมูลที่จำเป็น" }, { status: 400 });
     }
 
-    const parsedStart = new Date(startDate + "T00:00:00");
-    const parsedEnd = new Date(endDate + "T00:00:00");
+    const parsedStart = new Date(startDate + "T00:00:00Z");
+    const parsedEnd = new Date(endDate + "T00:00:00Z");
 
     // ถ้าเปิด active ให้ปิด theme อื่นที่ช่วงวันซ้อนกัน
     if (isActive) {

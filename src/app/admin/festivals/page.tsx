@@ -12,6 +12,7 @@ import {
   PoweroffOutlined,
 } from "@ant-design/icons";
 import { FESTIVAL_THEMES, EFFECT_OPTIONS, THEME_KEY_OPTIONS, ANIMATION_OPTIONS, THEME_PRESETS } from "@/components/festival/themes";
+import ThaiDatePicker from "@/components/ui/ThaiDatePicker";
 import css from "./page.module.css";
 
 interface FestivalTheme {
@@ -593,20 +594,18 @@ export default function FestivalsPage() {
                   <div className={css.formRow}>
                     <div className={css.formGroup}>
                       <label className={css.formLabel}>วันเริ่มต้น *</label>
-                      <input
-                        type="date"
-                        className={css.formInput}
+                      <ThaiDatePicker
                         value={form.startDate}
-                        onChange={(e) => setForm((prev) => ({ ...prev, startDate: e.target.value }))}
+                        onChange={(v) => setForm((prev) => ({ ...prev, startDate: v }))}
+                        placeholder="เลือกวันเริ่มต้น"
                       />
                     </div>
                     <div className={css.formGroup}>
                       <label className={css.formLabel}>วันสิ้นสุด *</label>
-                      <input
-                        type="date"
-                        className={css.formInput}
+                      <ThaiDatePicker
                         value={form.endDate}
-                        onChange={(e) => setForm((prev) => ({ ...prev, endDate: e.target.value }))}
+                        onChange={(v) => setForm((prev) => ({ ...prev, endDate: v }))}
+                        placeholder="เลือกวันสิ้นสุด"
                       />
                     </div>
                   </div>

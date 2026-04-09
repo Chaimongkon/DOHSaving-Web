@@ -20,8 +20,8 @@ export async function PUT(
 
     // ถ้าเปิด active ให้ปิด theme อื่นที่ช่วงวันซ้อนกัน
     if (isActive && startDate && endDate) {
-      const parsedStart = new Date(startDate + "T00:00:00");
-      const parsedEnd = new Date(endDate + "T00:00:00");
+      const parsedStart = new Date(startDate + "T00:00:00Z");
+      const parsedEnd = new Date(endDate + "T00:00:00Z");
       await prisma.festivalTheme.updateMany({
         where: {
           isActive: true,
@@ -38,8 +38,8 @@ export async function PUT(
     if (name !== undefined) data.name = name;
     if (themeKey !== undefined) data.themeKey = themeKey;
     if (isActive !== undefined) data.isActive = isActive;
-    if (startDate !== undefined) data.startDate = new Date(startDate + "T00:00:00");
-    if (endDate !== undefined) data.endDate = new Date(endDate + "T00:00:00");
+    if (startDate !== undefined) data.startDate = new Date(startDate + "T00:00:00Z");
+    if (endDate !== undefined) data.endDate = new Date(endDate + "T00:00:00Z");
     if (colorPrimary !== undefined) data.colorPrimary = colorPrimary || null;
     if (colorBg !== undefined) data.colorBg = colorBg || null;
     if (effect !== undefined) data.effect = effect;
