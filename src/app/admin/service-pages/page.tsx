@@ -4,9 +4,104 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Plus, Edit2, Trash2, X, UploadCloud, Link as LinkIcon,
-  Image as ImageIcon, Filter, LayoutGrid
+  Image as ImageIcon, Filter, LayoutGrid, FileText, Search, ChevronDown
 } from "lucide-react";
 import css from "./page.module.css";
+
+/* ── Searchable Form Picker (Select2-style) ────────────────── */
+function FormPicker({
+  forms,
+  value,
+  onChange,
+}: {
+  forms: FormItem[];
+  value: number;
+  onChange: (formId: number) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // close on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const filtered = forms.filter((f) => {
+    if (!query.trim()) return true;
+    const q = query.toLowerCase();
+    return (
+      f.title.toLowerCase().includes(q) ||
+      f.group.toLowerCase().includes(q) ||
+      f.category.toLowerCase().includes(q)
+    );
+  });
+
+  const selected = forms.find((f) => f.id === value);
+
+  return (
+    <div ref={wrapRef} className={css.formPicker}>
+      <button
+        type="button"
+        className={css.formPickerTrigger}
+        onClick={() => { setOpen(!open); setTimeout(() => inputRef.current?.focus(), 50); }}
+      >
+        {selected ? (
+          <span className={css.formPickerSelected}>
+            <FileText size={13} color="#16a34a" />
+            <span style={{ flex: 1, textAlign: 'left' }}>{selected.title}</span>
+            <span className={css.formPickerBadge}>{selected.group}</span>
+          </span>
+        ) : (
+          <span style={{ color: '#94a3b8' }}>— เลือกแบบฟอร์ม —</span>
+        )}
+        <ChevronDown size={16} style={{ color: '#94a3b8', flexShrink: 0, transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : undefined }} />
+      </button>
+
+      {open && (
+        <div className={css.formPickerDropdown}>
+          <div className={css.formPickerSearch}>
+            <Search size={14} color="#94a3b8" />
+            <input
+              ref={inputRef}
+              className={css.formPickerSearchInput}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="พิมพ์ค้นหาแบบฟอร์ม..."
+              onKeyDown={(e) => e.stopPropagation()}
+            />
+          </div>
+          <div className={css.formPickerList}>
+            {filtered.length === 0 ? (
+              <div className={css.formPickerEmpty}>ไม่พบแบบฟอร์มที่ค้นหา</div>
+            ) : (
+              filtered.map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  className={`${css.formPickerOption} ${f.id === value ? css.formPickerOptionActive : ""}`}
+                  onClick={() => { onChange(f.id); setOpen(false); setQuery(""); }}
+                >
+                  <div className={css.formPickerOptionTitle}>{f.title}</div>
+                  <div className={css.formPickerOptionMeta}>
+                    <span>{f.group}</span>
+                    <span className={css.formPickerDot} />
+                    <span>{f.category}</span>
+                  </div>
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 const CATEGORIES = [
   "สมัครสมาชิก",
@@ -31,6 +126,16 @@ const FORM_GROUPS = [
 interface DownloadLink {
   label: string;
   url: string;
+  formId?: number; // ถ้ามี formId จะ resolve URL จากตาราง forms อัตโนมัติ
+}
+
+interface FormItem {
+  id: number;
+  category: string;
+  group: string;
+  title: string;
+  fileUrl: string | null;
+  isActive: boolean;
 }
 
 interface ServicePageItem {
@@ -63,6 +168,7 @@ export default function AdminServicePagesPage() {
   const [filterCat, setFilterCat] = useState("ทั้งหมด");
   const [uploading, setUploading] = useState(false);
   const [links, setLinks] = useState<DownloadLink[]>([]);
+  const [allForms, setAllForms] = useState<FormItem[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
@@ -70,7 +176,12 @@ export default function AdminServicePagesPage() {
     if (res.ok) setItems(await res.json());
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  const loadForms = useCallback(async () => {
+    const res = await fetch("/api/admin/forms", { credentials: "include" });
+    if (res.ok) setAllForms(await res.json());
+  }, []);
+
+  useEffect(() => { load(); loadForms(); }, [load, loadForms]);
 
   const filtered = items.filter((i) => {
     if (filterCat !== "ทั้งหมด" && i.category !== filterCat) return false;
@@ -118,10 +229,20 @@ export default function AdminServicePagesPage() {
   };
 
   const addLink = () => setLinks([...links, { label: "", url: "" }]);
+  const addFormLink = () => setLinks([...links, { label: "", url: "", formId: 0 }]);
   const removeLink = (idx: number) => setLinks(links.filter((_, i) => i !== idx));
   const updateLink = (idx: number, field: "label" | "url", value: string) => {
     const updated = [...links];
     updated[idx] = { ...updated[idx], [field]: value };
+    setLinks(updated);
+  };
+  const selectFormForLink = (idx: number, formId: number) => {
+    const form = allForms.find((f) => f.id === formId);
+    if (!form) return;
+    const updated = [...links];
+    // ถ้ายังไม่มี label ให้ใช้ชื่อแบบฟอร์ม, ถ้ามีแล้วให้ใช้ค่าที่ตั้งไว้
+    const label = updated[idx].label.trim() ? updated[idx].label : form.title;
+    updated[idx] = { label, url: form.fileUrl || "", formId: form.id };
     setLinks(updated);
   };
 
@@ -136,7 +257,7 @@ export default function AdminServicePagesPage() {
       title: editing.title.trim(),
       category: editing.category,
       infographicUrl: editing.infographicUrl || null,
-      downloadLinks: JSON.stringify(links.filter((l) => l.label.trim() && l.url.trim())),
+      downloadLinks: JSON.stringify(links.filter((l) => l.label.trim() && (l.url.trim() || l.formId)).map((l) => l.formId ? { label: l.label, url: l.url, formId: l.formId } : { label: l.label, url: l.url })),
       formGroup: editing.formGroup || null,
       sortOrder: editing.sortOrder,
       isActive: editing.isActive,
@@ -318,35 +439,65 @@ export default function AdminServicePagesPage() {
                     <label className={css.formLabel} style={{ marginBottom: 0 }}>
                       <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><LinkIcon size={16} color="#f97316" /> ลิงก์ดาวน์โหลดเอกสารเสริม</span>
                     </label>
-                    <button onClick={addLink} className={css.addLinkBtn}>
-                      <Plus size={14} /> เพิ่มลิงก์
-                    </button>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <button onClick={addFormLink} className={css.addLinkBtn} style={{ background: '#f0fdf4', color: '#16a34a', borderColor: '#bbf7d0' }}>
+                        <FileText size={14} /> เลือกจากแบบฟอร์ม
+                      </button>
+                      <button onClick={addLink} className={css.addLinkBtn}>
+                        <Plus size={14} /> เพิ่มลิงก์เอง
+                      </button>
+                    </div>
                   </div>
 
                   {links.length === 0 ? (
                     <div style={{ padding: '16px', textAlign: 'center', background: '#f8fafc', borderRadius: '10px', border: '1px dashed #cbd5e1' }}>
-                      <p className={css.formHint}>ยังไม่มีลิงก์ดาวน์โหลดเสริม</p>
+                      <p className={css.formHint}>ยังไม่มีลิงก์ดาวน์โหลดเสริม — เลือกจากแบบฟอร์มเพื่อให้ลิงก์อัปเดตอัตโนมัติ</p>
                     </div>
                   ) : (
-                    <div style={{ maxHeight: '200px', overflowY: 'auto', paddingRight: '8px' }}>
+                    <div style={{ maxHeight: '260px', overflowY: 'auto', paddingRight: '8px' }}>
                       {links.map((link, idx) => (
-                        <div key={idx} className={css.linkRow}>
+                        <div key={idx} className={css.linkRow} style={link.formId ? { borderColor: '#bbf7d0', background: '#f0fdf4' } : undefined}>
                           <span className={css.linkIndex}>{idx + 1}</span>
                           <div className={css.linkInputGroup}>
-                            <input
-                              className={css.formInput}
-                              value={link.label}
-                              onChange={(e) => updateLink(idx, "label", e.target.value)}
-                              placeholder="ชื่อเอกสาร (เช่น แบบฟอร์มเงินฝาก)"
-                              style={{ padding: '8px 12px' }}
-                            />
-                            <input
-                              className={css.formInput}
-                              value={link.url}
-                              onChange={(e) => updateLink(idx, "url", e.target.value)}
-                              placeholder="URL (เช่น /uploads/doc.pdf)"
-                              style={{ padding: '8px 12px' }}
-                            />
+                            {link.formId !== undefined ? (
+                              <>
+                                <FormPicker
+                                  forms={allForms.filter((f) => f.isActive)}
+                                  value={link.formId || 0}
+                                  onChange={(fid) => selectFormForLink(idx, fid)}
+                                />
+                                <input
+                                  className={css.formInput}
+                                  value={link.label}
+                                  onChange={(e) => updateLink(idx, "label", e.target.value)}
+                                  placeholder="ตั้งชื่อแสดง (ว่างจะใช้ชื่อแบบฟอร์ม)"
+                                  style={{ padding: '8px 12px' }}
+                                />
+                                {link.formId > 0 && (
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#16a34a', padding: '2px 0' }}>
+                                    <FileText size={12} />
+                                    <span>ลิงก์จะอัปเดตอัตโนมัติเมื่อแบบฟอร์มถูกแก้ไข</span>
+                                  </div>
+                                )}
+                              </>
+                            ) : (
+                              <>
+                                <input
+                                  className={css.formInput}
+                                  value={link.label}
+                                  onChange={(e) => updateLink(idx, "label", e.target.value)}
+                                  placeholder="ชื่อเอกสาร (เช่น แบบฟอร์มเงินฝาก)"
+                                  style={{ padding: '8px 12px' }}
+                                />
+                                <input
+                                  className={css.formInput}
+                                  value={link.url}
+                                  onChange={(e) => updateLink(idx, "url", e.target.value)}
+                                  placeholder="URL (เช่น /uploads/doc.pdf)"
+                                  style={{ padding: '8px 12px' }}
+                                />
+                              </>
+                            )}
                           </div>
                           <button onClick={() => removeLink(idx)} className={css.removeLinkBtn}>
                             <Trash2 size={16} />

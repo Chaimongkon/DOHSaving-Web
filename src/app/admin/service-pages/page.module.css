@@ -774,7 +774,9 @@
     cursor: pointer;
     font-size: 13px;
     font-weight: 600;
+    font-family: inherit;
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
 .addLinkBtn:hover {
@@ -906,15 +908,294 @@
     font-weight: 500;
 }
 
+/* ── FormPicker (Select2-style searchable dropdown) ── */
+.formPicker {
+    position: relative;
+    width: 100%;
+}
+
+.formPickerTrigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: inherit;
+    color: #0f172a;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    text-align: left;
+}
+
+.formPickerTrigger:hover {
+    border-color: #16a34a;
+}
+
+.formPickerTrigger:focus {
+    outline: none;
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+}
+
+.formPickerSelected {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.formPickerBadge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: #f0fdf4;
+    color: #16a34a;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.formPickerDropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 4px 8px rgba(15, 23, 42, 0.04);
+    z-index: 100;
+    overflow: hidden;
+    animation: formPickerSlide 0.15s ease-out;
+}
+
+@keyframes formPickerSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.formPickerSearch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    background: #f8fafc;
+}
+
+.formPickerSearchInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    font-family: inherit;
+    color: #0f172a;
+    background: transparent;
+}
+
+.formPickerSearchInput::placeholder {
+    color: #94a3b8;
+}
+
+.formPickerList {
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 4px;
+}
+
+.formPickerList::-webkit-scrollbar {
+    width: 6px;
+}
+
+.formPickerList::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.formPickerEmpty {
+    padding: 20px 12px;
+    text-align: center;
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.formPickerOption {
+    width: 100%;
+    display: block;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    border-radius: 8px;
+    transition: background 0.15s;
+    font-family: inherit;
+}
+
+.formPickerOption:hover {
+    background: #f0fdf4;
+}
+
+.formPickerOptionActive {
+    background: #dcfce7;
+}
+
+.formPickerOptionActive:hover {
+    background: #bbf7d0;
+}
+
+.formPickerOptionTitle {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.4;
+}
+
+.formPickerOptionMeta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.formPickerDot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    flex-shrink: 0;
+}
+
 @media (max-width: 768px) {
+    .container {
+        padding: 12px;
+    }
+
+    .header {
+        padding: 16px 20px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .title {
+        font-size: 20px;
+    }
+
+    .addBtn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .modalOverlay {
+        padding: 8px;
+        align-items: flex-end;
+    }
+
+    .modal {
+        max-width: 100%;
+        max-height: 95vh;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .modalHeader {
+        padding: 16px 20px;
+    }
+
     .modalBody {
         flex-direction: column;
-        padding: 20px;
-        max-height: 70vh;
+        padding: 16px;
+        max-height: calc(95vh - 140px);
+        overflow-y: auto;
     }
 
     .leftCol,
     .rightCol {
         min-width: 100%;
+    }
+
+    .rightCol {
+        padding: 16px;
+    }
+
+    .formRow {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .modalFooter {
+        padding: 16px 20px;
+    }
+
+    .dynamicLinksHeader {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .linkRow {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .linkIndex {
+        text-align: left;
+    }
+
+    .removeLinkBtn {
+        width: 100%;
+        height: 36px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .cardStats {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    /* FormPicker responsive */
+    .formPickerDropdown {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 16px 16px 0 0;
+        max-height: 60vh;
+        z-index: 1100;
+    }
+
+    .formPickerList {
+        max-height: 45vh;
+    }
+
+    .formPickerOption {
+        padding: 12px;
     }
 }
