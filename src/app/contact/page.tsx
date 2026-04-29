@@ -41,12 +41,12 @@ const defaultInfo: Record<string, string> = {
   address: "2/486 อาคาร 26\nถนนศรีอยุธยา แขวงทุ่งพญาไท\nเขตราชเทวี กรุงเทพฯ 10400",
   hours: "วันจันทร์ – ศุกร์\n08.30 – 16.30 น.",
   hoursNote: "(การเงิน ปิดทำการเวลา 15.30 น.)",
-  phone: "02-245-0668",
+  phone: "02-345-6668",
   phoneSub1: "02-644-7940-43",
   phoneSub2: "02-644-9243, 02-644-4833",
   email: "dohcoop@hotmail.com",
   lineOfficial: "@dohcoop",
-  mainPhone: "02-245-0668",
+  mainPhone: "02-345-6668",
   fax1: "02-354-6717",
   fax1Note: "ฝ่ายทะเบียนหุ้นฯ, ฝ่ายสินเชื่อ, ฝ่ายบริหารทั่วไป, ฝ่ายบัญชี",
   fax2: "02-644-4825",
@@ -117,7 +117,7 @@ export default function ContactPage() {
             <div className={css.infoBody}>
               <p className={css.infoLabel}>โทรศัพท์</p>
               <p className={css.infoValue}>
-                <a href="tel:022450668" className={css.phoneLink}>02-245-0668</a>
+                <a href="tel:023456668" className={css.phoneLink}>02-345-6668</a>
               </p>
               <p className={css.infoValueSm}>
                 <a href="tel:026447940" className={css.phoneLink}>02-644-7940-43</a>
@@ -161,7 +161,7 @@ export default function ContactPage() {
               <div className={css.phoneSection} style={{ marginBottom: 20 }}>
                 <div className={css.phoneRow}>
                   <span className={css.phoneLabel}>โทรศัพท์</span>
-                  <span>สายตรงกรมทางหลวง <a href="tel:022450668" className={css.phoneLink}>02-245-0668</a> ต่อ สายภายในสหกรณ์</span>
+                  <span>สายตรงกรมทางหลวง <a href="tel:023456668" className={css.phoneLink}>02-345-6668</a> ต่อ สายภายในสหกรณ์</span>
                 </div>
                 <div className={css.phoneRow}>
                   <span className={css.phoneLabel}>FAX</span>

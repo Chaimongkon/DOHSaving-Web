@@ -30,8 +30,8 @@ const LOCATION_FIELDS: InfoField[] = [
 ];
 
 const PHONE_FIELDS: InfoField[] = [
-  { key: "phone", label: "โทรศัพท์หลัก", placeholder: "02-245-0668" },
-  { key: "mainPhone", label: "สายตรงกรมทางหลวง", placeholder: "02-245-0668" },
+  { key: "phone", label: "โทรศัพท์หลัก", placeholder: "02-345-3668" },
+  { key: "mainPhone", label: "สายตรงกรมทางหลวง", placeholder: "02-345-6668" },
   { key: "phoneSub1", label: "โทรศัพท์รอง 1", placeholder: "02-644-7940-43" },
   { key: "phoneSub2", label: "โทรศัพท์รอง 2", placeholder: "02-644-9243" },
 ];

@@ -157,7 +157,7 @@ export default function TermsPage() {
                 <br />
                 <Phone size={13} style={{ verticalAlign: -2, marginRight: 4 }} />
                 โทร:{" "}
-                <a href="tel:022450668">02-245-0668</a>
+                <a href="tel:023456668">02-345-6668</a>
                 <br />
                 <Mail size={13} style={{ verticalAlign: -2, marginRight: 4 }} />
                 อีเมล:{" "}

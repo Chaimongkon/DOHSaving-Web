@@ -123,7 +123,7 @@ export default function MapPage() {
             </div>
             <div className={css.cardBody}>
               <p className={css.cardText}>
-                <strong>สายตรง:</strong> <a href="tel:022450668" style={{ color: "#0369a1", textDecoration: "none", fontWeight: 600 }}>02-245-0668</a><br />
+                <strong>สายตรง:</strong> <a href="tel:023456668" style={{ color: "#0369a1", textDecoration: "none", fontWeight: 600 }}>02-345-6668</a><br />
                 <strong>สายอื่น:</strong> 02-644-7940-43<br />
                 02-644-9243, 02-644-4833<br />
                 <strong>FAX:</strong> 02-354-6717, 02-644-4825
@@ -325,8 +325,8 @@ export default function MapPage() {
             </p>
           </div>
           <div className={css.quickContactActions}>
-            <a href="tel:022450668" className={`${css.quickBtn} ${css.quickBtnPhone}`}>
-              <Phone size={16} /> โทร 02-245-0668
+            <a href="tel:023456668" className={`${css.quickBtn} ${css.quickBtnPhone}`}>
+              <Phone size={16} /> โทร 02-345-6668
             </a>
             <Link href="/contact" className={`${css.quickBtn} ${css.quickBtnContact}`}>
               <ExternalLink size={14} /> ดูข้อมูลติดต่อทั้งหมด
