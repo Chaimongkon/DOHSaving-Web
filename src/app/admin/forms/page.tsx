@@ -8,7 +8,6 @@ import {
   Filter,
   FolderOpen,
   Loader2,
-  PencilLine,
   Plus,
   Save,
   Search,
@@ -79,6 +78,7 @@ function getCategoryTone(category: string) {
 export default function AdminFormsPage() {
   const [items, setItems] = useState<FormItem[]>([]);
   const [draft, setDraft] = useState<FormItem | null>(null);
+  const [originalDraft, setOriginalDraft] = useState<FormItem | null>(null);
   const [selectedId, setSelectedId] = useState<number | "new" | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -89,6 +89,13 @@ export default function AdminFormsPage() {
   const [filterGroup, setFilterGroup] = useState(GROUP_ALL);
   const [toast, setToast] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const isDirty = useMemo(() => {
+    if (!draft || !originalDraft) return false;
+    return JSON.stringify(draft) !== JSON.stringify(originalDraft);
+  }, [draft, originalDraft]);
+
+  const drawerOpen = draft !== null;
 
   const showToast = useCallback((message: string) => {
     setToast(message);
@@ -136,43 +143,54 @@ export default function AdminFormsPage() {
       if (!groups.has(item.group)) groups.set(item.group, []);
       groups.get(item.group)?.push(item);
     }
+    const categoryRank = (category: string) => {
+      const index = CATEGORIES.indexOf(category);
+      return index === -1 ? CATEGORIES.length : index;
+    };
     return GROUPS.filter((group) => groups.has(group)).map((group) => ({
       group,
-      items: groups.get(group) ?? [],
+      items: (groups.get(group) ?? [])
+        .slice()
+        .sort((a, b) =>
+          categoryRank(a.category) - categoryRank(b.category) ||
+          a.sortOrder - b.sortOrder ||
+          a.title.localeCompare(b.title, "th")
+        ),
     }));
   }, [filteredItems]);
 
   useEffect(() => {
-    if (draft && isNew) return;
-    if (selectedId && selectedId !== "new") {
-      const selectedItem = items.find((item) => item.id === selectedId);
-      if (selectedItem) {
-        setDraft({ ...selectedItem });
-      } else {
-        setDraft(null);
-        setSelectedId(null);
-      }
+    if (!selectedId || selectedId === "new") return;
+    const exists = items.some((item) => item.id === selectedId);
+    if (!exists) {
+      setDraft(null);
+      setOriginalDraft(null);
+      setSelectedId(null);
+      setIsNew(false);
     }
-  }, [draft, isNew, items, selectedId]);
+  }, [items, selectedId]);
 
   const activeCount = items.filter((item) => item.isActive).length;
   const withFileCount = items.filter((item) => Boolean(item.fileUrl)).length;
   const legacyCount = items.filter((item) => Boolean(item.legacyPath)).length;
 
-  const startCreate = () => {
-    setIsNew(true);
-    setSelectedId("new");
-    setDraft({
+  const startCreate = (presetGroup?: string) => {
+    const newDraft: FormItem = {
       ...emptyForm,
       category: filterCat !== CATEGORY_ALL ? filterCat : CATEGORIES[0],
-      group: filterGroup !== GROUP_ALL ? filterGroup : GROUPS[0],
-    });
+      group: presetGroup ?? (filterGroup !== GROUP_ALL ? filterGroup : GROUPS[0]),
+    };
+    setIsNew(true);
+    setSelectedId("new");
+    setDraft(newDraft);
+    setOriginalDraft(newDraft);
   };
 
   const startEdit = (item: FormItem) => {
     setIsNew(false);
     setSelectedId(item.id ?? null);
     setDraft({ ...item });
+    setOriginalDraft({ ...item });
   };
 
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -206,7 +224,7 @@ export default function AdminFormsPage() {
       }
 
       const data = await res.json();
-      setDraft({ ...draft, fileUrl: data.url });
+      setDraft((prev) => (prev ? { ...prev, fileUrl: data.url } : prev));
       showToast("อัปโหลดไฟล์เรียบร้อย");
     } catch (error) {
       showToast(String(error));
@@ -250,14 +268,13 @@ export default function AdminFormsPage() {
         throw new Error(err.error || "บันทึกไม่สำเร็จ");
       }
 
-      const saved = await res.json();
+      await res.json();
       showToast(isNew ? "เพิ่มแบบฟอร์มเรียบร้อย" : "อัปเดตแบบฟอร์มเรียบร้อย");
       await load();
       setIsNew(false);
-      if (saved?.id) {
-        setSelectedId(saved.id);
-        setDraft({ ...saved });
-      }
+      setSelectedId(null);
+      setDraft(null);
+      setOriginalDraft(null);
     } catch (error) {
       showToast(String(error));
     } finally {
@@ -276,6 +293,7 @@ export default function AdminFormsPage() {
       if (!res.ok) throw new Error("ลบไม่สำเร็จ");
       showToast("ลบแบบฟอร์มเรียบร้อย");
       setDraft(null);
+      setOriginalDraft(null);
       setSelectedId(null);
       setIsNew(false);
       await load();
@@ -284,11 +302,33 @@ export default function AdminFormsPage() {
     }
   };
 
-  const cancelEditing = () => {
+  const cancelEditing = useCallback(() => {
+    if (isDirty && !window.confirm("ยังไม่ได้บันทึก ต้องการปิดและทิ้งการแก้ไขใช่หรือไม่?")) {
+      return;
+    }
     setIsNew(false);
     setSelectedId(null);
     setDraft(null);
-  };
+    setOriginalDraft(null);
+  }, [isDirty]);
+
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") cancelEditing();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [drawerOpen, cancelEditing]);
+
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [drawerOpen]);
 
   return (
     <div className={css.page}>
@@ -300,7 +340,7 @@ export default function AdminFormsPage() {
             หน้าแบบใหม่สำหรับเอกสารโดยเฉพาะ เน้นคลังแบบฟอร์มที่สแกนเร็ว และแผงแก้ไขที่ชัดเจนกว่าเดิม
           </p>
         </div>
-        <button className={css.createBtn} onClick={startCreate}>
+        <button className={css.createBtn} onClick={() => startCreate()}>
           <Plus size={16} />
           เพิ่มแบบฟอร์ม
         </button>
@@ -355,100 +395,6 @@ export default function AdminFormsPage() {
           </div>
         </aside>
 
-        {draft && (
-          <aside className={css.editorRow}>
-            <div className={css.panelHeader}>
-              <div>
-                <h2 className={css.panelTitle}>{isNew ? "เพิ่มแบบฟอร์มใหม่" : "แก้ไขแบบฟอร์ม"}</h2>
-                <p className={css.panelText}>{isNew ? "กรุณากรอกข้อมูลเพื่อเพิ่มฟอร์มเข้าสู่ระบบ" : "แก้รายละเอียดและคลิกบันทึกเพื่ออัปเดต"}</p>
-              </div>
-              <div className={css.editorTools}>
-                <button className={css.ghostBtn} onClick={cancelEditing}>
-                  <X size={16} /> ยกเลิก
-                </button>
-                {!isNew && draft.id && (
-                  <button className={css.dangerBtn} onClick={remove}>
-                    <Trash2 size={16} /> ลบ
-                  </button>
-                )}
-                <button className={css.primaryBtn} onClick={save} disabled={saving}>
-                  {saving ? <Loader2 className={css.spin} size={16} /> : (isNew ? <Plus size={16} /> : <Save size={16} />)}
-                  {saving ? "กำลังบันทึก..." : (isNew ? "เพิ่มฟอร์ม" : "บันทึกการแก้ไข")}
-                </button>
-              </div>
-            </div>
-
-            <div className={css.editorBodyWrapper}>
-              <div className={css.editorFormGrid}>
-                <label className={css.field}>
-                  <span>ชื่อแบบฟอร์ม</span>
-                  <input className={css.input} value={draft.title} onChange={(event) => setDraft({ ...draft, title: event.target.value })} placeholder="เช่น แบบฟอร์มสมัครสมาชิก" />
-                </label>
-
-                <label className={css.field}>
-                  <span>ประเภทสมาชิก</span>
-                  <select className={css.input} value={draft.category} onChange={(event) => setDraft({ ...draft, category: event.target.value })}>
-                    {CATEGORIES.map((category) => <option key={category} value={category}>{category}</option>)}
-                  </select>
-                </label>
-
-                <label className={css.field}>
-                  <span>หมวดแบบฟอร์ม</span>
-                  <select className={css.input} value={draft.group} onChange={(event) => setDraft({ ...draft, group: event.target.value })}>
-                    {GROUPS.map((group) => <option key={group} value={group}>{group}</option>)}
-                  </select>
-                </label>
-
-                <label className={css.field}>
-                  <span>Legacy path</span>
-                  <input className={css.input} value={draft.legacyPath} onChange={(event) => setDraft({ ...draft, legacyPath: event.target.value })} placeholder="เช่น 123.pdf" />
-                </label>
-
-                <div className={css.inlineFields}>
-                  <label className={css.field}>
-                    <span>ลำดับจัดเรียง</span>
-                    <input className={css.input} type="number" value={draft.sortOrder} onChange={(event) => setDraft({ ...draft, sortOrder: parseInt(event.target.value, 10) || 0 })} />
-                  </label>
-
-                  <label className={css.switchField}>
-                    <span>สถานะบนแอป</span>
-                    <label className={css.switch}>
-                      <input type="checkbox" checked={draft.isActive} onChange={(event) => setDraft({ ...draft, isActive: event.target.checked })} />
-                      <span>{draft.isActive ? "แสดงอยู่" : "ซ่อนไว้"}</span>
-                    </label>
-                  </label>
-                </div>
-              </div>
-
-              <div className={css.filePanel}>
-                <div className={css.filePanelTop}>
-                  <div>
-                    <strong>{draft.fileUrl ? "ไฟล์พร้อมใช้งาน" : "ยังไม่มีไฟล์แนบ"}</strong>
-                    <p className={css.hint}>รองรับ PDF ข่าวสาร หรือรูปภาพ ขนาดไม่เกิน 10MB</p>
-                  </div>
-                  {draft.fileUrl && (
-                    <a href={draft.fileUrl} target="_blank" rel="noopener noreferrer" className={css.previewLink}>
-                      ดูไฟล์ <ArrowUpRight size={14} />
-                    </a>
-                  )}
-                </div>
-
-                <input ref={fileInputRef} type="file" accept=".pdf,image/*" onChange={handleUpload} className={css.hiddenInput} />
-                <button className={css.uploadBtn} onClick={() => fileInputRef.current?.click()} disabled={uploading}>
-                  {uploading ? <Loader2 className={css.spin} size={16} /> : <Upload size={16} />} 
-                  {uploading ? "กำลังอัปโหลด..." : "อัปโหลดไฟล์ (พับลิชพับไฟ)"}
-                </button>
-
-                {draft.fileUrl && (
-                  <div className={css.filePreview}>
-                    <FileText size={18} /><span>{draft.fileUrl.split("/").pop()}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </aside>
-        )}
-
         <section className={css.library}>
           <div className={css.panelHeader}>
             <div>
@@ -476,6 +422,14 @@ export default function AdminFormsPage() {
                       <h3 className={css.groupTitle}>{group}</h3>
                       <p className={css.groupCount}>{groupItems.length} รายการ</p>
                     </div>
+                    <button
+                      type="button"
+                      className={css.quickAddBtn}
+                      onClick={() => startCreate(group)}
+                      title={`เพิ่มแบบฟอร์มในหมวด ${group}`}
+                    >
+                      <Plus size={14} /> เพิ่มในหมวดนี้
+                    </button>
                   </div>
                   <div className={css.listLayout}>
                     {groupItems.map((item) => (
@@ -507,6 +461,114 @@ export default function AdminFormsPage() {
           )}
         </section>
       </section>
+
+      {drawerOpen && draft && (
+        <div className={css.drawerOverlay} role="dialog" aria-modal="true">
+          <div className={css.drawerBackdrop} onClick={cancelEditing} />
+          <aside className={css.drawer}>
+            <div className={css.drawerHeader}>
+              <div>
+                <span className={css.drawerEyebrow}>{isNew ? "เพิ่มแบบฟอร์ม" : "แก้ไขแบบฟอร์ม"}</span>
+                <h2 className={css.drawerTitle}>
+                  {isNew ? "เพิ่มแบบฟอร์มใหม่" : (draft.title || "ไม่มีชื่อแบบฟอร์ม")}
+                </h2>
+                <p className={css.drawerHint}>
+                  {isNew ? "กรอกข้อมูลให้ครบแล้วกดบันทึกเพื่อเพิ่มเข้าระบบ" : "แก้รายละเอียดแล้วกดบันทึกเพื่ออัปเดต"}
+                </p>
+              </div>
+              <button className={css.drawerClose} onClick={cancelEditing} aria-label="ปิด">
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className={css.drawerBody}>
+              <label className={css.field}>
+                <span>ชื่อแบบฟอร์ม</span>
+                <input className={css.input} value={draft.title} onChange={(event) => setDraft({ ...draft, title: event.target.value })} placeholder="เช่น แบบฟอร์มสมัครสมาชิก" />
+              </label>
+
+              <div className={css.fieldGrid2}>
+                <label className={css.field}>
+                  <span>ประเภทสมาชิก</span>
+                  <select className={css.input} value={draft.category} onChange={(event) => setDraft({ ...draft, category: event.target.value })}>
+                    {CATEGORIES.map((category) => <option key={category} value={category}>{category}</option>)}
+                  </select>
+                </label>
+
+                <label className={css.field}>
+                  <span>หมวดแบบฟอร์ม</span>
+                  <select className={css.input} value={draft.group} onChange={(event) => setDraft({ ...draft, group: event.target.value })}>
+                    {GROUPS.map((group) => <option key={group} value={group}>{group}</option>)}
+                  </select>
+                </label>
+              </div>
+
+              <div className={css.fieldGrid2}>
+                <label className={css.field}>
+                  <span>ลำดับจัดเรียง</span>
+                  <input className={css.input} type="number" value={draft.sortOrder} onChange={(event) => setDraft({ ...draft, sortOrder: parseInt(event.target.value, 10) || 0 })} />
+                </label>
+
+                <label className={css.switchField}>
+                  <span>สถานะบนแอป</span>
+                  <label className={css.switch}>
+                    <input type="checkbox" checked={draft.isActive} onChange={(event) => setDraft({ ...draft, isActive: event.target.checked })} />
+                    <span>{draft.isActive ? "แสดงอยู่" : "ซ่อนไว้"}</span>
+                  </label>
+                </label>
+              </div>
+
+              <label className={css.field}>
+                <span>Legacy path (ถ้ามี)</span>
+                <input className={css.input} value={draft.legacyPath} onChange={(event) => setDraft({ ...draft, legacyPath: event.target.value })} placeholder="เช่น 123.pdf" />
+              </label>
+
+              <div className={css.filePanel}>
+                <div className={css.filePanelTop}>
+                  <div>
+                    <strong>{draft.fileUrl ? "ไฟล์พร้อมใช้งาน" : "ยังไม่มีไฟล์แนบ"}</strong>
+                    <p className={css.hint}>รองรับ PDF หรือรูปภาพ ขนาดไม่เกิน 10MB</p>
+                  </div>
+                  {draft.fileUrl && (
+                    <a href={draft.fileUrl} target="_blank" rel="noopener noreferrer" className={css.previewLink}>
+                      ดูไฟล์ <ArrowUpRight size={14} />
+                    </a>
+                  )}
+                </div>
+
+                <input ref={fileInputRef} type="file" accept=".pdf,image/*" onChange={handleUpload} className={css.hiddenInput} />
+                <button className={css.uploadBtn} onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+                  {uploading ? <Loader2 className={css.spin} size={16} /> : <Upload size={16} />}
+                  {uploading ? "กำลังอัปโหลด..." : "อัปโหลดไฟล์"}
+                </button>
+
+                {draft.fileUrl && (
+                  <div className={css.filePreview}>
+                    <FileText size={18} /><span>{draft.fileUrl.split("/").pop()}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className={css.drawerFooter}>
+              {!isNew && draft.id ? (
+                <button className={css.dangerBtn} onClick={remove}>
+                  <Trash2 size={16} /> ลบ
+                </button>
+              ) : <span />}
+              <div className={css.drawerFooterRight}>
+                <button className={css.ghostBtn} onClick={cancelEditing}>
+                  ยกเลิก
+                </button>
+                <button className={css.primaryBtn} onClick={save} disabled={saving}>
+                  {saving ? <Loader2 className={css.spin} size={16} /> : (isNew ? <Plus size={16} /> : <Save size={16} />)}
+                  {saving ? "กำลังบันทึก..." : (isNew ? "เพิ่มฟอร์ม" : "บันทึกการแก้ไข")}
+                </button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      )}
 
       {toast && <div className={css.toast}>{toast}</div>}
     </div>
