@@ -1,16 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
-
-function sanitize(input: string | null | undefined): string {
-  if (!input) return "";
-  return input
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
-    .replace(/'/g, "&#x27;")
-    .replace(/\//g, "&#x2F;");
-}
+import { decodeEntities } from "@/lib/decodeEntities";
 
 export async function GET(
   req: NextRequest,
@@ -54,6 +45,16 @@ export async function GET(
     return NextResponse.json({
       question: {
         ...question,
+        authorName: decodeEntities(question.authorName),
+        memberCode: decodeEntities(question.memberCode),
+        title: decodeEntities(question.title),
+        body: decodeEntities(question.body),
+        replies: question.replies.map((r) => ({
+          ...r,
+          authorName: decodeEntities(r.authorName),
+          memberCode: decodeEntities(r.memberCode),
+          body: decodeEntities(r.body),
+        })),
         replyCount: question._count.replies,
         _count: undefined,
       },
@@ -90,8 +91,8 @@ export async function POST(
     const reply = await prisma.qnaReply.create({
       data: {
         questionId: qid,
-        authorName: sanitize(authorName || user.fullName || "เจ้าหน้าที่สหกรณ์").slice(0, 255),
-        body: sanitize(replyBody.trim()).slice(0, 5000),
+        authorName: (authorName || user.fullName || "เจ้าหน้าที่สหกรณ์").slice(0, 255),
+        body: replyBody.trim().slice(0, 5000),
         isAdmin: true,
       },
     });

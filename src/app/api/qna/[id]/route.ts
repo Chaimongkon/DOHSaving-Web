@@ -2,17 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getClientIp } from "@/lib/requestIp";
 import { consumeRateLimit } from "@/lib/rateLimit";
-
-// ─── Security helpers ───
-function sanitize(input: string | null | undefined): string {
-  if (!input) return "";
-  return input
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;")
-    .replace(/\//g, "&#x2F;");
-}
+import { decodeEntities } from "@/lib/decodeEntities";
 
 function truncate(val: string, max: number): string {
   return val.length > max ? val.slice(0, max) : val;
@@ -61,7 +51,21 @@ export async function GET(
       return NextResponse.json({ error: "ไม่พบกระทู้" }, { status: 404 });
     }
 
-    return NextResponse.json({ question });
+    return NextResponse.json({
+      question: {
+        ...question,
+        authorName: decodeEntities(question.authorName),
+        memberCode: decodeEntities(question.memberCode),
+        title: decodeEntities(question.title),
+        body: decodeEntities(question.body),
+        replies: question.replies.map((r) => ({
+          ...r,
+          authorName: decodeEntities(r.authorName),
+          memberCode: decodeEntities(r.memberCode),
+          body: decodeEntities(r.body),
+        })),
+      },
+    });
   } catch (error) {
     console.error("Failed to get question:", error);
     return NextResponse.json({ error: "เกิดข้อผิดพลาด" }, { status: 500 });
@@ -138,9 +142,9 @@ export async function POST(
     const reply = await prisma.qnaReply.create({
       data: {
         questionId: qid,
-        authorName: truncate(sanitize(authorName?.trim() || "ผู้ไม่ประสงค์ออกนาม"), 255),
-        memberCode: truncate(sanitize(memberCode?.trim() || "000000"), 50),
-        body: truncate(sanitize(replyBody.trim()), 5000),
+        authorName: truncate(authorName?.trim() || "ผู้ไม่ประสงค์ออกนาม", 255),
+        memberCode: truncate(memberCode?.trim() || "000000", 50),
+        body: truncate(replyBody.trim(), 5000),
         isAdmin: false,
       },
     });

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { decodeEntities } from "@/lib/decodeEntities";
 
 // GET /api/admin/qna — list all questions (admin)
 export async function GET(req: NextRequest) {
@@ -34,6 +35,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       questions: questions.map((q) => ({
         ...q,
+        authorName: decodeEntities(q.authorName),
+        memberCode: decodeEntities(q.memberCode),
+        title: decodeEntities(q.title),
+        body: decodeEntities(q.body),
         replyCount: q._count.replies,
         _count: undefined,
       })),

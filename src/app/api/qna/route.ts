@@ -2,17 +2,7 @@ import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { getClientIp } from "@/lib/requestIp";
 import { consumeRateLimit } from "@/lib/rateLimit";
-
-// ─── Security helpers ───
-function sanitize(input: string | null | undefined): string {
-  if (!input) return "";
-  return input
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;")
-    .replace(/\//g, "&#x2F;");
-}
+import { decodeEntities } from "@/lib/decodeEntities";
 
 function truncate(val: string, max: number): string {
   return val.length > max ? val.slice(0, max) : val;
@@ -81,8 +71,16 @@ export async function GET(req: NextRequest) {
     return Response.json({
       questions: questions.map((q) => ({
         ...q,
+        authorName: decodeEntities(q.authorName),
+        title: decodeEntities(q.title),
         replyCount: q._count.replies,
-        latestReply: q.replies[0] || null,
+        latestReply: q.replies[0]
+          ? {
+              ...q.replies[0],
+              authorName: decodeEntities(q.replies[0].authorName),
+              body: decodeEntities(q.replies[0].body),
+            }
+          : null,
         replies: undefined,
         _count: undefined,
       })),
@@ -149,10 +147,10 @@ export async function POST(req: NextRequest) {
 
     const question = await prisma.qnaQuestion.create({
       data: {
-        authorName: truncate(sanitize(authorName?.trim() || "ผู้ไม่ประสงค์ออกนาม"), 255),
-        memberCode: truncate(sanitize(memberCode?.trim() || "000000"), 50),
-        title: truncate(sanitize(title.trim()), 500),
-        body: truncate(sanitize(questionBody.trim()), 5000),
+        authorName: truncate(authorName?.trim() || "ผู้ไม่ประสงค์ออกนาม", 255),
+        memberCode: truncate(memberCode?.trim() || "000000", 50),
+        title: truncate(title.trim(), 500),
+        body: truncate(questionBody.trim(), 5000),
       },
     });
 
