@@ -6,6 +6,7 @@ import CookieConsentBanner from "@/components/CookieConsent";
 import FestivalOverlay from "@/components/festival/FestivalOverlay";
 import FestivalBanner from "@/components/festival/FestivalBanner";
 import FestivalThemeProvider from "@/components/festival/FestivalThemeProvider";
+import MourningMode from "@/components/MourningMode";
 
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -17,13 +18,16 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <FestivalThemeProvider />
-      <FestivalOverlay />
-      <FestivalBanner />
-      <TopBar />
-      <Navbar />
-      <main className="main-content">{children}</main>
-      <Footer />
+      <MourningMode />
+      <div id="mourning-target">
+        <FestivalThemeProvider />
+        <FestivalOverlay />
+        <FestivalBanner />
+        <TopBar />
+        <Navbar />
+        <main className="main-content">{children}</main>
+        <Footer />
+      </div>
       <CookieConsentBanner />
     </>
   );

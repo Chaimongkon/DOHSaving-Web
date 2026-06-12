@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { CloseOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import css from "./PromoDialog.module.css";
 
@@ -96,7 +97,9 @@ export default function PromoDialog() {
     />
   ) : null;
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <div className={css.overlay} onClick={handleClose}>
       <div className={css.dialog} onClick={(e) => e.stopPropagation()}>
         {/* Close X */}
@@ -162,6 +165,7 @@ export default function PromoDialog() {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

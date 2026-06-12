@@ -31,6 +31,7 @@ import {
   GiftOutlined,
   DownloadOutlined,
   RightOutlined,
+  HeartOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
@@ -119,6 +120,7 @@ const navItems = [
       { label: "ยอดนิยมเดือนนี้", href: "/admin/page-analytics", icon: <EyeOutlined /> },
       { label: "รูปเมนูหลัก", href: "/admin/mega-images", icon: <PictureOutlined /> },
       { label: "Festival Theme", href: "/admin/festivals", icon: <GiftOutlined /> },
+      { label: "โหมดไว้อาลัย", href: "/admin/mourning", icon: <HeartOutlined /> },
       { label: "ผู้ใช้งาน", href: "/admin/users", icon: <TeamOutlined /> },
       { label: "Cookie Consent", href: "/admin/cookie-consent", icon: <SafetyCertificateOutlined /> },
       { label: "ตั้งค่าแสดงชื่อ URL", href: "/admin/url-mappings", icon: <SettingOutlined /> },

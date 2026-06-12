@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import {
   UserOutlined,
@@ -86,9 +87,11 @@ export default function ComplaintPopup({ open, onClose }: Props) {
     onClose();
   };
 
+  if (typeof document === "undefined") return null;
+
   // Success state
   if (resultCode) {
-    return (
+    return createPortal(
       <div className={css.overlay} onClick={handleClose}>
         <div className={css.modal} onClick={(e) => e.stopPropagation()}>
           <div className={css.modalHeader}>
@@ -116,11 +119,12 @@ export default function ComplaintPopup({ open, onClose }: Props) {
             </div>
           </div>
         </div>
-      </div>
+      </div>,
+      document.body
     );
   }
 
-  return (
+  return createPortal(
     <div className={css.overlay} onClick={handleClose}>
       <div className={css.modal} onClick={(e) => e.stopPropagation()}>
         <div className={css.modalHeader}>
@@ -224,6 +228,7 @@ export default function ComplaintPopup({ open, onClose }: Props) {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
