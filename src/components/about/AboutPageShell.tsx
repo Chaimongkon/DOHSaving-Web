@@ -4,27 +4,9 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import {
-  HistoryOutlined,
-  EyeOutlined,
-  TeamOutlined,
-  BankOutlined,
-  SafetyCertificateOutlined,
-  AuditOutlined,
-  SolutionOutlined,
-  PrinterOutlined,
-} from "@ant-design/icons";
+import { PrinterOutlined } from "@ant-design/icons";
+import { ABOUT_NAV_GROUPS } from "./aboutNav";
 import css from "./AboutPageShell.module.css";
-
-const sidebarLinks = [
-  { label: "ประวัติสหกรณ์", href: "/about/history", icon: <HistoryOutlined /> },
-  { label: "วิสัยทัศน์และพันธกิจ", href: "/about/vision", icon: <EyeOutlined /> },
-  { label: "จรรยาบรรณคณะกรรมการ", href: "/about/ethics-board", icon: <AuditOutlined /> },
-  { label: "จรรยาบรรณเจ้าหน้าที่", href: "/about/ethics-staff", icon: <SolutionOutlined /> },
-  { label: "นโยบายสหกรณ์", href: "/about/policy", icon: <SafetyCertificateOutlined /> },
-  { label: "คณะกรรมการ", href: "/about/board", icon: <TeamOutlined /> },
-  { label: "โครงสร้างองค์กร", href: "/about/organization", icon: <BankOutlined /> },
-];
 
 export interface AboutPageShellProps {
   breadcrumbLabel: string;
@@ -61,6 +43,8 @@ export default function AboutPageShell({
   /* เช็คว่ามีไฟล์ภาพ hero จริงไหมก่อนค่อยแสดง — ใช้ preload แทน onError
      เพราะ <img> ถูก SSR มาก่อน React hydrate ทำให้ event error หลุดไปแล้ว */
   useEffect(() => {
+    // ภาพที่มาจาก API (เช่นรูปประธาน) จะว่างอยู่ระหว่างโหลด — อย่า probe ค่าว่าง
+    if (!heroImage) return;
     const probe = new window.Image();
     probe.onload = () => setHeroImageOk(true);
     probe.src = heroImage;
@@ -111,7 +95,7 @@ export default function AboutPageShell({
                   width={520}
                   height={520}
                   className={css.heroArtImg}
-                  sizes="(max-width: 860px) 190px, 360px"
+                  sizes="(max-width: 860px) 120px, 190px"
                   priority
                 />
               ) : (
@@ -129,23 +113,30 @@ export default function AboutPageShell({
         <aside className={css.sidebar}>
           <nav className={css.sidebarCard} aria-label="เกี่ยวกับสหกรณ์ฯ">
             <h2 className={css.sidebarTitle}>เกี่ยวกับสหกรณ์ฯ</h2>
-            <ul className={css.sidebarNav}>
-              {sidebarLinks.map((item) => {
-                const active = pathname === item.href;
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={`${css.sidebarLink} ${active ? css.sidebarLinkActive : ""}`}
-                      aria-current={active ? "page" : undefined}
-                    >
-                      <span className={css.sidebarLinkIcon} aria-hidden="true">{item.icon}</span>
-                      {item.label}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+            {ABOUT_NAV_GROUPS.map((group) => (
+              <div key={group.title} className={css.sidebarGroup}>
+                <p className={css.sidebarGroupTitle}>{group.title}</p>
+                <ul className={css.sidebarNav}>
+                  {group.links.map(({ href, label, shortLabel, icon: Icon }) => {
+                    const active = pathname === href;
+                    return (
+                      <li key={href}>
+                        <Link
+                          href={href}
+                          className={`${css.sidebarLink} ${active ? css.sidebarLinkActive : ""}`}
+                          aria-current={active ? "page" : undefined}
+                        >
+                          <span className={css.sidebarLinkIcon} aria-hidden="true">
+                            <Icon size={15} strokeWidth={2} />
+                          </span>
+                          {shortLabel ?? label}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
           </nav>
         </aside>
       </div>
@@ -160,6 +151,19 @@ export function AboutSectionHead({ title, id }: { title: string; id?: string }) 
       <h2 className={css.sectionTitle} id={id}>{title}</h2>
       <span className={css.sectionRule} />
     </div>
+  );
+}
+
+/** การ์ดลิงก์ไปหน้าที่เกี่ยวข้อง วางท้ายเนื้อหา */
+export function AboutNextLink({ href, title, text }: { href: string; title: string; text: string }) {
+  return (
+    <Link href={href} className={css.nextLink}>
+      <span className={css.nextLinkBody}>
+        <span className={css.nextLinkTitle}>{title}</span>
+        <span className={css.nextLinkText}>{text}</span>
+      </span>
+      <span className={css.nextLinkArrow} aria-hidden="true">→</span>
+    </Link>
   );
 }
 

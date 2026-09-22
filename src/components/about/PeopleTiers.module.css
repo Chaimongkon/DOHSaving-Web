@@ -1,0 +1,306 @@
+/* ============================================================
+   People Tiers — ผังบุคลากรแบ่งตามระดับ
+   ป้ายระดับ = ป้ายทางหลวง · เส้นเชื่อม = เส้นกึ่งกลางถนนสีทอง
+   ============================================================ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tier {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* เส้นประสีทองเชื่อมระดับ */
+.connector {
+  display: block;
+  width: 3px;
+  height: 40px;
+  margin: 10px 0;
+  border-radius: 3px;
+  background: repeating-linear-gradient(180deg, #D8AE3F 0 9px, transparent 9px 16px);
+}
+
+/* ป้ายระดับ: พื้นกรมท่า ขอบในสีทองแบบป้ายทางหลวง */
+.tierLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 9px 22px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+  background: linear-gradient(145deg, #1c3157, #0f1d36);
+  border-radius: 999px;
+  box-shadow:
+    inset 0 0 0 1.5px rgba(227, 193, 105, 0.55),
+    0 10px 22px -12px rgba(15, 29, 54, 0.6);
+}
+
+.tierCount {
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f1d36;
+  background: linear-gradient(135deg, #F7E3A1, #D8AE3F);
+  border-radius: 999px;
+}
+
+/* ใช้ flex-wrap ไม่ใช่ grid เพื่อให้แถวสุดท้ายที่ไม่เต็มอยู่กึ่งกลาง แบบผังองค์กร */
+.grid {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px 12px;
+}
+
+/* ── การ์ดแบบเหรียญตรา ────────────────────────────────────
+   ไม่มีกล่อง: วงแหวนทอง > ขอบขาว > รูปครอปใบหน้า > ชื่อ > ป้ายตำแหน่ง
+   กว้าง 196px: ชื่อเต็มยาวสุดในข้อมูลจริง ~191px ที่ 15px วางบรรทัดเดียวได้
+   และยังได้ 4 ใบต่อแถวในพื้นที่เนื้อหา 832px (4×196 + 3×12) */
+.person {
+  width: 196px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.personFeatured {
+  width: 260px;
+}
+
+/* วงแหวนทองไล่เฉดรอบวง ให้แสงเหมือนเหรียญโลหะ */
+.ring {
+  width: 148px;
+  height: 148px;
+  padding: 5px;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, #F7E3A1, #D8AE3F, #9C7415, #D8AE3F, #F7E3A1);
+  box-shadow: 0 14px 28px -14px rgba(15, 29, 54, 0.55);
+  transition: box-shadow 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.personFeatured .ring {
+  width: 190px;
+  height: 190px;
+  padding: 6px;
+}
+
+.person:hover .ring {
+  box-shadow: 0 20px 36px -14px rgba(15, 29, 54, 0.6), 0 0 0 4px rgba(216, 174, 63, 0.22);
+}
+
+.revealed.person:hover .ring {
+  transform: translateY(-4px);
+}
+
+.face {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+  background: linear-gradient(160deg, #1c3157, #0f1d36);
+}
+
+/* รูปใน Admin แต่ละชุดมีกรอบตกแต่งคนละแบบ (วงกลมส้ม, แปดเหลี่ยมน้ำเงิน, วงแดง)
+   ขยาย 1.55 เท่าจากจุดค่อนบน ให้เหลือแต่ใบหน้า กรอบเดิมหลุดออกนอกวงกลม
+   รูปทุกชุดจึงดูเป็นแบบเดียวกัน */
+.face img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.55);
+  transform-origin: 50% 42%;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.person:hover .face img {
+  transform: scale(1.62);
+}
+
+.facePlaceholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(227, 193, 105, 0.7);
+}
+
+/* ชื่อเต็มบรรทัดเดียว — ถ้าล้น fitNames() ใน PeopleTiers.tsx จะย่อตัวอักษรให้พอดี */
+.name {
+  width: 100%;
+  margin: 14px 0 8px;
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 800;
+  color: #0f1d36;
+  white-space: nowrap;
+}
+
+.nameLine {
+  white-space: nowrap;
+}
+
+/* ทางหนีสุดท้าย: ย่อถึงขนาดต่ำสุดแล้วยังล้น → ชื่อ/นามสกุลคนละบรรทัด ไม่ตัดกลางคำ */
+.nameWrap .nameLine {
+  display: block;
+}
+
+.personFeatured .name {
+  font-size: 17px;
+}
+
+/* ป้ายตำแหน่ง: ครีมขอบทอง — ระดับแรกเป็นส้มเด่น
+   ตำแหน่งยาวสุดกว้าง ~211px เกินการ์ด จึงยอมให้ขึ้น 2 บรรทัด
+   โดยตัดได้เฉพาะรอยต่อก่อน "และ" (ดู splitPosition) และใช้มุมมนแทนแคปซูล
+   จะได้ไม่บิดเมื่อมี 2 บรรทัด */
+.position {
+  max-width: 100%;
+  margin: 0;
+  padding: 3px 12px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  font-weight: 700;
+  color: #8a6520;
+  background: #fffaf1;
+  border: 1px solid rgba(216, 174, 63, 0.55);
+  border-radius: 10px;
+}
+
+/* แต่ละท่อนห้ามตัดกลาง ตัดบรรทัดได้เฉพาะระหว่างท่อน */
+.positionPart {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.personFeatured .position {
+  padding: 4px 14px;
+  font-size: 13.5px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #F0883F, #E8652B);
+  border-color: transparent;
+  box-shadow: 0 6px 14px -6px rgba(232, 101, 43, 0.6);
+}
+
+/* ── Print ───────────────────────────────────────────────── */
+@media print {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .person {
+    break-inside: avoid;
+  }
+
+  .ring {
+    box-shadow: none;
+  }
+
+  .tierLabel {
+    background: none;
+    color: #0f1d36;
+    box-shadow: inset 0 0 0 1px #c9a227;
+  }
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .grid {
+    gap: 20px 10px;
+  }
+
+  /* สองคนต่อแถว */
+  .person {
+    width: calc(50% - 5px);
+  }
+
+  .personFeatured {
+    width: 100%;
+  }
+
+  .ring {
+    width: 124px;
+    height: 124px;
+    padding: 4px;
+  }
+
+  .personFeatured .ring {
+    width: 164px;
+    height: 164px;
+  }
+
+  .face {
+    border-width: 3px;
+  }
+
+  .tierLabel {
+    padding: 8px 18px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  /* การ์ดกว้าง ~179px ที่จอ 400px — ชื่อยาวสุด ~171px ที่ 13.5px
+     จอแคบกว่านี้ fitNames() จะย่อต่อให้เอง */
+  .name {
+    margin-top: 12px;
+    font-size: 13.5px;
+  }
+
+  .personFeatured .name {
+    font-size: 16px;
+  }
+
+  .position {
+    font-size: 12px;
+    padding: 2px 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .revealed.person:hover .ring {
+    transform: none;
+  }
+
+  /* คงการครอปไว้ แค่ไม่ซูมเพิ่มตอน hover */
+  .person:hover .face img {
+    transform: scale(1.55);
+  }
+}

@@ -18,6 +18,7 @@ import {
 import type { MenuProps } from "antd";
 import Link from "next/link";
 import Image from "next/image";
+import { ABOUT_NAV_GROUPS } from "@/components/about/aboutNav";
 
 // ─── Menu data structure ─────────────────────────────────────
 
@@ -43,35 +44,11 @@ const navItems: NavItem[] = [
     label: "เกี่ยวกับสหกรณ์ฯ",
     icon: <InfoCircleOutlined />,
     megaImage: "/mega-about.svg",
-    megaColumns: [
-      {
-        title: "รู้จักสหกรณ์ฯ",
-        links: [
-          { label: "ประวัติสหกรณ์", href: "/about/history" },
-          { label: "คำนิยม วิสัยทัศน์และพันธกิจ", href: "/about/vision" },
-          { label: "จรรยาบรรณคณะกรรมการดำเนินการ", href: "/about/ethics-board" },
-          { label: "จรรยาบรรณเจ้าหน้าที่", href: "/about/ethics-staff" },
-          { label: "นโยบายสหกรณ์", href: "/about/policy" },
-          { label: "สารจากประธาน สอ.ทล.", href: "/about/chairman-message" },
-        ],
-      },
-      {
-        title: "ผู้บริหารและฝ่ายจัดการ",
-        links: [
-          { label: "โครงสร้างองค์กร", href: "/about/organization" },
-          { label: "คณะกรรมการดำเนินการ", href: "/about/board" },
-          { label: "ผู้ตรวจสอบบัญชีและผู้ตรวจสอบกิจการ", href: "/about/auditors" },
-          { label: "ผู้จัดการใหญ่และรองผู้จัดการฯ", href: "/about/managers" },
-          { label: "ฝ่ายสินเชื่อ", href: "/about/dept-credit" },
-          { label: "ฝ่ายการเงินและการลงทุน", href: "/about/dept-finance" },
-          { label: "ฝ่ายสมาชิกสัมพันธ์และสวัสดิการ", href: "/about/dept-welfare" },
-          { label: "ฝ่ายทะเบียนหุ้นและติดตามหนี้สิน", href: "/about/dept-shares" },
-          { label: "ฝ่ายบริหารทั่วไป", href: "/about/dept-general" },
-          { label: "ฝ่ายบัญชี", href: "/about/dept-accounting" },
-          { label: "งานสารสนเทศ", href: "/about/dept-it" },
-        ],
-      },
-    ],
+    // ใช้รายการเดียวกับ sidebar ของหน้าในหมวดนี้ — แก้ที่ components/about/aboutNav.ts
+    megaColumns: ABOUT_NAV_GROUPS.map((group) => ({
+      title: group.title,
+      links: group.links.map(({ label, href }) => ({ label, href })),
+    })),
   },
   // ─── 2. บริการ ───
   {

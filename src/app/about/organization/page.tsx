@@ -12,6 +12,9 @@ export default function OrganizationPage() {
       pageKey="organization"
       pageTitle="โครงสร้างองค์กร"
       breadcrumbLabel="โครงสร้างองค์กร"
+      eyebrow="ORGANIZATION"
+      lead="แผนผังการบริหารงานของสหกรณ์ พร้อมลิงก์ไปทำความรู้จักผู้บริหารและบุคลากรของแต่ละฝ่าย"
+      showTeamLinks
     />
   );
 }

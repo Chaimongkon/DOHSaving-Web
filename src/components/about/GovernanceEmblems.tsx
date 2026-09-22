@@ -177,6 +177,154 @@ export function EthicsBoardEmblem() {
   );
 }
 
+/* ── บุคลากร (คณะกรรมการ / ผู้จัดการ / ฝ่าย) — สามคนยืนเคียงกัน ── */
+export function TeamEmblem({ label = "ตราสัญลักษณ์บุคลากรสหกรณ์" }: { label?: string }) {
+  return (
+    <svg className={css.heroEmblem} viewBox="0 0 280 280" role="img" aria-label={label}>
+      <GoldDefs prefix="tm" />
+
+      <circle cx="140" cy="140" r="122" fill="none" stroke="url(#tmGoldSoft)" strokeWidth="1.5" />
+      <circle
+        cx="140"
+        cy="140"
+        r="108"
+        fill="rgba(255,255,255,0.04)"
+        stroke="url(#tmGold)"
+        strokeWidth="2"
+        strokeDasharray="2 9"
+        strokeLinecap="round"
+        opacity="0.8"
+      />
+
+      {/* สองคนด้านข้าง สีทอง */}
+      <g fill="url(#tmGold)" opacity="0.9">
+        <circle cx="90" cy="130" r="13" />
+        <path d="M66 176 a24 24 0 0 1 48 0 Z" />
+        <circle cx="190" cy="130" r="13" />
+        <path d="M166 176 a24 24 0 0 1 48 0 Z" />
+      </g>
+
+      {/* คนกลาง บนวงส้ม */}
+      <circle cx="140" cy="128" r="46" fill="url(#tmCore)" />
+      <circle cx="140" cy="128" r="46" fill="none" stroke="url(#tmGold)" strokeWidth="2" />
+      <g fill="#FFF7E3">
+        <circle cx="140" cy="113" r="14" />
+        <path d="M114 160 a26 26 0 0 1 52 0 Z" />
+      </g>
+
+      {/* ฐานเส้นทอง */}
+      <rect x="62" y="184" width="156" height="4" rx="2" fill="url(#tmGold)" />
+    </svg>
+  );
+}
+
+/* ── ผู้ตรวจสอบ — แว่นขยายส่องสมุดบัญชี ── */
+export function AuditEmblem() {
+  return (
+    <svg className={css.heroEmblem} viewBox="0 0 280 280" role="img" aria-label="ตราสัญลักษณ์ผู้ตรวจสอบบัญชีและผู้ตรวจสอบกิจการ">
+      <GoldDefs prefix="aud" />
+
+      <circle cx="140" cy="140" r="122" fill="none" stroke="url(#audGoldSoft)" strokeWidth="1.5" />
+      <circle cx="140" cy="140" r="106" fill="rgba(255,255,255,0.04)" stroke="url(#audGold)" strokeWidth="2.5" opacity="0.75" />
+
+      {/* สมุดบัญชี */}
+      <rect x="84" y="66" width="98" height="128" rx="10" fill="#FFF7E3" stroke="url(#audGold)" strokeWidth="2.5" />
+      <rect x="84" y="66" width="98" height="22" rx="10" fill="url(#audCore)" />
+      <rect x="84" y="80" width="98" height="8" fill="url(#audCore)" />
+      <g stroke="#0f1d36" strokeWidth="3" strokeLinecap="round" opacity="0.28">
+        <path d="M100 108 H166" />
+        <path d="M100 124 H158" />
+        <path d="M100 140 H150" />
+        <path d="M100 156 H136" />
+      </g>
+
+      {/* แว่นขยาย */}
+      <path d="M192 184 L218 210" stroke="url(#audGold)" strokeWidth="11" strokeLinecap="round" />
+      <circle cx="170" cy="162" r="32" fill="rgba(15,29,54,0.55)" stroke="url(#audGold)" strokeWidth="7" />
+      <path
+        d="M156 162 l9 9 l16 -18"
+        fill="none"
+        stroke="#F7E3A1"
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/* ── โครงสร้างองค์กร — ผังองค์กร 3 ชั้น ── */
+export function OrgEmblem() {
+  return (
+    <svg className={css.heroEmblem} viewBox="0 0 280 280" role="img" aria-label="ตราสัญลักษณ์โครงสร้างองค์กร">
+      <GoldDefs prefix="org" />
+
+      <circle cx="140" cy="140" r="122" fill="none" stroke="url(#orgGoldSoft)" strokeWidth="1.5" />
+      <circle
+        cx="140"
+        cy="140"
+        r="110"
+        fill="rgba(255,255,255,0.04)"
+        stroke="url(#orgGold)"
+        strokeWidth="2"
+        strokeDasharray="2 9"
+        strokeLinecap="round"
+        opacity="0.8"
+      />
+
+      {/* เส้นเชื่อม */}
+      <g stroke="url(#orgGold)" strokeWidth="2.5" fill="none" strokeLinecap="round">
+        <path d="M140 100 V118 M76 118 H204 M76 118 V130 M140 118 V130 M204 118 V130" />
+        <path d="M140 156 V172 M108 172 H172 M108 172 V184 M172 172 V184" />
+      </g>
+
+      {/* ชั้นบนสุด */}
+      <rect x="108" y="68" width="64" height="32" rx="9" fill="url(#orgCore)" stroke="url(#orgGold)" strokeWidth="2" />
+      {/* ชั้นกลาง */}
+      <g fill="#16294a" stroke="url(#orgGold)" strokeWidth="2">
+        <rect x="52" y="130" width="48" height="26" rx="7" />
+        <rect x="116" y="130" width="48" height="26" rx="7" />
+        <rect x="180" y="130" width="48" height="26" rx="7" />
+      </g>
+      {/* ชั้นล่าง */}
+      <g fill="#FFF7E3" stroke="url(#orgGold)" strokeWidth="2">
+        <rect x="86" y="184" width="44" height="24" rx="7" />
+        <rect x="150" y="184" width="44" height="24" rx="7" />
+      </g>
+    </svg>
+  );
+}
+
+/* ── สารจากประธาน — ใช้เมื่อยังไม่มีรูปประธาน: พวงลอเรล + ดาว + รูปบุคคล ── */
+export function ChairmanEmblem() {
+  return (
+    <svg className={css.heroEmblem} viewBox="0 0 280 280" role="img" aria-label="ตราสัญลักษณ์สารจากประธานกรรมการ">
+      <GoldDefs prefix="chm" />
+
+      <circle cx="140" cy="140" r="122" fill="none" stroke="url(#chmGoldSoft)" strokeWidth="1.5" />
+      <g fill="url(#chmGold)" opacity="0.85">
+        <Laurel keyPrefix="cl" />
+        <g transform="translate(280,0) scale(-1,1)">
+          <Laurel keyPrefix="cr" />
+        </g>
+      </g>
+
+      <circle cx="140" cy="140" r="62" fill="url(#chmCore)" />
+      <circle cx="140" cy="140" r="62" fill="none" stroke="url(#chmGold)" strokeWidth="2.5" />
+      <g fill="#FFF7E3">
+        <circle cx="140" cy="124" r="17" />
+        <path d="M106 182 a34 34 0 0 1 68 0 Z" />
+      </g>
+
+      {/* ดาวเหนือศีรษะ */}
+      <path
+        d="M140 34 l6.5 13.2 14.5 2.1 -10.5 10.2 2.5 14.5 -13 -6.8 -13 6.8 2.5 -14.5 -10.5 -10.2 14.5 -2.1 Z"
+        fill="url(#chmGold)"
+      />
+    </svg>
+  );
+}
+
 /* ── ประวัติสหกรณ์ — หลักกิโลเมตร "2520" ข้างทางหลวง = จุดเริ่มต้นของเส้นทาง ── */
 export function HistoryEmblem() {
   return (
