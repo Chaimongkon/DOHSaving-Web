@@ -1,0 +1,276 @@
+/* ============================================================
+   Road Timeline — ถนนแนวตั้ง มีหมุดบอกจุดแวะ และธงปลายทาง
+   ใช้ร่วมกันในหมวด "เกี่ยวกับสหกรณ์ฯ" (พันธกิจ, เส้นทางการก่อตั้ง)
+   ============================================================ */
+
+/* ยังไม่เลื่อนมาถึงให้ซ่อนไว้ แล้วค่อยเลื่อนขึ้นมา */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.55s ease,
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.route {
+  position: relative;
+  /* ความกว้างผิวถนนและตำแหน่งกึ่งกลาง ใช้ร่วมกันทุกชิ้นด้านล่าง */
+  --road-left: 18px;
+  --road-width: 48px;
+  --road-center: calc(var(--road-left) + var(--road-width) / 2);
+  --stop-indent: 92px;
+}
+
+/* ผิวถนน */
+.route::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--road-left);
+  width: var(--road-width);
+  border-radius: var(--road-width);
+  background: linear-gradient(180deg, #1c3157, #0f1d36);
+  box-shadow: inset 0 0 0 2px rgba(227, 193, 105, 0.35);
+}
+
+/* เส้นกึ่งกลางถนนสีทองแบบประ */
+.route::after {
+  content: "";
+  position: absolute;
+  top: 26px;
+  bottom: 26px;
+  left: calc(var(--road-center) - 1.5px);
+  width: 3px;
+  background: repeating-linear-gradient(
+    180deg,
+    #E3C169 0 16px,
+    transparent 16px 30px
+  );
+}
+
+.stops {
+  position: relative;
+  z-index: 1;
+  list-style: none;
+  margin: 0;
+  padding: 14px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stop {
+  position: relative;
+  padding-left: var(--stop-indent);
+}
+
+/* หมุดบอกจุดแวะ วางบนกึ่งกลางถนน */
+.stopMarker {
+  position: absolute;
+  left: calc(var(--road-center) - 23px);
+  top: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-top: -23px;
+  border-radius: 50%;
+  border: 3px solid #D8AE3F;
+  background: #ffffff;
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f1d36;
+  box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.stop:hover .stopMarker {
+  background: linear-gradient(145deg, #F0883F, #E8652B);
+  border-color: #F7E3A1;
+  color: #ffffff;
+  transform: scale(1.08);
+}
+
+.stopCard {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 24px;
+  background: linear-gradient(90deg, #fffaf1 0, #ffffff 160px);
+  border: 1px solid #ebe6dc;
+  border-radius: 18px;
+  box-shadow:
+    0 1px 2px rgba(15, 29, 54, 0.04),
+    0 8px 22px -14px rgba(15, 29, 54, 0.14);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ลูกศรชี้กลับไปที่หมุดบนถนน */
+.stopCard::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  background: #fffaf1;
+  border-left: 1px solid #ebe6dc;
+  border-bottom: 1px solid #ebe6dc;
+  transform: rotate(45deg);
+  transition: border-color 0.3s ease;
+}
+
+.stop:hover .stopCard {
+  border-color: rgba(216, 174, 63, 0.6);
+  box-shadow:
+    0 2px 4px rgba(15, 29, 54, 0.04),
+    0 18px 34px -14px rgba(15, 29, 54, 0.22);
+  transform: translateX(4px);
+}
+
+.stop:hover .stopCard::before {
+  border-color: rgba(216, 174, 63, 0.6);
+}
+
+.stopIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  background: linear-gradient(145deg, #16294a, #0f1d36);
+  color: #E3C169;
+  box-shadow: 0 8px 16px -6px rgba(15, 29, 54, 0.45);
+}
+
+.stopBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.stopText {
+  margin: 0;
+  font-size: 16.5px;
+  line-height: 1.8;
+  font-weight: 600;
+  color: #22304a;
+}
+
+/* ปลายทางที่ท้ายถนน */
+.destination {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+  padding: 0 0 14px;
+}
+
+.destinationMarker {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-left: calc(var(--road-center) - 24px);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #F7E3A1, #D8AE3F);
+  color: #0f1d36;
+  box-shadow: 0 8px 18px -6px rgba(201, 162, 39, 0.7);
+}
+
+.destinationText {
+  margin-left: calc(var(--stop-indent) - var(--road-center) - 24px - 14px);
+  font-size: 15px;
+  font-weight: 800;
+  color: #8a6520;
+}
+
+/* ── Print ───────────────────────────────────────────────── */
+@media print {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .stopCard {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  .route::before,
+  .route::after {
+    display: none;
+  }
+
+  .stopMarker {
+    box-shadow: none;
+  }
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .route {
+    --road-left: 6px;
+    --road-width: 40px;
+    --stop-indent: 62px;
+  }
+
+  .stopMarker {
+    width: 38px;
+    height: 38px;
+    margin-top: -19px;
+    left: calc(var(--road-center) - 19px);
+    font-size: 15px;
+  }
+
+  .stopCard {
+    padding: 16px 16px;
+    gap: 14px;
+  }
+
+  .stopIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+  }
+
+  .stopText {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .destinationMarker {
+    width: 40px;
+    height: 40px;
+    margin-left: calc(var(--road-center) - 20px);
+  }
+
+  .destinationText {
+    margin-left: calc(var(--stop-indent) - var(--road-center) - 20px - 14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .stop:hover .stopCard,
+  .stop:hover .stopMarker {
+    transform: none;
+  }
+}

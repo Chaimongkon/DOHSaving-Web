@@ -9,11 +9,15 @@ import {
   ArrowDownOutlined,
   UnorderedListOutlined,
 } from "@ant-design/icons";
+import DocMetaFields from "@/components/admin/DocMetaFields";
+import { type DocMeta, EMPTY_DOC_META, normalizeDocMeta } from "@/lib/docMeta";
 import css from "./page.module.css";
 
 interface PolicyItem {
   id: string;
   text: string;
+  /** หัวข้อสั้น (ไม่บังคับ) — แสดงเป็นตัวหนาเหนือเนื้อหาบนหน้าเว็บ */
+  title?: string;
 }
 
 function generateId() {
@@ -22,13 +26,17 @@ function generateId() {
 
 export default function PolicyItemsEditor() {
   const [items, setItems] = useState<PolicyItem[]>([]);
+  const [meta, setMeta] = useState<DocMeta>(EMPTY_DOC_META);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetch("/api/admin/policy-items")
       .then((res) => res.json())
-      .then((data) => setItems(data.items || []))
+      .then((data) => {
+        setItems(data.items || []);
+        setMeta(normalizeDocMeta(data.meta));
+      })
       .catch((err) => console.error("Failed to load:", err))
       .finally(() => setLoading(false));
   }, []);
@@ -39,6 +47,10 @@ export default function PolicyItemsEditor() {
 
   const handleTextChange = (index: number, text: string) => {
     setItems((prev) => prev.map((item, i) => (i === index ? { ...item, text } : item)));
+  };
+
+  const handleTitleChange = (index: number, title: string) => {
+    setItems((prev) => prev.map((item, i) => (i === index ? { ...item, title } : item)));
   };
 
   const handleMove = (index: number, direction: -1 | 1) => {
@@ -60,7 +72,7 @@ export default function PolicyItemsEditor() {
       const res = await fetch("/api/admin/policy-items", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items }),
+        body: JSON.stringify({ items, meta }),
       });
 
       if (res.ok) {
@@ -73,7 +85,7 @@ export default function PolicyItemsEditor() {
     } finally {
       setSaving(false);
     }
-  }, [items]);
+  }, [items, meta]);
 
   if (loading) {
     return <div className={css.loading}>กำลังโหลด...</div>;
@@ -96,6 +108,8 @@ export default function PolicyItemsEditor() {
         </div>
       </div>
 
+      <DocMetaFields value={meta} onChange={setMeta} />
+
       {items.length === 0 ? (
         <div className={css.empty}>
           <div className={css.emptyIcon}><UnorderedListOutlined /></div>
@@ -107,6 +121,14 @@ export default function PolicyItemsEditor() {
             <div key={item.id} className={css.item}>
               <div className={css.itemNumber}>{i + 1}</div>
               <div className={css.itemContent}>
+                <input
+                  className={css.itemTitleInput}
+                  type="text"
+                  value={item.title ?? ""}
+                  onChange={(e) => handleTitleChange(i, e.target.value)}
+                  placeholder="หัวข้อสั้น (ไม่บังคับ) — เช่น เติบโตอย่างยั่งยืน"
+                  maxLength={60}
+                />
                 <textarea
                   className={css.itemTextarea}
                   value={item.text}

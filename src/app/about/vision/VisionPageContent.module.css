@@ -1,626 +1,315 @@
-/* Vision Page — 3-Section Dynamic Design */
+/* ============================================================
+   Vision Page — "เส้นทางสู่วิสัยทัศน์"
+   ภาษาภาพงานทางหลวงแบบเรียบหรู ในชุดสีสหกรณ์
+   วิสัยทัศน์ = ป้ายบอกทาง · ค่านิยม = หลักกิโลเมตร · พันธกิจ = จุดแวะบนถนน
+   โครงหน้า (hero / sidebar) อยู่ที่ AboutPageShell.module.css
+   ============================================================ */
 
-/* Breadcrumb bar */
-.breadcrumbBar {
-  background: #f8f9fb;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 14px 24px;
+.section {
+  margin-top: 52px;
 }
 
-.breadcrumbInner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  font-size: 13px;
-  color: #9ca3af;
+.sectionIntro {
+  margin: -10px 0 24px;
+  font-size: 15.5px;
+  line-height: 1.85;
+  color: #5b6472;
 }
 
-.breadcrumbLink {
-  color: #9ca3af;
-  text-decoration: none;
-  transition: color 0.2s;
+/* ถ้ายังไม่เลื่อนมาถึง ให้ซ่อนไว้ก่อน แล้วค่อยเลื่อนขึ้นมา */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.55s ease,
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
 }
 
-.breadcrumbLink:hover {
-  color: #E8652B;
+.revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.breadcrumbSep {
-  margin: 0 8px;
-  color: #d1d5db;
-}
-
-.breadcrumbCurrent {
-  color: #0f1d36;
-  font-weight: 600;
-}
-
-.printBtn {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #6b7280;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.15s;
-}
-
-.printBtn:hover {
-  color: #E8652B;
-  border-color: #E8652B;
-}
-
-/* Main layout */
-.wrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 36px 24px 80px;
-  display: grid;
-  grid-template-columns: 1fr 280px;
-  gap: 40px;
-  align-items: start;
-}
-
-.main {
-  min-width: 0;
-}
-
-/* Page title */
-.pageHeader {
-  text-align: center;
-  margin-bottom: 36px;
-}
-
-.pageTitle {
-  font-size: 28px;
-  font-weight: 800;
-  color: #0f1d36;
-  margin: 0 0 6px;
+/* ── วิสัยทัศน์: ป้ายบอกทาง ─────────────────────────────── */
+.sign {
   position: relative;
-  display: inline-block;
+  overflow: hidden;
+  padding: 40px 46px 58px;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(216, 174, 63, 0.22), transparent 42%),
+    linear-gradient(160deg, #1c3157 0%, #0f1d36 58%, #0a1628 100%);
+  color: #ffffff;
+  box-shadow: 0 28px 56px -26px rgba(15, 29, 54, 0.7);
 }
 
-.pageTitle::after {
+/* ขอบในสีทองแบบป้ายทางหลวง */
+.sign::before {
   content: "";
   position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(90deg, #E8652B, #f59e0b);
-  border-radius: 2px;
+  inset: 10px;
+  border: 1.5px solid rgba(227, 193, 105, 0.42);
+  border-radius: 15px;
+  pointer-events: none;
 }
 
-.pageSubtitle {
-  font-size: 14px;
-  color: #9ca3af;
+.signQuote {
+  position: absolute;
+  top: -34px;
+  right: 30px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 220px;
+  line-height: 1;
+  color: rgba(227, 193, 105, 0.1);
+  pointer-events: none;
+  user-select: none;
+}
+
+.signLabel {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #0f1d36;
+  background: linear-gradient(135deg, #F7E3A1, #D8AE3F);
+  border-radius: 999px;
+}
+
+.signTitle {
+  position: relative;
   margin: 18px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #E3C169;
 }
 
-/* Sections */
-.sections {
+.signText {
+  position: relative;
+  margin: 10px 0 0;
+  max-width: 34ch;
+  font-size: 27px;
+  line-height: 1.7;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* เส้นกึ่งกลางถนนวิ่งตามขอบล่างของป้าย */
+.signRoad {
+  position: absolute;
+  left: 46px;
+  right: 46px;
+  bottom: 26px;
+  height: 3px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(227, 193, 105, 0.75) 0 26px,
+    transparent 26px 44px
+  );
+}
+
+/* ── ค่านิยม: หลักกิโลเมตร ───────────────────────────────── */
+.posts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+/* ทรงหลักกิโลเมตร: หัวโค้งมน ตัวตรง */
+.post {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 28px;
-}
-
-/* ========== SECTION: Shared Header ========== */
-.sectionHeader {
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.sectionLabel {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: #9ca3af;
-  margin: 0 0 4px;
-}
-
-.sectionTitlePink {
-  font-size: 24px;
-  font-weight: 800;
-  color: #0f1d36;
-  margin: 0;
-}
-
-/* ========== SECTION: ค่านิยม (Core Values) ========== */
-.coreValuesSection {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.coreValuesSection.sectionVisible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.coreValuesIconLg {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #ec4899, #f43f5e);
-  color: #ffffff;
-  font-size: 28px;
-  margin-bottom: 14px;
-  box-shadow: 0 8px 24px rgba(236, 72, 153, 0.3);
-}
-
-.coreValuesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-}
-
-.coreValueCard {
-  position: relative;
-  border-radius: 16px;
   overflow: hidden;
-  background: linear-gradient(135deg, #ec4899, #f43f5e);
-  padding: 3px;
-  transition: transform 0.3s, box-shadow 0.3s;
+  background: #ffffff;
+  border: 1px solid #ebe6dc;
+  /* แนวนอน 50% ของความกว้าง + แนวตั้ง 64px = หัวเป็นโดมรีแบบหลักกิโลจริง
+     (ถ้าใช้ 999px แนวนอน โค้งจะไปกองที่มุม ดูเป็นแค่กล่องมุมมน) */
+  border-radius: 50% 50% 16px 16px / 64px 64px 16px 16px;
+  box-shadow:
+    0 1px 2px rgba(15, 29, 54, 0.04),
+    0 14px 28px -16px rgba(15, 29, 54, 0.2);
+  text-align: center;
 }
 
-.coreValueCard:hover {
+.post:hover {
+  border-color: rgba(216, 174, 63, 0.65);
+  box-shadow:
+    0 2px 4px rgba(15, 29, 54, 0.05),
+    0 22px 40px -16px rgba(15, 29, 54, 0.28);
+}
+
+.revealed.post:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(236, 72, 153, 0.25);
 }
 
-.coreValueCardBg {
-  position: absolute;
-  top: -20px;
-  right: -20px;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  pointer-events: none;
-}
-
-.coreValueCardInner {
+.postCap {
   position: relative;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(8px);
-  border-radius: 14px;
-  padding: 28px 24px;
-  text-align: center;
-  color: #ffffff;
-}
-
-.coreValueNum {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.25);
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  font-size: 18px;
-  font-weight: 800;
-  margin-bottom: 14px;
-}
-
-.coreValueText {
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.6;
-  letter-spacing: 0.3px;
-}
-
-/* ========== SECTION: วิสัยทัศน์ (Vision) ========== */
-.visionCard {
-  position: relative;
-  background: linear-gradient(135deg, #4f46e5, #7c3aed, #8b5cf6);
-  border-radius: 24px;
-  padding: 48px 40px;
-  color: #ffffff;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.visionCard.sectionVisible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.visionBgCircle1 {
-  position: absolute;
-  top: -60px;
-  right: -60px;
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-  pointer-events: none;
-}
-
-.visionBgCircle2 {
-  position: absolute;
-  bottom: -40px;
-  left: -40px;
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
-  pointer-events: none;
-}
-
-.visionBgCircle3 {
-  position: absolute;
-  top: 30%;
-  right: 15%;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  pointer-events: none;
-}
-
-.visionContent {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-}
-
-.visionIconLg {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 68px;
-  height: 68px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 32px;
-  margin-bottom: 18px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-.visionLabel {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  opacity: 0.7;
-  margin: 0 0 6px;
-}
-
-.visionTitle {
-  font-size: 26px;
-  font-weight: 800;
-  margin: 0 0 28px;
-}
-
-.visionQuote {
-  position: relative;
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.quoteOpen {
-  position: absolute;
-  top: -16px;
-  left: -4px;
-  font-size: 60px;
-  font-family: Georgia, serif;
-  opacity: 0.2;
-  line-height: 1;
-}
-
-.quoteClose {
-  position: absolute;
-  bottom: -30px;
-  right: -4px;
-  font-size: 60px;
-  font-family: Georgia, serif;
-  opacity: 0.2;
-  line-height: 1;
-}
-
-.visionText {
-  font-size: 20px;
-  line-height: 1.9;
-  font-weight: 600;
-  opacity: 0.95;
-  margin: 0;
-}
-
-/* ========== SECTION: พันธกิจ (Mission) ========== */
-.missionSection {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.missionSection.sectionVisible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.missionHeader {
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.missionIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #3b82f6, #06b6d4);
-  color: #ffffff;
-  font-size: 24px;
-  margin-bottom: 12px;
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
-}
-
-.missionLabel {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: #9ca3af;
-  margin: 0 0 4px;
-}
-
-.missionTitle {
-  font-size: 22px;
-  font-weight: 800;
-  color: #0f1d36;
-  margin: 0;
-}
-
-.missionGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.missionCard {
   display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 20px;
-  opacity: 0;
-  transform: scale(0.95);
-  transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.25s;
-}
-
-.missionCard.cardVisible {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.missionCard:hover {
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
-}
-
-.missionCardVisible:hover {
-  transform: translateY(-2px);
-}
-
-.missionCardFull {
-  grid-column: 1 / -1;
-}
-
-.missionNum {
-  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 800;
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  gap: 8px;
+  padding: 38px 12px 20px;
+  background: linear-gradient(160deg, #1c3157, #0f1d36);
+  color: #E3C169;
 }
 
-.missionCardIcon {
-  font-size: 16px;
-  margin-top: 4px;
-  opacity: 0.5;
+/* แถบสะท้อนแสงใต้หัวหลักกิโล */
+.postCap::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #E8652B, #D8AE3F 55%, #F7E3A1);
 }
 
-.missionCardText {
-  flex: 1;
-  font-size: 14px;
-  line-height: 1.7;
-  color: #374151;
-  padding-top: 2px;
-}
-
-/* Sidebar */
-.sidebar {
-  position: sticky;
-  top: 90px;
-}
-
-.sidebarCard {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.sidebarTitle {
-  font-size: 14px;
-  font-weight: 700;
-  color: #0f1d36;
-  padding: 16px 20px;
-  border-bottom: 1px solid #f0f0f0;
-  margin: 0;
-  background: #f8f9fb;
-}
-
-.sidebarNav {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.sidebarLink {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
+.postNum {
   font-size: 13px;
-  color: #6b7280;
-  text-decoration: none;
-  border-bottom: 1px solid #f9fafb;
-  transition: all 0.15s;
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(247, 227, 161, 0.75);
 }
 
-.sidebarLink:hover {
-  background: #f8f9fb;
-  color: #E8652B;
+.postText {
+  margin: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px 28px;
+  font-size: 19px;
+  line-height: 1.55;
+  font-weight: 800;
+  color: #0f1d36;
 }
 
-.sidebarLinkActive {
-  color: #E8652B;
-  font-weight: 600;
-  background: rgba(232, 101, 43, 0.04);
-  border-left: 3px solid #E8652B;
-}
-
-.sidebarLinkIcon {
-  font-size: 14px;
-  opacity: 0.5;
-}
-
-/* Empty / loading */
-.empty {
-  text-align: center;
-  padding: 80px 24px;
-  color: #9ca3af;
-}
-
-.emptyIcon {
-  font-size: 48px;
-  margin-bottom: 16px;
-  opacity: 0.3;
-}
-
-.emptyText {
-  font-size: 15px;
-}
-
-.loading {
-  text-align: center;
-  padding: 80px 24px;
-  color: #9ca3af;
-}
-
-/* Print */
+/* ── Print ───────────────────────────────────────────────── */
 @media print {
-  .breadcrumbBar,
-  .sidebar,
-  .printBtn {
-    display: none !important;
-  }
-
-  .wrapper {
-    grid-template-columns: 1fr;
-    padding: 0;
-  }
-
-  .coreValuesSection,
-  .visionCard,
-  .missionSection,
-  .missionCard {
+  .reveal {
     opacity: 1;
     transform: none;
+  }
+
+  .sign {
+    background: none;
+    color: #0f1d36;
+    border: 1.5px solid #c9a227;
+    box-shadow: none;
+    padding: 18px 20px;
     break-inside: avoid;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-  .missionGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .wrapper {
-    grid-template-columns: 1fr;
-    padding: 24px 16px 60px;
-    gap: 24px;
   }
 
-  .sidebar {
-    position: static;
-  }
-
-  .pageTitle {
-    font-size: 22px;
-  }
-
-  .printBtn {
+  .sign::before,
+  .signQuote,
+  .signRoad {
     display: none;
   }
 
-  .visionCard {
-    padding: 32px 20px;
-  }
-
-  .sectionTitlePink,
-  .visionTitle,
-  .missionTitle {
+  .signText {
+    color: #0f1d36;
     font-size: 20px;
   }
 
-  .visionText {
-    font-size: 16px;
+  .post {
+    box-shadow: none;
+    break-inside: avoid;
   }
 
-  .coreValuesGrid {
-    grid-template-columns: 1fr;
+  .postCap {
+    background: none;
+    color: #8a6520;
+    border-bottom: 1px solid #d1d5db;
+  }
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .signText {
+    font-size: 23px;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    margin-top: 40px;
   }
 
-  .coreValueCardInner {
-    padding: 20px 16px;
+  .sign {
+    padding: 30px 26px 48px;
+    border-radius: 18px;
   }
 
-  .coreValueText {
-    font-size: 14px;
+  .signQuote {
+    font-size: 160px;
+    right: 14px;
   }
 
-  .missionCard {
-    padding: 16px;
+  .signText {
+    font-size: 20px;
+    line-height: 1.75;
   }
 
-  .quoteOpen,
-  .quoteClose {
-    font-size: 40px;
+  .signRoad {
+    left: 26px;
+    right: 26px;
+    bottom: 20px;
+  }
+
+  /* หลักกิโลเรียงแนวนอน: หัวอยู่ซ้าย ข้อความอยู่ขวา — ประหยัดความสูงบนมือถือ */
+  .posts {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .post {
+    flex-direction: row;
+    border-radius: 60px 16px 16px 60px;
+    text-align: left;
+  }
+
+  .postCap {
+    flex-direction: row;
+    padding: 16px 18px 16px 22px;
+    gap: 10px;
+  }
+
+  .postCap::after {
+    left: auto;
+    top: 0;
+    width: 5px;
+    height: auto;
+    background: linear-gradient(180deg, #E8652B, #D8AE3F 55%, #F7E3A1);
+  }
+
+  .postText {
+    justify-content: flex-start;
+    padding: 14px 18px;
+    font-size: 17.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .revealed.post:hover {
+    transform: none;
   }
 }

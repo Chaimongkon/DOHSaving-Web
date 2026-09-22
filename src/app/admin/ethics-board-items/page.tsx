@@ -9,11 +9,15 @@ import {
   ArrowDownOutlined,
   AuditOutlined,
 } from "@ant-design/icons";
+import DocMetaFields from "@/components/admin/DocMetaFields";
+import { type DocMeta, EMPTY_DOC_META, normalizeDocMeta } from "@/lib/docMeta";
 import css from "./page.module.css";
 
 interface EthicsBoardItem {
   id: string;
   text: string;
+  /** หัวข้อสั้น (ไม่บังคับ) — แสดงเป็นตัวหนาเหนือเนื้อหาบนหน้าเว็บ */
+  title?: string;
 }
 
 function generateId() {
@@ -22,13 +26,17 @@ function generateId() {
 
 export default function EthicsBoardItemsEditor() {
   const [items, setItems] = useState<EthicsBoardItem[]>([]);
+  const [meta, setMeta] = useState<DocMeta>(EMPTY_DOC_META);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetch("/api/admin/ethics-board-items")
       .then((res) => res.json())
-      .then((data) => setItems(data.items || []))
+      .then((data) => {
+        setItems(data.items || []);
+        setMeta(normalizeDocMeta(data.meta));
+      })
       .catch((err) => console.error("Failed to load:", err))
       .finally(() => setLoading(false));
   }, []);
@@ -39,6 +47,10 @@ export default function EthicsBoardItemsEditor() {
 
   const handleTextChange = (index: number, text: string) => {
     setItems((prev) => prev.map((item, i) => (i === index ? { ...item, text } : item)));
+  };
+
+  const handleTitleChange = (index: number, title: string) => {
+    setItems((prev) => prev.map((item, i) => (i === index ? { ...item, title } : item)));
   };
 
   const handleMove = (index: number, direction: -1 | 1) => {
@@ -60,7 +72,7 @@ export default function EthicsBoardItemsEditor() {
       const res = await fetch("/api/admin/ethics-board-items", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items }),
+        body: JSON.stringify({ items, meta }),
       });
       if (res.ok) {
         alert("บันทึกเรียบร้อย");
@@ -72,7 +84,7 @@ export default function EthicsBoardItemsEditor() {
     } finally {
       setSaving(false);
     }
-  }, [items]);
+  }, [items, meta]);
 
   if (loading) {
     return <div className={css.loading}>กำลังโหลด...</div>;
@@ -95,6 +107,12 @@ export default function EthicsBoardItemsEditor() {
         </div>
       </div>
 
+      <DocMetaFields
+        value={meta}
+        onChange={setMeta}
+        referencePlaceholder="มติที่ประชุมคณะกรรมการดำเนินการ ชุดที่ .. ครั้งที่ ../25.."
+      />
+
       {items.length === 0 ? (
         <div className={css.empty}>
           <div className={css.emptyIcon}><AuditOutlined /></div>
@@ -106,6 +124,14 @@ export default function EthicsBoardItemsEditor() {
             <div key={item.id} className={css.item}>
               <div className={css.itemNumber}>{i + 1}</div>
               <div className={css.itemContent}>
+                <input
+                  className={css.itemTitleInput}
+                  type="text"
+                  value={item.title ?? ""}
+                  onChange={(e) => handleTitleChange(i, e.target.value)}
+                  placeholder="หัวข้อสั้น (ไม่บังคับ) — เช่น ยึดประโยชน์ของสมาชิก"
+                  maxLength={60}
+                />
                 <textarea
                   className={css.itemTextarea}
                   value={item.text}

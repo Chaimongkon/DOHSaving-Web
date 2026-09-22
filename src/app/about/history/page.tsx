@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AboutPageLayout from "@/components/about/AboutPageLayout";
+import HistoryPageContent from "./HistoryPageContent";
 
 export const metadata: Metadata = {
   title: "ประวัติสหกรณ์ | สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function HistoryPage() {
-  return <AboutPageLayout pageKey="history" breadcrumbLabel="ประวัติสหกรณ์" />;
+  return <HistoryPageContent />;
 }

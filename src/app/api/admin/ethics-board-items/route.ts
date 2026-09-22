@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { EMPTY_DOC_META } from "@/lib/docMeta";
+import { readGovernanceDoc, writeGovernanceDoc } from "@/lib/governanceDoc";
 
 const DB_KEY = "page_ethics_board_items";
+const REMARK = "จรรยาบรรณคณะกรรมการ";
 
 export interface EthicsBoardItem {
   id: string;
@@ -17,15 +19,11 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const setting = await prisma.siteSetting.findUnique({
-      where: { key: DB_KEY },
-    });
-
-    const items: EthicsBoardItem[] = setting?.value ? JSON.parse(setting.value) : [];
-    return NextResponse.json({ items });
+    const { items, meta } = await readGovernanceDoc(DB_KEY);
+    return NextResponse.json({ items, meta });
   } catch (error) {
     console.error("Failed to fetch ethics-board items:", error);
-    return NextResponse.json({ items: [] }, { status: 500 });
+    return NextResponse.json({ items: [], meta: EMPTY_DOC_META }, { status: 500 });
   }
 }
 
@@ -38,21 +36,10 @@ export async function PUT(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { items } = body as { items: EthicsBoardItem[] };
+    const { items, meta } = body as { items: EthicsBoardItem[]; meta?: unknown };
 
-    await prisma.siteSetting.upsert({
-      where: { key: DB_KEY },
-      create: {
-        key: DB_KEY,
-        value: JSON.stringify(items || []),
-        remark: "จรรยาบรรณคณะกรรมการ",
-      },
-      update: {
-        value: JSON.stringify(items || []),
-      },
-    });
-
-    return NextResponse.json({ success: true, items });
+    const saved = await writeGovernanceDoc(DB_KEY, items, meta, REMARK);
+    return NextResponse.json({ success: true, ...saved });
   } catch (error) {
     console.error("Failed to save ethics-board items:", error);
     return NextResponse.json({ error: "Failed to save" }, { status: 500 });

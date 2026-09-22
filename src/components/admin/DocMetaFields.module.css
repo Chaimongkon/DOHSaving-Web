@@ -1,0 +1,95 @@
+/* Admin — ฟอร์มที่มาของเอกสารกำกับดูแล (ใช้ร่วมกันทุกหน้านโยบาย/จรรยาบรรณ) */
+
+.box {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-bottom: 20px;
+}
+
+.head {
+  margin-bottom: 4px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f1d36;
+  margin: 0;
+}
+
+.hint {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: #6b7280;
+  margin: 6px 0 16px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.fieldWide {
+  grid-column: 1 / -1;
+}
+
+.label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.input {
+  width: 100%;
+  padding: 9px 13px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #374151;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #E8652B;
+  box-shadow: 0 0 0 3px rgba(232, 101, 43, 0.1);
+}
+
+.input::placeholder {
+  color: #b6bcc6;
+}
+
+.inputError {
+  border-color: #dc2626;
+}
+
+.inputError:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.error {
+  font-size: 12px;
+  color: #dc2626;
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

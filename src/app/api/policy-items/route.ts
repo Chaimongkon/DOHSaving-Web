@@ -1,23 +1,20 @@
 import type { NextRequest } from "next/server";
-import prisma from "@/lib/prisma";
+import { EMPTY_DOC_META } from "@/lib/docMeta";
+import { readGovernanceDoc } from "@/lib/governanceDoc";
 
 const DB_KEY = "page_policy_items";
 
 // GET /api/policy-items — ดึง policy items (public)
 export async function GET(_req: NextRequest) {
   try {
-    const setting = await prisma.siteSetting.findUnique({
-      where: { key: DB_KEY },
-    });
-
-    const items = setting?.value ? JSON.parse(setting.value) : [];
+    const { items, meta } = await readGovernanceDoc(DB_KEY);
 
     return Response.json(
-      { items },
+      { items, meta },
       { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } }
     );
   } catch (error) {
     console.error("Failed to fetch policy items:", error);
-    return Response.json({ items: [] }, { status: 500 });
+    return Response.json({ items: [], meta: EMPTY_DOC_META }, { status: 500 });
   }
 }

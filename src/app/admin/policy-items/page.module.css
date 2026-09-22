@@ -215,3 +215,28 @@
     flex-direction: row;
   }
 }
+
+/* หัวข้อสั้น (ไม่บังคับ) */
+.itemTitleInput {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 8px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f1d36;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.itemTitleInput::placeholder {
+  font-weight: 400;
+  color: #b6bcc6;
+}
+
+.itemTitleInput:focus {
+  outline: none;
+  border-color: #E8652B;
+  box-shadow: 0 0 0 3px rgba(232, 101, 43, 0.08);
+}

@@ -1,0 +1,506 @@
+/* ============================================================
+   Governance list — รายการข้อของหน้าเอกสารกำกับดูแล
+   (นโยบาย / จรรยาบรรณ) · โครงหน้าอยู่ที่ AboutPageShell.module.css
+   ============================================================ */
+
+/* ── แถบที่มาของเอกสาร ───────────────────────────────────── */
+.docMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 28px;
+  margin-bottom: 30px;
+  padding: 18px 22px;
+  background: linear-gradient(135deg, #fffdf8, #fdf6ea);
+  border: 1px solid rgba(216, 174, 63, 0.38);
+  border-radius: 14px;
+}
+
+.docMetaItem {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 14px;
+  min-width: 0;
+}
+
+.docMetaLabel {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: #8a6520;
+}
+
+.docMetaValue {
+  color: #35415a;
+  font-weight: 600;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.docMetaLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f1d36, #1c3157);
+  border-radius: 9px;
+  text-decoration: none;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.docMetaLink:hover {
+  box-shadow: 0 8px 20px rgba(15, 29, 54, 0.26);
+  transform: translateY(-1px);
+}
+
+/* ── รายการข้อ ───────────────────────────────────────────── */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 18px;
+}
+
+/* ข้อความยาว (นโยบาย) — คอลัมน์เดียว อ่านต่อเนื่อง */
+.listSingle {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+/* ข้อความสั้น (จรรยาบรรณ) — 2 คอลัมน์ จบในสายตาเดียว */
+.listGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.card {
+  position: relative;
+  /* ไล่ครีมอ่อนด้านบน ให้ส่วนหัวการ์ดมีมิติ ไม่แบนเป็นกล่องขาว */
+  background: linear-gradient(180deg, #fffaf1 0, #ffffff 110px);
+  border: 1px solid #ebe6dc;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(15, 29, 54, 0.04),
+    0 8px 24px -12px rgba(15, 29, 54, 0.08);
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.55s ease,
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+/* แสงทองมุมขวาบน — เห็นชัดขึ้นตอน hover */
+.card::before {
+  content: "";
+  position: absolute;
+  top: -70px;
+  right: -70px;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(216, 174, 63, 0.2), transparent 68%);
+  opacity: 0.55;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+/* เส้นทองขอบล่าง — ขยายเต็มเมื่อ hover */
+.card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #E8652B, #D8AE3F 60%, #F7E3A1);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cardVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card:hover {
+  border-color: rgba(216, 174, 63, 0.6);
+  box-shadow:
+    0 2px 4px rgba(15, 29, 54, 0.04),
+    0 20px 40px -14px rgba(15, 29, 54, 0.18);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card:hover::after {
+  transform: scaleX(1);
+}
+
+.cardVisible:hover {
+  transform: translateY(-4px);
+}
+
+/* เลขข้อตัวใหญ่ — ตัวอักษรเส้นทอง เติมสีจางเมื่อ hover */
+.cardNum {
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  z-index: 0;
+  font-size: 58px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -2px;
+  font-variant-numeric: tabular-nums;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(201, 162, 39, 0.55);
+  pointer-events: none;
+  user-select: none;
+  transition: color 0.35s ease, -webkit-text-stroke-color 0.35s ease, transform 0.35s ease;
+}
+
+.card:hover .cardNum {
+  color: rgba(216, 174, 63, 0.16);
+  -webkit-text-stroke-color: rgba(201, 162, 39, 0.85);
+  transform: translateY(-2px);
+}
+
+.cardInner {
+  position: relative;
+  z-index: 1;
+}
+
+/* แบบ 2 คอลัมน์ — ไอคอนอยู่บน ข้อความอยู่ล่าง */
+.listGrid .cardInner {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 26px 26px 28px;
+}
+
+/* แบบคอลัมน์เดียว — ไอคอนอยู่ซ้าย ข้อความอยู่ขวา เว้นที่ให้เลขข้อด้านขวา */
+.listSingle .cardInner {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 24px 104px 24px 26px;
+}
+
+.listSingle .cardNum {
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 50px;
+}
+
+.listSingle .card:hover .cardNum {
+  transform: translateY(calc(-50% - 2px));
+}
+
+/* ไอคอนประจำเรื่อง — กรอบกรมท่า ไอคอนทอง เปลี่ยนเป็นส้มเมื่อ hover */
+.cardIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #16294a, #0f1d36);
+  color: #E3C169;
+  box-shadow:
+    0 8px 18px -6px rgba(15, 29, 54, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: background 0.3s ease, color 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+}
+
+.card:hover .cardIcon {
+  background: linear-gradient(145deg, #F0883F, #E8652B);
+  color: #ffffff;
+  transform: rotate(-6deg) scale(1.05);
+  box-shadow:
+    0 10px 22px -6px rgba(232, 101, 43, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.cardBody {
+  min-width: 0;
+  flex: 1;
+}
+
+.cardTitle {
+  margin: 0 0 6px;
+  font-size: 17.5px;
+  line-height: 1.5;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.cardText {
+  margin: 0;
+  font-size: 16.5px;
+  line-height: 1.95;
+  color: #3d4860;
+}
+
+.listSingle .cardBody {
+  padding-top: 6px;
+}
+
+/* ── กล่องช่องทางร้องเรียน ──────────────────────────────── */
+.cta {
+  position: relative;
+  overflow: hidden;
+  margin-top: 36px;
+  padding: 28px 30px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #0f1d36, #1c3157);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.cta::after {
+  content: "";
+  position: absolute;
+  top: -80px;
+  right: -40px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(216, 174, 63, 0.24), transparent 68%);
+  pointer-events: none;
+}
+
+.ctaIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  border-radius: 15px;
+  border: 1px solid rgba(227, 193, 105, 0.36);
+  background: rgba(255, 255, 255, 0.07);
+  color: #E3C169;
+  font-size: 24px;
+}
+
+.ctaBody {
+  flex: 1;
+  min-width: 220px;
+  position: relative;
+  z-index: 1;
+}
+
+.ctaTitle {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.ctaText {
+  margin: 7px 0 0;
+  font-size: 15px;
+  line-height: 1.85;
+  color: rgba(232, 240, 252, 0.76);
+}
+
+.ctaBtn {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 13px 26px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #E8652B, #F0883F);
+  border-radius: 11px;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(232, 101, 43, 0.34);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ctaBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(232, 101, 43, 0.44);
+}
+
+/* ── Print ───────────────────────────────────────────────── */
+@media print {
+  .ctaBtn,
+  .ctaIcon {
+    display: none !important;
+  }
+
+  .docMeta {
+    background: none;
+    border: 1px solid #d1d5db;
+    break-inside: avoid;
+  }
+
+  .docMetaLink {
+    display: none;
+  }
+
+  .card {
+    opacity: 1;
+    transform: none;
+    break-inside: avoid;
+    box-shadow: none;
+  }
+
+  .card {
+    background: #ffffff;
+  }
+
+  .card::before,
+  .card::after {
+    display: none;
+  }
+
+  .listGrid .cardInner,
+  .listSingle .cardInner {
+    padding: 12px 70px 12px 14px;
+  }
+
+  /* กระดาษพิมพ์ไม่ต้องใช้ไอคอนกรอบทึบ ประหยัดหมึก */
+  .cardIcon {
+    background: none;
+    box-shadow: none;
+    color: #8a6520;
+    width: 32px;
+    height: 32px;
+  }
+
+  .cardNum {
+    font-size: 32px;
+  }
+
+  .list {
+    gap: 8px;
+  }
+
+  .cta {
+    background: none;
+    border: 1px solid #d1d5db;
+    break-inside: avoid;
+    padding: 14px 16px;
+  }
+
+  .ctaTitle {
+    color: #0f1d36;
+  }
+
+  .ctaText {
+    color: #4b5563;
+  }
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .listGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .docMeta {
+    padding: 16px 18px;
+    gap: 10px 20px;
+  }
+
+  .docMetaLink {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .listGrid .cardInner {
+    padding: 22px 20px 24px;
+    gap: 14px;
+  }
+
+  /* จอแคบ: เลขข้อย้ายขึ้นมุมขวาบน ข้อความได้ความกว้างเต็ม */
+  .listSingle .cardInner {
+    padding: 22px 20px 24px;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .listSingle .cardNum,
+  .listSingle .card:hover .cardNum {
+    top: 14px;
+    transform: none;
+  }
+
+  .cardNum,
+  .listSingle .cardNum {
+    font-size: 46px;
+  }
+
+  .cardIcon {
+    width: 46px;
+    height: 46px;
+    border-radius: 13px;
+  }
+
+  .cardTitle {
+    font-size: 17px;
+  }
+
+  .cardText {
+    font-size: 16px;
+    line-height: 1.9;
+  }
+
+  .listSingle .cardBody {
+    padding-top: 0;
+  }
+
+  .cta {
+    padding: 22px 20px;
+    gap: 16px;
+  }
+
+  .ctaBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* เคารพการตั้งค่าลดการเคลื่อนไหวของผู้ใช้ */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    opacity: 1;
+    transform: none;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .cardVisible:hover,
+  .card:hover .cardIcon {
+    transform: none;
+  }
+
+  .card::after {
+    transition: none;
+  }
+
+  .ctaBtn:hover {
+    transform: none;
+  }
+}
