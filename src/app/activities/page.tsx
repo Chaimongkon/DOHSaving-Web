@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, Suspense } from "react";
+import { createPortal } from "react-dom";
 import { useSearchParams } from "next/navigation";
 import { Camera, ArrowLeft, ChevronLeft, ChevronRight, X, Images, ZoomIn, FolderOpen } from "lucide-react";
 import css from "./page.module.css";
@@ -161,8 +162,9 @@ function ActivitiesContent() {
               </div>
             )}
 
-            {/* ── Lightbox ── */}
-            {lightboxIdx !== null && detail.photos[lightboxIdx] && (
+            {/* ── Lightbox ── (portaled to body: #mourning-target has a CSS filter,
+                which would otherwise make position:fixed relative to the whole page) */}
+            {lightboxIdx !== null && detail.photos[lightboxIdx] && createPortal(
               <div className={css.lightbox} onClick={() => setLightboxIdx(null)}>
                 <button className={css.lightboxClose} onClick={(e) => { e.stopPropagation(); setLightboxIdx(null); }}>
                   <X size={20} />
@@ -200,7 +202,8 @@ function ActivitiesContent() {
                 <div className={css.lightboxCounter}>
                   {lightboxIdx + 1} / {detail.photos.length}
                 </div>
-              </div>
+              </div>,
+              document.body
             )}
           </>
         ) : albums.length === 0 ? (

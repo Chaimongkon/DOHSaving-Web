@@ -369,6 +369,7 @@
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.25s ease;
+  filter: var(--mourning-filter, none);
 }
 
 @keyframes fadeIn {
