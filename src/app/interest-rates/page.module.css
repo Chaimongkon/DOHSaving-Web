@@ -1,954 +1,756 @@
-/* ═══════════════════════════════════════════════════════
-   Interest Rates Page — Premium Financial Design (Elegant Scale)
-   ═══════════════════════════════════════════════════════ */
+/* ============================================================
+   Interest Rates — อ่านง่ายทุกวัย เรียบหรู ไม่หวือหวา
+   ธีมสหกรณ์ออมทรัพย์กรมทางหลวง: กรมท่า #0f1d36 · ส้ม #E8652B · ทอง #D8AE3F
+   ตัวเลขดอกเบี้ยอยู่ใน "ป้าย" พื้นกรมท่าตัวขาว แบบป้ายบอกระยะทางหลวง
+   ============================================================ */
 
-/* ─── Hero ─── */
+/* ── Hero ────────────────────────────────────────────────── */
 .hero {
-  background: #0f172a;
-  /* Slate 900 */
-  padding: 30px 24px 44px;
-  text-align: center;
   position: relative;
   overflow: hidden;
-  color: #fff;
+  background:
+    radial-gradient(circle at 85% 0%, rgba(216, 174, 63, 0.22), transparent 40%),
+    radial-gradient(circle at 0% 100%, rgba(232, 101, 43, 0.18), transparent 38%),
+    linear-gradient(135deg, #0a1628 0%, #0f1d36 45%, #16294a 100%);
 }
 
-.heroOuterBackground {
+.hero::before {
+  content: "";
   position: absolute;
-  inset: 0;
-  overflow: hidden;
-  z-index: 0;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, #E8652B, #D8AE3F 45%, #F7E3A1 60%, #E8652B);
 }
 
-.heroBlob1,
-.heroBlob2 {
+/* เส้นประสีทองแบบเส้นกึ่งกลางถนน ขอบล่าง hero */
+.hero::after {
+  content: "";
   position: absolute;
-  filter: blur(80px);
-  border-radius: 50%;
-  opacity: 0.5;
-}
-
-.heroBlob1 {
-  top: -50px;
-  right: 10%;
-  width: 300px;
-  height: 300px;
-  background: rgba(16, 185, 129, 0.3);
-  /* Emerald Green */
-}
-
-.heroBlob2 {
-  bottom: -80px;
-  left: 10%;
-  width: 350px;
-  height: 350px;
-  background: rgba(59, 130, 246, 0.3);
-  /* Blue */
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  height: 3px;
+  opacity: 0.45;
+  background: repeating-linear-gradient(90deg, #D8AE3F 0 34px, transparent 34px 60px);
 }
 
 .heroInner {
   position: relative;
   z-index: 1;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
+  padding: 34px 24px 44px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 40px;
   align-items: center;
 }
 
-.heroIconHeader {
-  width: 70px;
-  height: 70px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
+.heroCopy {
+  min-width: 0;
+}
+
+.eyebrow {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
-  backdrop-filter: blur(8px);
+  gap: 12px;
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #E3C169;
+}
+
+.eyebrowRule {
+  width: 38px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #E8652B, #E3C169);
 }
 
 .heroTitle {
-  font-size: 30px;
+  margin: 0;
+  font-size: 38px;
+  line-height: 1.25;
   font-weight: 800;
   color: #ffffff;
-  margin: 0 0 10px;
-  letter-spacing: -0.5px;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-.heroSubtitle {
-  font-size: 15px;
-  color: #e2e8f0;
-  margin: 0 0 16px;
-  font-weight: 400;
-  line-height: 1.5;
+.heroLead {
+  margin: 10px 0 0;
+  max-width: 52ch;
+  font-size: 16px;
+  line-height: 1.8;
+  color: rgba(232, 240, 252, 0.8);
 }
 
-.heroDate {
+.dateChip {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 20px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 30px;
-  color: #f8fafc;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.heroDateIcon {
-  color: #34d399;
-  /* Emerald 400 */
-  font-size: 16px;
-}
-
-/* ─── Hero stats ─── */
-.heroStats {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
   margin-top: 16px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
-  padding: 16px 20px;
-  width: 100%;
-  max-width: 500px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-}
-
-.heroStat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  flex: 1;
-}
-
-.heroStatLabel {
-  font-size: 13px;
-  color: #cbd5e1;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.heroStatValue {
-  font-size: 32px;
-  font-weight: 900;
-  color: #34d399;
-  line-height: 1;
-  text-shadow: 0 2px 10px rgba(52, 211, 153, 0.3);
-}
-
-.heroStatValue small {
-  font-size: 16px;
-  font-weight: 700;
-  opacity: 0.8;
-  margin-left: 2px;
-}
-
-.heroStatValueLoan {
-  color: #fb923c;
-  /* Orange 400 */
-  text-shadow: 0 2px 10px rgba(251, 146, 60, 0.3);
-}
-
-.heroStatSubtext {
-  font-size: 12px;
-  color: #94a3b8;
-}
-
-.heroStatDivider {
-  width: 2px;
-  height: 50px;
-  background: rgba(255, 255, 255, 0.15);
-  margin: 0 32px;
-}
-
-/* ─── Tabs ─── */
-.tabWrapper {
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-}
-
-.tabBar {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 16px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.tabBar::-webkit-scrollbar {
-  display: none;
-}
-
-.tab {
-  padding: 16px 20px;
-  border: none;
-  background: transparent;
-  color: #64748b;
+  padding: 7px 14px;
   font-size: 14px;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: inherit;
+  color: #F7E3A1;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(227, 193, 105, 0.35);
+  border-radius: 999px;
+}
+
+/* ตัวเลขสรุปสองใบ — คลิกแล้วเลื่อนไปตารางนั้น */
+.summary {
+  display: flex;
+  gap: 14px;
+}
+
+.summaryCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 220px;
+  padding: 16px 18px;
+  text-decoration: none;
+  background: #ffffff;
+  border-radius: 16px;
+  border-top: 4px solid #D8AE3F;
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.55);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.summaryCard:hover,
+.summaryCard:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 46px -18px rgba(0, 0, 0, 0.6);
+}
+
+.summaryCard:focus-visible {
+  outline: 3px solid #F7E3A1;
+  outline-offset: 3px;
+}
+
+.summaryCardLoan {
+  border-top-color: #E8652B;
+}
+
+.summaryLabel {
   display: flex;
   align-items: center;
-  gap: 8px;
-  border-bottom: 3px solid transparent;
-  margin-bottom: -1px;
-  white-space: nowrap;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #5b6472;
 }
 
-.tabIcon {
-  font-size: 18px;
+.summaryValue {
+  font-size: 36px;
+  line-height: 1.15;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #0f1d36;
 }
 
-.tab:hover {
-  color: #0f172a;
+.summaryValue small {
+  margin-left: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #5b6472;
 }
 
-.tabActive {
-  color: #0d9488;
-  border-bottom-color: #0d9488;
-  background: #f0fdfa;
-  /* Highlight background */
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
+.summaryName {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #5b6472;
 }
 
-/* ─── Content ─── */
+.summaryNote {
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 700;
+  color: #B54B18;
+}
+
+/* ── เนื้อหา ─────────────────────────────────────────────── */
 .content {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 40px 24px 80px;
 }
 
-/* ─── Section ─── */
-.section {
-  margin-bottom: 40px;
+.state {
+  padding: 80px 24px;
+  text-align: center;
+  font-size: 16px;
+  color: #5b6472;
 }
 
-.sectionHeader {
+.section {
+  margin-bottom: 44px;
+  scroll-margin-top: 90px;
+}
+
+.sectionHead {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding: 14px;
-  background: #f8fafc;
-  border-radius: 14px;
-  border: 1px solid #e2e8f0;
+  gap: 14px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
 .sectionIcon {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
   flex-shrink: 0;
-}
-
-.sectionIconDeposit {
-  background: transparent;
+  border-radius: 14px;
+  color: #E3C169;
+  background: linear-gradient(145deg, #1c3157, #0f1d36);
+  box-shadow: 0 8px 18px -8px rgba(15, 29, 54, 0.55);
 }
 
 .sectionIconLoan {
-  background: transparent;
+  color: #ffffff;
+  background: linear-gradient(145deg, #F0883F, #E8652B);
+  box-shadow: 0 8px 18px -8px rgba(232, 101, 43, 0.6);
+}
+
+.sectionText {
+  flex: 1;
+  min-width: 220px;
 }
 
 .sectionTitle {
-  font-size: 20px;
-  font-weight: 800;
-  color: #0f172a;
   margin: 0;
-  line-height: 1.2;
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f1d36;
 }
 
 .sectionSub {
-  font-size: 13px;
-  color: #475569;
-  margin: 4px 0 0;
-  font-weight: 500;
+  margin: 2px 0 0;
+  font-size: 15px;
+  color: #5b6472;
 }
 
-.sectionCount {
-  margin-left: auto;
-  font-size: 13px;
-  color: #64748b;
-  font-weight: 700;
-  background: #e2e8f0;
+.tag {
   padding: 6px 14px;
-  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f6b43;
+  background: #ecf8f1;
+  border: 1px solid #b9e3cb;
+  border-radius: 999px;
 }
 
-/* ─── Rate list ─── */
-.rateList {
+/* ── ตาราง ───────────────────────────────────────────────── */
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  border: 1px solid #e6e1d6;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 14px 34px -24px rgba(15, 29, 54, 0.35);
+}
+
+.table thead th {
+  padding: 13px 22px;
+  font-size: 14.5px;
+  font-weight: 800;
+  text-align: left;
+  color: #0f1d36;
+  background: linear-gradient(180deg, #fbf5e8, #f6ecd7);
+  border-bottom: 2px solid #D8AE3F;
+}
+
+.table thead .colRate {
+  text-align: center;
+  width: 190px;
+}
+
+/* กว้างพอให้ดอกเบี้ยจูงใจ (ป้ายสองอัน + ลูกศร) อยู่ในช่องเดียวไม่บีบ */
+.loanTable thead .colRate {
+  width: 250px;
+}
+
+.table tbody tr {
+  transition: background 0.15s;
+}
+
+.table tbody tr:hover {
+  background: #fffbf3;
+}
+
+/* เส้นคั่นแถวแบบเส้นประจาง ๆ */
+.table tbody tr + tr > * {
+  border-top: 1px dashed #e3dccd;
+}
+
+.nameCell {
+  padding: 18px 22px;
+  text-align: left;
+  font-weight: 400;
+  vertical-align: middle;
+}
+
+.name {
+  font-size: 17px;
+  line-height: 1.55;
+  font-weight: 700;
+  color: #1c2a44;
+}
+
+.note {
+  display: block;
+  margin-top: 4px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: #5b6472;
+}
+
+.rateCell {
+  padding: 14px 16px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.rateCellSpan {
+  text-align: center;
+}
+
+.rowTop {
+  background: linear-gradient(90deg, #fffaf0, #ffffff 60%);
+}
+
+.topBadge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 10px;
+  font-size: 12.5px;
+  font-weight: 800;
+  vertical-align: 2px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #E8652B, #F0883F);
+  border-radius: 999px;
+}
+
+.none {
+  font-size: 22px;
+  font-weight: 700;
+  color: #c3c8d2;
+}
+
+/* ── ป้ายตัวเลข: แบบป้ายบอกระยะทางหลวง ──────────────────── */
+.sign {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 14px;
+  border-radius: 10px;
+  color: #ffffff;
+  background: linear-gradient(160deg, #1c3157, #0f1d36);
+  /* ขอบในสีขาวบาง ๆ เหมือนขอบป้ายจราจร */
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.35),
+    0 6px 14px -8px rgba(15, 29, 54, 0.6);
+  font-variant-numeric: tabular-nums;
+}
+
+.signOrange {
+  background: linear-gradient(160deg, #F0883F, #D9571C);
+}
+
+.signNum {
+  font-size: 26px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.signUnit {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.05;
+}
+
+.signPct {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.signYear {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.signBig .signNum {
+  font-size: 30px;
+}
+
+/* อัตราสองช่วง (ดอกเบี้ยจูงใจ) */
+.stepped {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stepLabel {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #5b6472;
+  white-space: nowrap;
+}
+
+.stepArrow {
+  margin-bottom: 14px;
+  color: #c9a227;
+}
+
+/* ป้ายในอัตราสองช่วงเล็กลง และซ่อน "ต่อปี" (หัวตารางบอกแล้ว) ไม่ให้ถูกบีบเป็นแนวตั้ง */
+.stepped .sign {
+  padding: 5px 10px;
+}
+
+.stepped .signNum {
+  font-size: 22px;
+}
+
+.stepped .signYear {
+  display: none;
+}
+
+/* ── คำอธิบายเฉลี่ยคืน ──────────────────────────────────── */
+.explain {
+  display: flex;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 18px 20px;
+  background: #f7f9fc;
+  border: 1px solid #dfe6f0;
+  border-left: 4px solid #1c3157;
+  border-radius: 14px;
+}
+
+.explainIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: #1c3157;
+}
+
+.explainTitle {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.explainList {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #3d4860;
+}
+
+.explainList strong {
+  color: #0f1d36;
+}
+
+/* ── ขั้นต่อไป ───────────────────────────────────────────── */
+.next {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
-/* ─── Rate item (Cards instead of List) ─── */
-.rateItem {
+.nextCard {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 20px;
-  background: #fff;
-  border-radius: 16px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: fadeSlideUp 0.35s ease both;
-  position: relative;
-  overflow: hidden;
-}
-
-.rateItem:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
-}
-
-.rateItemDeposit:hover {
-  border-color: #34d399;
-}
-
-.rateItemLoan:hover {
-  border-color: #fb923c;
-}
-
-/* Highlight Indicator (Colored Left Border instead of full background) */
-.rateItemHighlight::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 5px;
-  background: #10b981;
-}
-
-.rateItemLoan.rateItemHighlight::before {
-  background: #f97316;
-}
-
-@keyframes fadeSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ─── Badge ─── */
-.badge {
-  position: absolute;
-  top: 0;
-  right: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 12px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.badgeDeposit {
-  background: #10b981;
-  color: #ffffff;
-}
-
-.badgeLoan {
-  background: #f97316;
-  color: #ffffff;
-}
-
-/* ─── Rate item left ─── */
-.rateItemLeft {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex: 1;
-  min-width: 0;
-}
-
-.rateIconWrapper {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.3s ease;
-}
-
-.rateItem:hover .rateIconWrapper {
-  transform: scale(1.1);
-}
-
-.rateIconDeposit {
-  background: transparent;
-}
-
-.rateIconLoan {
-  background: transparent;
-}
-
-.rateInfo {
-  min-width: 0;
-}
-
-.rateName {
-  font-size: 16px;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 0;
-  line-height: 1.35;
-}
-
-.rateCondition {
-  font-size: 13px;
-  color: #64748b;
-  margin: 4px 0 0;
-  line-height: 1.5;
-  font-weight: 500;
-}
-
-/* ─── Rate item right ─── */
-.rateItemRight {
-  flex-shrink: 0;
-  margin-left: 20px;
-  text-align: right;
-}
-
-.singleRateBlock {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-
-/* ─── Rate pill ─── */
-.ratePill {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 2px;
-  padding: 6px 14px;
-  border-radius: 10px;
-}
-
-.ratePillDeposit {
-  background: #ecfdf5;
-}
-
-.ratePillLoan {
-  background: #fff7ed;
-}
-
-.ratePillBig {
-  padding: 8px 14px;
-}
-
-.ratePillBig .ratePillNum {
-  font-size: 26px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.ratePillNum {
-  font-size: 22px;
-  font-weight: 800;
-  line-height: 1;
-  color: inherit;
-}
-
-.ratePillDeposit .ratePillNum {
-  color: #059669;
-}
-
-.ratePillLoan .ratePillNum {
-  color: #c2410c;
-}
-
-.ratePillPct {
-  font-size: 15px;
-  font-weight: 700;
-  opacity: 0.8;
-}
-
-.ratePillUnit {
-  font-size: 12px;
-  font-weight: 600;
-  color: #64748b;
-  margin-left: 4px;
-}
-
-/* ─── Rate pill second (dual) ─── */
-.ratePillSecond {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 2px;
-  padding: 6px 14px;
-  border-radius: 10px;
-  background: #f1f5f9;
-}
-
-.ratePillSecond .ratePillNum {
-  font-size: 20px;
-  color: #334155;
-}
-
-/* ─── Dual rate ─── */
-.dualRate {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-  flex-wrap: nowrap;
-  justify-content: flex-end;
-}
-
-.dualRateBlock {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-
-.dualLabel {
-  font-size: 12px;
-  font-weight: 600;
-  color: #64748b;
-  white-space: nowrap;
-  background: #f8fafc;
-  padding: 2px 8px;
-  border-radius: 6px;
-}
-
-.dualArrow {
-  color: #cbd5e1;
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-/* ─── Notice ─── */
-.notice {
-  margin-top: 40px;
-  padding: 24px;
-  background: #fffbeb;
-  border: 2px solid #fde68a;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-  box-shadow: 0 10px 30px rgba(253, 230, 138, 0.3);
-}
-
-.noticeLeft {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  flex: 1;
-}
-
-.noticeIcon {
-  color: #d97706;
-  font-size: 28px;
-  flex-shrink: 0;
-  background: #fff3cd;
-  border-radius: 50%;
-  padding: 8px;
-}
-
-.noticeTitle {
-  font-size: 16px;
-  font-weight: 800;
-  color: #92400e;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.noticeText {
-  font-size: 14px;
-  color: #b45309;
-  line-height: 1.6;
-  margin: 0;
-  font-weight: 500;
-}
-
-.noticePhone {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: #ffffff;
-  border: 2px solid #f59e0b;
-  border-radius: 16px;
-  color: #b45309;
-  font-size: 15px;
-  font-weight: 800;
+  gap: 14px;
+  padding: 18px 20px;
   text-decoration: none;
-  white-space: nowrap;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(135deg, #fffaf1, #fdf3e0);
+  border: 1px solid rgba(216, 174, 63, 0.5);
+  border-radius: 16px;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 
-.noticePhone:hover {
-  background: #f59e0b;
-  color: #fff;
+.nextCard:hover {
+  border-color: #D8AE3F;
+  box-shadow: 0 14px 30px -18px rgba(15, 29, 54, 0.35);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
 }
 
-/* ─── Loading / Empty ─── */
-.loading {
+.nextIcon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  color: #E3C169;
+  background: linear-gradient(145deg, #1c3157, #0f1d36);
+}
+
+.nextBody {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 80px 24px;
-  color: #64748b;
-  font-size: 15px;
-  font-weight: 600;
+  gap: 2px;
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f1f5f9;
-  border-top-color: #0ea5e9;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+.nextTitle {
+  font-size: 16.5px;
+  font-weight: 800;
+  color: #0f1d36;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.nextText {
+  font-size: 14px;
+  color: #5b6472;
 }
 
-.empty {
+.nextArrow {
+  flex-shrink: 0;
+  color: #E8652B;
+}
+
+.disclaimer {
+  margin: 22px 0 0;
+  font-size: 14px;
+  line-height: 1.8;
   text-align: center;
-  padding: 80px 24px;
-  color: #64748b;
-  font-size: 16px;
-  font-weight: 600;
+  color: #6b7280;
 }
 
-/* ═══════════════════════════════════════════════════════
-   Responsive
-   ═══════════════════════════════════════════════════════ */
-
-@media (max-width: 768px) {
+/* ── Print: ประกาศอัตราดอกเบี้ยมักถูกพิมพ์ติดบอร์ด ────────── */
+@media print {
   .hero {
-    padding: 24px 16px 32px;
+    background: none;
   }
 
-  .heroIconHeader {
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
-    margin-bottom: 12px;
-  }
-
-  .heroTitle {
-    font-size: 24px;
-  }
-
-  .heroSubtitle {
-    font-size: 13px;
-    margin-bottom: 12px;
-  }
-
-  .heroDate {
-    font-size: 11px;
-    padding: 5px 14px;
-  }
-
-  .heroStats {
-    padding: 14px 16px;
-    flex-direction: row;
-    gap: 0;
-    border-radius: 14px;
-    margin-top: 14px;
-  }
-
-  .heroStatLabel {
-    font-size: 11px;
-  }
-
-  .heroStatValue {
-    font-size: 26px;
-  }
-
-  .heroStatValue small {
-    font-size: 14px;
-  }
-
-  .heroStatSubtext {
-    font-size: 11px;
-  }
-
-  .heroStatDivider {
-    width: 1px;
-    height: 44px;
-    margin: 0 16px;
-  }
-
-  .heroBlob1 {
-    width: 200px;
-    height: 200px;
-  }
-
-  .heroBlob2 {
-    width: 220px;
-    height: 220px;
-  }
-
-  /* Tabs */
-  .tabBar {
-    padding: 0 8px;
-    gap: 0;
-  }
-
-  .tab {
-    padding: 12px 12px;
-    font-size: 12px;
-    gap: 5px;
-  }
-
-  .tabIcon {
-    font-size: 14px;
-  }
-
-  /* Content */
-  .content {
-    padding: 20px 12px 48px;
-  }
-
-  .section {
-    margin-bottom: 28px;
-  }
-
-  .sectionHeader {
-    padding: 12px;
-    gap: 10px;
-    border-radius: 12px;
-    margin-bottom: 14px;
-  }
-
+  .hero::before,
+  .hero::after,
+  .summary,
+  .next,
   .sectionIcon {
-    width: 36px;
-    height: 36px;
-  }
-
-  .sectionTitle {
-    font-size: 16px;
-  }
-
-  .sectionSub {
-    font-size: 11px;
     display: none;
   }
 
-  .sectionCount {
-    font-size: 11px;
-    padding: 4px 10px;
+  .heroInner {
+    padding: 0 0 12px;
+    grid-template-columns: 1fr;
   }
 
-  /* Rate cards */
-  .rateList {
-    gap: 10px;
+  .heroTitle,
+  .eyebrow,
+  .heroLead,
+  .dateChip {
+    color: #0f1d36;
   }
 
-  .rateItem {
-    padding: 16px 14px;
-    border-radius: 14px;
-    gap: 12px;
+  .dateChip {
+    border-color: #c9a227;
+    background: none;
   }
 
-  .rateItemLeft {
-    gap: 10px;
+  .content {
+    padding: 0;
   }
 
-  .rateIconWrapper {
-    width: 36px;
-    height: 36px;
+  .table {
+    box-shadow: none;
+    break-inside: avoid;
   }
 
-  .rateName {
-    font-size: 14px;
-  }
-
-  .rateCondition {
-    font-size: 11px;
-    margin-top: 2px;
-  }
-
-  .badge {
-    font-size: 10px;
-    padding: 3px 10px;
-    right: 12px;
-  }
-
-  /* Rate values - keep on same row */
-  .rateItemRight {
-    margin-left: auto;
-    flex-shrink: 0;
-  }
-
-  .ratePill {
-    padding: 4px 10px;
-    border-radius: 8px;
-  }
-
-  .ratePillNum {
-    font-size: 18px;
-  }
-
-  .ratePillBig .ratePillNum {
-    font-size: 20px;
-  }
-
-  .ratePillPct {
-    font-size: 12px;
-  }
-
-  .ratePillUnit {
-    font-size: 10px;
-  }
-
-  .dualLabel {
-    font-size: 10px;
-    padding: 2px 6px;
-  }
-
-  /* Dual rate - horizontal compact */
-  .dualRate {
-    gap: 6px;
-    flex-wrap: nowrap;
-  }
-
-  .dualRateBlock {
-    gap: 3px;
-  }
-
-  .dualArrow {
-    font-size: 12px;
-    margin-bottom: 8px;
-  }
-
-  .ratePillSecond {
-    padding: 4px 10px;
-  }
-
-  .ratePillSecond .ratePillNum {
-    font-size: 16px;
-  }
-
-  /* Notice */
-  .notice {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 16px;
-    border-radius: 14px;
-    margin-top: 28px;
-    gap: 14px;
-  }
-
-  .noticeIcon {
-    font-size: 22px;
-    padding: 6px;
-  }
-
-  .noticeTitle {
-    font-size: 14px;
-  }
-
-  .noticeText {
-    font-size: 12px;
-    line-height: 1.5;
-  }
-
-  .noticePhone {
-    justify-content: center;
-    padding: 10px 20px;
-    font-size: 13px;
-    border-radius: 12px;
+  .sign,
+  .signOrange {
+    background: none;
+    color: #0f1d36;
+    box-shadow: inset 0 0 0 1px #0f1d36;
   }
 }
 
-@media (max-width: 480px) {
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .heroInner {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .summaryCard {
+    flex: 1;
+    width: auto;
+  }
+}
+
+/* มือถือ: ตาราง → การ์ดทีละประเภท ชื่ออยู่บน ตัวเลขอยู่ล่าง */
+@media (max-width: 640px) {
+  .heroInner {
+    padding: 26px 16px 36px;
+  }
+
   .heroTitle {
+    font-size: 30px;
+  }
+
+  .heroLead {
+    font-size: 15px;
+  }
+
+  .summary {
+    gap: 10px;
+  }
+
+  .summaryCard {
+    padding: 12px 14px;
+  }
+
+  .summaryValue {
+    font-size: 28px;
+  }
+
+  .content {
+    padding: 28px 16px 60px;
+  }
+
+  .sectionTitle {
+    font-size: 21px;
+  }
+
+  .table,
+  .table tbody,
+  .table tr,
+  .table th,
+  .table td {
+    display: block;
+    width: 100%;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table {
+    background: none;
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .table tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e6e1d6;
+    border-radius: 16px;
+    box-shadow: 0 10px 24px -20px rgba(15, 29, 54, 0.4);
+    overflow: hidden;
+  }
+
+  .table tbody tr + tr > * {
+    border-top: 0;
+  }
+
+  .rowTop {
+    border-color: rgba(216, 174, 63, 0.7) !important;
+  }
+
+  .nameCell {
+    padding: 14px 16px 6px;
+  }
+
+  .name {
+    font-size: 16.5px;
+  }
+
+  .rateCell {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 16px 14px;
+    text-align: left;
+  }
+
+  /* ป้ายบอกว่าเป็นอัตราแบบไหน (หัวคอลัมน์ถูกซ่อนบนมือถือ) */
+  .rateCell::before {
+    content: attr(data-label);
+    font-size: 14px;
+    font-weight: 700;
+    color: #5b6472;
+  }
+
+  .loanTable .rateCell + .rateCell {
+    border-top: 1px dashed #e3dccd;
+    padding-top: 12px;
+  }
+
+  /* แบบที่ไม่มีให้บริการ ไม่ต้องโชว์ขีดว่างบนมือถือ */
+  .rateCellEmpty {
+    display: none !important;
+  }
+
+  /* ช่องที่ครอบสองคอลัมน์: ใช้คำบรรยายของตัวเองแทนหัว data-label ไม่ให้ซ้ำสองชั้น */
+  .rateCellSpan::before {
+    display: none;
+  }
+
+  .rateCellSpan .step {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .rateCellSpan .stepLabel {
+    font-size: 14px;
+  }
+
+  .stepped {
+    gap: 6px;
+  }
+
+  .stepped .signNum {
     font-size: 20px;
   }
 
-  .heroStatValue {
-    font-size: 22px;
+  .explain {
+    padding: 16px;
   }
 
-  .heroStatDivider {
-    margin: 0 10px;
+  .next {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .summaryCard,
+  .nextCard {
+    transition: none;
   }
 
-  .tab {
-    padding: 10px 8px;
-    font-size: 11px;
-    gap: 4px;
-  }
-
-  .tabIcon {
-    font-size: 13px;
-  }
-
-  .rateItem {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    padding: 14px 12px;
-  }
-
-  .rateItemRight {
-    margin-left: 0;
-    border-top: 1px solid #f1f5f9;
-    padding-top: 10px;
-  }
-
-  .singleRateBlock {
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .dualRate {
-    justify-content: space-between;
-  }
-
-  .dualArrow {
-    display: block;
-    font-size: 10px;
-    margin-bottom: 6px;
+  .summaryCard:hover,
+  .nextCard:hover {
+    transform: none;
   }
 }
