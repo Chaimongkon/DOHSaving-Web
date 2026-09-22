@@ -295,13 +295,63 @@ img {
 /* Left image area */
 
 .mega-panel-image {
-  flex: 0 0 180px;
+  flex: 0 0 220px;
   background: linear-gradient(160deg, #faf6f0 0%, #f5ebe0 50%, #ede0d0 100%);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px 16px;
+  gap: 6px;
+  padding: 24px 20px;
   border-right: 1px solid #ece3d8;
+  text-align: center;
+}
+
+.mega-panel-image-img {
+  width: 100%;
+  max-width: 180px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.mega-panel-image-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.mega-panel-image-text {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #6b5a3a;
+}
+
+/* แผงกว้าง: ช่องซ้ายกว้างขึ้นและรูปใหญ่ขึ้น ให้สมส่วนกับแผงที่กว้าง 1200px */
+.mega-panel-inner--wide .mega-panel-image {
+  flex-basis: 260px;
+  padding: 28px 24px;
+}
+
+.mega-panel-inner--wide .mega-panel-image-img {
+  max-width: 220px;
+}
+
+/* แผงที่ลิงก์น้อย: รูปเล็กลง ให้ความสูงช่องซ้ายใกล้กับรายการเมนู */
+.mega-panel-inner--compact .mega-panel-image {
+  flex-basis: 190px;
+  padding: 18px 16px;
+}
+
+.mega-panel-inner--compact .mega-panel-image-img {
+  max-width: 110px;
+  margin-bottom: 6px;
+}
+
+.mega-panel-inner--compact .mega-panel-image-title {
+  font-size: 15px;
 }
 
 /* Columns area โ€” simple flexbox, no grid */
@@ -415,21 +465,25 @@ img {
   border-radius: 0 0 14px 14px;
 }
 
+/* คอลัมน์แบบไหล (หนังสือพิมพ์): กลุ่มเมนูเติมเต็มความกว้าง แต่ละคอลัมน์สูงใกล้กัน
+   จำนวนคอลัมน์มาจาก --mega-cols (ตั้งใน Navbar ตามจำนวนกลุ่ม สูงสุด 4)
+   เดิมเป็น grid 3 คอลัมน์ตายตัว ทำให้ขวาว่าง ~300px และแถวสุดท้ายมีช่องโหว่ */
 .mega-panel-columns--wide {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px 0;
-  padding: 24px 12px;
+  display: block !important;
+  flex: 1;
+  min-width: 0;
+  column-count: var(--mega-cols, 3);
+  column-gap: 0;
+  column-rule: 1px solid #f0f0f0;
+  padding: 24px 8px 8px;
 }
 
 .mega-panel-columns--wide .mega-column {
   min-width: 0;
-  padding: 0 16px;
-  margin-bottom: 4px;
-}
-
-.mega-panel-columns--wide .mega-column:nth-child(3n) {
+  padding: 0 20px;
+  margin-bottom: 20px;
   border-right: none;
+  break-inside: avoid;
 }
 
 .mega-panel-columns--wide .mega-link {

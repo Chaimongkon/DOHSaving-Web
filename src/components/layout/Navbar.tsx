@@ -34,6 +34,8 @@ interface NavItem {
   icon?: React.ReactNode;
   megaColumns?: MegaColumn[];
   megaImage?: string;
+  /** คำบรรยายสั้นใต้รูปใน mega menu */
+  megaTagline?: string;
   wide?: boolean; // full-width grid layout for menus with many columns
 }
 
@@ -44,6 +46,7 @@ const navItems: NavItem[] = [
     label: "เกี่ยวกับสหกรณ์ฯ",
     icon: <InfoCircleOutlined />,
     megaImage: "/mega-about.svg",
+    megaTagline: "ทำความรู้จักสหกรณ์ ผู้บริหาร และฝ่ายงานต่าง ๆ",
     // ใช้รายการเดียวกับ sidebar ของหน้าในหมวดนี้ — แก้ที่ components/about/aboutNav.ts
     megaColumns: ABOUT_NAV_GROUPS.map((group) => ({
       title: group.title,
@@ -57,6 +60,7 @@ const navItems: NavItem[] = [
     icon: <CustomerServiceOutlined />,
     wide: true,
     megaImage: "/mega-services.svg",
+    megaTagline: "สมัครสมาชิก เงินฝาก เงินกู้ และสวัสดิการสำหรับสมาชิก",
     megaColumns: [
       {
         title: "สมัครสมาชิก",
@@ -128,6 +132,7 @@ const navItems: NavItem[] = [
     key: "news",
     label: "ข่าวสาร",
     icon: <NotificationOutlined />,
+    megaTagline: "ข่าวประชาสัมพันธ์และกิจกรรมของสหกรณ์",
     megaColumns: [
       {
         title: "ข่าวประชาสัมพันธ์",
@@ -151,6 +156,7 @@ const navItems: NavItem[] = [
     icon: <FileProtectOutlined />,
     wide: true,
     megaImage: "/mega-reports.svg",
+    megaTagline: "รายงานการเงิน ข้อบังคับ ระเบียบ และแบบฟอร์ม",
     megaColumns: [
       {
         title: "งบการเงิน",
@@ -198,6 +204,7 @@ const navItems: NavItem[] = [
     key: "contact",
     label: "ติดต่อเรา",
     icon: <PhoneOutlined />,
+    megaTagline: "ช่องทางติดต่อ สอบถาม และร้องเรียน",
     megaColumns: [
       {
         title: "ช่องทางติดต่อ",
@@ -260,6 +267,9 @@ function MegaDropdown({
 }) {
   const hasMega = !!item.megaColumns;
   const isWide = item.wide;
+  // เมนูที่ลิงก์น้อย (ข่าวสาร, ติดต่อเรา) ใช้รูปเล็กลง ไม่ให้รูปสูงกว่ารายการเมนูจนแผงดูโหรงเหรง
+  const linkCount = item.megaColumns?.reduce((n, col) => n + col.links.length, 0) ?? 0;
+  const isCompact = !isWide && linkCount <= 6;
 
   return (
     <div
@@ -287,21 +297,29 @@ function MegaDropdown({
         <div
           className={`mega-panel ${isOpen ? "mega-panel--open" : ""} ${isWide ? "mega-panel--wide" : ""}`}
         >
-          <div className={`mega-panel-inner ${isWide ? "mega-panel-inner--wide" : ""}`}>
-            {/* Left image */}
+          <div
+            className={`mega-panel-inner ${isWide ? "mega-panel-inner--wide" : ""} ${isCompact ? "mega-panel-inner--compact" : ""}`}
+          >
+            {/* Left image + ชื่อเมนูและคำบรรยาย ให้ช่องซ้ายมีเนื้อหา ไม่ใช่พื้นว่าง */}
             {item.megaImage && (
               <div className="mega-panel-image">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={item.megaImage}
-                  alt={item.label}
-                  style={{ width: "100%", height: "auto", objectFit: "contain" }}
-                />
+                <img src={item.megaImage} alt="" className="mega-panel-image-img" />
+                <p className="mega-panel-image-title">{item.label}</p>
+                {item.megaTagline && <p className="mega-panel-image-text">{item.megaTagline}</p>}
               </div>
             )}
 
-            {/* Columns */}
-            <div className={`mega-panel-columns ${isWide ? "mega-panel-columns--wide" : ""}`}>
+            {/* Columns — แผงกว้างใช้คอลัมน์แบบไหล (multi-column) กลุ่มเมนูเติมเต็มความกว้าง
+                ไม่เหลือช่องว่างแบบ grid ตายตัว · สูงสุด 3 คอลัมน์ (4 คอลัมน์แคบจนชื่อบริการตกบรรทัด) */}
+            <div
+              className={`mega-panel-columns ${isWide ? "mega-panel-columns--wide" : ""}`}
+              style={
+                isWide
+                  ? ({ "--mega-cols": Math.min(3, item.megaColumns?.length ?? 3) } as React.CSSProperties)
+                  : undefined
+              }
+            >
               {item.megaColumns?.map((col) => (
                 <div key={col.title} className="mega-column">
                   <h4 className="mega-column-title">{col.title}</h4>
