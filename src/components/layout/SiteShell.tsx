@@ -18,16 +18,15 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      {/* ใส่ grayscale ที่ <html> เอง — ไม่ต้องมี wrapper (ดูเหตุผลใน MourningMode) */}
       <MourningMode />
-      <div id="mourning-target">
-        <FestivalThemeProvider />
-        <FestivalOverlay />
-        <FestivalBanner />
-        <TopBar />
-        <Navbar />
-        <main className="main-content">{children}</main>
-        <Footer />
-      </div>
+      <FestivalThemeProvider />
+      <FestivalOverlay />
+      <FestivalBanner />
+      <TopBar />
+      <Navbar />
+      <main className="main-content">{children}</main>
+      <Footer />
       <CookieConsentBanner />
     </>
   );

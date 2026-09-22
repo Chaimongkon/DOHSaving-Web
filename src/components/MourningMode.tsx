@@ -21,22 +21,18 @@ export default function MourningMode() {
 
   useEffect(() => {
     if (!data?.active) return;
-    // Target a wrapper, NOT body, because CSS `filter` makes its element a
-    // containing block for fixed-position descendants — applying it to body
-    // would break modal/popup centering. Portaled dialogs live outside this
-    // wrapper, so they keep their viewport-anchored positioning.
-    const target = document.getElementById("mourning-target");
-    if (!target) return;
+    // Apply to <html>, not body or a wrapper: a CSS `filter` normally makes its
+    // element the containing block for position:fixed descendants, which drags
+    // every modal/lightbox/mega-menu off the viewport. The spec exempts the
+    // root element from that rule, so on <html> fixed elements stay
+    // viewport-anchored and portaled dialogs are desaturated too — no per-
+    // component opt-in needed.
+    const root = document.documentElement;
     const intensity = Math.min(100, Math.max(0, data.intensity));
-    const filterValue = `grayscale(${intensity}%)`;
-    const previousFilter = target.style.filter;
-    target.style.filter = filterValue;
-    // Also expose the filter as a CSS var so portaled popups can opt in
-    // without re-creating the containing-block bug on body/html.
-    document.documentElement.style.setProperty("--mourning-filter", filterValue);
+    const previousFilter = root.style.filter;
+    root.style.filter = `grayscale(${intensity}%)`;
     return () => {
-      target.style.filter = previousFilter;
-      document.documentElement.style.removeProperty("--mourning-filter");
+      root.style.filter = previousFilter;
     };
   }, [data?.active, data?.intensity]);
 

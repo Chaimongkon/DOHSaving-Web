@@ -162,8 +162,8 @@ function ActivitiesContent() {
               </div>
             )}
 
-            {/* ── Lightbox ── (portaled to body: #mourning-target has a CSS filter,
-                which would otherwise make position:fixed relative to the whole page) */}
+            {/* ── Lightbox ── (portaled to body so no ancestor transform/filter
+                can turn it into a page-relative box instead of viewport-fixed) */}
             {lightboxIdx !== null && detail.photos[lightboxIdx] && createPortal(
               <div className={css.lightbox} onClick={() => setLightboxIdx(null)}>
                 <button className={css.lightboxClose} onClick={(e) => { e.stopPropagation(); setLightboxIdx(null); }}>
