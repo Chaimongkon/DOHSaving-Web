@@ -1,639 +1,1132 @@
-/* ═══════════════════════════════════════════════════════
-   Map Page — Full-page Interactive Map
-   ═══════════════════════════════════════════════════════ */
+/* ============================================================
+   Contact / Map — แนวคิด "บัตรปลายทาง"
+   ภาษาภาพชุดเดียวกับหน้า /contact (นามบัตรสหกรณ์):
+   hero กรมท่า + วัตถุเด่นหนึ่งชิ้น · การ์ดพื้นไล่สีอ่อน · ไอคอนลายน้ำ
+   สเกลตามเว็บ: หัวข้อ 19–20px · เนื้อหา 13–14px · มุมโค้ง 12–18px
+   ============================================================ */
 
-/* ── Hero ── */
+/* ── ชุดสี ── */
+.toneOrange {
+  --from: #F0803F;
+  --to: #D4541A;
+  --rgb: 232, 101, 43;
+}
+
+.toneGreen {
+  --from: #2BD06B;
+  --to: #06A048;
+  --rgb: 6, 199, 85;
+}
+
+.toneBlue {
+  --from: #4A90DC;
+  --to: #1F5C9E;
+  --rgb: 43, 108, 176;
+}
+
+.toneGold {
+  --from: #E5BC56;
+  --to: #B0812A;
+  --rgb: 199, 148, 45;
+}
+
+.toneRose {
+  --from: #DD6A84;
+  --to: #98304C;
+  --rgb: 180, 66, 93;
+}
+
+/* ═══════════════════════ Hero ═══════════════════════ */
 .hero {
-  background: linear-gradient(160deg, #0a1628 0%, #1a2d4a 40%, #1e3a5f 70%, #1a4a6a 100%);
-  padding: 44px 24px 56px;
-  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0a1628 0%, #0f1d36 50%, #172c52 100%);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 2;
+  height: 3px;
+  background: linear-gradient(90deg, #E8652B, #D8AE3F 45%, #F7E3A1 60%, #E8652B);
+}
+
+/* เส้นประทองแบบเส้นกึ่งกลางถนน — เหมาะกับหน้าเดินทางเป็นพิเศษ */
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  height: 3px;
+  opacity: 0.35;
+  background: repeating-linear-gradient(90deg, #D8AE3F 0 34px, transparent 34px 60px);
+}
+
+.heroGlowGold,
+.heroGlowOrange {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.heroGlowGold {
+  top: -200px;
+  right: 4%;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(216, 174, 63, 0.24), transparent 64%);
+}
+
+.heroGlowOrange {
+  bottom: -260px;
+  left: -140px;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(232, 101, 43, 0.2), transparent 64%);
+}
+
+.heroGrid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 45%, #000 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 45%, #000 100%);
+}
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 26px 24px 60px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: 48px;
+  align-items: center;
+}
+
+.heroCopy {
+  min-width: 0;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 18px;
+  padding: 5px 12px 5px 9px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: rgba(232, 240, 252, 0.72);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  transition: color 0.16s, background 0.16s, border-color 0.16s;
+}
+
+.back:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(227, 193, 105, 0.55);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  color: #E3C169;
+}
+
+.eyebrowRule {
+  width: 28px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #E8652B, #E3C169);
 }
 
 .heroTitle {
-  font-size: 28px;
-  font-weight: 800;
-  color: #fff;
-  margin: 0 0 6px;
-}
-
-.heroSub {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
   margin: 0;
+  font-size: 34px;
+  line-height: 1.28;
+  font-weight: 800;
+  color: #ffffff;
 }
 
-/* ── Content ── */
-.content {
-  max-width: 1100px;
-  margin: -32px auto 0;
-  padding: 0 24px 60px;
+.heroTitleAccent {
+  background: linear-gradient(90deg, #F7E3A1, #E3C169 45%, #F0803F);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.heroLead {
+  margin: 14px 0 0;
+  max-width: 54ch;
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: rgba(232, 240, 252, 0.74);
+}
+
+.heroLead strong {
+  font-weight: 800;
+  color: #F7E3A1;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.heroCta,
+.heroGhost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  border-radius: 11px;
+  cursor: pointer;
+  transition: filter 0.18s, transform 0.18s, background 0.18s, border-color 0.18s;
+}
+
+.heroCta {
+  color: #ffffff;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+  border: none;
+  box-shadow: 0 12px 24px -12px rgba(232, 101, 43, 1);
+}
+
+.heroCta:hover {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+}
+
+.heroGhost {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.heroGhost:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(227, 193, 105, 0.55);
+}
+
+.copied {
+  background: #0d7a4f !important;
+  border-color: #0d7a4f !important;
+}
+
+/* ── บัตรปลายทาง ─────────────────────────────────────── */
+.passStage {
   position: relative;
-  z-index: 1;
 }
 
-/* ── Map Container ── */
-.mapContainer {
-  background: #fff;
+/* บัตรซ้อนด้านหลัง ให้ดูเป็นวัตถุจริงวางซ้อนกัน */
+.passStage::before {
+  content: "";
+  position: absolute;
+  inset: 18px -14px -14px 18px;
   border-radius: 20px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(145deg, rgba(232, 101, 43, 0.55), rgba(216, 174, 63, 0.35));
+  transform: rotate(4deg);
+}
+
+.pass {
+  position: relative;
   overflow: hidden;
-  margin-bottom: 24px;
+  color: #ffffff;
+  border-radius: 20px;
+  background: linear-gradient(150deg, #22406f 0%, #13274a 42%, #0b172d 100%);
+  border: 1px solid rgba(227, 193, 105, 0.38);
+  box-shadow:
+    0 30px 60px -28px rgba(0, 0, 0, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transform: rotate(-2deg);
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.pass:hover {
+  transform: rotate(0deg) translateY(-3px);
+}
+
+.passGloss {
+  position: absolute;
+  top: -140px;
+  right: -100px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(247, 227, 161, 0.2), transparent 66%);
+  pointer-events: none;
+}
+
+.passHead {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 18px 22px 0;
+}
+
+.passLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(227, 193, 105, 0.7), 0 8px 18px -8px rgba(0, 0, 0, 0.8);
+}
+
+.passHeadText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.passKicker {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: rgba(247, 227, 161, 0.75);
+}
+
+.passTitle {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+/* เส้นทางแบบตั๋ว: ต้นทาง —— ปลายทาง */
+.passRoute {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 20px 22px 18px;
+}
+
+.passStop {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.passStopEnd {
+  text-align: right;
+}
+
+.passStopLabel {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: rgba(232, 240, 252, 0.55);
+}
+
+.passStopValue {
+  margin-top: 2px;
+  font-size: 21px;
+  line-height: 1.2;
+  font-weight: 800;
+  background: linear-gradient(90deg, #ffffff, #F7E3A1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.passStopSub {
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: rgba(232, 240, 252, 0.6);
+}
+
+.passLine {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  min-width: 84px;
+}
+
+.passLineDist {
+  font-size: 11px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #F7E3A1;
+}
+
+/* เส้นประทองมีไอคอนรอยเท้าอยู่กลาง */
+.passLineTrack {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 22px;
+  color: #0b172d;
+}
+
+.passLineTrack::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: repeating-linear-gradient(90deg, rgba(227, 193, 105, 0.8) 0 6px, transparent 6px 11px);
+}
+
+.passLineTrack svg {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  padding: 4px;
+  background: #E3C169;
+  border-radius: 50%;
+}
+
+/* รอยปรุระหว่างส่วนบนกับส่วนล่างแบบตั๋วจริง */
+.passPerf {
+  position: relative;
+  height: 0;
+  margin: 0 12px;
+  border-top: 2px dashed rgba(227, 193, 105, 0.3);
+}
+
+.passPerf::before,
+.passPerf::after {
+  content: "";
+  position: absolute;
+  top: -11px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0f1d36;
+}
+
+.passPerf::before {
+  left: -23px;
+}
+
+.passPerf::after {
+  right: -23px;
+}
+
+.passFacts {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+  margin: 0;
+  padding: 16px 22px 20px;
+  font-size: 13px;
+}
+
+.passFacts > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.passFacts dt {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: rgba(232, 240, 252, 0.55);
+}
+
+.passFacts dt svg {
+  color: #E3C169;
+}
+
+.passFacts dd {
+  margin: 0;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.passBus {
+  grid-column: 1 / -1;
+}
+
+.passBus dd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.passBusChip {
+  min-width: 34px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+  color: #0b172d;
+  background: linear-gradient(145deg, #F7E3A1, #E3C169);
+  border-radius: 6px;
+}
+
+/* ═══════════════════════ เนื้อหา ═══════════════════════ */
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 56px;
+}
+
+/* ── แผนที่คร่อมขอบล่าง hero + การ์ดที่อยู่ลอยทับ ── */
+.mapWrap {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  margin-top: -28px;
+  border-radius: 18px;
+  border: 1px solid #e3e8f0;
+  background: #eef2f7;
+  box-shadow: 0 22px 44px -28px rgba(15, 29, 54, 0.75);
 }
 
 .mapFrame {
-  width: 100%;
-  height: 480px;
-  border: none;
   display: block;
+  width: 100%;
+  height: 380px;
+  border: 0;
 }
 
-.mapBar {
-  padding: 16px 24px;
+.mapCard {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  width: 270px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(15, 29, 54, 0.06);
+  border-radius: 14px;
+  box-shadow: 0 18px 36px -18px rgba(15, 29, 54, 0.55);
+  backdrop-filter: blur(8px);
+}
+
+.mapCardIcon {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid #f3f4f6;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.mapAddress {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: #374151;
-  font-weight: 500;
-}
-
-.mapAddress svg {
-  color: #E8652B;
-  flex-shrink: 0;
-}
-
-.mapActions {
-  display: flex;
-  gap: 8px;
-}
-
-.btnDirection {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 10px;
+  color: #ffffff;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
   border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.25s ease;
-  border: none;
-  cursor: pointer;
+  box-shadow: 0 9px 16px -8px rgba(232, 101, 43, 1);
 }
 
-.btnPrimary {
-  background: linear-gradient(135deg, #E8652B, #d45a24);
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(232, 101, 43, 0.3);
-}
-
-.btnPrimary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(232, 101, 43, 0.4);
-}
-
-.btnSecondary {
-  background: #f3f4f6;
-  color: #374151;
-  border: 1px solid #e5e7eb;
-}
-
-.btnSecondary:hover {
-  background: #e5e7eb;
-}
-
-/* ── Info Grid ── */
-.infoGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
-/* ── Card ── */
-.card {
-  background: #fff;
-  border-radius: 16px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-  overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-}
-
-.cardHeader {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 20px 20px 0;
-}
-
-.cardIcon {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  animation: float 6s ease-in-out infinite;
-}
-
-.card:nth-child(even) .cardIcon {
-  animation-delay: 1.5s;
-}
-
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-5px); }
-  100% { transform: translateY(0px); }
-}
-
-.cardTitle {
+.mapCardTitle {
+  margin: 0;
   font-size: 15px;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0;
+  font-weight: 800;
+  color: #0f1d36;
 }
 
-.cardBody {
-  padding: 16px 20px 20px;
-}
-
-.cardText {
-  font-size: 13px;
-  color: #6b7280;
+.mapCardAddress {
+  margin: 5px 0 0;
+  font-size: 12.5px;
   line-height: 1.7;
-  margin: 0;
+  color: #55617a;
+  white-space: pre-line;
 }
 
-.cardText strong {
-  color: #374151;
-  font-weight: 600;
-}
-
-/* ── Transport Options ── */
-.transportGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
-.transportCard {
-  background: #fff;
-  border-radius: 16px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-  padding: 24px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.transportCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-}
-
-.transportHeader {
+.mapCardHint {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 5px;
+  margin: 10px 0 0;
+  padding-top: 9px;
+  border-top: 1px dashed #e6ebf3;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #B0812A;
 }
 
-.transportIcon {
-  width: 48px;
-  height: 48px;
+/* ── หัวข้อ section ─────────────────────────────────── */
+.section {
+  margin-top: 44px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.sectionIcon {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 38px;
+  height: 38px;
   flex-shrink: 0;
-  animation: float 6s ease-in-out infinite;
+  color: #ffffff;
+  background: linear-gradient(145deg, var(--from), var(--to));
+  border-radius: 11px;
+  box-shadow: 0 10px 18px -9px rgba(var(--rgb), 1);
 }
 
-.transportCard:nth-child(even) .transportIcon {
-  animation-delay: 1.5s;
-}
-
-.transportTitle {
-  font-size: 16px;
-  font-weight: 700;
-  color: #1f2937;
+.sectionEyebrow {
   margin: 0;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--to);
 }
 
-.transportSub {
+.sectionTitle {
+  margin: 1px 0 0;
+  font-size: 20px;
+  line-height: 1.35;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.sectionSub {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: #8a94a4;
+}
+
+/* ── การ์ดวิธีเดินทาง ────────────────────────────────── */
+.routeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.routeCard {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e3e8f0;
+  border-radius: 16px;
+  box-shadow: 0 14px 28px -24px rgba(15, 29, 54, 0.6);
+  transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.22s, border-color 0.22s;
+}
+
+.routeCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(var(--rgb), 0.4);
+  box-shadow: 0 22px 38px -24px rgba(var(--rgb), 0.9);
+}
+
+/* หัวการ์ดย้อมสีจาง + ขีดสีด้านบน + ไอคอนลายน้ำ */
+.routeHead {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 15px 16px;
+  background: linear-gradient(120deg, rgba(var(--rgb), 0.14) 0%, rgba(var(--rgb), 0.03) 70%);
+  border-bottom: 1px solid rgba(var(--rgb), 0.14);
+}
+
+.routeHead::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--from), var(--to));
+}
+
+.routeIcon {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  color: #ffffff;
+  background: linear-gradient(145deg, var(--from), var(--to));
+  border-radius: 12px;
+  box-shadow: 0 9px 16px -8px rgba(var(--rgb), 1);
+}
+
+.routeNames {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.routeTitle {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.35;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.routeSub {
   font-size: 12px;
-  color: #9ca3af;
-  margin: 2px 0 0;
+  font-weight: 600;
+  color: var(--to);
 }
 
-.transportSteps {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.routeTime {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--to);
+  background: #ffffff;
+  border: 1px solid rgba(var(--rgb), 0.25);
+  border-radius: 999px;
+}
+
+.routeMark {
+  position: absolute;
+  right: 70px;
+  top: 50%;
+  color: rgba(var(--rgb), 0.1);
+  transform: translateY(-50%) rotate(-10deg);
+  pointer-events: none;
+}
+
+.routeSteps {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin: 0;
+  padding: 16px 16px 18px;
+  list-style: none;
 }
 
-.transportStep {
+.routeStep {
   display: flex;
-  gap: 12px;
   align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #55617a;
 }
 
-.stepNum {
-  width: 24px;
-  height: 24px;
-  border-radius: 8px;
+.routeStep strong {
+  font-weight: 700;
+  color: #0f1d36;
+}
+
+.routeNum {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
-  color: #fff;
+  margin-top: 1px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #ffffff;
+  background: linear-gradient(145deg, var(--from), var(--to));
+  border-radius: 50%;
+  box-shadow: 0 5px 10px -5px rgba(var(--rgb), 1);
 }
 
-.stepText {
-  font-size: 13px;
-  color: #4b5563;
-  line-height: 1.6;
-  padding-top: 2px;
-}
-
-.stepText strong {
-  color: #1f2937;
-}
-
-/* ── Landmarks ── */
-.landmarkSection {
-  background: #fff;
-  border-radius: 16px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-  padding: 24px;
-  margin-bottom: 24px;
-}
-
-.landmarkTitle {
-  font-size: 16px;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0 0 16px;
+/* ── รายชื่อสายรถเมล์ ── */
+.busLines {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  margin: -4px 16px 16px;
+  padding: 12px 14px;
+  background: rgba(var(--rgb), 0.06);
+  border: 1px dashed rgba(var(--rgb), 0.3);
+  border-radius: 12px;
 }
 
-.landmarkTitle svg {
-  color: #E8652B;
+.busLinesLabel {
+  margin-right: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--to);
 }
 
+.busChip {
+  min-width: 38px;
+  padding: 3px 9px;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+  background: linear-gradient(145deg, var(--from), var(--to));
+  border-radius: 7px;
+  box-shadow: 0 5px 10px -6px rgba(var(--rgb), 1);
+}
+
+.busNote {
+  flex-basis: 100%;
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: #8a94a4;
+}
+
+/* ── สถานที่ใกล้เคียง ────────────────────────────────── */
 .landmarkGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .landmark {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
   padding: 12px 14px;
-  background: #f9fafb;
-  border-radius: 12px;
-  border: 1px solid #f3f4f6;
-  transition: all 0.2s ease;
+  border: 1px solid rgba(199, 148, 45, 0.18);
+  border-radius: 13px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(199, 148, 45, 0.1), transparent 55%),
+    #ffffff;
+  transition: transform 0.18s, border-color 0.18s;
 }
 
 .landmark:hover {
-  background: #fff7ed;
-  border-color: #fed7aa;
+  transform: translateY(-2px);
+  border-color: rgba(199, 148, 45, 0.45);
 }
 
 .landmarkIcon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 34px;
+  height: 34px;
   flex-shrink: 0;
-  font-size: 15px;
-  color: #6b7280;
+  color: #ffffff;
+  background: linear-gradient(145deg, #E5BC56, #B0812A);
+  border-radius: 10px;
+  box-shadow: 0 7px 14px -8px rgba(199, 148, 45, 1);
+}
+
+.landmarkBody {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .landmarkName {
-  font-size: 12px;
-  font-weight: 600;
-  color: #374151;
-  line-height: 1.3;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0f1d36;
 }
 
 .landmarkDist {
-  font-size: 10px;
-  color: #9ca3af;
-  display: block;
-  margin-top: 1px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: #98a1b0;
 }
 
-/* ── Quick Contact Bar ── */
-.quickContact {
-  background: linear-gradient(135deg, #0f1d36 0%, #1a2d4a 100%);
-  border-radius: 16px;
-  padding: 24px 28px;
+/* ── ต้องการความช่วยเหลือ ────────────────────────────── */
+.help {
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 16px;
-  flex-wrap: wrap;
+  margin-top: 44px;
+  padding: 22px 24px;
+  background: linear-gradient(135deg, #0a1628 0%, #0f1d36 55%, #172c52 100%);
+  border-radius: 18px;
 }
 
-.quickContactText {
-  color: #fff;
+.help::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, #E8652B, #D8AE3F 45%, #F7E3A1 60%, #E8652B);
 }
 
-.quickContactTitle {
-  font-size: 16px;
-  font-weight: 700;
-  margin: 0 0 4px;
+.helpGlow {
+  position: absolute;
+  top: -120px;
+  right: 10%;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(216, 174, 63, 0.2), transparent 66%);
+  pointer-events: none;
 }
 
-.quickContactSub {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+.helpText,
+.helpActions {
+  position: relative;
+}
+
+.helpTitle {
   margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: #ffffff;
 }
 
-.quickContactActions {
+.helpSub {
+  margin: 5px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(232, 240, 252, 0.7);
+}
+
+.helpActions {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
 }
 
-.quickBtn {
+.helpCta,
+.helpGhost {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 20px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.25s ease;
-  border: none;
-  cursor: pointer;
+  gap: 7px;
+  padding: 10px 17px;
+  font-size: 13.5px;
+  font-weight: 800;
+  border-radius: 11px;
+  transition: filter 0.16s, transform 0.16s, background 0.16s, border-color 0.16s;
 }
 
-.quickBtnPhone {
-  background: linear-gradient(135deg, #E8652B, #d45a24);
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(232, 101, 43, 0.3);
+.helpCta {
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+  box-shadow: 0 10px 20px -10px rgba(232, 101, 43, 1);
 }
 
-.quickBtnPhone:hover {
+.helpCta:hover {
+  filter: brightness(1.06);
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(232, 101, 43, 0.4);
 }
 
-.quickBtnContact {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+.helpGhost {
+  color: rgba(232, 240, 252, 0.88);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.quickBtnContact:hover {
-  background: rgba(255, 255, 255, 0.15);
+.helpGhost:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(227, 193, 105, 0.55);
 }
 
-/* ── Responsive ── */
-@media (max-width: 900px) {
-  .infoGrid {
-    grid-template-columns: 1fr;
+/* ── โฟกัสคีย์บอร์ด ── */
+.back:focus-visible,
+.heroCta:focus-visible,
+.heroGhost:focus-visible,
+.helpCta:focus-visible,
+.helpGhost:focus-visible {
+  outline: 2px solid #D8AE3F;
+  outline-offset: 2px;
+}
+
+/* ═══════════ จอกลาง ═══════════ */
+@media (max-width: 1040px) {
+  .heroInner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
   }
 
-  .transportGrid {
-    grid-template-columns: 1fr;
+  .passStage {
+    max-width: 440px;
   }
 
   .landmarkGrid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 768px) {
-  .hero {
-    padding: 32px 16px 44px;
+@media (max-width: 860px) {
+  .routeGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ═══════════ มือถือ ═══════════ */
+@media (max-width: 640px) {
+  .heroInner {
+    padding: 20px 16px 52px;
   }
 
   .heroTitle {
-    font-size: 22px;
+    font-size: 27px;
   }
 
-  .heroSub {
-    font-size: 12px;
+  .heroLead {
+    font-size: 14px;
+  }
+
+  /* การ์ดเอียงบนจอแคบจะล้นขอบ — ตั้งตรง */
+  .pass {
+    transform: none;
+  }
+
+  .passStage::before {
+    inset: 12px -8px -8px 12px;
+  }
+
+  .passRoute {
+    padding: 18px 18px 16px;
+  }
+
+  .passStopValue {
+    font-size: 18px;
+  }
+
+  .passLine {
+    min-width: 64px;
+  }
+
+  .passFacts {
+    padding: 14px 18px 18px;
   }
 
   .content {
-    padding: 0 12px 40px;
-    margin-top: -24px;
+    padding: 0 16px 44px;
   }
 
-  /* Map */
-  .mapContainer {
-    border-radius: 16px;
-    margin-bottom: 16px;
-  }
-
+  /* การ์ดที่อยู่ย้ายลงใต้แผนที่ ไม่ลอยทับจนบังแผนที่ */
   .mapFrame {
-    height: 240px;
+    height: 260px;
   }
 
-  .mapBar {
-    padding: 12px 14px;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
+  .mapCard {
+    position: static;
+    width: auto;
+    border: none;
+    border-top: 1px solid #e3e8f0;
+    border-radius: 0;
+    box-shadow: none;
   }
 
-  .mapAddress {
-    font-size: 12px;
-    gap: 6px;
+  .section {
+    margin-top: 36px;
   }
 
-  .mapActions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+  .sectionTitle {
+    font-size: 17.5px;
   }
 
-  .btnDirection {
-    justify-content: center;
-    padding: 10px 12px;
-    font-size: 12px;
-    border-radius: 8px;
-  }
-
-  /* Info cards */
-  .infoGrid {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-
-  .card {
-    border-radius: 14px;
-  }
-
-  .cardHeader {
-    padding: 14px 14px 0;
-    gap: 10px;
-  }
-
-  .cardIcon {
-    width: 36px;
-    height: 36px;
-  }
-
-  .cardTitle {
-    font-size: 14px;
-  }
-
-  .cardBody {
-    padding: 10px 14px 14px;
-  }
-
-  .cardText {
-    font-size: 12px;
-    line-height: 1.6;
-  }
-
-  /* Transport */
-  .transportGrid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  .transportCard {
-    padding: 16px;
-    border-radius: 14px;
-  }
-
-  .transportHeader {
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-
-  .transportIcon {
-    width: 40px;
-    height: 40px;
-  }
-
-  .transportTitle {
-    font-size: 14px;
-  }
-
-  .transportSub {
-    font-size: 11px;
-  }
-
-  .transportSteps {
-    gap: 8px;
-  }
-
-  .stepNum {
-    width: 22px;
-    height: 22px;
-    font-size: 10px;
-    border-radius: 7px;
-  }
-
-  .stepText {
-    font-size: 12px;
-    line-height: 1.5;
-  }
-
-  /* Landmarks */
-  .landmarkSection {
-    padding: 16px;
-    border-radius: 14px;
-    margin-bottom: 16px;
-  }
-
-  .landmarkTitle {
-    font-size: 14px;
-    margin-bottom: 12px;
+  .routeMark {
+    display: none;
   }
 
   .landmarkGrid {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .landmark {
-    padding: 10px;
-    border-radius: 10px;
-    gap: 8px;
+  .help {
+    margin-top: 36px;
+    padding: 20px;
   }
 
-  .landmarkIcon {
-    width: 28px;
-    height: 28px;
-    border-radius: 7px;
+  .helpActions {
+    width: 100%;
   }
 
-  .landmarkName {
-    font-size: 11px;
-  }
-
-  .landmarkDist {
-    font-size: 9px;
-  }
-
-  /* Quick contact */
-  .quickContact {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-    padding: 20px 16px;
-    border-radius: 14px;
-    gap: 14px;
-  }
-
-  .quickContactTitle {
-    font-size: 15px;
-  }
-
-  .quickContactSub {
-    font-size: 11px;
-  }
-
-  .quickContactActions {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .quickBtn {
+  .helpCta,
+  .helpGhost {
+    flex: 1;
     justify-content: center;
-    padding: 12px 16px;
-    font-size: 13px;
-    border-radius: 10px;
+  }
+}
+
+/* ── ลดการเคลื่อนไหว ── */
+@media (prefers-reduced-motion: reduce) {
+
+  .pass,
+  .routeCard,
+  .landmark,
+  .heroCta,
+  .helpCta {
+    transition: none;
+  }
+
+  .pass:hover,
+  .routeCard:hover,
+  .landmark:hover,
+  .heroCta:hover,
+  .helpCta:hover {
+    transform: none;
+  }
+}
+
+/* ── พิมพ์ ── */
+@media print {
+
+  .heroGrid,
+  .heroActions,
+  .back,
+  .passStage::before,
+  .mapFrame,
+  .routeMark,
+  .helpActions {
+    display: none !important;
+  }
+
+  .pass {
+    transform: none;
+  }
+
+  .hero,
+  .pass,
+  .routeHead,
+  .routeIcon,
+  .routeNum,
+  .busChip,
+  .help {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .mapCard {
+    position: static;
+    width: auto;
+  }
+
+  .routeCard,
+  .landmark {
+    break-inside: avoid;
   }
 }

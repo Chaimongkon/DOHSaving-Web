@@ -25,8 +25,13 @@ interface InfoField {
 // Pre-defined field groupings for structured rendering
 const LOCATION_FIELDS: InfoField[] = [
   { key: "address", label: "ที่อยู่ติดต่อ", placeholder: "2/486 อาคาร 26...", multiline: true },
-  { key: "hours", label: "เวลาทำการ", placeholder: "จันทร์ - ศุกร์...", multiline: true },
+  { key: "hours", label: "เวลาทำการ (ข้อความ)", placeholder: "จันทร์ - ศุกร์...", multiline: true },
   { key: "hoursNote", label: "หมายเหตุเวลา", placeholder: "(ปิดทำการ 15.30 น.)" },
+  /* สามช่องนี้เป็นตัวเลขเวลาที่หน้า /contact ใช้คำนวณป้าย "เปิด/ปิดทำการอยู่" แบบเรียลไทม์
+     ต้องกรอกรูปแบบ ชม:นาที เท่านั้น ถ้ากรอกผิดรูปแบบระบบจะใช้ค่ามาตรฐานแทน */
+  { key: "openTime", label: "เวลาเปิด (ชม:นาที)", placeholder: "08:30" },
+  { key: "closeTime", label: "เวลาปิด (ชม:นาที)", placeholder: "16:30" },
+  { key: "financeCloseTime", label: "เวลาที่ฝ่ายการเงินปิดรับรายการ (ชม:นาที)", placeholder: "15:30" },
 ];
 
 const PHONE_FIELDS: InfoField[] = [

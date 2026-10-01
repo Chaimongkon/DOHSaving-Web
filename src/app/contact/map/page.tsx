@@ -1,338 +1,374 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
-  MapPinIcon,
-  ClockIcon,
-  PhoneIcon,
-  CarIcon,
-  TrainIcon,
-  BusIcon,
-  TaxiIcon,
-  NavigateIcon
-} from "@/components/icons/ContactIcons";
-import {
+  MapPin,
+  Clock,
+  Phone,
+  Navigation,
+  Car,
+  TrainFront,
+  Bus,
+  CarTaxiFront,
   Building2,
   Hospital,
   Landmark,
-  ShoppingBag,
-  TreePine,
+  GraduationCap,
   Copy,
-  ExternalLink,
+  Check,
+  ArrowLeft,
+  ArrowRight,
   Info,
-  TrainFront,
-  Phone,
+  Footprints,
+  Flag,
 } from "lucide-react";
+import {
+  MAP_EMBED,
+  MAP_LINK,
+  clean,
+  formatTime,
+  parseTime,
+  telHref,
+  useContactData,
+  DEFAULT_CONTACT_INFO,
+} from "@/lib/contactInfo";
 import css from "./page.module.css";
 
+/* ══════════════════════════════════════════════════════════
+   ข้อมูลการเดินทาง — ตรวจสอบกันยายน 2569
+   ที่ตั้ง: กรมทางหลวงอยู่ที่ "แยกศรีอยุธยา" (ถนนพระรามที่ 6 ตัดถนนศรีอยุธยา) เขตราชเทวี
+   สถานีรถไฟฟ้าใกล้สุด: พญาไท (BTS N2 / Airport Rail Link) บนถนนพญาไท ห่างราว 1.2 กม.
+   รถเมล์: ป้าย "กรมทางหลวง (ศรีอยุธยา)" อ้างอิง route.in.th
+   ระยะทางทั้งหมดเป็นค่าประมาณจากพิกัดแผนที่ ไม่ใช่ระยะเดินจริง
+   ══════════════════════════════════════════════════════════ */
+
+/** สายรถเมล์ที่จอดป้ายกรมทางหลวง — ขสมก. ปรับเลขสายเป็นระยะ ควรทวนกับแอปก่อนเดินทาง */
+const BUS_LINES = ["8", "44", "72", "97", "201", "503", "509"];
+
+const ROUTES = [
+  {
+    icon: TrainFront,
+    tone: "toneGreen",
+    title: "รถไฟฟ้า BTS / Airport Rail Link",
+    sub: "แนะนำ · เลี่ยงรถติด",
+    time: "เดิน ~15 นาที",
+    steps: [
+      <>ลงสถานี <strong>พญาไท</strong> — BTS สายสุขุมวิท (N2) หรือ Airport Rail Link ก็ได้ อยู่สถานีเดียวกัน</>,
+      <>ลงมาที่ <strong>ถนนพญาไท</strong> เดินขึ้นเหนือไปยัง <strong>แยกพญาไท</strong></>,
+      <>เลี้ยวซ้ายเข้า <strong>ถนนศรีอยุธยา</strong> เดินตรงไปราว 900 ม. ผ่าน รพ.พญาไท 1</>,
+      <>ถึง <strong>แยกศรีอยุธยา</strong> กรมทางหลวงอยู่ที่หัวมุม — หรือต่อวินมอเตอร์ไซค์/แท็กซี่ราว 5 นาที</>,
+    ],
+  },
+  {
+    icon: Bus,
+    tone: "toneRose",
+    title: "รถโดยสารประจำทาง",
+    sub: "ลงป้าย “กรมทางหลวง (ศรีอยุธยา)”",
+    time: "ลงหน้ากรมฯ",
+    steps: [
+      <>ขึ้นสายที่ผ่านถนนศรีอยุธยา แล้วลงป้าย <strong>กรมทางหลวง</strong> (ดูเลขสายด้านล่าง)</>,
+      <>สาย <strong>97</strong> สิ้นสุดที่ <strong>โรงพยาบาลสงฆ์</strong> ซึ่งอยู่ติดกับแยกศรีอยุธยา</>,
+      <>เดินเข้าประตูกรมทางหลวง แล้วถามทางไป <strong>อาคาร 26</strong></>,
+    ],
+  },
+  {
+    icon: Car,
+    tone: "toneOrange",
+    title: "รถยนต์ส่วนตัว",
+    sub: "ขับรถมาเอง",
+    time: "จอดในกรมฯ",
+    steps: [
+      <>ตั้งปลายทางในแอปนำทางเป็น <strong>&ldquo;กรมทางหลวง ถนนศรีอยุธยา&rdquo;</strong></>,
+      <>มาตาม <strong>ถนนพระรามที่ 6</strong> หรือ <strong>ถนนศรีอยุธยา</strong> จนถึงแยกศรีอยุธยา</>,
+      <>เข้าประตูกรมทางหลวง จอดรถในลานจอดภายในบริเวณ แล้วไปที่ <strong>อาคาร 26</strong></>,
+    ],
+  },
+  {
+    icon: CarTaxiFront,
+    tone: "toneGold",
+    title: "แท็กซี่ / Grab / Bolt",
+    sub: "บริการเรียกรถ",
+    time: "ลงหน้าประตู",
+    steps: [
+      <>แจ้งคนขับ <strong>&ldquo;กรมทางหลวง แยกศรีอยุธยา&rdquo;</strong> (พระราม 6 ตัดศรีอยุธยา)</>,
+      <>ในแอป ค้นหา <strong>&ldquo;สหกรณ์ออมทรัพย์กรมทางหลวง&rdquo;</strong> หรือ <strong>&ldquo;กรมทางหลวง&rdquo;</strong></>,
+      <>ลงที่ประตูกรมทางหลวง แล้วเดินไป <strong>อาคาร 26</strong></>,
+    ],
+  },
+];
+
+/* สถานที่ใกล้เคียงที่ยืนยันตำแหน่งได้ — เรียงจากใกล้ไปไกล */
+const LANDMARKS = [
+  { icon: Landmark, name: "กระทรวงการต่างประเทศ", dist: "แยกเดียวกัน" },
+  { icon: Hospital, name: "โรงพยาบาลสงฆ์", dist: "แยกเดียวกัน" },
+  { icon: GraduationCap, name: "คณะเภสัชศาสตร์ ม.มหิดล", dist: "ถนนศรีอยุธยา" },
+  { icon: Hospital, name: "โรงพยาบาลพญาไท 1", dist: "~800 ม." },
+  { icon: TrainFront, name: "BTS / ARL พญาไท", dist: "~1.2 กม." },
+  { icon: Building2, name: "อนุสาวรีย์ชัยสมรภูมิ", dist: "~1.5 กม." },
+];
+
+/** คัดลอกข้อความ — เว็บที่ยังเป็น http ใช้ navigator.clipboard ไม่ได้ จึงมีทางสำรอง */
+async function copyText(text: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    /* ตกไปใช้วิธีสำรองด้านล่าง */
+  }
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  } catch {
+    return false;
+  }
+}
+
 export default function MapPage() {
-  const copyAddress = () => {
-    navigator.clipboard.writeText(
-      "2/486 อาคาร 26 ถนนศรีอยุธยา แขวงทุ่งพญาไท เขตราชเทวี กรุงเทพฯ 10400"
-    );
-    alert("คัดลอกที่อยู่แล้ว");
+  const { info } = useContactData();
+  const [copied, setCopied] = useState(false);
+
+  const address = clean(info.address) || DEFAULT_CONTACT_INFO.address;
+  const addressLine = address.replace(/\n/g, " ");
+  const mainPhone = clean(info.mainPhone) || DEFAULT_CONTACT_INFO.mainPhone;
+  const openLabel = formatTime(parseTime(info.openTime, 8 * 60 + 30));
+  const closeLabel = formatTime(parseTime(info.closeTime, 16 * 60 + 30));
+
+  const handleCopy = async () => {
+    if (!(await copyText(`สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด ${addressLine}`))) return;
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2200);
   };
 
   return (
     <>
-      {/* ── Hero ── */}
-      <div className={css.hero}>
-        <h1 className={css.heroTitle}>แผนที่ / การเดินทาง</h1>
-        <p className={css.heroSub}>
-          ตำแหน่งสหกรณ์ออมทรัพย์กรมทางหลวง จำกัด และวิธีการเดินทาง
-        </p>
-      </div>
+      {/* ══ Hero: ข้อความซ้าย · บัตรปลายทางขวา ══ */}
+      <section className={css.hero}>
+        <span className={css.heroGlowGold} aria-hidden="true" />
+        <span className={css.heroGlowOrange} aria-hidden="true" />
+        <span className={css.heroGrid} aria-hidden="true" />
+
+        <div className={css.heroInner}>
+          <div className={css.heroCopy}>
+            <Link href="/contact" className={css.back}>
+              <ArrowLeft size={14} strokeWidth={2.4} aria-hidden="true" />
+              กลับไปหน้าติดต่อสหกรณ์
+            </Link>
+            <p className={css.eyebrow}>
+              <span className={css.eyebrowRule} />
+              HOW TO GET HERE
+            </p>
+            <h1 className={css.heroTitle}>
+              เดินทางมา<br />
+              <span className={css.heroTitleAccent}>สหกรณ์ฯ ได้ง่าย ๆ</span>
+            </h1>
+            <p className={css.heroLead}>
+              สำนักงานอยู่ในอาคาร 26 ภายในกรมทางหลวง ตรง<strong>แยกศรีอยุธยา</strong>{" "}
+              จุดตัดถนนพระรามที่ 6 กับถนนศรีอยุธยา เขตราชเทวี
+            </p>
+
+            <div className={css.heroActions}>
+              <a href={MAP_LINK} target="_blank" rel="noopener noreferrer" className={css.heroCta}>
+                <Navigation size={15} strokeWidth={2.4} aria-hidden="true" />
+                เปิดแผนที่นำทาง
+              </a>
+              <button
+                type="button"
+                onClick={handleCopy}
+                className={`${css.heroGhost} ${copied ? css.copied : ""}`}
+              >
+                {copied ? (
+                  <><Check size={15} strokeWidth={3} aria-hidden="true" /> คัดลอกแล้ว</>
+                ) : (
+                  <><Copy size={15} strokeWidth={2.4} aria-hidden="true" /> คัดลอกที่อยู่</>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* บัตรปลายทาง — สรุปทุกอย่างที่ต้องรู้ก่อนออกจากบ้านไว้ในชิ้นเดียว */}
+          <div className={css.passStage}>
+            <article className={css.pass} aria-label="สรุปข้อมูลปลายทาง">
+              <span className={css.passGloss} aria-hidden="true" />
+
+              <header className={css.passHead}>
+                <span className={css.passLogo}>
+                  <Image src="/images/logo/logo.png" alt="" width={34} height={34} />
+                </span>
+                <span className={css.passHeadText}>
+                  <span className={css.passKicker}>DESTINATION</span>
+                  <span className={css.passTitle}>สหกรณ์ออมทรัพย์กรมทางหลวง</span>
+                </span>
+              </header>
+
+              {/* เส้นทางแบบตั๋วเดินทาง: จุดต้นทาง → ปลายทาง */}
+              <div className={css.passRoute}>
+                <div className={css.passStop}>
+                  <span className={css.passStopLabel}>รถไฟฟ้าใกล้สุด</span>
+                  <span className={css.passStopValue}>BTS พญาไท</span>
+                  <span className={css.passStopSub}>N2 · ARL</span>
+                </div>
+                <div className={css.passLine} aria-hidden="true">
+                  <span className={css.passLineDist}>~1.2 กม.</span>
+                  <span className={css.passLineTrack}>
+                    <Footprints size={13} strokeWidth={2.4} />
+                  </span>
+                </div>
+                <div className={`${css.passStop} ${css.passStopEnd}`}>
+                  <span className={css.passStopLabel}>ปลายทาง</span>
+                  <span className={css.passStopValue}>อาคาร 26</span>
+                  <span className={css.passStopSub}>กรมทางหลวง</span>
+                </div>
+              </div>
+
+              <div className={css.passPerf} aria-hidden="true" />
+
+              <dl className={css.passFacts}>
+                <div>
+                  <dt><Flag size={12} strokeWidth={2.6} aria-hidden="true" /> จุดสังเกต</dt>
+                  <dd>แยกศรีอยุธยา</dd>
+                </div>
+                <div>
+                  <dt><Clock size={12} strokeWidth={2.6} aria-hidden="true" /> เปิดทำการ</dt>
+                  <dd>จ.–ศ. {openLabel}–{closeLabel}</dd>
+                </div>
+                <div className={css.passBus}>
+                  <dt><Bus size={12} strokeWidth={2.6} aria-hidden="true" /> รถเมล์</dt>
+                  <dd>
+                    {BUS_LINES.map((n) => (
+                      <span key={n} className={css.passBusChip}>{n}</span>
+                    ))}
+                  </dd>
+                </div>
+              </dl>
+            </article>
+          </div>
+        </div>
+      </section>
 
       <div className={css.content}>
-        {/* ── Map ── */}
-        <div className={css.mapContainer}>
+        {/* ══ แผนที่ + การ์ดที่อยู่ลอยทับ ══ */}
+        <section className={css.mapWrap} aria-label="แผนที่">
           <iframe
             className={css.mapFrame}
-            src="https://maps.google.com/maps?q=%E0%B8%AA%E0%B8%AB%E0%B8%81%E0%B8%A3%E0%B8%93%E0%B9%8C%E0%B8%AD%E0%B8%AD%E0%B8%A1%E0%B8%97%E0%B8%A3%E0%B8%B1%E0%B8%9E%E0%B8%A2%E0%B9%8C%E0%B8%81%E0%B8%A3%E0%B8%A1%E0%B8%97%E0%B8%B2%E0%B8%87%E0%B8%AB%E0%B8%A5%E0%B8%A7%E0%B8%87&t=&z=16&ie=UTF8&iwloc=&output=embed"
+            src={MAP_EMBED}
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title="แผนที่สหกรณ์ออมทรัพย์กรมทางหลวง"
+            title="แผนที่สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด"
           />
-          <div className={css.mapBar}>
-            <span className={css.mapAddress}>
-              <MapPinIcon size={24} />
-              สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด — 2/486 อาคาร 26 ถนนศรีอยุธยา กรุงเทพฯ 10400
-            </span>
-            <div className={css.mapActions}>
-              <button onClick={copyAddress} className={`${css.btnDirection} ${css.btnSecondary}`}>
-                <Copy size={14} /> คัดลอกที่อยู่
-              </button>
-              <a
-                href="https://maps.google.com/?q=สหกรณ์ออมทรัพย์กรมทางหลวง"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${css.btnDirection} ${css.btnPrimary}`}
-              >
-                <NavigateIcon size={18} /> เปิด Google Maps
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Info Cards ── */}
-        <div className={css.infoGrid}>
-          {/* Address */}
-          <div className={css.card}>
-            <div className={css.cardHeader}>
-              <div className={css.cardIcon}>
-                <MapPinIcon size={44} />
-              </div>
-              <h3 className={css.cardTitle}>ที่อยู่สหกรณ์</h3>
-            </div>
-            <div className={css.cardBody}>
-              <p className={css.cardText}>
-                <strong>สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด</strong><br />
-                2/486 อาคาร 26 (อาคารเดียวกับกรมทางหลวง)<br />
-                ถนนศรีอยุธยา แขวงทุ่งพญาไท<br />
-                เขตราชเทวี กรุงเทพฯ 10400
-              </p>
-            </div>
-          </div>
-
-          {/* Hours */}
-          <div className={css.card}>
-            <div className={css.cardHeader}>
-              <div className={css.cardIcon}>
-                <ClockIcon size={44} />
-              </div>
-              <h3 className={css.cardTitle}>เวลาทำการ</h3>
-            </div>
-            <div className={css.cardBody}>
-              <p className={css.cardText}>
-                <strong>วันจันทร์ – ศุกร์</strong><br />
-                08.30 – 16.30 น.<br />
-                (ภายใน ปิดทำการเวลา 15.30 น.)<br /><br />
-                <strong>หยุด</strong> วันเสาร์ – อาทิตย์ และวันหยุดนักขัตฤกษ์
-              </p>
-            </div>
-          </div>
-
-          {/* Contact */}
-          <div className={css.card}>
-            <div className={css.cardHeader}>
-              <div className={css.cardIcon}>
-                <PhoneIcon size={44} />
-              </div>
-              <h3 className={css.cardTitle}>โทรศัพท์</h3>
-            </div>
-            <div className={css.cardBody}>
-              <p className={css.cardText}>
-                <strong>สายตรง:</strong> <a href="tel:023456668" style={{ color: "#0369a1", textDecoration: "none", fontWeight: 600 }}>02-345-6668</a><br />
-                <strong>สายอื่น:</strong> 02-644-7940-43<br />
-                02-644-9243, 02-644-4833<br />
-                <strong>FAX:</strong> 02-354-6717, 02-644-4825
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Transport Options ── */}
-        <div className={css.transportGrid}>
-          {/* By Car */}
-          <div className={css.transportCard}>
-            <div className={css.transportHeader}>
-              <div className={css.transportIcon}>
-                <CarIcon size={48} />
-              </div>
-              <div>
-                <h3 className={css.transportTitle}>รถยนต์ส่วนตัว</h3>
-                <p className={css.transportSub}>ขับรถมาเอง</p>
-              </div>
-            </div>
-            <ol className={css.transportSteps}>
-              <li className={css.transportStep}>
-                <span className={css.stepNum} style={{ background: "#ee5a24" }}>1</span>
-                <span className={css.stepText}>จากทางด่วนศรีรัช ลงทางออก <strong>พญาไท / ราชเทวี</strong></span>
-              </li>
-              <li className={css.transportStep}>
-                <span className={css.stepNum} style={{ background: "#ee5a24" }}>2</span>
-                <span className={css.stepText}>ขับตรงมาตาม <strong>ถนนศรีอยุธยา</strong> มุ่งหน้าทิศตะวันออก</span>
-              </li>
-              <li className={css.transportStep}>
-                <span className={css.stepNum} style={{ background: "#ee5a24" }}>3</span>
-                <span className={css.stepText}><strong>อาคารกรมทางหลวง</strong> อยู่ด้านซ้ายมือ — สหกรณ์อยู่อาคาร 26</span>
-              </li>
-              <li className={css.transportStep}>
-                <span className={css.stepNum} style={{ background: "#ee5a24" }}>4</span>
-                <span className={css.stepText}>มีลานจอดรถกรมทางหลวง สามารถจอดได้ภายในบริเวณ</span>
-              </li>
-            </ol>
-          </div>
-
-          {/* By BTS */}
-          <div className={css.transportCard}>
-            <div className={css.transportHeader}>
-              <div className={css.transportIcon}>
-                <TrainIcon size={48} />
-              </div>
-              <div>
-                <h3 className={css.transportTitle}>รถไฟฟ้า BTS / ARL</h3>
-                <p className={css.transportSub}>ระบบขนส่งมวลชน</p>
-              </div>
-            </div>
-            <ol className={css.transportSteps}>
-              <li className={css.transportStep}>
-                <span className={css.stepNum} style={{ background: "#1B8A3D" }}>1</span>
-                <span className={css.stepText}>BTS สายสุขุมวิท ลงสถานี <strong>พญาไท (N2)</strong></span>
-              </li>
-              <li className={css.transportStep}>
-                <span className={css.stepNum} style={{ background: "#1B8A3D" }}>2</span>
-                <span className={css.stepText}>หรือ Airport Rail Link ลงสถานี <strong>พญาไท</strong></span>
-              </li>
-              <li className={css.transportStep}>
-                <span className={css.stepNum} style={{ background: "#1B8A3D" }}>3</span>
-                <span className={css.stepText}>ออกทางออก 4 เดินมาตาม <strong>ถนนศรีอยุธยา</strong> ประมาณ 800 ม.</span>
-              </li>
-              <li className={css.transportStep}>
-                <span className={css.stepNum} style={{ background: "#1B8A3D" }}>4</span>
-                <span className={css.stepText}>หรือต่อ <strong>รถจักรยานยนต์รับจ้าง / แท็กซี่</strong> ประมาณ 3 นาที</span>
-              </li>
-            </ol>
-          </div>
-
-          {/* By Bus */}
-          <div className={css.transportCard}>
-            <div className={css.transportHeader}>
-              <div className={css.transportIcon}>
-                <BusIcon size={48} />
-              </div>
-              <div>
-                <h3 className={css.transportTitle}>รถโดยสารประจำทาง</h3>
-                <p className={css.transportSub}>รถเมล์สาย ขสมก.</p>
-              </div>
-            </div>
-            <ol className={css.transportSteps}>
-              <li className={css.transportStep}>
-                <span className={css.stepNum} style={{ background: "#f5576c" }}>1</span>
-                <span className={css.stepText}>สายที่ผ่านถนนศรีอยุธยา: <strong>สาย 14, 72, 97</strong></span>
-              </li>
-              <li className={css.transportStep}>
-                <span className={css.stepNum} style={{ background: "#f5576c" }}>2</span>
-                <span className={css.stepText}>ลงป้ายรถเมล์ <strong>กรมทางหลวง</strong></span>
-              </li>
-              <li className={css.transportStep}>
-                <span className={css.stepNum} style={{ background: "#f5576c" }}>3</span>
-                <span className={css.stepText}>เดินเข้าไปในบริเวณกรมทางหลวง ไปที่ <strong>อาคาร 26</strong></span>
-              </li>
-            </ol>
-          </div>
-
-          {/* By Taxi */}
-          <div className={css.transportCard}>
-            <div className={css.transportHeader}>
-              <div className={css.transportIcon}>
-                <TaxiIcon size={48} />
-              </div>
-              <div>
-                <h3 className={css.transportTitle}>แท็กซี่ / Grab</h3>
-                <p className={css.transportSub}>บริการเรียกรถ</p>
-              </div>
-            </div>
-            <ol className={css.transportSteps}>
-              <li className={css.transportStep}>
-                <span className={css.stepNum} style={{ background: "#F7971E" }}>1</span>
-                <span className={css.stepText}>แจ้งปลายทาง <strong>&quot;กรมทางหลวง ถนนศรีอยุธยา&quot;</strong></span>
-              </li>
-              <li className={css.transportStep}>
-                <span className={css.stepNum} style={{ background: "#F7971E" }}>2</span>
-                <span className={css.stepText}>หรือค้นหาใน Grab/Bolt: <strong>&quot;สหกรณ์ออมทรัพย์กรมทางหลวง&quot;</strong></span>
-              </li>
-              <li className={css.transportStep}>
-                <span className={css.stepNum} style={{ background: "#F7971E" }}>3</span>
-                <span className={css.stepText}>ลงที่ประตูทางเข้ากรมทางหลวง เดินเข้าไปอาคาร 26</span>
-              </li>
-            </ol>
-          </div>
-        </div>
-
-        {/* ── Nearby Landmarks ── */}
-        <div className={css.landmarkSection}>
-          <h3 className={css.landmarkTitle}>
-            <Info size={18} /> สถานที่ใกล้เคียง
-          </h3>
-          <div className={css.landmarkGrid}>
-            <div className={css.landmark}>
-              <div className={css.landmarkIcon}><Building2 size={16} /></div>
-              <div>
-                <div className={css.landmarkName}>กรมทางหลวง</div>
-                <span className={css.landmarkDist}>อาคารเดียวกัน</span>
-              </div>
-            </div>
-            <div className={css.landmark}>
-              <div className={css.landmarkIcon}><TrainFront size={16} /></div>
-              <div>
-                <div className={css.landmarkName}>BTS พญาไท</div>
-                <span className={css.landmarkDist}>~800 ม.</span>
-              </div>
-            </div>
-            <div className={css.landmark}>
-              <div className={css.landmarkIcon}><Hospital size={16} /></div>
-              <div>
-                <div className={css.landmarkName}>รพ. พญาไท 1</div>
-                <span className={css.landmarkDist}>~500 ม.</span>
-              </div>
-            </div>
-            <div className={css.landmark}>
-              <div className={css.landmarkIcon}><Hospital size={16} /></div>
-              <div>
-                <div className={css.landmarkName}>รพ. ราชวิถี</div>
-                <span className={css.landmarkDist}>~1 กม.</span>
-              </div>
-            </div>
-            <div className={css.landmark}>
-              <div className={css.landmarkIcon}><Landmark size={16} /></div>
-              <div>
-                <div className={css.landmarkName}>อนุสาวรีย์ชัยฯ</div>
-                <span className={css.landmarkDist}>~1.5 กม.</span>
-              </div>
-            </div>
-            <div className={css.landmark}>
-              <div className={css.landmarkIcon}><ShoppingBag size={16} /></div>
-              <div>
-                <div className={css.landmarkName}>Century The Movie Plaza</div>
-                <span className={css.landmarkDist}>~700 ม.</span>
-              </div>
-            </div>
-            <div className={css.landmark}>
-              <div className={css.landmarkIcon}><TreePine size={16} /></div>
-              <div>
-                <div className={css.landmarkName}>สวนสันติภาพ</div>
-                <span className={css.landmarkDist}>~800 ม.</span>
-              </div>
-            </div>
-            <div className={css.landmark}>
-              <div className={css.landmarkIcon}><Building2 size={16} /></div>
-              <div>
-                <div className={css.landmarkName}>ตึกช้าง</div>
-                <span className={css.landmarkDist}>~1.2 กม.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Quick Contact ── */}
-        <div className={css.quickContact}>
-          <div className={css.quickContactText}>
-            <h3 className={css.quickContactTitle}>ต้องการความช่วยเหลือ?</h3>
-            <p className={css.quickContactSub}>
-              สอบถามเส้นทางหรือข้อมูลเพิ่มเติม สามารถติดต่อสหกรณ์ได้ทุกวันทำการ
+          <div className={css.mapCard}>
+            <span className={css.mapCardIcon} aria-hidden="true"><MapPin size={18} strokeWidth={2.2} /></span>
+            <h2 className={css.mapCardTitle}>สำนักงานสหกรณ์</h2>
+            <p className={css.mapCardAddress}>{address}</p>
+            <p className={css.mapCardHint}>
+              <Info size={12} strokeWidth={2.6} aria-hidden="true" />
+              อยู่ภายในบริเวณกรมทางหลวง
             </p>
           </div>
-          <div className={css.quickContactActions}>
-            <a href="tel:023456668" className={`${css.quickBtn} ${css.quickBtnPhone}`}>
-              <Phone size={16} /> โทร 02-345-6668
+        </section>
+
+        {/* ══ วิธีเดินทาง ══ */}
+        <section className={css.section} aria-labelledby="routes-title">
+          <header className={`${css.sectionHead} ${css.toneOrange}`}>
+            <span className={css.sectionIcon} aria-hidden="true"><Navigation size={18} strokeWidth={2.2} /></span>
+            <div>
+              <p className={css.sectionEyebrow}>ROUTES</p>
+              <h2 id="routes-title" className={css.sectionTitle}>เลือกวิธีเดินทางที่สะดวก</h2>
+            </div>
+          </header>
+
+          <div className={css.routeGrid}>
+            {ROUTES.map(({ icon: Icon, tone, title, sub, time, steps }) => (
+              <article key={title} className={`${css.routeCard} ${css[tone]}`}>
+                <header className={css.routeHead}>
+                  <span className={css.routeIcon} aria-hidden="true"><Icon size={19} strokeWidth={2.2} /></span>
+                  <span className={css.routeNames}>
+                    <h3 className={css.routeTitle}>{title}</h3>
+                    <span className={css.routeSub}>{sub}</span>
+                  </span>
+                  <span className={css.routeTime}>{time}</span>
+                  <Icon className={css.routeMark} size={84} strokeWidth={1.1} aria-hidden="true" />
+                </header>
+
+                <ol className={css.routeSteps}>
+                  {steps.map((step, i) => (
+                    <li key={i} className={css.routeStep}>
+                      <span className={css.routeNum}>{i + 1}</span>
+                      <span>{step}</span>
+                    </li>
+                  ))}
+                </ol>
+
+                {tone === "toneRose" && (
+                  <div className={css.busLines}>
+                    <span className={css.busLinesLabel}>สายที่จอดป้าย</span>
+                    {BUS_LINES.map((n) => (
+                      <span key={n} className={css.busChip}>{n}</span>
+                    ))}
+                    <p className={css.busNote}>
+                      ขสมก. มีการปรับเลขสายเป็นระยะ โปรดตรวจสอบในแอป ViaBus หรือ Google Maps ก่อนเดินทาง
+                    </p>
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* ══ สถานที่ใกล้เคียง ══ */}
+        <section className={css.section} aria-labelledby="landmark-title">
+          <header className={`${css.sectionHead} ${css.toneGold}`}>
+            <span className={css.sectionIcon} aria-hidden="true"><Flag size={18} strokeWidth={2.2} /></span>
+            <div>
+              <p className={css.sectionEyebrow}>LANDMARKS</p>
+              <h2 id="landmark-title" className={css.sectionTitle}>จุดสังเกตระหว่างทาง</h2>
+              <p className={css.sectionSub}>ระยะทางเป็นค่าประมาณจากแยกศรีอยุธยา</p>
+            </div>
+          </header>
+
+          <ul className={css.landmarkGrid}>
+            {LANDMARKS.map(({ icon: Icon, name, dist }) => (
+              <li key={name} className={css.landmark}>
+                <span className={css.landmarkIcon} aria-hidden="true"><Icon size={16} strokeWidth={2.2} /></span>
+                <span className={css.landmarkBody}>
+                  <span className={css.landmarkName}>{name}</span>
+                  <span className={css.landmarkDist}>{dist}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* ══ ต้องการความช่วยเหลือ ══ */}
+        <section className={css.help}>
+          <span className={css.helpGlow} aria-hidden="true" />
+          <div className={css.helpText}>
+            <h2 className={css.helpTitle}>หาไม่เจอ หรืออยากถามเส้นทาง</h2>
+            <p className={css.helpSub}>โทรหาเจ้าหน้าที่ได้ทุกวันทำการ จันทร์ – ศุกร์ {openLabel} – {closeLabel} น.</p>
+          </div>
+          <div className={css.helpActions}>
+            <a href={telHref(mainPhone)} className={css.helpCta}>
+              <Phone size={15} strokeWidth={2.6} aria-hidden="true" />
+              โทร {mainPhone}
             </a>
-            <Link href="/contact" className={`${css.quickBtn} ${css.quickBtnContact}`}>
-              <ExternalLink size={14} /> ดูข้อมูลติดต่อทั้งหมด
+            <Link href="/contact" className={css.helpGhost}>
+              ข้อมูลติดต่อทั้งหมด
+              <ArrowRight size={15} strokeWidth={2.6} aria-hidden="true" />
             </Link>
           </div>
-        </div>
+        </section>
       </div>
     </>
   );
