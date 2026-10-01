@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
 import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
+import { serializeSteps } from "@/lib/serviceSteps";
 
 export async function GET(req: NextRequest) {
   const user = await requireAdminRouteAccess(req);
@@ -38,6 +39,7 @@ export async function POST(req: NextRequest) {
         infographicUrl: body.infographicUrl || null,
         downloadLinks: body.downloadLinks || null,
         formGroup: body.formGroup || null,
+        steps: serializeSteps(body.steps),
         sortOrder: Number(body.sortOrder) || 0,
         isActive: body.isActive ?? true,
         updatedBy,
@@ -83,6 +85,8 @@ export async function PATCH(req: NextRequest) {
     if (body.infographicUrl !== undefined) data.infographicUrl = body.infographicUrl || null;
     if (body.downloadLinks !== undefined) data.downloadLinks = body.downloadLinks || null;
     if (body.formGroup !== undefined) data.formGroup = body.formGroup || null;
+    // ตรวจรูปแบบ/ความยาว/ลิงก์ของขั้นตอนก่อนบันทึก (ดู lib/serviceSteps)
+    if (body.steps !== undefined) data.steps = serializeSteps(body.steps);
     if (body.sortOrder !== undefined) data.sortOrder = Number(body.sortOrder);
     if (body.isActive !== undefined) data.isActive = body.isActive;
 

@@ -4,8 +4,10 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Plus, Edit2, Trash2, X, UploadCloud, Link as LinkIcon,
-  Image as ImageIcon, Filter, LayoutGrid, FileText, Search, ChevronDown
+  Image as ImageIcon, Filter, LayoutGrid, FileText, Search, ChevronDown,
+  ListChecks, ArrowUp, ArrowDown, AlertTriangle
 } from "lucide-react";
+import { MAX_STEPS, parseSteps, type ServiceStep } from "@/lib/serviceSteps";
 import css from "./page.module.css";
 
 /* ── Searchable Form Picker (Select2-style) ────────────────── */
@@ -146,6 +148,7 @@ interface ServicePageItem {
   infographicUrl: string;
   downloadLinks: string; // JSON string
   formGroup: string;
+  steps?: string | null; // JSON string
   sortOrder: number;
   isActive: boolean;
 }
@@ -168,6 +171,7 @@ export default function AdminServicePagesPage() {
   const [filterCat, setFilterCat] = useState("ทั้งหมด");
   const [uploading, setUploading] = useState(false);
   const [links, setLinks] = useState<DownloadLink[]>([]);
+  const [steps, setSteps] = useState<ServiceStep[]>([]);
   const [allForms, setAllForms] = useState<FormItem[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -196,12 +200,14 @@ export default function AdminServicePagesPage() {
     } catch {
       setLinks([]);
     }
+    setSteps(parseSteps(item.steps));
   };
 
   const openNew = () => {
     setEditing({ ...empty });
     setIsNew(true);
     setLinks([]);
+    setSteps([]);
   };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -230,7 +236,42 @@ export default function AdminServicePagesPage() {
 
   const addLink = () => setLinks([...links, { label: "", url: "" }]);
   const addFormLink = () => setLinks([...links, { label: "", url: "", formId: 0 }]);
-  const removeLink = (idx: number) => setLinks(links.filter((_, i) => i !== idx));
+  const removeLink = (idx: number) => {
+    setLinks(links.filter((_, i) => i !== idx));
+    // ขั้นตอนที่แนบเอกสารนี้ → ปลดออก · เอกสารถัดไปเลื่อน index ลง 1
+    setSteps((prev) =>
+      prev.map((st) => {
+        if (st.docIndex === undefined || st.docIndex < idx) return st;
+        const { docIndex, ...rest } = st;
+        return docIndex === idx ? rest : { ...rest, docIndex: docIndex - 1 };
+      }),
+    );
+  };
+
+  /* ── ขั้นตอนแบบข้อความ ── */
+  const addStep = () => setSteps([...steps, { title: "" }]);
+  const removeStep = (idx: number) => setSteps(steps.filter((_, i) => i !== idx));
+  const moveStep = (idx: number, dir: -1 | 1) => {
+    const to = idx + dir;
+    if (to < 0 || to >= steps.length) return;
+    const next = [...steps];
+    [next[idx], next[to]] = [next[to], next[idx]];
+    setSteps(next);
+  };
+  const updateStep = (idx: number, patch: Partial<ServiceStep>) =>
+    setSteps(steps.map((st, i) => (i === idx ? { ...st, ...patch } : st)));
+  // ปุ่มลิงก์แสดงเมื่อมีทั้งชื่อปุ่มและลิงก์ที่ปลอดภัย (ตรงกับ lib/serviceSteps)
+  const linkIncomplete = (st: ServiceStep) =>
+    !!(st.linkLabel?.trim() || st.linkUrl?.trim()) &&
+    !(st.linkLabel?.trim() && /^(https?:\/\/|\/(?!\/))/i.test(st.linkUrl?.trim() ?? ""));
+
+  // ชื่อเอกสารซ้ำกัน → สมาชิกแยกไม่ออกว่าต้องใช้ไฟล์ไหน
+  const labelCount = new Map<string, number>();
+  links.forEach((l) => {
+    const k = l.label.trim();
+    if (k) labelCount.set(k, (labelCount.get(k) ?? 0) + 1);
+  });
+  const duplicateLabels = [...labelCount].filter(([, n]) => n > 1).map(([k]) => k);
   const updateLink = (idx: number, field: "label" | "url", value: string) => {
     const updated = [...links];
     updated[idx] = { ...updated[idx], [field]: value };
@@ -259,6 +300,7 @@ export default function AdminServicePagesPage() {
       infographicUrl: editing.infographicUrl || null,
       downloadLinks: JSON.stringify(links.filter((l) => l.label.trim() && (l.url.trim() || l.formId)).map((l) => l.formId ? { label: l.label, url: l.url, formId: l.formId } : { label: l.label, url: l.url })),
       formGroup: editing.formGroup || null,
+      steps: steps.filter((st) => st.title.trim()),
       sortOrder: editing.sortOrder,
       isActive: editing.isActive,
     };
@@ -500,6 +542,101 @@ export default function AdminServicePagesPage() {
                             )}
                           </div>
                           <button onClick={() => removeLink(idx)} className={css.removeLinkBtn}>
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {duplicateLabels.length > 0 && (
+                    <p className={css.warnNote}>
+                      <AlertTriangle size={14} /> มีเอกสารชื่อซ้ำกัน: “{duplicateLabels.join("”, “")}” — สมาชิกจะแยกไม่ออกว่าต้องใช้ไฟล์ไหน กรุณาตั้งชื่อให้ต่างกัน
+                    </p>
+                  )}
+                </div>
+
+                {/* ── ขั้นตอนแบบข้อความ ── */}
+                <div className={css.formGroup} style={{ marginTop: '16px' }}>
+                  <div className={css.dynamicLinksHeader}>
+                    <label className={css.formLabel} style={{ marginBottom: 0 }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><ListChecks size={16} color="#0369a1" /> ขั้นตอนแบบข้อความ</span>
+                    </label>
+                    <button onClick={addStep} className={css.addLinkBtn} disabled={steps.length >= MAX_STEPS}>
+                      <Plus size={14} /> เพิ่มขั้นตอน
+                    </button>
+                  </div>
+                  <p className={css.formHint} style={{ marginTop: 0 }}>
+                    แสดงข้างรูป Infographic เป็นตัวหนังสือใหญ่ อ่านบนมือถือได้ และแนบปุ่มดาวน์โหลด/ลิงก์ไว้ในแต่ละขั้น
+                    (ไม่กรอก = แสดงเฉพาะรูปเหมือนเดิม)
+                  </p>
+
+                  {steps.length === 0 ? (
+                    <div style={{ padding: '16px', textAlign: 'center', background: '#f8fafc', borderRadius: '10px', border: '1px dashed #cbd5e1' }}>
+                      <p className={css.formHint}>ยังไม่มีขั้นตอน — พิมพ์ตามข้อความในรูป Infographic ทีละขั้น</p>
+                    </div>
+                  ) : (
+                    <div className={css.stepList}>
+                      {steps.map((st, idx) => (
+                        <div key={idx} className={css.stepRow}>
+                          <div className={css.stepSide}>
+                            <span className={css.linkIndex}>{idx + 1}</span>
+                            <button type="button" className={css.stepMove} onClick={() => moveStep(idx, -1)} disabled={idx === 0} aria-label="เลื่อนขึ้น"><ArrowUp size={14} /></button>
+                            <button type="button" className={css.stepMove} onClick={() => moveStep(idx, 1)} disabled={idx === steps.length - 1} aria-label="เลื่อนลง"><ArrowDown size={14} /></button>
+                          </div>
+                          <div className={css.linkInputGroup}>
+                            <input
+                              className={css.formInput}
+                              value={st.title}
+                              maxLength={120}
+                              onChange={(e) => updateStep(idx, { title: e.target.value })}
+                              placeholder="หัวข้อขั้นตอน เช่น กรอกใบถอนเงิน"
+                              style={{ padding: '8px 12px', fontWeight: 600 }}
+                            />
+                            <textarea
+                              className={css.formInput}
+                              value={st.detail ?? ""}
+                              maxLength={600}
+                              rows={2}
+                              onChange={(e) => updateStep(idx, { detail: e.target.value })}
+                              placeholder="รายละเอียด (ไม่บังคับ) เช่น ลงนามรับรองสำเนาถูกต้อง"
+                              style={{ padding: '8px 12px', resize: 'vertical' }}
+                            />
+                            <select
+                              className={css.formSelect}
+                              value={st.docIndex ?? ""}
+                              onChange={(e) => updateStep(idx, { docIndex: e.target.value === "" ? undefined : Number(e.target.value) })}
+                              style={{ padding: '8px 12px' }}
+                            >
+                              <option value="">— ไม่แนบเอกสารในขั้นนี้ —</option>
+                              {links.map((l, i) => (
+                                <option key={i} value={i}>แนบเอกสาร: {l.label || `(เอกสารที่ ${i + 1} ยังไม่มีชื่อ)`}</option>
+                              ))}
+                            </select>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: '6px' }}>
+                              <input
+                                className={css.formInput}
+                                value={st.linkLabel ?? ""}
+                                maxLength={80}
+                                onChange={(e) => updateStep(idx, { linkLabel: e.target.value })}
+                                placeholder="ปุ่มลิงก์ (ไม่บังคับ) เช่น เพิ่มเพื่อน LINE"
+                                style={{ padding: '8px 12px' }}
+                              />
+                              <input
+                                className={css.formInput}
+                                value={st.linkUrl ?? ""}
+                                maxLength={500}
+                                onChange={(e) => updateStep(idx, { linkUrl: e.target.value })}
+                                placeholder="https://line.me/R/ti/p/@dohsaving"
+                                style={{ padding: '8px 12px' }}
+                              />
+                            </div>
+                            {linkIncomplete(st) && (
+                              <p className={css.warnNote} style={{ margin: 0 }}>
+                                <AlertTriangle size={14} /> ปุ่มลิงก์ต้องมีทั้งชื่อปุ่ม และลิงก์ที่ขึ้นต้นด้วย https:// หรือ / — ไม่งั้นจะไม่แสดง
+                              </p>
+                            )}
+                          </div>
+                          <button onClick={() => removeStep(idx)} className={css.removeLinkBtn} aria-label="ลบขั้นตอน">
                             <Trash2 size={16} />
                           </button>
                         </div>

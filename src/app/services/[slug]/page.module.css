@@ -1,448 +1,882 @@
-/* ═══════════════════════════════════════════════════════
-   Service Page — Single Column Layout
-   ═══════════════════════════════════════════════════════ */
+/* ============================================================
+   หน้าบริการ (/services/[slug]) — infographic + ขั้นตอนแบบข้อความ + เอกสาร
+   ภาษาภาพเดียวกับทั้งเว็บ: hero กรมท่า · เส้นประทอง · ปุ่มหลักสีส้ม
+   ตัวอักษรใหญ่ กดง่าย — ผู้อ่านหลายวัย ต้องอ่านแล้วทำตามได้เองโดยไม่ต้องโทรถาม
+   ============================================================ */
 
-.pageWrapper {
-  background: #f8fafc;
-  min-height: 100vh;
-  padding-bottom: 80px;
-}
-
-/* ── Hero ── */
+/* ═══════════════════════ Hero ═══════════════════════ */
 .hero {
   position: relative;
-  background: linear-gradient(160deg, #0a1628 0%, #1a2d4a 40%, #1e3a5f 70%, #1a4a6a 100%);
-  padding: 44px 24px 64px;
-  text-align: center;
   overflow: hidden;
+  background: linear-gradient(135deg, #0a1628 0%, #0f1d36 50%, #172c52 100%);
 }
 
-.heroBgPattern {
+.hero::before {
+  content: "";
   position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 20% 30%, rgba(232, 101, 43, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(14, 165, 233, 0.06) 0%, transparent 50%);
-  pointer-events: none;
+  inset: 0 0 auto 0;
+  z-index: 2;
+  height: 3px;
+  background: linear-gradient(90deg, #E8652B, #D8AE3F 45%, #F7E3A1 60%, #E8652B);
 }
 
-.heroContent {
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  height: 3px;
+  opacity: 0.35;
+  background: repeating-linear-gradient(90deg, #D8AE3F 0 34px, transparent 34px 60px);
+}
+
+.heroGlow {
+  position: absolute;
+  top: -220px;
+  right: 6%;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(216, 174, 63, 0.2), transparent 64%);
+}
+
+.heroInner {
   position: relative;
   z-index: 1;
-  max-width: 700px;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 26px 24px 44px;
 }
 
 .breadcrumb {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
   gap: 6px;
-  margin-bottom: 16px;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 12px;
+  font-size: 13.5px;
+  color: rgba(232, 240, 252, 0.6);
 }
 
 .breadcrumb a {
-  color: rgba(255, 255, 255, 0.6);
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  transition: color 0.2s;
-}
-
-.breadcrumb a:hover {
-  color: #fff;
+  display: inline-flex;
+  color: #E3C169;
 }
 
 .breadcrumbActive {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .heroTitle {
-  font-size: 30px;
-  font-weight: 800;
-  color: #fff;
-  margin: 0 0 8px;
-  line-height: 1.2;
-}
-
-.heroSub {
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.5);
   margin: 0;
-}
-
-/* ── Content ── */
-.content {
-  max-width: 1080px;
-  margin: -48px auto 0;
-  padding: 0 24px;
-  position: relative;
-  z-index: 1;
-}
-
-.contentGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-@media (min-width: 900px) {
-  .contentGrid {
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    align-items: start;
-  }
-}
-
-/* ── Action Section (Downloads) ── */
-.actionSection {
-  animation: fadeInUp 0.5s ease-out 0.2s both;
-  background: #ffffff;
-  padding: 24px;
-  border-radius: 20px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-}
-
-.actionSectionTitle {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 18px;
+  font-size: 32px;
   font-weight: 800;
-  color: #1e293b;
-  margin: 0 0 20px;
+  line-height: 1.35;
+  color: #fff;
 }
 
-.actionRow {
+.heroChips {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
 }
 
-.actionCard {
-  display: flex;
+.heroChip {
+  display: inline-flex;
   align-items: center;
-  gap: 14px;
-  padding: 16px;
-  background: #f8fafc;
-  border: 1px solid transparent;
-  border-radius: 14px;
-  text-decoration: none;
-  color: #1e293b;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-  transition: all 0.25s;
-  cursor: pointer;
+  gap: 6px;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
 }
 
-.actionCard:hover {
-  border-color: #7dd3fc;
-  box-shadow: 0 8px 30px rgba(14, 165, 233, 0.1);
+button.heroChip {
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+
+button.heroChip:hover {
+  background: rgba(227, 193, 105, 0.16);
+  border-color: rgba(227, 193, 105, 0.55);
+}
+
+.heroChip svg {
+  color: #E3C169;
+}
+
+/* ═══════════════════════ Layout ═══════════════════════ */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 24px 80px;
+}
+
+/* รูปซ้าย (ติดจอเมื่อเลื่อน) · ขั้นตอน/เอกสารขวา */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.layoutSingle {
+  grid-template-columns: minmax(0, 760px);
+  justify-content: center;
+}
+
+.visualCol {
+  position: sticky;
+  top: 90px;
+}
+
+.infoCol {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ═══════════════════════ Infographic ═══════════════════════ */
+.visual {
+  margin: 0;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e3e7ee;
+  border-radius: 18px;
+  box-shadow: 0 24px 48px -32px rgba(15, 29, 54, 0.55);
+}
+
+.visualImgBtn {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  cursor: zoom-in;
+  background: #f4f6f9;
+  border: none;
+}
+
+.visualImg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.visualZoomHint {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(15, 29, 54, 0.78);
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+  opacity: 0.9;
+  transition: opacity 0.18s, transform 0.18s;
+}
+
+.visualImgBtn:hover .visualZoomHint {
+  opacity: 1;
   transform: translateY(-2px);
 }
 
-.actionIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  background: #f0f9ff;
-  border-radius: 16px;
-  flex-shrink: 0;
-  border: 1px solid #e0f2fe;
+.visualBar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid #eef0f4;
 }
 
-.actionIconDoc {
-  display: flex;
+.visualAction {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
-  background: #f0f9ff;
-  border-radius: 16px;
-  flex-shrink: 0;
-  border: 1px solid #e0f2fe;
+  gap: 8px;
+  padding: 13px 10px;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f1d36;
+  cursor: pointer;
+  background: #fff;
+  border: none;
+  transition: background 0.15s, color 0.15s;
 }
 
-.actionInfo {
+.visualAction + .visualAction {
+  border-left: 1px solid #eef0f4;
+}
+
+.visualAction:hover {
+  color: #C24A15;
+  background: #fff7f1;
+}
+
+.visualAction svg {
+  color: #D4541A;
+}
+
+/* ═══════════════════════ Cards ═══════════════════════ */
+.card {
+  padding: 20px 22px;
+  background: #fff;
+  border: 1px solid #e3e7ee;
+  border-radius: 18px;
+  box-shadow: 0 16px 36px -28px rgba(15, 29, 54, 0.45);
+  scroll-margin-top: 90px;
+}
+
+.cardHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.cardTitle svg {
+  color: #D4541A;
+}
+
+.progress {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #5b6474;
+}
+
+/* ── ขั้นตอน: เส้นประเชื่อมเลขขั้น แบบเส้นถนน ── */
+.steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  position: relative;
+  display: flex;
+  gap: 16px;
+  padding-bottom: 22px;
+}
+
+.step:last-child {
+  padding-bottom: 4px;
+}
+
+.step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 44px;
+  bottom: 4px;
+  left: 20px;
+  width: 2px;
+  background: repeating-linear-gradient(180deg, #d6dbe3 0 6px, transparent 6px 11px);
+}
+
+.stepDone:not(:last-child)::before {
+  background: #22c55e;
+}
+
+/* เลขขั้น = ปุ่มติ๊ก "ทำแล้ว" */
+.stepNum {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+  cursor: pointer;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #1a3561, #0f1d36);
+  box-shadow: 0 8px 16px -10px rgba(15, 29, 54, 0.9);
+  transition: transform 0.15s, background 0.2s;
+}
+
+.stepNum:hover {
+  transform: scale(1.06);
+}
+
+.stepNum:focus-visible {
+  outline: 3px solid rgba(232, 101, 43, 0.5);
+  outline-offset: 2px;
+}
+
+.stepDone .stepNum {
+  background: linear-gradient(145deg, #2BD06B, #06A048);
+}
+
+.stepBody {
   flex: 1;
   min-width: 0;
+  padding-top: 6px;
 }
 
-.actionTitle {
-  font-size: 15px;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 0 0 2px;
-  line-height: 1.3;
-}
-
-.actionDesc {
-  font-size: 12px;
-  color: #94a3b8;
+.stepTitle {
   margin: 0;
+  font-size: 17.5px;
+  font-weight: 800;
+  line-height: 1.45;
+  color: #0f1d36;
 }
 
-.actionArrow {
-  color: #cbd5e1;
-  flex-shrink: 0;
-  transition: transform 0.2s, color 0.2s;
+.stepDone .stepTitle {
+  color: #15803d;
 }
 
-.actionCard:hover .actionArrow {
-  color: #0369a1;
-  transform: translateX(4px);
+.stepDetail {
+  margin: 4px 0 0;
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: #374151;
+  white-space: pre-line;
 }
 
-.allFormsChip {
+.stepActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.stepBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #C24A15;
+  background: #fff7f1;
+  border: 1.5px solid #fbcfb0;
+  border-radius: 11px;
+  transition: background 0.18s, border-color 0.18s, transform 0.18s;
+}
+
+.stepBtn:hover {
+  background: #ffedd9;
+  border-color: #f5a878;
+  transform: translateY(-1px);
+}
+
+.stepBtnLine {
+  color: #fff;
+  background: linear-gradient(145deg, #2BD06B, #06A048);
+  border-color: transparent;
+}
+
+.stepBtnLine:hover {
+  background: linear-gradient(145deg, #27c262, #059142);
+  border-color: transparent;
+}
+
+/* ── เอกสาร ── */
+.docs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.doc {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 16px;
-  height: 100%;
-  color: #64748b;
-  font-size: 15px;
-  font-weight: 600;
-  text-decoration: none;
-  border-radius: 16px;
-  transition: all 0.2s;
-  background: #f8fafc;
-  border: 2px dashed #cbd5e1;
+  gap: 14px;
+  padding: 12px 12px 12px 14px;
+  background: #fafbfc;
+  border: 1px solid #eceff4;
+  border-radius: 14px;
 }
 
-.allFormsChip:hover {
-  color: #0369a1;
-  background: #f0f9ff;
-  border-color: #bae6fd;
+.docType {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 46px;
+  height: 52px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #1F5C9E;
+  background: #e8f0fb;
+  border-radius: 8px 14px 8px 8px;
 }
 
-/* ── Infographic ── */
-.infographicSection {
-  animation: fadeInUp 0.6s ease-out 0.1s both;
+.docPdf {
+  color: #fff;
+  background: linear-gradient(160deg, #ef5b5b, #c53030);
 }
 
-.infographicCard {
-  background: #fff;
-  border-radius: 20px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-  cursor: pointer;
-  position: relative;
-  transition: box-shadow 0.3s;
-}
-
-.infographicCard:hover {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-.infographicCard:hover .zoomHint {
-  opacity: 1;
-}
-
-.infographicImage {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.zoomHint {
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
+.docName {
   display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  font-size: 15.5px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #0f1d36;
+  overflow-wrap: anywhere;
+}
+
+.docName small {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.docActions {
+  display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 6px;
-  padding: 8px 14px;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  color: #fff;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
 }
 
-/* ── Lightbox ── */
-.lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(8px);
+.docView {
+  padding: 9px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #374151;
+  border-radius: 10px;
+}
+
+.docView:hover {
+  background: #eef0f4;
+}
+
+.docDownload {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  white-space: nowrap;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+  box-shadow: 0 10px 20px -12px rgba(232, 101, 43, 1);
+  transition: filter 0.18s, transform 0.18s;
+}
+
+.docDownload:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.allForms {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #D4541A;
+}
+
+.allForms:hover {
+  text-decoration: underline;
+}
+
+/* ── ช่วยเหลือ ── */
+.help {
+  position: relative;
+  overflow: hidden;
+  padding: 20px 22px 22px;
+  color: #fff;
+  border-radius: 18px;
+  background: linear-gradient(150deg, #22406f 0%, #13274a 50%, #0b172d 100%);
+  border: 1px solid rgba(227, 193, 105, 0.35);
+}
+
+.help::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  height: 2px;
+  opacity: 0.4;
+  background: repeating-linear-gradient(90deg, #D8AE3F 0 18px, transparent 18px 32px);
+}
+
+.helpTitle {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 24px;
-  animation: fadeIn 0.2s ease-out;
-  cursor: zoom-out;
-}
-
-.lightboxClose {
-  position: fixed;
-  top: 20px;
-  right: 24px;
-  width: 40px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  color: #fff;
+  gap: 8px;
+  margin: 0;
   font-size: 18px;
-  cursor: pointer;
+  font-weight: 800;
+}
+
+.helpTitle svg {
+  color: #E3C169;
+}
+
+.helpText {
+  margin: 6px 0 14px;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: rgba(232, 240, 252, 0.75);
+}
+
+.helpActions {
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.helpLine,
+.helpPhone,
+.helpQna {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-  z-index: 10000;
+  gap: 7px;
+  padding: 10px 16px;
+  font-size: 14.5px;
+  font-weight: 800;
+  border-radius: 11px;
+  transition: filter 0.18s, background 0.18s;
 }
 
-.lightboxClose:hover {
-  background: rgba(255, 255, 255, 0.3);
+.helpLine {
+  color: #fff;
+  background: linear-gradient(145deg, #2BD06B, #06A048);
 }
 
-.lightboxImg {
-  max-width: 95vw;
-  max-height: 92vh;
-  object-fit: contain;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  cursor: default;
+.helpPhone {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-variant-numeric: tabular-nums;
 }
 
-/* ── Loading & Error ── */
-.spinner {
-  color: #E8652B;
-  animation: spin 1s linear infinite;
+.helpQna {
+  color: #F7E3A1;
 }
 
-.loading {
-  text-align: center;
-  padding: 100px 24px;
-  color: #64748b;
-  font-size: 15px;
+.helpLine:hover {
+  filter: brightness(1.06);
+}
+
+.helpPhone:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.helpQna:hover {
+  text-decoration: underline;
+}
+
+/* ── บริการอื่นในหมวด ── */
+.related {
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid #e3e7ee;
+}
+
+.relatedTitle {
+  margin: 0 0 12px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.relatedList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.relatedChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 9px 12px 9px 16px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f1d36;
+  background: #fff;
+  border: 1px solid #dfe3ea;
+  border-radius: 999px;
+  transition: border-color 0.18s, color 0.18s;
+}
+
+.relatedChip:hover {
+  color: #C24A15;
+  border-color: rgba(232, 101, 43, 0.5);
+}
+
+.relatedChip svg {
+  color: #b3bac6;
+}
+
+/* ═══════════════════════ States ═══════════════════════ */
+.skeleton {
+  border-radius: 18px;
+  background: linear-gradient(90deg, #eef0f4 25%, #e5e8ee 50%, #eef0f4 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
 }
 
 .notFound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 56px 20px;
   text-align: center;
-  padding: 80px 24px;
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-  max-width: 500px;
-  margin: 0 auto;
+  color: #b3bac6;
 }
 
-.notFoundIcon {
-  color: #d1d5db;
-  margin-bottom: 20px;
+.notFound h2 {
+  margin: 6px 0 0;
+  font-size: 20px;
+  color: #0f1d36;
 }
 
-.notFoundTitle {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 8px;
+.notFound p {
+  margin: 0 0 12px;
+  font-size: 15px;
+  color: #6b7280;
 }
 
-.notFoundText {
-  font-size: 14px;
-  color: #94a3b8;
-  margin: 0 0 28px;
-}
-
-.backLink {
+.primaryBtn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px;
-  background: #1e3a5f;
+  padding: 11px 20px;
+  font-size: 15px;
+  font-weight: 800;
   color: #fff;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: 600;
+  border-radius: 11px;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+}
+
+/* ═══════════════════════ Mobile bottom bar ═══════════════════════ */
+.mobileBar {
+  display: none;
+}
+
+/* ═══════════════════════ Lightbox ═══════════════════════ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  background: rgba(6, 12, 24, 0.94);
+  animation: fade 0.15s ease;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.lightboxBar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 12px;
+}
+
+.lightboxBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  font-family: inherit;
   font-size: 14px;
-  transition: background 0.2s;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
 }
 
-.backLink:hover {
-  background: #152c4a;
+.lightboxBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
-/* ── Animations ── */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+.lightboxStage {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 0 16px 16px;
+  overflow: auto;
+}
+
+.lightboxImg {
+  max-width: 100%;
+  max-height: 100%;
+  cursor: zoom-in;
+  border-radius: 8px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+/* ขยาย 100% → เลื่อนดูรายละเอียดได้ */
+.lightboxZoomed {
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.lightboxZoomed .lightboxImg {
+  max-width: none;
+  max-height: none;
+  margin: auto;
+  cursor: zoom-out;
+}
+
+/* ═══════════════════════ Responsive ═══════════════════════ */
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .visualCol {
+    position: static;
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* ── Responsive ── */
 @media (max-width: 640px) {
-  .hero {
-    padding: 32px 16px 52px;
+  .heroInner {
+    padding: 20px 16px 38px;
   }
 
   .heroTitle {
-    font-size: 24px;
+    font-size: 25px;
   }
 
-  .content {
-    padding: 0 16px;
+  .main {
+    padding: 18px 16px calc(96px + env(safe-area-inset-bottom, 0px));
   }
 
-  .actionCard {
-    padding: 14px 16px;
-    gap: 12px;
+  .card,
+  .help {
+    padding: 18px 16px;
   }
 
-  .actionIcon,
-  .actionIconDoc {
-    width: 42px;
-    height: 42px;
+  .stepNum {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+  }
+
+  .step:not(:last-child)::before {
+    top: 40px;
+    left: 18px;
+  }
+
+  .stepTitle {
+    font-size: 17px;
+  }
+
+  .stepDetail {
+    font-size: 15px;
+  }
+
+  /* เอกสาร: ปุ่มลงไปอยู่ใต้ชื่อ ไม่เบียด */
+  .doc {
+    flex-wrap: wrap;
+  }
+
+  .docName {
+    flex-basis: calc(100% - 60px);
+  }
+
+  .docActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .docDownload {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .mobileBar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 900;
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: rgba(255, 255, 255, 0.96);
+    border-top: 1px solid #e3e7ee;
+    box-shadow: 0 -8px 24px -12px rgba(15, 29, 54, 0.3);
+    backdrop-filter: blur(8px);
+  }
+
+  .mobileDocs,
+  .mobileLine {
+    display: inline-flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 12px 10px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 800;
+    border: none;
     border-radius: 12px;
+    cursor: pointer;
   }
 
-  .actionTitle {
-    font-size: 14px;
+  .mobileDocs {
+    color: #fff;
+    background: linear-gradient(145deg, #F0803F, #D4541A);
   }
 
-  .infographicCard {
-    border-radius: 16px;
+  .mobileLine {
+    color: #fff;
+    background: linear-gradient(145deg, #2BD06B, #06A048);
   }
+}
 
-  .lightboxImg {
-    border-radius: 8px;
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
   }
 }
