@@ -86,7 +86,9 @@ export async function PATCH(req: NextRequest) {
     const data: any = {};
     if (status) data.status = status;
     if (adminNote !== undefined) data.adminNote = sanitize(adminNote).slice(0, 2000);
-    if (status === "resolved") data.resolvedAt = new Date();
+    // resolvedAt = วันที่ปิดเรื่อง (ทั้งเสร็จสิ้นและไม่รับพิจารณา) — ผู้แจ้งเห็นในหน้าติดตามสถานะ
+    if (status === "resolved" || status === "rejected") data.resolvedAt = new Date();
+    else if (status) data.resolvedAt = null;
 
     const complaint = await prisma.complaint.update({
       where: { id },

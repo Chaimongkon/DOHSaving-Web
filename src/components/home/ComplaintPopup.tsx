@@ -15,6 +15,7 @@ import {
   InfoCircleOutlined,
   SafetyCertificateOutlined,
 } from "@ant-design/icons";
+import { saveComplaint } from "@/lib/complaintTracking";
 import css from "./ComplaintPopup.module.css";
 
 interface Props {
@@ -65,6 +66,13 @@ export default function ComplaintPopup({ open, onClose }: Props) {
       const data = await res.json();
       if (res.ok) {
         setResultCode(data.trackingCode);
+        // จำเลขที่เรื่องไว้ในอุปกรณ์ → เห็นใน "เรื่องของฉัน" ที่หน้า /complaints
+        saveComplaint({
+          code: data.trackingCode,
+          subject: subject.trim(),
+          category,
+          createdAt: data.createdAt || new Date().toISOString(),
+        });
       } else {
         alert(data.error || "เกิดข้อผิดพลาด");
       }
@@ -107,13 +115,13 @@ export default function ComplaintPopup({ open, onClose }: Props) {
             <div className={css.successIcon}><CheckCircleOutlined /></div>
             <h3 className={css.successTitle}>ส่งข้อมูลสำเร็จ!</h3>
             <p className={css.successSub}>ระบบได้รับข้อมูลของท่านแล้ว เจ้าหน้าที่จะดำเนินการตรวจสอบ</p>
-            <div className={css.trackingCode}>รหัสติดตาม: {resultCode}</div>
-            <p className={css.successSub}>กรุณาจดรหัสนี้ไว้เพื่อตรวจสอบสถานะ</p>
+            <div className={css.trackingCode}>เลขที่เรื่อง: {resultCode}</div>
+            <p className={css.successSub}>กรุณาจดหรือถ่ายภาพเลขนี้ไว้ เพื่อใช้ติดตามสถานะ</p>
             <div className={css.successActions}>
               <button className={`${css.successBtn} ${css.successBtnPrimary}`} onClick={handleClose}>
                 ปิด
               </button>
-              <Link href="/complaints" className={css.successBtn} onClick={handleClose}>
+              <Link href={`/complaints?code=${encodeURIComponent(resultCode)}`} className={css.successBtn} onClick={handleClose}>
                 ตรวจสอบสถานะ
               </Link>
             </div>

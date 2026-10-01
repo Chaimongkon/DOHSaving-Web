@@ -2,6 +2,8 @@ import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { getClientIp } from "@/lib/requestIp";
 import { consumeRateLimit } from "@/lib/rateLimit";
+import { randomInt } from "node:crypto";
+import { TRACKING_ALPHABET, normalizeTrackingCode, isValidTrackingCode } from "@/lib/complaintTracking";
 
 // ─── XSS Sanitizer — strip dangerous HTML/script tags ───
 function sanitize(input: string | null | undefined): string {
@@ -36,13 +38,24 @@ const RATE_WINDOW_SECONDS = 60 * 60;
 const TRACK_LIMIT = 10;
 const TRACK_WINDOW_SECONDS = 60;
 
+// ติดตามหลายเรื่องพร้อมกัน (รายการ "เรื่องของฉัน" บนอุปกรณ์) — นับเป็น 1 ครั้งของ rate limit
+const MAX_BATCH_CODES = 10;
+
+// CP + YYMMDD + "-" + สุ่ม 6 ตัวด้วย crypto — เดาไม่ได้ ต่างจากแบบเดิมที่มีแค่ 10,000 แบบต่อวัน
 function generateTrackingCode(): string {
   const now = new Date();
   const y = String(now.getFullYear()).slice(-2);
   const m = String(now.getMonth() + 1).padStart(2, "0");
   const d = String(now.getDate()).padStart(2, "0");
-  const rand = String(Math.floor(Math.random() * 10000)).padStart(4, "0");
+  let rand = "";
+  for (let i = 0; i < 6; i++) {
+    rand += TRACKING_ALPHABET[randomInt(TRACKING_ALPHABET.length)];
+  }
   return `CP${y}${m}${d}-${rand}`;
+}
+
+function isUniqueViolation(error: unknown): boolean {
+  return typeof error === "object" && error !== null && (error as { code?: string }).code === "P2002";
 }
 
 // POST /api/complaints — submit new complaint (public)
@@ -83,7 +96,7 @@ export async function POST(req: NextRequest) {
     // ── Security Layer 4: Honeypot bot trap ──
     if (body._website || body._url || body._hp) {
       // Bot filled hidden field — silently reject with fake success
-      return Response.json({ ok: true, trackingCode: "CP000000-0000", message: "ส่งข้อมูลสำเร็จ" }, { status: 201 });
+      return Response.json({ ok: true, trackingCode: generateTrackingCode(), message: "ส่งข้อมูลสำเร็จ" }, { status: 201 });
     }
 
     const { memberId, name, tel, email, category, subject, complaint: detail } = body;
@@ -106,26 +119,33 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "รูปแบบเบอร์โทรไม่ถูกต้อง" }, { status: 400 });
     }
 
-    const trackingCode = generateTrackingCode();
+    const data = {
+      memberId: memberId ? truncate(sanitize(memberId.trim()), MAX_LEN.memberId) : null,
+      name: name?.trim() ? truncate(sanitize(name.trim()), MAX_LEN.name) : "ผู้ไม่ประสงค์ออกนาม",
+      tel: tel ? truncate(sanitize(tel.trim()), MAX_LEN.tel) : null,
+      email: email ? truncate(email.trim().toLowerCase(), MAX_LEN.email) : null,
+      category: safeCategory,
+      subject: truncate(sanitize(subject.trim()), MAX_LEN.subject),
+      complaint: truncate(sanitize(detail.trim()), MAX_LEN.detail),
+    };
 
-    const record = await prisma.complaint.create({
-      data: {
-        trackingCode,
-        memberId: memberId ? truncate(sanitize(memberId.trim()), MAX_LEN.memberId) : null,
-        name: name?.trim() ? truncate(sanitize(name.trim()), MAX_LEN.name) : "ผู้ไม่ประสงค์ออกนาม",
-        tel: tel ? truncate(sanitize(tel.trim()), MAX_LEN.tel) : null,
-        email: email ? truncate(email.trim().toLowerCase(), MAX_LEN.email) : null,
-        category: safeCategory,
-        subject: truncate(sanitize(subject.trim()), MAX_LEN.subject),
-        complaint: truncate(sanitize(detail.trim()), MAX_LEN.detail),
-      },
-    });
-
-    return Response.json({
-      ok: true,
-      trackingCode: record.trackingCode,
-      message: "ส่งข้อมูลสำเร็จ",
-    }, { status: 201 });
+    // เลขซ้ำแทบเป็นไปไม่ได้ แต่ถ้าชน unique constraint ให้สุ่มใหม่แทนที่จะตอบ 500
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        const record = await prisma.complaint.create({
+          data: { ...data, trackingCode: generateTrackingCode() },
+        });
+        return Response.json({
+          ok: true,
+          trackingCode: record.trackingCode,
+          createdAt: record.createdAt,
+          message: "ส่งข้อมูลสำเร็จ",
+        }, { status: 201 });
+      } catch (error) {
+        if (!isUniqueViolation(error)) throw error;
+      }
+    }
+    throw new Error("Could not allocate a unique tracking code");
   } catch (error) {
     console.error("Failed to create complaint:", error);
     return Response.json({ error: "เกิดข้อผิดพลาด" }, { status: 500 });
@@ -154,15 +174,31 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url);
-    const code = searchParams.get("code")?.trim();
 
-    if (!code) {
-      return Response.json({ error: "กรุณาระบุรหัสติดตาม" }, { status: 400 });
+    // ?codes=A,B,C — สถานะย่อของหลายเรื่อง (ไม่ส่งคำตอบเจ้าหน้าที่ออกไป)
+    const codesParam = searchParams.get("codes");
+    if (codesParam) {
+      const codes = [...new Set(codesParam.split(",").map(normalizeTrackingCode))]
+        .filter(isValidTrackingCode)
+        .slice(0, MAX_BATCH_CODES);
+      if (codes.length === 0) {
+        return Response.json({ complaints: [] });
+      }
+      const records = await prisma.complaint.findMany({
+        where: { trackingCode: { in: codes } },
+        select: { trackingCode: true, status: true, updatedAt: true },
+      });
+      return Response.json({ complaints: records });
     }
 
-    // Validate tracking code format (CP + 6 digits + dash + 4 digits)
-    if (!/^CP\d{6}-\d{4}$/.test(code)) {
-      return Response.json({ error: "รูปแบบรหัสติดตามไม่ถูกต้อง" }, { status: 400 });
+    const code = normalizeTrackingCode(searchParams.get("code") || "");
+
+    if (!code) {
+      return Response.json({ error: "กรุณาระบุเลขที่เรื่อง" }, { status: 400 });
+    }
+
+    if (!isValidTrackingCode(code)) {
+      return Response.json({ error: "รูปแบบเลขที่เรื่องไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง" }, { status: 400 });
     }
 
     const record = await prisma.complaint.findUnique({
@@ -174,12 +210,13 @@ export async function GET(req: NextRequest) {
         status: true,
         adminNote: true,
         createdAt: true,
+        updatedAt: true,
         resolvedAt: true,
       },
     });
 
     if (!record) {
-      return Response.json({ error: "ไม่พบข้อมูล" }, { status: 404 });
+      return Response.json({ error: "ไม่พบเรื่องที่ตรงกับเลขนี้ กรุณาตรวจสอบเลขที่เรื่องอีกครั้ง" }, { status: 404 });
     }
 
     return Response.json({ complaint: record });
