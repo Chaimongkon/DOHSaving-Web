@@ -3,6 +3,14 @@ import prisma from "@/lib/prisma";
 import { getClientIp } from "@/lib/requestIp";
 import { consumeRateLimit } from "@/lib/rateLimit";
 import { decodeEntities } from "@/lib/decodeEntities";
+import {
+  BLOCKED_DATA_ERROR,
+  RESERVED_NAME_ERROR,
+  findSensitive,
+  isReservedName,
+  maskPlain,
+  stripMarkers,
+} from "@/lib/qnaPrivacy";
 
 function truncate(val: string, max: number): string {
   return val.length > max ? val.slice(0, max) : val;
@@ -10,11 +18,48 @@ function truncate(val: string, max: number): string {
 
 const QNA_LIMIT = 5;
 const QNA_WINDOW_SECONDS = 60 * 60;
+const MAX_MINE_IDS = 20;
+
+// GET /api/qna?ids=1,2,3 — สถานะ "คำถามของฉัน" (id ที่เก็บไว้ในเบราว์เซอร์ของผู้ถาม)
+async function getMine(idsParam: string) {
+  const ids = [...new Set(idsParam.split(",").map((v) => parseInt(v)).filter((n) => n > 0))].slice(0, MAX_MINE_IDS);
+  if (ids.length === 0) return Response.json({ questions: [] });
+
+  const [rows, staff] = await Promise.all([
+    prisma.qnaQuestion.findMany({
+      where: { id: { in: ids }, isActive: true },
+      select: {
+        id: true,
+        title: true,
+        isClosed: true,
+        _count: { select: { replies: { where: { isActive: true } } } },
+      },
+    }),
+    prisma.qnaReply.findMany({
+      where: { questionId: { in: ids }, isAdmin: true, isActive: true },
+      select: { questionId: true },
+      distinct: ["questionId"],
+    }),
+  ]);
+  const staffSet = new Set(staff.map((r) => r.questionId));
+  return Response.json({
+    questions: rows.map((q) => ({
+      id: q.id,
+      title: maskPlain(decodeEntities(q.title)),
+      isClosed: q.isClosed,
+      replyCount: q._count.replies,
+      hasStaffReply: staffSet.has(q.id),
+    })),
+  });
+}
 
 // GET /api/qna — list questions (public)
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
+    const idsParam = searchParams.get("ids");
+    if (idsParam) return getMine(idsParam);
+
     const search = searchParams.get("search") || "";
     const filter = searchParams.get("filter") || "all"; // all | answered | unanswered
     const sort = searchParams.get("sort") || "latest"; // latest | popular
@@ -24,7 +69,7 @@ export async function GET(req: NextRequest) {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = { isActive: true };
-    if (search) where.title = { contains: search };
+    if (search) where.OR = [{ title: { contains: search } }, { body: { contains: search } }];
     if (filter === "answered") where.replies = { some: { isActive: true } };
     if (filter === "unanswered") where.replies = { none: { isActive: true } };
 
@@ -43,6 +88,7 @@ export async function GET(req: NextRequest) {
           id: true,
           authorName: true,
           title: true,
+          body: true,
           views: true,
           isPinned: true,
           isClosed: true,
@@ -68,19 +114,42 @@ export async function GET(req: NextRequest) {
       }),
     ]);
 
+    // คำตอบแรกของเจ้าหน้าที่ต่อกระทู้ — การ์ด "ถาม → ตอบ" แสดงคำตอบนี้ก่อนคำตอบสมาชิกเสมอ
+    const staffReplies = await prisma.qnaReply.findMany({
+      where: { questionId: { in: questions.map((q) => q.id) }, isAdmin: true, isActive: true },
+      orderBy: { createdAt: "asc" },
+      select: { questionId: true, authorName: true, body: true, createdAt: true },
+    });
+    const firstStaff = new Map<number, (typeof staffReplies)[number]>();
+    for (const r of staffReplies) if (!firstStaff.has(r.questionId)) firstStaff.set(r.questionId, r);
+
     return Response.json({
       questions: questions.map((q) => ({
         ...q,
         authorName: decodeEntities(q.authorName),
-        title: decodeEntities(q.title),
+        // ข้อมูลส่วนตัวในหัวข้อ/ข้อความย่อ ถูกแทนด้วยป้าย [เบอร์โทร] ฯลฯ — ดูเบอร์ได้ในหน้ากระทู้เท่านั้น
+        title: maskPlain(decodeEntities(q.title)),
+        body: undefined,
+        excerpt: truncate(maskPlain(decodeEntities(q.body)).replace(/\s+/g, " ").trim(), 160),
+        hasStaffReply: firstStaff.has(q.id),
         replyCount: q._count.replies,
-        latestReply: q.replies[0]
+        // คำตอบเด่นของการ์ด: เจ้าหน้าที่ก่อน ไม่มีจึงใช้คำตอบล่าสุดของสมาชิก
+        answer: firstStaff.has(q.id)
           ? {
-              ...q.replies[0],
-              authorName: decodeEntities(q.replies[0].authorName),
-              body: decodeEntities(q.replies[0].body),
+              isAdmin: true,
+              authorName: decodeEntities(firstStaff.get(q.id)!.authorName),
+              // เบอร์ในคำตอบเจ้าหน้าที่เป็นเบอร์ทางการของสหกรณ์ → ไม่ซ่อน
+              body: decodeEntities(firstStaff.get(q.id)!.body),
+              createdAt: firstStaff.get(q.id)!.createdAt,
             }
-          : null,
+          : q.replies[0]
+            ? {
+                isAdmin: q.replies[0].isAdmin,
+                authorName: decodeEntities(q.replies[0].authorName),
+                body: maskPlain(decodeEntities(q.replies[0].body)),
+                createdAt: q.replies[0].createdAt,
+              }
+            : null,
         replies: undefined,
         _count: undefined,
       })),
@@ -139,10 +208,23 @@ export async function POST(req: NextRequest) {
       return Response.json({ question: { id: 0 } }, { status: 201 });
     }
 
-    const { authorName, memberCode, title, body: questionBody } = body;
+    const { memberCode } = body;
+    const authorName = typeof body.authorName === "string" ? stripMarkers(body.authorName) : "";
+    const title = typeof body.title === "string" ? stripMarkers(body.title) : "";
+    const questionBody = typeof body.body === "string" ? stripMarkers(body.body) : "";
 
-    if (!title || !questionBody) {
+    if (!title.trim() || !questionBody.trim()) {
       return Response.json({ error: "กรุณากรอกหัวข้อและเนื้อหา" }, { status: 400 });
+    }
+
+    // ── กันแอบอ้างเป็นเจ้าหน้าที่ ──
+    if (isReservedName(authorName)) {
+      return Response.json({ error: RESERVED_NAME_ERROR }, { status: 400 });
+    }
+
+    // ── ห้ามโพสต์เลขบัตรประชาชน/เลขบัญชี (หน้าเว็บเตือนแล้ว — ตรงนี้กันการยิง API ตรง) ──
+    if (findSensitive(`${title}\n${questionBody}`).some((m) => m.type !== "phone")) {
+      return Response.json({ error: BLOCKED_DATA_ERROR }, { status: 400 });
     }
 
     const question = await prisma.qnaQuestion.create({
@@ -154,7 +236,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return Response.json({ question }, { status: 201 });
+    return Response.json({ question: { id: question.id } }, { status: 201 });
   } catch (error) {
     console.error("Failed to create question:", error);
     return Response.json({ error: "เกิดข้อผิดพลาด" }, { status: 500 });

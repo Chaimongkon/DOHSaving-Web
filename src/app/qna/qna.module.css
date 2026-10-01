@@ -1,0 +1,2279 @@
+/* ============================================================
+   Q&A — ใช้ร่วมกันทั้ง /qna, /qna/[id], /qna/new
+   ภาษาภาพเดียวกับ /contact และ /complaints:
+   hero กรมท่า · เส้นประทองแบบเส้นกึ่งกลางถนน · ปุ่มหลักสีส้ม
+   ============================================================ */
+
+.srOnly,
+.hp {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ═══════════════════════ Hero ═══════════════════════ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0a1628 0%, #0f1d36 50%, #172c52 100%);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 2;
+  height: 3px;
+  background: linear-gradient(90deg, #E8652B, #D8AE3F 45%, #F7E3A1 60%, #E8652B);
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  height: 3px;
+  opacity: 0.35;
+  background: repeating-linear-gradient(90deg, #D8AE3F 0 34px, transparent 34px 60px);
+}
+
+.heroGlowGold,
+.heroGlowOrange {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.heroGlowGold {
+  top: -200px;
+  right: 4%;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(216, 174, 63, 0.22), transparent 64%);
+}
+
+.heroGlowOrange {
+  bottom: -260px;
+  left: -140px;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(232, 101, 43, 0.2), transparent 64%);
+}
+
+.heroGrid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 45%, #000 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 45%, #000 100%);
+}
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 40px 24px 56px;
+}
+
+.heroCompact .heroInner {
+  padding: 26px 24px 42px;
+}
+
+/* ขอบซ้ายของ hero ตรงกับรายการคำถาม (.board 860px) */
+.heroNarrow .heroInner {
+  max-width: 908px;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #E3C169;
+}
+
+.eyebrowRule {
+  width: 28px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #E8652B, #E3C169);
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.5px;
+  color: #E3C169;
+  transition: color 0.18s;
+}
+
+.crumb:hover {
+  color: #F7E3A1;
+  text-decoration: underline;
+}
+
+.heroTitle {
+  margin: 0;
+  max-width: 30ch;
+  font-size: 34px;
+  line-height: 1.3;
+  font-weight: 800;
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+
+.heroCompact .heroTitle {
+  max-width: 44ch;
+  font-size: 26px;
+  line-height: 1.4;
+}
+
+.heroTitleAccent {
+  background: linear-gradient(90deg, #F7E3A1, #E3C169 45%, #F0803F);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.heroLead {
+  margin: 12px 0 0;
+  max-width: 58ch;
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: rgba(232, 240, 252, 0.74);
+}
+
+/* ── ค้นหาใน hero ── */
+.heroSearch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 680px;
+  margin-top: 24px;
+}
+
+.heroSearchIcon {
+  position: absolute;
+  left: 18px;
+  color: #8b93a3;
+  pointer-events: none;
+}
+
+.heroSearchInput {
+  width: 100%;
+  padding: 16px 48px 16px 52px;
+  font-family: inherit;
+  font-size: 16px;
+  color: #111827;
+  background: #fff;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.7);
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.heroSearchInput::placeholder {
+  color: #9aa3b2;
+}
+
+.heroSearchInput:focus {
+  outline: none;
+  border-color: #E3C169;
+  box-shadow: 0 0 0 4px rgba(227, 193, 105, 0.3), 0 20px 40px -20px rgba(0, 0, 0, 0.7);
+}
+
+.heroSearchClear {
+  position: absolute;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: #6b7280;
+  cursor: pointer;
+  background: #f1f3f6;
+  border: none;
+  border-radius: 50%;
+}
+
+.heroSearchClear:hover {
+  background: #e5e8ee;
+}
+
+.topicRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+
+.topicChip {
+  padding: 7px 16px;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+
+.topicChip:hover {
+  background: rgba(227, 193, 105, 0.16);
+  border-color: rgba(227, 193, 105, 0.55);
+}
+
+.topicChipActive,
+.topicChipActive:hover {
+  color: #0f1d36;
+  background: #E3C169;
+  border-color: #E3C169;
+}
+
+.threadTags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 14px;
+}
+
+.heroMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: rgba(232, 240, 252, 0.66);
+}
+
+/* ═══════════════════════ Layout ═══════════════════════ */
+.main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 28px 24px 80px;
+  scroll-margin-top: 80px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ═══════════════════════ /qna — รายการคำถาม ═══════════════════════
+   คอลัมน์เดียว อ่านจากบนลงล่าง: สถานะ → หัวข้อ → คำตอบเจ้าหน้าที่ → รายละเอียด
+   ตัวอักษรใหญ่ คอนทราสต์สูง เพื่อให้สมาชิกทุกวัยอ่านง่าย */
+.heroActionsRow {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  max-width: 760px;
+  margin-top: 20px;
+}
+
+.heroActionsRow .heroSearch {
+  flex: 1;
+  margin-top: 0;
+}
+
+.heroAskBtn {
+  flex-shrink: 0;
+  padding: 0 22px;
+  font-size: 15px;
+  border-radius: 14px;
+}
+
+.board {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #e3e7ee;
+}
+
+.tabBtn {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: -2px;
+  padding: 14px 8px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  color: #5b6474;
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  transition: color 0.18s, border-color 0.18s;
+}
+
+.tabBtn:hover {
+  color: #0f1d36;
+}
+
+.tabActive,
+.tabActive:hover {
+  color: #0f1d36;
+  border-bottom-color: #E8652B;
+}
+
+.tabCount {
+  min-width: 26px;
+  padding: 1px 8px;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  color: #5b6474;
+  background: #eceff4;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabActive .tabCount {
+  color: #fff;
+  background: #E8652B;
+}
+
+.listHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px 2px 10px;
+  font-size: 15px;
+  color: #374151;
+}
+
+.sortGroup {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.sortBtn {
+  padding: 6px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #5b6474;
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-radius: 8px;
+}
+
+.sortBtn:hover {
+  color: #0f1d36;
+  background: #eef0f4;
+}
+
+.sortActive,
+.sortActive:hover {
+  color: #fff;
+  background: #0f1d36;
+}
+
+.textBtn {
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 700;
+  color: #D4541A;
+  cursor: pointer;
+  background: none;
+  border: none;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── การ์ด "ถาม → ตอบ" ──
+   ป้าย Q (กรมท่า) และ A (เขียว = เจ้าหน้าที่ · ฟ้า = สมาชิก · เส้นประ = ยังไม่มีคำตอบ)
+   เป็นภาษาภาพหลักที่บอกว่า "นี่คือกระดานถาม-ตอบ" */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.qa {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 22px 16px;
+  color: inherit;
+  background: #fff;
+  border: 1px solid #e3e7ee;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(15, 29, 54, 0.04), 0 10px 24px -18px rgba(15, 29, 54, 0.4);
+  transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
+}
+
+.qa:hover {
+  border-color: rgba(232, 101, 43, 0.45);
+  box-shadow: 0 18px 32px -20px rgba(232, 101, 43, 0.55);
+  transform: translateY(-1px);
+}
+
+.qa:focus-visible {
+  outline: 3px solid rgba(232, 101, 43, 0.45);
+  outline-offset: 2px;
+}
+
+.qaPinned {
+  border-color: rgba(216, 174, 63, 0.6);
+  background: linear-gradient(170deg, #fffbef, #fff 45%);
+}
+
+.qaAsker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  font-size: 14px;
+  color: #5b6474;
+}
+
+.qaAskerName {
+  font-weight: 700;
+  color: #374151;
+}
+
+.qaDot {
+  color: #b3bac6;
+}
+
+.qaLine {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.qaMark {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1;
+  border-radius: 10px;
+}
+
+.qaMarkQ {
+  color: #fff;
+  background: linear-gradient(145deg, #1a3561, #0f1d36);
+}
+
+.qaMarkStaff {
+  color: #fff;
+  background: linear-gradient(145deg, #2BD06B, #06A048);
+}
+
+.qaMarkMember {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.qaMarkEmpty {
+  color: #b3bac6;
+  background: #fff;
+  border: 2px dashed #d6dbe3;
+}
+
+.qaQuestion {
+  margin: 3px 0 0;
+  font-size: 18.5px;
+  font-weight: 800;
+  line-height: 1.5;
+  color: #0f1d36;
+  overflow-wrap: anywhere;
+}
+
+.qa:hover .qaQuestion {
+  color: #C24A15;
+}
+
+/* คำตอบเป็นกล่องคำพูด มีหางชี้ไปที่ป้าย A */
+.qaAnswer {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px 12px;
+  background: #f4f7fb;
+  border-radius: 4px 14px 14px 14px;
+}
+
+.qaAnswerStaff {
+  background: #eefaf2;
+}
+
+.qaAnswerBy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 2px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #1d4ed8;
+}
+
+.qaAnswerStaff .qaAnswerBy {
+  color: #15803d;
+}
+
+.qaAnswerTime {
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.qaAnswerBody {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: #1f2937;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+}
+
+.qaWaiting {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 6px 0 0;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.qaWaiting svg {
+  color: #d97706;
+}
+
+.qaHelp {
+  font-weight: 700;
+  color: #D4541A;
+}
+
+.qaFoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  padding-top: 12px;
+  font-size: 14px;
+  color: #5b6474;
+  border-top: 1px solid #eef0f4;
+}
+
+.qaFoot > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qaMore {
+  margin-left: auto;
+  font-weight: 700;
+  color: #D4541A;
+}
+
+.rowArrow {
+  flex-shrink: 0;
+  align-self: center;
+  color: #b3bac6;
+}
+
+.skeletonRow {
+  height: 110px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #f4f5f8 25%, #eceff3 50%, #f4f5f8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+.helpRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 28px;
+  font-size: 14.5px;
+  color: #5b6474;
+}
+
+.helpChip {
+  padding: 7px 14px;
+  font-weight: 600;
+  color: #0f1d36;
+  background: #fff;
+  border: 1px solid #dfe3ea;
+  border-radius: 999px;
+  transition: border-color 0.18s, color 0.18s;
+}
+
+.helpChip:hover {
+  color: #C24A15;
+  border-color: rgba(232, 101, 43, 0.5);
+}
+
+/* ── Tags ── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.tagPin {
+  color: #8a6310;
+  background: #fbefc8;
+}
+
+.tagStaff {
+  color: #15803d;
+  background: #dcfce7;
+}
+
+.tagAnswered {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.tagWaiting {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+.tagClosed {
+  color: #4b5563;
+  background: #e5e7eb;
+}
+
+/* ── Avatar ── */
+.avatar {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  border-radius: 50%;
+  background: #6C8EBF;
+}
+
+.avatarStaff {
+  background: linear-gradient(145deg, #2BD06B, #06A048);
+}
+
+.avatarAnon {
+  color: #8b93a3;
+  background: #e8ebf0;
+}
+
+/* ═══════════════════════ States ═══════════════════════ */
+.skeletonCard {
+  height: 150px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #eef0f4 25%, #e5e8ee 50%, #eef0f4 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 20px;
+  text-align: center;
+  color: #b3bac6;
+  background: #fff;
+  border: 1px dashed #d6dbe3;
+  border-radius: 16px;
+}
+
+.empty h3 {
+  margin: 6px 0 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.empty p {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* ═══════════════════════ Pagination ═══════════════════════ */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 24px;
+}
+
+.pageBtn {
+  display: grid;
+  place-items: center;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 8px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #374151;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #e6e9ef;
+  border-radius: 10px;
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.18s, background 0.18s;
+}
+
+.pageBtn:hover:not(:disabled) {
+  border-color: #c5ccd8;
+}
+
+.pageBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pageActive,
+.pageActive:hover:not(:disabled) {
+  color: #fff;
+  background: #0f1d36;
+  border-color: #0f1d36;
+}
+
+.pageGap {
+  padding: 0 2px;
+  color: #9aa3b2;
+}
+
+/* ═══════════════════════ Buttons ═══════════════════════ */
+.primaryBtn,
+.submitBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  border: none;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+  box-shadow: 0 12px 24px -12px rgba(232, 101, 43, 1);
+  transition: filter 0.18s, transform 0.18s;
+}
+
+.primaryBtn {
+  padding: 11px 20px;
+  font-size: 14px;
+  border-radius: 11px;
+}
+
+.submitBtn {
+  padding: 12px 26px;
+  font-size: 15px;
+  border-radius: 12px;
+}
+
+.primaryBtn:hover,
+.submitBtn:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+/* ยังกรอกไม่ครบ → ปุ่มเทา (เหมือนหน้า /complaints) */
+.submitBtn:disabled {
+  color: #9aa3b2;
+  background: #e5e8ee;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.ghostBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #374151;
+  cursor: pointer;
+  background: #fff;
+  border: 1.5px solid #dfe3ea;
+  border-radius: 11px;
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.ghostBtn:hover {
+  background: #f6f7fa;
+  border-color: #c5ccd8;
+}
+
+.iconBtn {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: #6b7280;
+  cursor: pointer;
+  background: #f3f5f8;
+  border: none;
+  border-radius: 10px;
+}
+
+.iconBtn:hover {
+  color: #0f1d36;
+  background: #e8ebf0;
+}
+
+.inlineLink,
+.bodyLink {
+  font-weight: 700;
+  color: #D4541A;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ปุ่มลอย — แสดงเฉพาะมือถือ */
+.fab {
+  position: fixed;
+  right: 16px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 900;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 13px 20px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+  box-shadow: 0 14px 28px -10px rgba(232, 101, 43, 0.9);
+}
+
+/* ═══════════════════════ Aside ═══════════════════════ */
+.aside {
+  position: sticky;
+  top: 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.asideCard {
+  padding: 18px 20px;
+  background: #fff;
+  border: 1px solid #e6e9ef;
+  border-radius: 16px;
+  box-shadow: 0 16px 36px -28px rgba(15, 29, 54, 0.45);
+}
+
+.asideTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.asideTitle svg {
+  color: #D4541A;
+}
+
+/* ── กฎก่อนโพสต์ (ไอคอน + ข้อความ) ── */
+.ruleList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ruleList li {
+  display: flex;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #4b5563;
+}
+
+.ruleList strong {
+  display: block;
+  color: #0f1d36;
+}
+
+.ruleIcon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: #D4541A;
+  background: #fff1e8;
+  border-radius: 9px;
+}
+
+.ruleNo {
+  color: #dc2626;
+  background: #fef2f2;
+}
+
+/* ── ตัวอย่างการ์ดบนกระดาน (อัปเดตขณะพิมพ์) ── */
+.previewBox {
+  padding: 14px;
+  background: repeating-linear-gradient(135deg, #f4f6f9 0 10px, #eff2f6 10px 20px);
+  border: 1px dashed #d3d9e2;
+  border-radius: 16px;
+}
+
+.previewLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #5b6474;
+}
+
+.qaPreview {
+  gap: 10px;
+  padding: 14px 16px;
+  pointer-events: none;
+}
+
+.qaPreview .qaMark {
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+}
+
+.qaPreview .qaQuestion {
+  margin-top: 1px;
+  font-size: 16px;
+}
+
+.qaPreview .qaWaiting {
+  margin-top: 3px;
+  font-size: 14px;
+}
+
+.previewEmpty {
+  color: #b3bac6 !important;
+  font-weight: 600 !important;
+}
+
+/* ═══════════════════════ Thread (/qna/[id]) ═══════════════════════ */
+.thread {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.staffBanner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  font-family: inherit;
+  text-align: left;
+  color: #15803d;
+  cursor: pointer;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 14px;
+  transition: background 0.18s;
+}
+
+.staffBanner:hover {
+  background: #e3fbeb;
+}
+
+.staffBannerIcon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #2BD06B, #06A048);
+}
+
+.staffBannerText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  font-size: 12.5px;
+  color: #4b7a5c;
+}
+
+.staffBannerText strong {
+  font-size: 14.5px;
+  color: #15803d;
+}
+
+.post {
+  padding: 22px 24px;
+  background: #fff;
+  border: 1px solid #e6e9ef;
+  border-radius: 16px;
+  box-shadow: 0 16px 36px -28px rgba(15, 29, 54, 0.45);
+}
+
+.postHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #eef0f4;
+}
+
+.postWho {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  font-size: 12.5px;
+  color: #8b93a3;
+}
+
+.postWho strong {
+  font-size: 15px;
+  color: #0f1d36;
+  overflow-wrap: anywhere;
+}
+
+/* ป้าย A เล็กหน้าชื่อผู้ตอบ (สีเดียวกับการ์ดในหน้ารายการ) */
+.aChip {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+  font-weight: 900;
+  border-radius: 6px;
+}
+
+.postBody {
+  flex: 1;
+  min-width: 0;
+  padding-top: 4px;
+  font-size: 15.5px;
+  line-height: 1.85;
+  color: #1f2937;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.repliesTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.repliesCount {
+  min-width: 26px;
+  padding: 2px 9px;
+  font-size: 13px;
+  text-align: center;
+  color: #fff;
+  background: #0f1d36;
+  border-radius: 999px;
+}
+
+.noReplies {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px 20px;
+  color: #b45309;
+  background: #fffbeb;
+  border: 1px dashed #fcd34d;
+  border-radius: 14px;
+}
+
+.noReplies p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #6b5a1f;
+}
+
+.replies {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reply {
+  display: flex;
+  gap: 12px;
+  padding: 16px 18px;
+  background: #fff;
+  border: 1px solid #e6e9ef;
+  border-radius: 14px;
+  scroll-margin-top: 100px;
+}
+
+.replyStaff {
+  background: linear-gradient(160deg, #f0fdf4, #fff 60%);
+  border-color: #bbf7d0;
+  box-shadow: inset 4px 0 0 #16a34a;
+}
+
+.replyMain {
+  flex: 1;
+  min-width: 0;
+}
+
+.replyHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #0f1d36;
+}
+
+.staffTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #fff;
+  background: #16a34a;
+  border-radius: 999px;
+}
+
+.replyTime {
+  margin-left: auto;
+  font-size: 12.5px;
+  color: #9aa3b2;
+}
+
+.replyBody {
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: #1f2937;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.closedNote {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px;
+  font-size: 14px;
+  color: #4b5563;
+  background: #f1f3f6;
+  border-radius: 14px;
+}
+
+.threadNav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* ═══════════════════════ Forms ═══════════════════════ */
+.composer,
+.formCard {
+  background: #fff;
+  border: 1px solid #e6e9ef;
+  border-radius: 16px;
+  box-shadow: 0 16px 36px -28px rgba(15, 29, 54, 0.45);
+}
+
+.composer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px 24px;
+  scroll-margin-top: 100px;
+}
+
+.composerTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.composerTitle svg {
+  color: #D4541A;
+}
+
+.composerRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.formCard {
+  overflow: hidden;
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 28px;
+}
+
+.formSection + .formSection {
+  border-top: 1px solid #eef0f4;
+}
+
+.formFoot {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 28px 24px;
+  background: #fafbfc;
+  border-top: 1px solid #eef0f4;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #374151;
+}
+
+
+.req {
+  color: #dc2626;
+}
+
+.optional {
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  background: #f1f3f6;
+  border-radius: 999px;
+}
+
+.input {
+  width: 100%;
+  padding: 11px 14px;
+  font-family: inherit;
+  font-size: 15px;
+  color: #111827;
+  background: #fbfcfd;
+  border: 1.5px solid #dfe3ea;
+  border-radius: 11px;
+  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+}
+
+.input::placeholder {
+  color: #a3aab6;
+}
+
+.input:hover {
+  border-color: #c5ccd8;
+}
+
+.input:focus {
+  outline: none;
+  background: #fff;
+  border-color: #E8652B;
+  box-shadow: 0 0 0 4px rgba(232, 101, 43, 0.12);
+}
+
+
+.textarea {
+  min-height: 130px;
+  line-height: 1.75;
+  resize: vertical;
+}
+
+.textareaLg {
+  min-height: 190px;
+}
+
+.fieldFoot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hint {
+  font-size: 12.5px;
+  color: #8b93a3;
+}
+
+.counter {
+  flex-shrink: 0;
+  align-self: flex-end;
+  font-size: 12px;
+  color: #9aa3b2;
+  font-variant-numeric: tabular-nums;
+}
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 14px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #991b1b;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 11px;
+}
+
+.alert svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.submitRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+
+.missing,
+.privacyNote {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: #8b93a3;
+}
+
+/* ── หัวข้อขั้นตอนในฟอร์ม ── */
+.stepTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.stepNum {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+  color: #fff;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+}
+
+/* ช่องหัวข้อที่มีป้าย Q ติดอยู่ — ภาษาภาพเดียวกับการ์ดบนกระดาน */
+.qInput {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px 8px 8px;
+  background: #fbfcfd;
+  border: 1.5px solid #dfe3ea;
+  border-radius: 13px;
+  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+}
+
+.qInput:hover {
+  border-color: #c5ccd8;
+}
+
+.qInput:focus-within {
+  background: #fff;
+  border-color: #E8652B;
+  box-shadow: 0 0 0 4px rgba(232, 101, 43, 0.12);
+}
+
+.qInputField {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 0;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f1d36;
+  background: transparent;
+  border: none;
+}
+
+.qInputField::placeholder {
+  font-weight: 500;
+  color: #a3aab6;
+}
+
+.qInputField:focus {
+  outline: none;
+}
+
+.hintChips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: #8b93a3;
+}
+
+.hintChips span {
+  padding: 2px 8px;
+  color: #5b6474;
+  background: #f1f3f6;
+  border-radius: 999px;
+}
+
+/* ── สวิตช์ไม่ประสงค์ออกนาม ── */
+.toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  background: #f6f7fa;
+  border: 1px solid #eceef3;
+  border-radius: 12px;
+}
+
+.toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toggleTrack {
+  position: relative;
+  flex-shrink: 0;
+  width: 42px;
+  height: 24px;
+  border-radius: 999px;
+  background: #cfd5de;
+  transition: background 0.2s;
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s;
+}
+
+.toggle input:checked + .toggleTrack {
+  background: #0f1d36;
+}
+
+.toggle input:checked + .toggleTrack .toggleThumb {
+  transform: translateX(18px);
+}
+
+.toggle input:focus-visible + .toggleTrack {
+  outline: 3px solid rgba(232, 101, 43, 0.4);
+  outline-offset: 2px;
+}
+
+.toggleText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.toggleText strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14.5px;
+  color: #0f1d36;
+}
+
+/* ── คำถามที่คล้ายกัน ── */
+.similar {
+  padding: 12px 14px;
+  background: #f5f8fd;
+  border: 1px solid #dbe6f5;
+  border-radius: 12px;
+  animation: rise 0.2s ease;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.similarHead {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1F5C9E;
+}
+
+.similar ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.similarLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 6px;
+  font-size: 14px;
+  color: #1f2937;
+  border-radius: 8px;
+}
+
+.similarLink:hover {
+  background: #e9f0fb;
+}
+
+.similarTitle {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.similarMeta {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ═══════════════════════ Toast ═══════════════════════ */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  z-index: 2100;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: #0f1d36;
+  border-radius: 999px;
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 12px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.toast svg {
+  color: #4ade80;
+}
+
+.toastShow {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ═══════════════════════ Responsive ═══════════════════════ */
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .aside {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroInner,
+  .heroCompact .heroInner {
+    padding: 26px 16px 42px;
+  }
+
+  .heroTitle {
+    font-size: 26px;
+  }
+
+  .heroCompact .heroTitle {
+    font-size: 21px;
+  }
+
+  .heroLead {
+    font-size: 14px;
+  }
+
+  .heroSearchInput {
+    padding: 14px 44px 14px 46px;
+    font-size: 15px;
+  }
+
+  .heroSearchIcon {
+    left: 15px;
+  }
+
+  /* ชิปเลื่อนแนวนอนแทนการขึ้นหลายบรรทัด */
+  .topicRow {
+    flex-wrap: nowrap;
+    margin-right: -16px;
+    padding-right: 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .topicRow::-webkit-scrollbar {
+    display: none;
+  }
+
+  .topicChip {
+    flex-shrink: 0;
+  }
+
+  .main {
+    padding: 18px 16px 96px;
+  }
+
+  .heroActionsRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .heroAskBtn {
+    display: none; /* มือถือใช้ปุ่มลอย "ถามเลย" แทน */
+  }
+
+  .tabBtn {
+    padding: 12px 4px;
+    font-size: 15px;
+  }
+
+  .rows {
+    gap: 12px;
+  }
+
+  .qa {
+    gap: 12px;
+    padding: 16px 14px 14px;
+  }
+
+  .qaLine {
+    gap: 10px;
+  }
+
+  .qaMark {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+  }
+
+  .qaQuestion {
+    margin-top: 2px;
+    font-size: 17px;
+  }
+
+  .qaAnswerBody {
+    font-size: 15px;
+  }
+
+  .qaMore {
+    margin-left: 0;
+    flex-basis: 100%;
+  }
+
+  .post,
+  .composer {
+    padding: 18px 16px;
+  }
+
+  .postBody {
+    font-size: 15px;
+  }
+
+  .reply {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .replyTime {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+
+  .composerRow {
+    grid-template-columns: 1fr;
+  }
+
+  .formSection {
+    padding: 20px 16px;
+  }
+
+  .formFoot {
+    padding: 16px 16px 20px;
+  }
+
+  .submitBtn {
+    width: 100%;
+  }
+
+  .fab {
+    display: inline-flex;
+  }
+
+  .threadNav > * {
+    flex: 1 1 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonCard,
+  .skeletonRow,
+  .spin {
+    animation: none;
+  }
+}
+
+/* ═══════════════════════ Validation ═══════════════════════ */
+.invalid,
+.invalid:hover {
+  border-color: #dc2626;
+  background: #fffafa;
+}
+
+.err {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #dc2626;
+}
+
+.err svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+/* ═══════════════════════ ข้อมูลส่วนตัวในกระทู้ ═══════════════════════ */
+.maskedPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #6b7280;
+  vertical-align: 1px;
+  background: #eef0f4;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* ปุ่ม "แตะเพื่อดูเบอร์" — แทรกกลางประโยค */
+.phoneBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 0;
+  padding: 3px 4px 3px 10px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #0f1d36;
+  vertical-align: middle;
+  cursor: pointer;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 999px;
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.phoneBtn:hover:not(:disabled) {
+  background: #ffedd5;
+  border-color: #fdba74;
+}
+
+.phoneBtn svg {
+  color: #D4541A;
+}
+
+.phoneMasked {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.phoneCta {
+  padding: 1px 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #fff;
+  background: #E8652B;
+  border-radius: 999px;
+}
+
+.phoneShown {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  vertical-align: middle;
+}
+
+.phoneLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+  font-weight: 800;
+  color: #15803d;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+}
+
+.phoneWarn {
+  font-size: 12px;
+  color: #b45309;
+}
+
+/* ═══════════════════════ Dialog ═══════════════════════ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(10, 22, 40, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.dialog {
+  width: 100%;
+  max-width: 460px;
+  max-height: calc(100vh - 40px);
+  padding: 26px;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.4);
+  animation: rise 0.2s ease;
+}
+
+.dialogIcon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
+  color: #D4541A;
+  background: #fff1e8;
+  border-radius: 14px;
+}
+
+.dialogIconDanger {
+  color: #dc2626;
+  background: #fef2f2;
+}
+
+.dialogTitle {
+  margin: 0 0 8px;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.45;
+  color: #0f1d36;
+}
+
+.dialogText {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #4b5563;
+}
+
+.dialogFound {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  list-style: none;
+  font-size: 14px;
+  background: #f8f9fb;
+  border: 1px solid #eef0f4;
+  border-radius: 12px;
+}
+
+.dialogFound span {
+  color: #6b7280;
+}
+
+.dialogFound code {
+  font-family: inherit;
+  font-weight: 800;
+  color: #0f1d36;
+  font-variant-numeric: tabular-nums;
+}
+
+.dialogPoints {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #374151;
+}
+
+.dialogPoints li {
+  display: flex;
+  gap: 8px;
+}
+
+.dialogPoints svg {
+  flex-shrink: 0;
+  margin-top: 4px;
+  color: #D4541A;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ═══════════════════════ คำถามของฉัน ═══════════════════════ */
+.mine {
+  margin-bottom: 24px;
+  padding: 16px 18px 12px;
+  background: linear-gradient(160deg, #fff8f1, #fff 60%);
+  border: 1px solid #fbd9c0;
+  border-radius: 16px;
+}
+
+.mineHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.mineTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.mineTitle svg {
+  color: #D4541A;
+}
+
+.mineNewAll {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #fff;
+  background: #dc2626;
+  border-radius: 999px;
+}
+
+.mineList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mineItem {
+  display: flex;
+  align-items: center;
+}
+
+.mineItem + .mineItem {
+  border-top: 1px dashed #f3d3bb;
+}
+
+.mineLink {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 4px;
+  color: inherit;
+  border-radius: 10px;
+}
+
+.mineLink:hover .mineQ {
+  color: #C24A15;
+}
+
+.mineText {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mineQ {
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f1d36;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mineMeta {
+  font-size: 13.5px;
+  color: #5b6474;
+}
+
+.mineStaff {
+  font-weight: 700;
+  color: #15803d;
+}
+
+.mineBadge {
+  flex-shrink: 0;
+  padding: 3px 10px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  background: #dc2626;
+  border-radius: 999px;
+  animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.6);
+  }
+}
+
+.mineRemove {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: #b3bac6;
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-radius: 50%;
+}
+
+.mineRemove:hover {
+  color: #dc2626;
+  background: #fef2f2;
+}
+
+.mineMore {
+  display: block;
+  margin: 4px auto 0;
+  padding: 6px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #D4541A;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.mineFoot {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  text-align: center;
+  color: #8b93a3;
+}
+
+/* แถบบอกในหน้ากระทู้ว่าเป็นคำถามของตัวเอง */
+.mineNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #9a3f12;
+  background: #fff4ec;
+  border: 1px solid #fbd9c0;
+  border-radius: 12px;
+}
+
+@media (max-width: 640px) {
+  .dialog {
+    padding: 22px 18px;
+  }
+
+  .dialogActions {
+    flex-direction: column-reverse;
+  }
+
+  .dialogActions > * {
+    width: 100%;
+  }
+
+  .mine {
+    padding: 14px 14px 10px;
+  }
+
+  .mineQ {
+    font-size: 15.5px;
+  }
+}
+
+/* แถบยืนยันเมื่อเลือก "ไม่ประสงค์ออกนาม" */
+.anonNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #15803d;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+}
+
+.anonNote svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}

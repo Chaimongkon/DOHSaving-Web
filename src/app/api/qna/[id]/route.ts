@@ -3,6 +3,16 @@ import prisma from "@/lib/prisma";
 import { getClientIp } from "@/lib/requestIp";
 import { consumeRateLimit } from "@/lib/rateLimit";
 import { decodeEntities } from "@/lib/decodeEntities";
+import {
+  BLOCKED_DATA_ERROR,
+  RESERVED_NAME_ERROR,
+  findSensitive,
+  isReservedName,
+  maskForPublic,
+  maskPlain,
+  phoneExpired,
+  stripMarkers,
+} from "@/lib/qnaPrivacy";
 
 function truncate(val: string, max: number): string {
   return val.length > max ? val.slice(0, max) : val;
@@ -23,22 +33,33 @@ export async function GET(
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
-    // Increment views
-    await prisma.qnaQuestion.update({
-      where: { id: qid },
+    // updateMany ไม่ throw เมื่อไม่พบ → กระทู้ที่ไม่มี/ถูกซ่อนได้ 404 แทน 500
+    const { count } = await prisma.qnaQuestion.updateMany({
+      where: { id: qid, isActive: true },
       data: { views: { increment: 1 } },
     });
+    if (count === 0) {
+      return NextResponse.json({ error: "ไม่พบกระทู้" }, { status: 404 });
+    }
 
+    // ไม่ส่ง memberCode ออกสู่สาธารณะ — เลขสมาชิกเป็นข้อมูลส่วนบุคคล (แอดมินดูผ่าน /api/admin/qna)
     const question = await prisma.qnaQuestion.findFirst({
       where: { id: qid, isActive: true },
-      include: {
+      select: {
+        id: true,
+        authorName: true,
+        title: true,
+        body: true,
+        views: true,
+        isPinned: true,
+        isClosed: true,
+        createdAt: true,
         replies: {
           where: { isActive: true },
           orderBy: { createdAt: "asc" },
           select: {
             id: true,
             authorName: true,
-            memberCode: true,
             body: true,
             isAdmin: true,
             createdAt: true,
@@ -51,18 +72,20 @@ export async function GET(
       return NextResponse.json({ error: "ไม่พบกระทู้" }, { status: 404 });
     }
 
+    // เบอร์โทรไม่อยู่ในหน้าเว็บ — ส่งเป็น marker ให้กด "ดูเบอร์" ผ่าน /api/qna/[id]/contact
+    // เกิน 30 วัน หรือกระทู้ปิดแล้ว → ซ่อนถาวร · คำตอบเจ้าหน้าที่ (เบอร์ทางการ) ไม่ซ่อน
     return NextResponse.json({
       question: {
         ...question,
         authorName: decodeEntities(question.authorName),
-        memberCode: decodeEntities(question.memberCode),
-        title: decodeEntities(question.title),
-        body: decodeEntities(question.body),
+        title: maskPlain(decodeEntities(question.title)),
+        body: maskForPublic(decodeEntities(question.body), !phoneExpired(question.createdAt, question.isClosed)),
         replies: question.replies.map((r) => ({
           ...r,
           authorName: decodeEntities(r.authorName),
-          memberCode: decodeEntities(r.memberCode),
-          body: decodeEntities(r.body),
+          body: r.isAdmin
+            ? decodeEntities(r.body)
+            : maskForPublic(decodeEntities(r.body), !phoneExpired(r.createdAt, question.isClosed)),
         })),
       },
     });
@@ -133,10 +156,20 @@ export async function POST(
       return NextResponse.json({ reply: { id: 0 } }, { status: 201 });
     }
 
-    const { authorName, memberCode, body: replyBody } = body;
+    const { memberCode } = body;
+    const authorName = typeof body.authorName === "string" ? stripMarkers(body.authorName) : "";
+    const replyBody = typeof body.body === "string" ? stripMarkers(body.body) : "";
 
-    if (!replyBody) {
+    if (!replyBody.trim()) {
       return NextResponse.json({ error: "กรุณากรอกข้อความ" }, { status: 400 });
+    }
+
+    if (isReservedName(authorName)) {
+      return NextResponse.json({ error: RESERVED_NAME_ERROR }, { status: 400 });
+    }
+
+    if (findSensitive(replyBody).some((m) => m.type !== "phone")) {
+      return NextResponse.json({ error: BLOCKED_DATA_ERROR }, { status: 400 });
     }
 
     const reply = await prisma.qnaReply.create({
@@ -149,7 +182,7 @@ export async function POST(
       },
     });
 
-    return NextResponse.json({ reply }, { status: 201 });
+    return NextResponse.json({ reply: { id: reply.id } }, { status: 201 });
   } catch (error) {
     console.error("Failed to create reply:", error);
     return NextResponse.json({ error: "เกิดข้อผิดพลาด" }, { status: 500 });
