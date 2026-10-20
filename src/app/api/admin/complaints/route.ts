@@ -22,38 +22,57 @@ export async function GET(req: NextRequest) {
 
   try {
     const { searchParams } = new URL(req.url);
+    // status: "" = ทั้งหมด · "open" = ยังไม่ปิดเรื่อง (รอดำเนินการ + กำลังตรวจสอบ) · หรือสถานะเดียว
     const status = searchParams.get("status") || "";
-    const search = searchParams.get("search") || "";
-    const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
-    const limit = 20;
+    const search = (searchParams.get("search") || "").trim();
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1") || 1);
+    const limit = Math.min(100, Math.max(5, parseInt(searchParams.get("limit") || "20") || 20));
     const skip = (page - 1) * limit;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const where: any = {};
-    if (status) where.status = status;
+    const base: any = {};
     if (search) {
-      where.OR = [
+      base.OR = [
         { trackingCode: { contains: search } },
         { name: { contains: search } },
         { subject: { contains: search } },
+        { memberId: { contains: search } },
+        { tel: { contains: search } },
       ];
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: any = { ...base };
+    if (status === "open") where.status = { in: ["pending", "reviewing"] };
+    else if (status) where.status = status;
 
-    const [complaints, total] = await Promise.all([
+    const [complaints, total, grouped] = await Promise.all([
       prisma.complaint.findMany({
         where,
-        orderBy: { createdAt: "desc" },
+        // เรื่องที่ยังไม่ปิด: เก่าสุดขึ้นก่อน (รอนานที่สุดต้องทำก่อน) · อื่น ๆ: ใหม่สุดก่อน
+        orderBy: { createdAt: status === "open" || status === "pending" ? "asc" : "desc" },
         skip,
         take: limit,
       }),
       prisma.complaint.count({ where }),
+      prisma.complaint.groupBy({ by: ["status"], where: base, _count: true }),
     ]);
+
+    const byStatus = Object.fromEntries(grouped.map((g) => [g.status, g._count])) as Record<string, number>;
+    const counts = {
+      all: grouped.reduce((n, g) => n + g._count, 0),
+      open: (byStatus.pending ?? 0) + (byStatus.reviewing ?? 0),
+      pending: byStatus.pending ?? 0,
+      reviewing: byStatus.reviewing ?? 0,
+      resolved: byStatus.resolved ?? 0,
+      rejected: byStatus.rejected ?? 0,
+    };
 
     return NextResponse.json({
       complaints,
       total,
       page,
-      totalPages: Math.ceil(total / limit),
+      totalPages: Math.max(1, Math.ceil(total / limit)),
+      counts,
     });
   } catch (error) {
     console.error("Admin complaints error:", error);
