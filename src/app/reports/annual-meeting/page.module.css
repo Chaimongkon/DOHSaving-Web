@@ -1,308 +1,559 @@
-/* ── Hero ── */
+/* ============================================================
+   เอกสารประกอบการประชุมใหญ่ (/reports/annual-meeting)
+   ภาษาภาพเดียวกับทั้งเว็บ: hero กรมท่า · เส้นประทอง · ปุ่มหลักสีส้ม
+   จัดกลุ่มตามปี — แต่ละฉบับเห็นหน้าปก ขนาดไฟล์ และปุ่มดาวน์โหลด/เปิดอ่านชัดเจน
+   ตัวอักษรใหญ่ กดง่าย — ผู้อ่านหลายวัย
+   ============================================================ */
+
+/* ═══════════════════════ Hero ═══════════════════════ */
 .hero {
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #1a4b8c 100%);
-  padding: 52px 24px 80px;
-  text-align: center;
-  color: #fff;
   position: relative;
   overflow: hidden;
+  background: linear-gradient(135deg, #0a1628 0%, #0f1d36 50%, #172c52 100%);
 }
 
 .hero::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 600px 400px at 20% 100%, rgba(59,130,246,0.15) 0%, transparent 70%),
-    radial-gradient(ellipse 500px 350px at 80% 0%, rgba(147,197,253,0.1) 0%, transparent 70%);
-  pointer-events: none;
+  inset: 0 0 auto 0;
+  z-index: 2;
+  height: 3px;
+  background: linear-gradient(90deg, #E8652B, #D8AE3F 45%, #F7E3A1 60%, #E8652B);
 }
 
 .hero::after {
   content: "";
   position: absolute;
-  bottom: 0;
   left: 0;
   right: 0;
-  height: 80px;
-  background: linear-gradient(to top, #f8fafc, transparent);
-  pointer-events: none;
+  bottom: 12px;
+  height: 3px;
+  opacity: 0.35;
+  background: repeating-linear-gradient(90deg, #D8AE3F 0 34px, transparent 34px 60px);
 }
 
-.heroIcon {
-  display: inline-flex;
+.heroGlow {
+  position: absolute;
+  top: -220px;
+  right: 6%;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(216, 174, 63, 0.2), transparent 64%);
+}
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 26px 24px 48px;
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  margin-bottom: 20px;
-  color: #93c5fd;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-size: 13.5px;
+  color: rgba(232, 240, 252, 0.6);
+}
+
+.breadcrumb a {
+  display: inline-flex;
+  color: #E3C169;
+}
+
+.breadcrumbActive {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .heroTitle {
-  font-size: 30px;
+  margin: 0;
+  font-size: 32px;
   font-weight: 800;
-  margin-bottom: 10px;
-  letter-spacing: -0.02em;
+  line-height: 1.35;
+  color: #fff;
 }
 
 .heroSub {
+  max-width: 620px;
+  margin: 6px 0 0;
+  font-size: 16px;
+  line-height: 1.75;
+  color: rgba(232, 240, 252, 0.75);
+}
+
+.heroChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.heroChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
   font-size: 14px;
-  opacity: 0.7;
-  max-width: 480px;
-  margin: 0 auto;
-  line-height: 1.7;
-}
-
-/* ── Content ── */
-.content {
-  max-width: 720px;
-  margin: -40px auto 0;
-  padding: 0 24px 60px;
-  position: relative;
-  z-index: 1;
-}
-
-/* ── Timeline ── */
-.timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.timelineItem {
-  display: flex;
-  gap: 24px;
-}
-
-/* ── Timeline line + dot ── */
-.timelineLine {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 40px;
-  flex-shrink: 0;
-}
-
-.timelineDot {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #1e3a5f, #3b82f6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.3);
-  z-index: 1;
-}
-
-.timelineBar {
-  width: 2px;
-  flex: 1;
-  background: linear-gradient(to bottom, #3b82f6, #e2e8f0);
-  min-height: 24px;
-}
-
-/* ── Document Card ── */
-.docCard {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  margin-bottom: 20px;
-  padding: 16px 20px;
-}
-
-.docCard:hover {
-  border-color: #93c5fd;
-  box-shadow: 0 6px 24px rgba(30, 58, 95, 0.1);
-  transform: translateY(-2px);
-}
-
-/* ── Year badge ── */
-.yearBadge {
-  display: inline-block;
-  padding: 4px 12px;
-  background: linear-gradient(135deg, #1e3a5f, #2a4a7f);
-  color: #fff;
-  border-radius: 6px;
-  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
 }
 
-/* ── Cover image ── */
-.coverWrap {
-  width: 56px;
-  height: 56px;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid #e5e7eb;
+.heroChip svg {
+  color: #E3C169;
+}
+
+/* ═══════════════════════ Layout ═══════════════════════ */
+.main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 26px 24px 80px;
+}
+
+/* ── ค้นหา + เลือกปี ── */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.years {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.yearChip {
+  min-height: 42px;
+  padding: 8px 18px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f1d36;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #dfe3ea;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.18s, color 0.18s, background 0.18s;
+}
+
+.yearChip:hover {
+  color: #C24A15;
+  border-color: rgba(232, 101, 43, 0.5);
+}
+
+.yearChipActive,
+.yearChipActive:hover {
+  color: #fff;
+  background: #0f1d36;
+  border-color: #0f1d36;
+}
+
+.search {
+  display: flex;
+  flex: 0 1 300px;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 8px 0 14px;
+  color: #8a93a3;
+  background: #fff;
+  border: 1px solid #dfe3ea;
+  border-radius: 12px;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.search:focus-within {
+  border-color: rgba(232, 101, 43, 0.6);
+  box-shadow: 0 0 0 3px rgba(232, 101, 43, 0.14);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 0;
+  font-family: inherit;
+  font-size: 15.5px;
+  color: #0f1d36;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.search button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: #5b6474;
+  cursor: pointer;
+  background: #eef0f4;
+  border: none;
+  border-radius: 50%;
+}
+
+/* ── กลุ่มปี ── */
+.group {
+  margin-top: 28px;
+}
+
+.groupHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.groupTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f1d36;
+  font-variant-numeric: tabular-nums;
+}
+
+.latestBadge {
+  padding: 3px 11px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f1d36;
+  background: linear-gradient(145deg, #F7E3A1, #D8AE3F);
+  border-radius: 999px;
+}
+
+.groupLine {
+  flex: 1;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #d6dbe3 0 10px, transparent 10px 17px);
+}
+
+.groupCount {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #5b6474;
+}
+
+/* ── รายการเอกสาร ── */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.doc {
+  display: flex;
+  gap: 22px;
+  padding: 18px 22px 18px 18px;
+  background: #fff;
+  border: 1px solid #e3e7ee;
+  border-radius: 18px;
+  box-shadow: 0 16px 36px -28px rgba(15, 29, 54, 0.45);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.doc:hover {
+  border-color: rgba(232, 101, 43, 0.4);
+  box-shadow: 0 24px 44px -28px rgba(15, 29, 54, 0.6);
+}
+
+.thumbLink {
   flex-shrink: 0;
+  align-self: flex-start;
 }
 
-.coverImg {
+/* หน้าปกเอกสาร — สัดส่วนกระดาษ A4 */
+.thumb {
+  position: relative;
+  width: 112px;
+  aspect-ratio: 210 / 297;
+  overflow: hidden;
+  background: #f4f6f9;
+  border: 1px solid #e3e7ee;
+  border-radius: 6px;
+  box-shadow: 0 12px 22px -14px rgba(15, 29, 54, 0.6);
+  transition: transform 0.25s;
+}
+
+.doc:hover .thumb {
+  transform: translateY(-3px);
+}
+
+.thumbImg {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
-/* ── Icon placeholder ── */
-.iconWrap {
-  width: 56px;
-  height: 56px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #f0f4ff, #e8eeff);
-  border: 1px solid #dbeafe;
+.thumbFallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: #b3bac6;
+}
+
+.thumbType {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #fff;
+  background: linear-gradient(160deg, #ef5b5b, #c53030);
+  border-radius: 5px;
+}
+
+.docBody {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1px;
-  color: #3b82f6;
-  flex-shrink: 0;
-}
-
-.iconWrap svg {
-  width: 22px;
-  height: 22px;
-}
-
-.iconWrap span {
-  font-size: 8px;
-  font-weight: 700;
-  opacity: 0.5;
-  letter-spacing: 0.1em;
-}
-
-/* ── Card info ── */
-.cardInfo {
   flex: 1;
   min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 2px;
 }
 
 .docTitle {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1e293b;
-  margin: 0 0 4px;
-  line-height: 1.4;
+  margin: 0;
+  font-size: 18.5px;
+  font-weight: 800;
+  line-height: 1.5;
+  color: #0f1d36;
+  overflow-wrap: anywhere;
 }
 
 .docDesc {
-  font-size: 12px;
-  color: #94a3b8;
-  line-height: 1.4;
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin: 4px 0 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #374151;
+  white-space: pre-line;
 }
 
-/* ── Download button ── */
-.downloadBtn {
+.docMeta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  color: #1e3a5f;
-  font-size: 12px;
-  font-weight: 600;
-  transition: all 0.25s;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.docCard:hover .downloadBtn {
-  background: linear-gradient(135deg, #1e3a5f, #2a4a7f);
-  border-color: #1e3a5f;
-  color: #fff;
-  box-shadow: 0 3px 10px rgba(30, 58, 95, 0.2);
-}
-
-/* ── Empty & Loading ── */
-.empty {
-  text-align: center;
-  padding: 80px 20px;
-  color: #94a3b8;
-}
-
-.empty svg {
-  width: 56px;
-  height: 56px;
-  margin-bottom: 16px;
-  opacity: 0.35;
-}
-
-.loading {
-  text-align: center;
-  padding: 80px 20px;
-  color: #6b7280;
+  gap: 8px;
+  margin-top: 8px;
   font-size: 14px;
+  font-weight: 600;
+  color: #5b6474;
+  font-variant-numeric: tabular-nums;
 }
 
-/* ── Responsive ── */
-@media (max-width: 768px) {
-  .hero {
-    padding: 36px 16px 64px;
+.docCategory {
+  padding: 2px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1F5C9E;
+  background: #e8f0fb;
+  border-radius: 999px;
+}
+
+.docActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.downloadBtn,
+.viewBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 10px 20px;
+  font-size: 15.5px;
+  font-weight: 800;
+  white-space: nowrap;
+  border-radius: 12px;
+  transition: filter 0.18s, background 0.18s, border-color 0.18s, transform 0.18s;
+}
+
+.downloadBtn {
+  color: #fff;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+  box-shadow: 0 10px 20px -12px rgba(232, 101, 43, 1);
+}
+
+.downloadBtn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.viewBtn {
+  color: #0f1d36;
+  background: #fff;
+  border: 1.5px solid #dfe3ea;
+}
+
+.viewBtn:hover {
+  color: #C24A15;
+  background: #fff7f1;
+  border-color: #f5a878;
+}
+
+.viewBtn svg {
+  color: #D4541A;
+}
+
+.downloadBtn:focus-visible,
+.viewBtn:focus-visible,
+.yearChip:focus-visible,
+.resetBtn:focus-visible {
+  outline: 3px solid rgba(232, 101, 43, 0.5);
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════ States ═══════════════════════ */
+.skeleton {
+  height: 196px;
+  margin-top: 14px;
+  border-radius: 18px;
+  background: linear-gradient(90deg, #eef0f4 25%, #e5e8ee 50%, #eef0f4 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
   }
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 56px 20px;
+  text-align: center;
+  color: #b3bac6;
+}
+
+.empty h2 {
+  margin: 6px 0 0;
+  font-size: 20px;
+  color: #0f1d36;
+}
+
+.empty p {
+  margin: 0;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.resetBtn {
+  margin-top: 12px;
+  padding: 11px 20px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  border: none;
+  border-radius: 11px;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+}
+
+/* ═══════════════════════ Responsive ═══════════════════════ */
+@media (max-width: 640px) {
+  .heroInner {
+    padding: 20px 16px 40px;
+  }
+
   .heroTitle {
-    font-size: 22px;
+    font-size: 25px;
   }
-  .heroIcon {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
+
+  .heroSub {
+    font-size: 15px;
   }
-  .content {
-    padding: 0 12px 40px;
+
+  .main {
+    padding: 18px 16px 64px;
   }
-  .timelineItem {
-    gap: 14px;
+
+  .search {
+    flex: 1 1 100%;
   }
-  .timelineLine {
-    width: 32px;
+
+  .groupTitle {
+    font-size: 20px;
   }
-  .timelineDot {
-    width: 30px;
-    height: 30px;
-  }
-  .docCard {
+
+  .doc {
     flex-wrap: wrap;
-    padding: 12px 14px;
-    gap: 10px;
-    margin-bottom: 14px;
+    gap: 14px;
+    padding: 14px;
   }
-  .coverWrap,
-  .iconWrap {
-    width: 44px;
-    height: 44px;
+
+  .thumb {
+    width: 84px;
   }
+
+  /* ชื่อเอกสารอยู่ข้างปก · ปุ่มลงไปเต็มความกว้างด้านล่าง กดง่ายด้วยนิ้วโป้ง */
+  .docBody {
+    display: contents;
+  }
+
   .docTitle {
-    font-size: 13px;
+    flex: 1;
+    min-width: 0;
+    font-size: 17px;
   }
+
+  .docDesc,
+  .docMeta {
+    flex-basis: 100%;
+    margin-top: 0;
+  }
+
+  .docActions {
+    flex-basis: 100%;
+    margin-top: 0;
+    padding-top: 2px;
+  }
+
+  .downloadBtn,
+  .viewBtn {
+    flex: 1;
+    padding: 10px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+
+  .thumb,
   .downloadBtn {
-    width: 100%;
-    justify-content: center;
-    padding: 9px;
-    font-size: 12px;
+    transition: none;
   }
 }

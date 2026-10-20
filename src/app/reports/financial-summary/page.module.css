@@ -1,454 +1,892 @@
-/* ═══════════════════════════════════════════════════════
-   Financial Summary — รายการย่อแสดงสินทรัพย์และหนี้สิน
-   ═══════════════════════════════════════════════════════ */
+/* ============================================================
+   รายการย่อแสดงสินทรัพย์และหนี้สิน (/reports/financial-summary)
+   ภาษาภาพเดียวกับทั้งเว็บ: hero กรมท่า · เส้นประทอง · ปุ่มหลักสีส้ม
+   แนวคิด: สมการบัญชี "สินทรัพย์ = หนี้สิน + ทุน" เป็นแกนของหน้า
+   · ฉบับล่าสุดเด่นพร้อมภาพตัวอย่างเอกสาร · ตาราง 12 เดือนเห็นว่าเดือนไหนเผยแพร่แล้ว
+   สีประจำหมวด: สินทรัพย์ = ทอง · หนี้สิน = ส้ม · ทุน = น้ำเงิน
+   ============================================================ */
 
-/* ── Hero ── */
+/* ═══════════════════════ Hero ═══════════════════════ */
 .hero {
-  background: linear-gradient(160deg, #0a1628 0%, #1a2d4a 40%, #1e3a5f 70%, #1a4a6a 100%);
-  padding: 44px 24px 56px;
-  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0a1628 0%, #0f1d36 50%, #172c52 100%);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 2;
+  height: 3px;
+  background: linear-gradient(90deg, #E8652B, #D8AE3F 45%, #F7E3A1 60%, #E8652B);
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  height: 3px;
+  opacity: 0.35;
+  background: repeating-linear-gradient(90deg, #D8AE3F 0 34px, transparent 34px 60px);
+}
+
+.heroGlow {
+  position: absolute;
+  top: -220px;
+  right: 6%;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(216, 174, 63, 0.2), transparent 64%);
+}
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 26px 24px 50px;
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-size: 13.5px;
+  color: rgba(232, 240, 252, 0.6);
+}
+
+.breadcrumb a {
+  display: inline-flex;
+  color: #E3C169;
+}
+
+.breadcrumbActive {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .heroTitle {
-  font-size: 28px;
+  margin: 0;
+  font-size: 32px;
   font-weight: 800;
+  line-height: 1.35;
   color: #fff;
-  margin: 0 0 6px;
 }
 
 .heroSub {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
-  margin: 0;
+  max-width: 640px;
+  margin: 6px 0 0;
+  font-size: 16px;
+  line-height: 1.75;
+  color: rgba(232, 240, 252, 0.75);
 }
 
-/* ── Content ── */
-.content {
-  max-width: 1000px;
-  margin: -32px auto 0;
-  padding: 0 24px 60px;
-  position: relative;
-  z-index: 1;
-}
-
-/* ── Year Selector ── */
-.yearBar {
+/* สมการบัญชี */
+.equation {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.eqTerm {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  font-size: 15.5px;
+  font-weight: 800;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+}
+
+.eqTerm svg {
+  color: #E3C169;
+}
+
+.eqOp {
+  font-size: 22px;
+  font-weight: 800;
+  color: #E3C169;
+}
+
+/* ═══════════════════════ Layout ═══════════════════════ */
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 26px 24px 80px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
-  border-radius: 14px;
-  padding: 14px 20px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  gap: 12px;
   margin-bottom: 20px;
 }
 
-.yearLeft {
+.years {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  color: #E8652B;
+  min-height: 42px;
 }
 
-.yearLabel {
+.yearsLabel {
+  margin-right: 4px;
   font-size: 15px;
   font-weight: 700;
-  color: #1f2937;
+  color: #5b6474;
 }
 
-.yearSelector {
-  position: relative;
-}
-
-.yearBtn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border-radius: 10px;
-  font-size: 15px;
+.yearChip {
+  min-height: 42px;
+  padding: 8px 18px;
+  font-family: inherit;
+  font-size: 15.5px;
   font-weight: 700;
-  border: 1px solid #E8652B;
-  background: #fff;
-  color: #E8652B;
+  color: #0f1d36;
   cursor: pointer;
-  transition: all 0.2s;
-  min-width: 100px;
-  justify-content: center;
-}
-
-.yearBtn:hover {
-  background: #fff7ed;
-}
-
-.chevronUp {
-  transform: rotate(180deg);
-}
-
-.yearDropdown {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
   background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-  min-width: 160px;
-  z-index: 50;
-  padding: 6px;
-  animation: dropIn 0.15s ease;
+  border: 1px solid #dfe3ea;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.18s, color 0.18s, background 0.18s;
 }
 
-@keyframes dropIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
+.yearChip:hover {
+  color: #C24A15;
+  border-color: rgba(232, 101, 43, 0.5);
 }
 
-.yearOption {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 10px 14px;
-  border: none;
-  background: none;
-  font-size: 14px;
+.yearChipActive,
+.yearChipActive:hover {
+  color: #fff;
+  background: #0f1d36;
+  border-color: #0f1d36;
+}
+
+.progress {
+  font-size: 14.5px;
   font-weight: 600;
-  color: #374151;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: background 0.15s;
+  color: #5b6474;
+  font-variant-numeric: tabular-nums;
 }
 
-.yearOption:hover {
-  background: #f9fafb;
+.progress strong {
+  font-size: 17px;
+  color: #0f1d36;
 }
 
-.yearOptionActive {
-  background: #fff7ed;
-  color: #E8652B;
-}
-
-.yearCheck {
-  color: #E8652B;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-/* ── Item Count ── */
-.itemCount {
-  font-size: 13px;
-  color: #6b7280;
+.sectionTitle {
   margin: 0 0 14px;
-  padding-left: 2px;
+  font-size: 21px;
+  font-weight: 800;
+  color: #0f1d36;
+  font-variant-numeric: tabular-nums;
 }
 
-.itemCount strong {
-  color: #1e3a5f;
-  font-weight: 700;
-}
-
-/* ── Skeleton Loading ── */
-.skeletonCard {
-  background: #fff;
-  border-radius: 14px;
-  border: 1px solid #e8ecf1;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.skeletonInner {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
-
-.skeletonIcon {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s ease infinite;
-  flex-shrink: 0;
-}
-
-.skeletonLines {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-top: 4px;
-}
-
-.skeletonLine {
-  height: 12px;
-  border-radius: 6px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s ease infinite;
-}
-
-.skeletonBtn {
-  height: 36px;
-  border-radius: 9px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s ease infinite;
-}
-
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* ── Empty ── */
-.emptyBox {
-  text-align: center;
-  padding: 60px 20px;
-  color: #d1d5db;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.emptyBox p {
-  font-size: 14px;
-  color: #9ca3af;
-  margin: 0;
-}
-
-/* ── Month Grid ── */
-.monthGrid {
+/* ═══════════════════════ ฉบับล่าสุด ═══════════════════════ */
+.featured {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 32px;
+  align-items: center;
+  margin-bottom: 34px;
+  padding: 28px 32px;
+  overflow: hidden;
+  color: #fff;
+  border: 1px solid rgba(227, 193, 105, 0.35);
+  border-radius: 22px;
+  background: linear-gradient(150deg, #22406f 0%, #13274a 50%, #0b172d 100%);
+  box-shadow: 0 28px 54px -34px rgba(15, 29, 54, 0.9);
 }
 
-.card {
-  background: #fff;
-  border-radius: 14px;
-  border: 1px solid #e8ecf1;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  transition: all 0.25s ease;
-  opacity: 0;
-}
-
-.cardFadeIn {
-  animation: cardAppear 0.4s ease forwards;
-}
-
-@keyframes cardAppear {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.cardClickable {
-  cursor: pointer;
-}
-
-.cardClickable:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  border-color: #c7d2e0;
-}
-
-.cardInner {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
-
-.cardIcon {
-  flex-shrink: 0;
-  width: 52px;
-  height: 52px;
-}
-
-.cardIcon img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.cardInfo {
-  flex: 1;
+.featuredBody {
   min-width: 0;
 }
 
-.cardMonthRow {
-  margin-bottom: 6px;
+.featuredBadge {
+  display: inline-flex;
+  padding: 4px 12px;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0f1d36;
+  background: linear-gradient(145deg, #F7E3A1, #D8AE3F);
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
 }
 
-.monthTag {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #1e3a5f;
-  background: #eef4fb;
+.featuredTitle {
+  margin: 12px 0 0;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
 }
 
-.cardTitle {
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
-  margin: 0 0 3px;
-  line-height: 1.4;
-}
-
-.cardDate {
-  font-size: 11px;
-  color: #9ca3af;
-  margin: 0;
-}
-
-.cardBtn {
+.featuredAsOf {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  padding: 9px 0;
-  border-radius: 9px;
-  border: none;
-  font-size: 13px;
-  font-weight: 600;
-  color: #1e3a5f;
-  background: #eef4fb;
-  cursor: pointer;
-  transition: all 0.2s;
+  gap: 8px;
+  margin: 6px 0 0;
+  font-size: 15.5px;
+  color: rgba(232, 240, 252, 0.78);
+  font-variant-numeric: tabular-nums;
 }
 
-.cardClickable:hover .cardBtn {
-  background: #1e3a5f;
-  color: #fff;
-}
-
-.cardNoFile {
-  text-align: center;
-  padding: 9px 0;
-  border-radius: 9px;
-  font-size: 12px;
-  color: #c5ccd6;
-  border: 1px dashed #e0e5eb;
-}
-
-/* ── Info Banner ── */
-.infoBanner {
-  background: linear-gradient(135deg, #0f1d36 0%, #1a2d4a 100%);
-  border-radius: 16px;
-  padding: 24px 28px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.infoBannerIcon {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #E8652B;
+.featuredAsOf svg {
   flex-shrink: 0;
+  color: #E3C169;
 }
 
-.infoBannerText {
-  flex: 1;
+.featuredActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
 }
 
-.infoBannerTitle {
-  font-size: 15px;
-  font-weight: 700;
+.primaryBtn,
+.ghostBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 22px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: filter 0.18s, background 0.18s, transform 0.18s;
+}
+
+.primaryBtn {
   color: #fff;
-  margin: 0 0 4px;
+  border: none;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+  box-shadow: 0 12px 24px -12px rgba(232, 101, 43, 1);
 }
 
-.infoBannerSub {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+.primaryBtn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.ghostBtn {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.ghostBtn:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.ghostBtn svg {
+  color: #E3C169;
+}
+
+/* ภาพตัวอย่างเอกสาร — แผ่นกระดาษเอียงเล็กน้อย */
+.preview {
+  position: relative;
+  display: block;
+  width: 210px;
+  aspect-ratio: 210 / 297;
+  margin-right: 10px;
+  padding: 0;
+  overflow: hidden;
+  cursor: zoom-in;
+  background: #fff;
+  border: none;
+  border-radius: 6px;
+  box-shadow:
+    10px 10px 0 -2px rgba(255, 255, 255, 0.16),
+    0 26px 44px -18px rgba(0, 0, 0, 0.75);
+  transform: rotate(2.5deg);
+  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.preview:hover {
+  transform: rotate(0deg) translateY(-4px);
+}
+
+.previewImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.previewFallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #9aa3b2;
+  background: repeating-linear-gradient(180deg, #fff 0 21px, #eef0f4 21px 22px);
+}
+
+/* ── ตัวเลขยอดรวม (แสดงเมื่อแอดมินกรอกข้อมูล) ── */
+.figures {
+  margin-top: 18px;
+}
+
+.figureTiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+}
+
+.figureTile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+}
+
+.figureLabel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(232, 240, 252, 0.78);
+}
+
+.figureValue {
+  font-size: 23px;
+  font-weight: 800;
+  line-height: 1.3;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.figureValue small {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: rgba(232, 240, 252, 0.7);
+}
+
+.dotAssets,
+.dotLiabilities,
+.dotEquity {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.dotAssets {
+  background: #E3C169;
+}
+
+.dotLiabilities {
+  background: #E8652B;
+}
+
+.dotEquity {
+  background: #4F93DC;
+}
+
+/* แถบสัดส่วน หนี้สิน : ทุน (รวมกัน = สินทรัพย์) */
+.split {
+  margin-top: 12px;
+}
+
+.splitBar {
+  display: flex;
+  gap: 2px;
+  height: 12px;
+}
+
+.splitLiabilities,
+.splitEquity {
+  display: block;
+  min-width: 4px;
+}
+
+.splitLiabilities {
+  background: #E8652B;
+  border-radius: 4px 0 0 4px;
+}
+
+.splitEquity {
+  flex: 1;
+  background: #4F93DC;
+  border-radius: 0 4px 4px 0;
+}
+
+.splitLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(232, 240, 252, 0.85);
+  font-variant-numeric: tabular-nums;
+}
+
+.splitLegend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* ═══════════════════════ ตาราง 12 เดือน ═══════════════════════ */
+.monthGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.month {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 148px;
+  padding: 16px 16px 12px;
+  overflow: hidden;
+  font-family: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #e3e7ee;
+  border-radius: 18px;
+  box-shadow: 0 16px 36px -28px rgba(15, 29, 54, 0.45);
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.month:hover {
+  border-color: rgba(232, 101, 43, 0.5);
+  box-shadow: 0 24px 44px -28px rgba(15, 29, 54, 0.6);
+  transform: translateY(-3px);
+}
+
+/* ลายน้ำตาชั่งมุมขวาบน */
+.monthWatermark {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 92px;
+  height: 92px;
+  color: #0f1d36;
+  opacity: 0.045;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.3s;
+}
+
+.month:hover .monthWatermark {
+  opacity: 0.08;
+  transform: rotate(-8deg);
+}
+
+.monthTop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ใบปฏิทิน: เดือน + วันสิ้นเดือน */
+.cal {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  width: 58px;
+  overflow: hidden;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #dfe3ea;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px -10px rgba(15, 29, 54, 0.55);
+}
+
+.calMonth {
+  padding: 3px 0 2px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #F7E3A1;
+  background: linear-gradient(145deg, #1a3561, #0f1d36);
+}
+
+.calDay {
+  padding: 2px 0 4px;
+  font-size: 25px;
+  font-weight: 900;
+  line-height: 1.2;
+  color: #0f1d36;
+  font-variant-numeric: tabular-nums;
+}
+
+.monthText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.monthName {
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.4;
+  color: #0f1d36;
+}
+
+.monthStatus {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #5b6474;
+  font-variant-numeric: tabular-nums;
+}
+
+.monthFoot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed #e3e7ee;
+}
+
+.monthPublished,
+.monthPending {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.monthPublished {
+  color: #15803d;
+}
+
+.monthPending {
+  color: #8a93a3;
+}
+
+.monthAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14.5px;
+  font-weight: 800;
+  white-space: nowrap;
+  color: #C24A15;
+}
+
+.monthArrow {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: #D4541A;
+  background: #fff1e6;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.month:hover .monthArrow {
+  color: #fff;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+  transform: translateX(3px);
+}
+
+/* เดือนล่าสุด */
+.monthLatest {
+  border-color: rgba(216, 174, 63, 0.9);
+  background: linear-gradient(160deg, #fff6df 0%, #fff 55%);
+}
+
+.monthLatest .calMonth {
+  color: #fff;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+}
+
+.monthRibbon {
+  position: absolute;
+  top: 0;
+  right: 16px;
+  z-index: 1;
+  padding: 3px 10px 4px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #0f1d36;
+  background: linear-gradient(145deg, #F7E3A1, #D8AE3F);
+  border-radius: 0 0 9px 9px;
+}
+
+/* เดือนที่ยังไม่เผยแพร่ */
+.monthEmpty,
+.monthEmpty:hover {
+  cursor: default;
+  background: repeating-linear-gradient(135deg, #fafbfc 0 10px, #f4f6f9 10px 20px);
+  border: 1.5px dashed #d6dbe3;
+  box-shadow: none;
+  transform: none;
+}
+
+.monthEmpty .cal {
+  box-shadow: none;
+  opacity: 0.75;
+}
+
+.monthEmpty .calMonth {
+  color: #fff;
+  background: #a9b1bf;
+}
+
+.monthEmpty .calDay,
+.monthEmpty .monthName {
+  color: #8a93a3;
+}
+
+.monthEmpty .monthStatus {
+  color: #8a93a3;
+}
+
+.monthEmpty .monthFoot {
+  border-top-color: #d6dbe3;
+}
+
+/* ═══════════════════════ คำอธิบาย ═══════════════════════ */
+.explain {
+  margin-top: 44px;
+  padding-top: 30px;
+  border-top: 1px solid #e3e7ee;
+}
+
+.explainLead {
+  max-width: 820px;
+  margin: -6px 0 18px;
+  font-size: 15.5px;
+  line-height: 1.8;
+  color: #374151;
+}
+
+.explainGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.explainCard {
+  height: 100%;
+  padding: 18px 20px 20px;
+  background: #fff;
+  border: 1px solid #e3e7ee;
+  border-top-width: 4px;
+  border-radius: 16px;
+}
+
+.explainCard h3 {
+  margin: 10px 0 4px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.explainCard p {
   margin: 0;
-  line-height: 1.6;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #374151;
 }
 
-/* ── PDF Viewer Modal ── */
+.explainIcon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+.explainAssets {
+  border-top-color: #D8AE3F;
+}
+
+.explainAssets .explainIcon {
+  color: #8a6a12;
+  background: #fbf3d9;
+}
+
+.explainLiabilities {
+  border-top-color: #E8652B;
+}
+
+.explainLiabilities .explainIcon {
+  color: #C24A15;
+  background: #fff1e6;
+}
+
+.explainEquity {
+  border-top-color: #1F5C9E;
+}
+
+.explainEquity .explainIcon {
+  color: #1F5C9E;
+  background: #e8f0fb;
+}
+
+.explainOp {
+  font-size: 26px;
+  font-weight: 800;
+  color: #b08a25;
+}
+
+/* ═══════════════════════ States ═══════════════════════ */
+.skeleton {
+  border-radius: 18px;
+  background: linear-gradient(90deg, #eef0f4 25%, #e5e8ee 50%, #eef0f4 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+.skeletonFeatured {
+  height: 300px;
+  margin-bottom: 34px;
+}
+
+.skeletonMonth {
+  height: 150px;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 34px;
+  padding: 44px 20px;
+  text-align: center;
+  color: #b3bac6;
+  border: 1.5px dashed #d6dbe3;
+  border-radius: 18px;
+}
+
+.empty h2 {
+  margin: 6px 0 0;
+  font-size: 19px;
+  color: #0f1d36;
+}
+
+.empty p {
+  margin: 0;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.yearChip:focus-visible,
+.month:focus-visible,
+.primaryBtn:focus-visible,
+.ghostBtn:focus-visible,
+.preview:focus-visible,
+.modalClose:focus-visible {
+  outline: 3px solid rgba(232, 101, 43, 0.6);
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════ หน้าต่างดูรายงาน ═══════════════════════ */
 .modalOverlay {
   position: fixed;
   inset: 0;
   z-index: 99999;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px;
-  animation: fadeIn 0.2s ease;
+  background: rgba(6, 12, 24, 0.82);
+  backdrop-filter: blur(6px);
+  animation: fade 0.18s ease;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
 }
 
 .modalContent {
-  background: #fff;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 960px;
-  height: 90vh;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 1000px;
+  height: 92vh;
   overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
-  animation: slideUp 0.25s ease;
-}
-
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
 }
 
 .modalHeader {
   display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px;
-  border-bottom: 1px solid #e5e7eb;
-  flex-shrink: 0;
-  gap: 12px;
-  background: #f9fafb;
+  gap: 10px;
+  padding: 12px 14px 12px 20px;
+  border-bottom: 1px solid #e3e7ee;
 }
 
 .modalTitle {
-  font-size: 15px;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f1d36;
+  font-variant-numeric: tabular-nums;
 }
 
 .modalTitle svg {
-  color: #E8652B;
+  color: #D4541A;
+}
+
+.modalTitle small {
+  font-size: 14px;
+  font-weight: 500;
+  color: #5b6474;
 }
 
 .modalActions {
@@ -457,42 +895,47 @@
   gap: 8px;
 }
 
-.modalBtn {
+.modalDownload,
+.modalOpen {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 7px 14px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.2s;
+  gap: 6px;
+  padding: 9px 14px;
+  font-size: 14.5px;
+  font-weight: 800;
+  white-space: nowrap;
+  border-radius: 10px;
 }
 
-.modalBtn:hover {
-  opacity: 0.85;
+.modalDownload {
+  color: #fff;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+}
+
+.modalOpen {
+  color: #0f1d36;
+  border: 1.5px solid #dfe3ea;
+}
+
+.modalOpen:hover {
+  background: #f4f6f9;
 }
 
 .modalClose {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  color: #5b6474;
   cursor: pointer;
-  color: #6b7280;
-  transition: all 0.2s;
+  background: #f4f6f9;
+  border: none;
+  border-radius: 10px;
 }
 
 .modalClose:hover {
-  background: #fee2e2;
-  border-color: #fca5a5;
   color: #dc2626;
+  background: #fee2e2;
 }
 
 .pdfFrame {
@@ -501,171 +944,133 @@
   border: none;
 }
 
-/* ── Responsive ── */
-@media (max-width: 768px) {
-  .hero {
-    padding: 32px 16px 44px;
-  }
+.imageFrame {
+  flex: 1;
+  overflow: auto;
+  background: #f4f6f9;
+}
 
-  .heroTitle {
-    font-size: 22px;
-  }
+.imageFrame img {
+  display: block;
+  max-width: 100%;
+  margin: 0 auto;
+}
 
-  .heroSub {
-    font-size: 12px;
-  }
-
-  .content {
-    padding: 0 12px 40px;
-    margin-top: -24px;
-  }
-
-  /* Year bar */
-  .yearBar {
-    padding: 12px 14px;
-    border-radius: 12px;
-    margin-bottom: 14px;
-  }
-
-  .yearLabel {
-    font-size: 13px;
-  }
-
-  .yearBtn {
-    padding: 8px 14px;
-    font-size: 13px;
-    min-width: 90px;
-  }
-
-  .itemCount {
-    font-size: 12px;
-  }
-
-  /* Month grid */
+/* ═══════════════════════ Responsive ═══════════════════════ */
+@media (max-width: 900px) {
   .monthGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .explainGrid {
     grid-template-columns: 1fr;
-    gap: 10px;
-    margin-bottom: 20px;
   }
 
-  .card {
-    padding: 14px;
-    border-radius: 12px;
-    gap: 10px;
-  }
-
-  .cardInner {
-    gap: 12px;
-  }
-
-  .cardIcon {
-    width: 44px;
-    height: 44px;
-  }
-
-  .monthTag {
-    font-size: 11px;
-    padding: 2px 8px;
-  }
-
-  .cardTitle {
-    font-size: 12px;
-  }
-
-  .cardDate {
-    font-size: 10px;
-  }
-
-  .cardBtn {
-    padding: 8px 0;
-    font-size: 12px;
-    border-radius: 8px;
-  }
-
-  .cardNoFile {
-    padding: 8px 0;
-    font-size: 11px;
-  }
-
-  /* Info banner */
-  .infoBanner {
-    flex-direction: column;
+  .explainOp {
+    line-height: 1;
     text-align: center;
-    padding: 20px 16px;
-    border-radius: 14px;
-    gap: 12px;
-  }
-
-  .infoBannerIcon {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-  }
-
-  .infoBannerTitle {
-    font-size: 14px;
-  }
-
-  .infoBannerSub {
-    font-size: 11px;
-  }
-
-  /* Modal */
-  .modalOverlay {
-    padding: 8px;
-  }
-
-  .modalContent {
-    height: 96vh;
-    border-radius: 14px;
-  }
-
-  .modalHeader {
-    padding: 12px 14px;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .modalTitle {
-    font-size: 13px;
-    width: 100%;
-  }
-
-  .modalActions {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .modalBtn {
-    flex: 1;
-    justify-content: center;
-    padding: 8px 10px;
-    font-size: 11px;
-  }
-
-  .modalClose {
-    width: 34px;
-    height: 34px;
-    flex-shrink: 0;
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 640px) {
+  .heroInner {
+    padding: 20px 16px 42px;
+  }
+
   .heroTitle {
-    font-size: 18px;
+    font-size: 25px;
   }
 
-  .yearBar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
+  .heroSub {
+    font-size: 15px;
   }
 
-  .yearLeft {
-    justify-content: center;
+  .equation {
+    gap: 7px;
   }
 
-  .yearSelector {
-    align-self: center;
+  .eqTerm {
+    padding: 7px 11px;
+    font-size: 14.5px;
+  }
+
+  .main {
+    padding: 18px 16px 64px;
+  }
+
+  .featured {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding: 20px 18px 24px;
+  }
+
+  .featuredTitle {
+    font-size: 23px;
+  }
+
+  .featuredActions > * {
+    flex: 1;
+  }
+
+  .preview {
+    order: -1;
+    width: 150px;
+    margin: 0 auto;
+  }
+
+  .monthGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .month {
+    gap: 10px;
+    min-height: 0;
+    padding: 12px 12px 10px;
+  }
+
+  .monthTop {
+    gap: 10px;
+  }
+
+  .cal {
+    width: 48px;
+  }
+
+  .calMonth {
+    font-size: 12px;
+  }
+
+  .calDay {
+    font-size: 21px;
+  }
+
+  .monthName {
+    font-size: 16.5px;
+  }
+
+  .monthStatus,
+  .monthPublished {
+    display: none;
+  }
+
+  .monthFoot {
+    justify-content: flex-end;
+  }
+
+  .monthEmpty .monthFoot {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+
+  .month,
+  .preview,
+  .primaryBtn {
+    transition: none;
   }
 }

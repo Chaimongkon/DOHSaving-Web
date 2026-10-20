@@ -28,6 +28,17 @@ export async function GET(req: NextRequest) {
       ? await prisma.financialSummary.findMany({
           where: { isActive: true, year: targetYear },
           orderBy: [{ year: "desc" }, { month: "asc" }],
+          select: {
+            id: true,
+            year: true,
+            month: true,
+            title: true,
+            fileUrl: true,
+            totalAssets: true,
+            totalLiabilities: true,
+            totalEquity: true,
+            totalMembers: true,
+          },
         })
       : [];
 
