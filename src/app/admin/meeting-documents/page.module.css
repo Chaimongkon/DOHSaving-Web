@@ -1,0 +1,282 @@
+/* ============================================================
+   เอกสารประชุมใหญ่ (/admin/meeting-documents)
+   ใช้ตู้หนังสือจาก annual-reports/page.module.css และแผงแก้ไขจาก regulations/page.module.css
+   ไฟล์นี้มีเฉพาะส่วนเพิ่ม: โทนภายในตู้ (แยกจากตู้รายงานประจำปี) · เอกสารแนบใต้เล่มหลัก · ตัวเลือกประเภท
+   ============================================================ */
+
+/* ═══ ตู้เอกสารไม้วอลนัท — ต่างจากตู้หนังสือสีน้ำเงินของรายงานประจำปีชัดเจน ═══ */
+/* คลาสซ้ำสองครั้ง = น้ำหนักสูงกว่า .cabinet เสมอ ไม่ขึ้นกับลำดับการโหลด CSS */
+.meetingCabinet.meetingCabinet {
+  background:
+    /* ลายเสี้ยนไม้ */
+    repeating-linear-gradient(92deg, rgba(0, 0, 0, 0.07) 0 2px, transparent 2px 9px, rgba(255, 220, 170, 0.035) 9px 10px, transparent 10px 23px),
+    linear-gradient(180deg, rgba(255, 230, 190, 0.08), transparent 22%),
+    linear-gradient(135deg, #6b4428 0%, #4e3019 48%, #3a2312 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(216, 174, 63, 0.45),
+    inset 0 0 0 7px rgba(40, 22, 10, 0.55),
+    inset 0 0 0 8px rgba(216, 174, 63, 0.28),
+    0 34px 60px -34px rgba(40, 22, 10, 0.95);
+}
+
+.meetingCabinet .crownStats > div {
+  background: rgba(255, 236, 205, 0.07);
+  border-color: rgba(247, 227, 161, 0.24);
+}
+
+.meetingCabinet .crownGhost {
+  background: rgba(255, 236, 205, 0.08);
+  border-color: rgba(255, 236, 205, 0.25);
+}
+
+.meetingCabinet .plaqueIcon {
+  color: #F7E3A1;
+  background: #3a2312;
+}
+
+/* ภายในตู้: แผ่นไม้มะฮอกกานีตีเป็นแนวตั้ง ไฟส่องโทนอุ่น */
+.meetingCabinet .interior {
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.22) 0 2px, transparent 2px 96px),
+    repeating-linear-gradient(92deg, rgba(0, 0, 0, 0.05) 0 1px, transparent 1px 7px),
+    linear-gradient(180deg, #2b170b 0%, #3b2110 100%);
+  box-shadow:
+    inset 0 18px 30px -18px rgba(0, 0, 0, 0.85),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+
+.meetingCabinet .slot::before {
+  background: radial-gradient(ellipse 60% 70% at 50% 0%, rgba(255, 210, 140, 0.2), transparent 70%);
+}
+
+/* ชั้นวางไม้สักเข้มกว่าตู้หนังสือเล็กน้อย */
+.meetingCabinet .plank {
+  background:
+    repeating-linear-gradient(90deg, rgba(90, 50, 18, 0.12) 0 2px, transparent 2px 19px),
+    linear-gradient(180deg, #d9a86a 0%, #b07a3e 55%, #8a5a2a 100%);
+}
+
+.meetingCabinet .feet::before,
+.meetingCabinet .feet::after {
+  background: linear-gradient(180deg, #3a2312, #1f1208);
+}
+
+.meetingCabinet .cabinetNote {
+  background: rgba(247, 227, 161, 0.1);
+}
+
+/* ── ลิ้นชักเก็บแฟ้ม (ตกแต่ง) ── */
+.drawers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.drawers span {
+  position: relative;
+  display: block;
+  height: 64px;
+  border-radius: 8px;
+  background:
+    repeating-linear-gradient(92deg, rgba(0, 0, 0, 0.06) 0 2px, transparent 2px 11px),
+    linear-gradient(180deg, #7a4f2e 0%, #5c3a20 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 225, 180, 0.25),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.25),
+    0 6px 12px -8px rgba(0, 0, 0, 0.7);
+}
+
+/* ช่องใส่ป้ายชื่อทองเหลือง */
+.drawers span::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: 74px;
+  height: 18px;
+  transform: translateX(-50%);
+  border: 2px solid #c9a24a;
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 5px, rgba(120, 90, 40, 0.25) 5px 6px),
+    #f6ecd6;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* มือจับทองเหลือง */
+.drawers i {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  width: 56px;
+  height: 10px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #F7E3A1 0%, #D8AE3F 55%, #9c7a26 100%);
+  box-shadow:
+    0 3px 5px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* ── เอกสารแนบของปี ── */
+.attachList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 230px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.attachList li {
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+}
+
+.attachHidden {
+  opacity: 0.55;
+}
+
+.attachMain {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 7px 10px;
+  font-family: inherit;
+  color: #e8f0fc;
+  text-align: left;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.attachMain > svg:first-child {
+  flex-shrink: 0;
+  color: #F7E3A1;
+}
+
+.attachMain span {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.attachMain b {
+  font-size: 12.5px;
+  color: #fff;
+}
+
+.attachMain small {
+  overflow: hidden;
+  font-size: 11.5px;
+  color: rgba(232, 240, 252, 0.6);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachMain:hover b {
+  color: #F7E3A1;
+}
+
+.attachMore {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  color: rgba(232, 240, 252, 0.75);
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.attachMore:hover:not(:disabled),
+.attachMore[aria-expanded="true"] {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.attachAdd {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  padding: 5px 10px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: rgba(247, 227, 161, 0.9);
+  cursor: pointer;
+  background: none;
+  border: 1px dashed rgba(216, 174, 63, 0.5);
+  border-radius: 999px;
+}
+
+.attachAdd:hover {
+  color: #0f1d36;
+  background: #F7E3A1;
+  border-color: #F7E3A1;
+}
+
+/* ── แผงแก้ไข: ประเภทเอกสาร 2×2 ── */
+.kindPick {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.kindPick > button {
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 11px 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.kindPick > button svg {
+  flex-shrink: 0;
+}
+
+.attachMain:focus-visible,
+.attachMore:focus-visible,
+.attachAdd:focus-visible {
+  outline: 3px solid rgba(247, 227, 161, 0.7);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .kindPick {
+    grid-template-columns: 1fr;
+  }
+
+  .drawers {
+    gap: 6px;
+  }
+
+  .drawers span {
+    height: 52px;
+  }
+
+  .drawers span::before {
+    width: 54px;
+    height: 14px;
+    top: 8px;
+  }
+
+  .drawers i {
+    width: 40px;
+    height: 8px;
+    bottom: 10px;
+  }
+}

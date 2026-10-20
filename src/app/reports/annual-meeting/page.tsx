@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, Download, Eye, FileText, FolderOpen, Home, Search, X } from "lucide-react";
 import { getPdfCoverDataUrl } from "@/lib/pdfCover";
+import { useSearchMiss } from "@/lib/trackEvent";
+import { meetingDocBadge } from "@/lib/meetingDocs";
 import css from "./page.module.css";
 
 interface DocItem {
@@ -18,12 +20,6 @@ interface DocItem {
   fileSize: number | null;
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  agenda: "ระเบียบวาระ",
-  financial: "งบการเงิน",
-  plan: "แผนงาน",
-  report: "รายงาน",
-};
 
 function formatSize(bytes: number | null): string | null {
   if (!bytes) return null;
@@ -126,6 +122,7 @@ export default function AnnualMeetingPage() {
   }, [items, year, query]);
 
   const showFilters = items.length > 1;
+  useSearchMiss("annual-meeting", query, loading || year !== null ? null : groups.length);
 
   return (
     <>
@@ -246,7 +243,7 @@ export default function AnnualMeetingPage() {
                 {docs.map((doc) => {
                   const size = formatSize(doc.fileSize);
                   const ext = fileExt(doc.fileUrl);
-                  const category = CATEGORY_LABELS[doc.category];
+                  const category = meetingDocBadge(doc.category);
                   return (
                     <li key={doc.id} className={css.doc}>
                       <a

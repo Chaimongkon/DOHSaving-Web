@@ -1,0 +1,1186 @@
+/* ============================================================
+   รายงานประจำปี (/admin/annual-reports)
+   ทั้งหน้าเป็น "ตู้หนังสือ" ใบเดียว: หัวตู้ (ป้ายชื่อทองเหลือง + สรุป + ปุ่ม) → ชั้นไม้ + หนังสือ 3 มิติ → ขาตู้
+   โทนน้ำเงินเข้มขอบทองของเว็บ · ชั้นวางไม้โอ๊กให้หนังสือเด่น
+   ใช้โครงแผงแก้ไขร่วมกับ regulations/page.module.css — ไฟล์นี้มีเฉพาะส่วนเพิ่ม
+   ============================================================ */
+
+/* ── ตัวตู้ ── */
+.cabinet {
+  position: relative;
+  margin-bottom: 26px;
+  padding: 0 16px 18px;
+  color: #e8f0fc;
+  border-radius: 26px 26px 14px 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 18%),
+    linear-gradient(135deg, #0a1628 0%, #0f1d36 45%, #172c52 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(216, 174, 63, 0.35),
+    inset 0 0 0 7px #0b1830,
+    inset 0 0 0 8px rgba(216, 174, 63, 0.22),
+    0 34px 60px -34px rgba(10, 22, 40, 0.95);
+}
+
+/* เส้นทองบนสุดของตู้ */
+.cabinet::before {
+  content: "";
+  position: absolute;
+  inset: 0 24px auto;
+  height: 4px;
+  border-radius: 0 0 6px 6px;
+  background: linear-gradient(90deg, transparent, #D8AE3F 18%, #F7E3A1 50%, #D8AE3F 82%, transparent);
+}
+
+/* ขาตู้ */
+.feet {
+  position: absolute;
+  inset: auto 42px -14px;
+  height: 14px;
+  pointer-events: none;
+}
+
+.feet::before,
+.feet::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 46px;
+  height: 14px;
+  border-radius: 0 0 8px 8px;
+  background: linear-gradient(180deg, #0f1d36, #060e1c);
+  box-shadow: 0 8px 14px -6px rgba(0, 0, 0, 0.5);
+}
+
+.feet::before {
+  left: 0;
+}
+
+.feet::after {
+  right: 0;
+}
+
+/* ── หัวตู้ ── */
+.crown {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 24px;
+  padding: 26px 12px 20px;
+  border-bottom: 1px dashed rgba(216, 174, 63, 0.45);
+}
+
+.plaque {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 22px 10px 12px;
+  background: linear-gradient(145deg, #F7E3A1 0%, #D8AE3F 48%, #b98f2b 100%);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15),
+    0 12px 22px -14px rgba(0, 0, 0, 0.8);
+}
+
+.plaqueIcon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  color: #F7E3A1;
+  background: #0f1d36;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(247, 227, 161, 0.35);
+}
+
+.plaqueKicker {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: rgba(15, 29, 54, 0.62);
+}
+
+.plaqueTitle {
+  margin: 0;
+  font-size: 23px;
+  font-weight: 900;
+  line-height: 1.2;
+  color: #0f1d36;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.crownStats {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+
+.crownStats > div {
+  min-width: 112px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(247, 227, 161, 0.18);
+  border-radius: 12px;
+}
+
+.crownStats dt {
+  font-size: 12px;
+  color: rgba(232, 240, 252, 0.68);
+}
+
+.crownStats dd {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.25;
+  color: #F7E3A1;
+  font-variant-numeric: tabular-nums;
+}
+
+.crownStats dd small {
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(232, 240, 252, 0.6);
+}
+
+.crownBtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.crownGhost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 11px;
+}
+
+.crownGhost:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* ปีที่ยังขาด */
+.cabinetNote {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 12px 0;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  color: #fde7b0;
+  background: rgba(216, 174, 63, 0.12);
+  border: 1px solid rgba(216, 174, 63, 0.4);
+  border-radius: 12px;
+}
+
+.cabinetNote > svg {
+  flex-shrink: 0;
+  color: #F7E3A1;
+}
+
+.cabinetNote > span {
+  flex: 1;
+}
+
+.cabinetNote strong {
+  color: #fff;
+}
+
+.cabinetNote button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f1d36;
+  cursor: pointer;
+  background: linear-gradient(145deg, #F7E3A1, #D8AE3F);
+  border: none;
+  border-radius: 9px;
+}
+
+.cabinetNote button:hover {
+  filter: brightness(1.06);
+}
+
+/* ── ภายในตู้: ผนังแผ่นไม้ด้านหลัง ── */
+.interior {
+  margin-top: 16px;
+  overflow: hidden;
+  border-radius: 10px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 120px),
+    linear-gradient(180deg, #0c1a33 0%, #10213f 100%);
+  box-shadow:
+    inset 0 18px 30px -18px rgba(0, 0, 0, 0.8),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+.interiorState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 60px 16px;
+  font-size: 14px;
+  color: rgba(232, 240, 252, 0.75);
+}
+
+.shelf {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  row-gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* แต่ละช่อง: ไฟส่องจากด้านบน → หนังสือ → แผ่นชั้น → ป้ายข้อมูล */
+.slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 30px 22px 20px;
+}
+
+.slot::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 70%;
+  pointer-events: none;
+  background: radial-gradient(ellipse 60% 70% at 50% 0%, rgba(255, 226, 160, 0.16), transparent 70%);
+}
+
+/* แผ่นชั้นไม้โอ๊ก — ยื่นไปจนสุดขอบตู้ด้านขวา (ตู้ตัดส่วนเกินทิ้ง) ชั้นจึงยาวเต็มแถวแม้หนังสือไม่เต็มชั้น
+   ทุกเล่มสูงเท่ากัน แผ่นชั้นของแต่ละช่องในแถวเดียวกันจึงซ้อนกันพอดี */
+.plank {
+  position: relative;
+  z-index: 1;
+  height: 18px;
+  margin: 0 -2000px 0 -22px;
+  background:
+    repeating-linear-gradient(90deg, rgba(120, 72, 28, 0.08) 0 2px, transparent 2px 23px),
+    linear-gradient(180deg, #e9c48f 0%, #c99555 55%, #a6743c 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 240, 210, 0.55),
+    inset 0 -3px 0 rgba(80, 45, 15, 0.35),
+    0 12px 16px -6px rgba(0, 0, 0, 0.55);
+}
+
+.slotHidden .shelfBook {
+  filter: grayscale(0.85) brightness(0.8);
+  opacity: 0.6;
+}
+
+.bookBtn {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  max-width: 172px;
+  margin: 0 auto -6px;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+  border: none;
+  transition: transform 0.4s;
+}
+
+.bookBtn .shelfBook {
+  --tilt: -20deg;
+  --d: 18px;
+}
+
+.bookBtn:hover .shelfBook,
+.bookBtn:focus-visible .shelfBook {
+  --tilt: -5deg;
+}
+
+.bookBtn:hover {
+  transform: translateY(-6px);
+}
+
+.bookBtn:focus-visible {
+  outline: 3px solid rgba(247, 227, 161, 0.7);
+  outline-offset: 8px;
+  border-radius: 6px;
+}
+
+.latestRibbon,
+.hiddenRibbon {
+  position: absolute;
+  top: 10px;
+  left: -8px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  font-size: 11.5px;
+  font-weight: 800;
+  border-radius: 4px 999px 999px 4px;
+  box-shadow: 0 6px 12px -6px rgba(0, 0, 0, 0.7);
+}
+
+.latestRibbon {
+  color: #0f1d36;
+  background: linear-gradient(145deg, #F7E3A1, #D8AE3F);
+}
+
+.hiddenRibbon {
+  color: #fff;
+  background: #64748b;
+}
+
+/* ป้ายข้อมูลใต้ชั้น */
+.bookInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-top: 16px;
+  text-align: center;
+}
+
+/* ป้ายปีแบบแผ่นทองเหลืองติดขอบชั้น */
+.yearBadge {
+  position: relative;
+  margin-top: -27px;
+  padding: 3px 16px;
+  font-size: 12.5px;
+  font-weight: 900;
+  color: #0f1d36;
+  background: linear-gradient(145deg, #F7E3A1, #D8AE3F 60%, #b98f2b);
+  border-radius: 4px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 4px 8px -4px rgba(0, 0, 0, 0.6);
+  z-index: 2;
+}
+
+.yearBadge::before,
+.yearBadge::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin-top: -2px;
+  background: #8a6a1f;
+  border-radius: 50%;
+}
+
+.yearBadge::before {
+  left: 5px;
+}
+
+.yearBadge::after {
+  right: 5px;
+}
+
+.yearBadgeEmpty {
+  color: #F7E3A1;
+  background: rgba(216, 174, 63, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(216, 174, 63, 0.55);
+}
+
+.yearBadgeEmpty::before,
+.yearBadgeEmpty::after {
+  background: rgba(216, 174, 63, 0.6);
+}
+
+.bookTitle {
+  margin-top: 6px;
+  font-size: 15px;
+  line-height: 1.4;
+  color: #fff;
+}
+
+.bookMeta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 10px;
+  font-size: 12.5px;
+  color: rgba(232, 240, 252, 0.72);
+}
+
+.liveTag,
+.offTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 9px 1px 7px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+}
+
+.liveTag {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.14);
+}
+
+.liveTag i {
+  width: 7px;
+  height: 7px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25), 0 0 8px rgba(34, 197, 94, 0.8);
+}
+
+.offTag {
+  color: #cbd5e1;
+  background: rgba(148, 163, 184, 0.18);
+}
+
+.reads {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.reads b {
+  color: #F7E3A1;
+}
+
+.bookActions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.editBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 10px;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.editBtn:hover:not(:disabled) {
+  color: #0f1d36;
+  background: #F7E3A1;
+  border-color: #F7E3A1;
+}
+
+.moreBtn {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: rgba(232, 240, 252, 0.85);
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.moreBtn:hover:not(:disabled),
+.moreBtn[aria-expanded="true"] {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* ช่องว่างบนชั้น — ปีที่ยังไม่มีรายงาน */
+.missingSlot {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  max-width: 172px;
+  /* ระดับเดียวกับหนังสือ (bookBtn) — แผ่นชั้นในแถวจะได้ต่อกันพอดี */
+  margin: 0 auto -6px;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.missingBook {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  aspect-ratio: 210 / 297;
+  color: rgba(247, 227, 161, 0.75);
+  background:
+    repeating-linear-gradient(135deg, rgba(216, 174, 63, 0.07) 0 12px, transparent 12px 24px),
+    rgba(255, 255, 255, 0.02);
+  border: 2px dashed rgba(216, 174, 63, 0.55);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.missingBook b {
+  font-size: 30px;
+  font-weight: 900;
+  color: #D8AE3F;
+}
+
+.missingSlot:hover .missingBook {
+  background:
+    repeating-linear-gradient(135deg, rgba(216, 174, 63, 0.14) 0 12px, transparent 12px 24px),
+    rgba(255, 255, 255, 0.04);
+  border-color: #F7E3A1;
+}
+
+.missingSlot:focus-visible {
+  outline: 3px solid rgba(247, 227, 161, 0.7);
+  outline-offset: 6px;
+  border-radius: 8px;
+}
+
+.missingText {
+  margin-top: 6px;
+  font-size: 14.5px;
+  color: #fde7b0;
+}
+
+.addHere {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  padding: 7px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f1d36;
+  cursor: pointer;
+  background: linear-gradient(145deg, #F7E3A1, #D8AE3F);
+  border: none;
+  border-radius: 999px;
+}
+
+.addHere:hover {
+  filter: brightness(1.06);
+}
+
+/* ตู้ว่าง */
+.emptyShelf {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 56px 16px 64px;
+  text-align: center;
+}
+
+.emptyShelf > span {
+  display: grid;
+  place-items: center;
+  width: 70px;
+  height: 70px;
+  color: #0f1d36;
+  background: linear-gradient(145deg, #F7E3A1, #D8AE3F);
+  border-radius: 22px;
+}
+
+.emptyShelf strong {
+  font-size: 17px;
+  color: #fff;
+}
+
+.emptyShelf p {
+  margin: 0 0 6px;
+  font-size: 13.5px;
+  color: rgba(232, 240, 252, 0.7);
+}
+
+/* ── แผงแก้ไข: ตัวอย่างหนังสือซ้าย · ฟอร์มขวา ── */
+.wideDrawer {
+  width: min(820px, 100%);
+}
+
+.editorGrid {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.previewCol {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 16px 16px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(247, 227, 161, 0.45), transparent 60%),
+    #fff;
+  border: 1px solid #e8ebf1;
+  border-radius: 16px;
+}
+
+.previewStage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-bottom: 18px;
+}
+
+.previewBook {
+  --tilt: -16deg;
+  --d: 16px;
+  max-width: 160px;
+}
+
+.previewEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 150px;
+  aspect-ratio: 210 / 297;
+  font-size: 12.5px;
+  color: #94a3b8;
+  background: #f4f6fa;
+  border: 2px dashed #d6dce6;
+  border-radius: 4px 8px 8px 4px;
+}
+
+.coverBusy {
+  position: absolute;
+  bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e3a5f;
+  background: #eaf1fb;
+  border-radius: 999px;
+}
+
+.coverBtns {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.coverBtns .ghostBtn {
+  justify-content: center;
+  width: 100%;
+}
+
+.previewNote {
+  margin: 0;
+  font-size: 12px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.formCol {
+  min-width: 0;
+}
+
+.fileRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #fbfcfe;
+  border: 1px solid #e2e7ef;
+  border-radius: 12px;
+}
+
+.fileIcon {
+  flex-shrink: 0;
+  color: #dc2626;
+}
+
+.fileRow .fileBtns {
+  margin-top: 0;
+}
+
+/* ปี */
+.yearRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.yearStep {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 46px;
+  color: #334155;
+  cursor: pointer;
+  background: #f4f6fa;
+  border: 1.5px solid #e2e7ef;
+  border-radius: 10px;
+}
+
+.yearStep:hover {
+  color: #C24A15;
+  border-color: #E8652B;
+}
+
+.yearInput {
+  width: 120px;
+  height: 46px;
+  font-family: inherit;
+  font-size: 22px;
+  font-weight: 900;
+  color: #0f1d36;
+  text-align: center;
+  background: #fff;
+  border: 1.5px solid #d6dce6;
+  border-radius: 10px;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.yearInput::-webkit-outer-spin-button,
+.yearInput::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.yearInput:focus {
+  border-color: #E8652B;
+  box-shadow: 0 0 0 3px rgba(232, 101, 43, 0.12);
+}
+
+.yearChip {
+  padding: 7px 12px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #92400e;
+  cursor: pointer;
+  background: #fffbeb;
+  border: 1px dashed #f59e0b;
+  border-radius: 999px;
+}
+
+.yearChip:hover {
+  background: #fef3c7;
+}
+
+.warn {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+}
+
+.warn svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.suggest {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.suggest b {
+  color: #0f1d36;
+}
+
+.suggest button {
+  padding: 3px 10px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #C24A15;
+  cursor: pointer;
+  background: #fff3eb;
+  border: 1px solid #fcd5bd;
+  border-radius: 999px;
+}
+
+.editBtn:focus-visible,
+.moreBtn:focus-visible,
+.cabinetNote button:focus-visible,
+.addHere:focus-visible,
+.yearStep:focus-visible,
+.yearChip:focus-visible,
+.suggest button:focus-visible,
+.crownGhost:focus-visible {
+  outline: 3px solid rgba(232, 101, 43, 0.5);
+  outline-offset: 2px;
+}
+
+/* ── จอเล็ก ── */
+@media (max-width: 760px) {
+  .editorGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .previewCol {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .previewStage {
+    width: auto;
+  }
+
+  .previewBook {
+    max-width: 110px;
+  }
+
+  .coverBtns {
+    width: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .cabinet {
+    padding: 0 10px 14px;
+    border-radius: 20px 20px 12px 12px;
+  }
+
+  .crown {
+    gap: 14px;
+    padding: 22px 6px 16px;
+  }
+
+  .plaque {
+    width: 100%;
+  }
+
+  .plaqueTitle {
+    font-size: 20px;
+  }
+
+  .crownStats > div {
+    flex: 1;
+    min-width: 0;
+    padding: 6px 10px;
+  }
+
+  .crownStats dd {
+    font-size: 18px;
+  }
+
+  .crownBtns {
+    width: 100%;
+  }
+
+  .crownBtns > * {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .cabinetNote {
+    margin: 12px 6px 0;
+  }
+
+  .shelf {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .slot {
+    padding: 24px 12px 16px;
+  }
+
+  .plank {
+    margin: 0 -2000px 0 -12px;
+  }
+
+  .bookActions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .feet {
+    inset: auto 24px -12px;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   ธีม "ตู้โชว์ไม้โอ๊กหน้ากระจก" — เฉพาะหน้ารายงานประจำปี (.oakCase)
+   หน้าเอกสารประชุมใหญ่ใช้ไฟล์นี้เป็นฐาน แต่เป็นตู้ไม้วอลนัทของตัวเอง จึงแยกธีมนี้ไว้ในคลาสนี้
+   ════════════════════════════════════════════════════════════ */
+.oakCase {
+  /* เว้นที่ให้บัวตู้ที่ยื่นขึ้นไปด้านบน */
+  margin-top: 16px;
+  color: #3b2a14;
+  border-radius: 14px 14px 8px 8px;
+  background:
+    repeating-linear-gradient(92deg, rgba(120, 80, 30, 0.07) 0 2px, transparent 2px 10px, rgba(255, 255, 255, 0.08) 10px 11px, transparent 11px 26px),
+    linear-gradient(135deg, #e7c690 0%, #d4ab68 50%, #ba8b4a 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+    inset 0 0 0 7px rgba(120, 80, 30, 0.16),
+    inset 0 0 0 8px rgba(255, 255, 255, 0.25),
+    0 34px 60px -34px rgba(70, 45, 15, 0.75);
+}
+
+/* บัวตู้ด้านบน (แทนเส้นทอง) */
+.oakCase::before {
+  inset: -12px -10px auto;
+  height: 18px;
+  border-radius: 8px 8px 3px 3px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 40%),
+    linear-gradient(180deg, #c99a55, #a77838);
+  box-shadow: 0 6px 10px -4px rgba(70, 45, 15, 0.55);
+}
+
+/* ฐานตู้ (แทนขา) */
+.plinth {
+  position: absolute;
+  inset: auto 4px -16px;
+  height: 16px;
+  pointer-events: none;
+  border-radius: 0 0 8px 8px;
+  background: linear-gradient(180deg, #a77838, #7d5426);
+  box-shadow: 0 10px 16px -8px rgba(70, 45, 15, 0.7);
+}
+
+/* หัวตู้: ป้ายชื่อน้ำเงินตัวทองตัดกับเนื้อไม้ */
+.oakCase .crown {
+  border-bottom-color: rgba(90, 60, 20, 0.35);
+}
+
+.oakCase .plaque {
+  background: linear-gradient(145deg, #1d3561 0%, #13274a 55%, #0b172d 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(247, 227, 161, 0.45),
+    0 12px 22px -14px rgba(40, 25, 5, 0.9);
+}
+
+.oakCase .plaqueIcon {
+  color: #0f1d36;
+  background: linear-gradient(145deg, #F7E3A1, #D8AE3F);
+  box-shadow: none;
+}
+
+.oakCase .plaqueKicker {
+  color: rgba(247, 227, 161, 0.75);
+}
+
+.oakCase .plaqueTitle {
+  color: #F7E3A1;
+  text-shadow: none;
+}
+
+.oakCase .crownStats > div {
+  background: rgba(255, 255, 255, 0.38);
+  border-color: rgba(120, 80, 30, 0.22);
+}
+
+.oakCase .crownStats dt,
+.oakCase .crownStats dd small {
+  color: #6b4e22;
+}
+
+.oakCase .crownStats dd {
+  color: #0f1d36;
+}
+
+.oakCase .crownGhost {
+  color: #0f1d36;
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(120, 80, 30, 0.3);
+}
+
+.oakCase .crownGhost:hover {
+  color: #0f1d36;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.oakCase .cabinetNote {
+  color: #7a4a10;
+  background: rgba(255, 255, 255, 0.45);
+  border-color: rgba(180, 120, 30, 0.45);
+}
+
+.oakCase .cabinetNote strong {
+  color: #5a3208;
+}
+
+.oakCase .cabinetNote > svg {
+  color: #b45309;
+}
+
+/* ภายในตู้: ผนังไม้ตีเส้นสีครีม + กรอบบานตู้ */
+.oakCase .interior {
+  position: relative;
+  background:
+    repeating-linear-gradient(90deg, rgba(120, 90, 50, 0.09) 0 1px, transparent 1px 64px),
+    linear-gradient(180deg, #f8f0e2 0%, #eee0c7 100%);
+  box-shadow:
+    inset 0 0 0 6px #c99a55,
+    inset 0 0 0 7px rgba(90, 60, 20, 0.35),
+    inset 0 24px 30px -20px rgba(80, 50, 15, 0.35);
+}
+
+/* เงาสะท้อนกระจกหน้าตู้ */
+.glass {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 10%,
+    rgba(255, 255, 255, 0) 20%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.16) 67%,
+    rgba(255, 255, 255, 0) 74%
+  );
+}
+
+.oakCase .slot::before {
+  background: radial-gradient(ellipse 60% 70% at 50% 0%, rgba(255, 236, 190, 0.7), transparent 70%);
+}
+
+/* ชั้นวางไม้โอ๊กเข้มกว่าผนัง ให้หนังสือดูตั้งอยู่บนชั้นจริง */
+.oakCase .plank {
+  background:
+    repeating-linear-gradient(90deg, rgba(90, 55, 20, 0.1) 0 2px, transparent 2px 21px),
+    linear-gradient(180deg, #c9995a 0%, #a3733a 55%, #835a2a 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 235, 200, 0.5),
+    inset 0 -3px 0 rgba(70, 40, 10, 0.3),
+    0 10px 14px -6px rgba(80, 50, 15, 0.45);
+}
+
+/* ตัวหนังสือใต้ชั้น: สีเข้มบนพื้นครีม */
+.oakCase .bookTitle {
+  color: #0f1d36;
+}
+
+.oakCase .bookMeta {
+  color: #6b5a3e;
+}
+
+.oakCase .reads b {
+  color: #0f1d36;
+}
+
+.oakCase .liveTag {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.oakCase .offTag {
+  color: #475569;
+  background: #e2e8f0;
+}
+
+.oakCase .editBtn {
+  color: #0f1d36;
+  background: #fff;
+  border-color: #d8c3a0;
+}
+
+.oakCase .editBtn:hover:not(:disabled) {
+  color: #C24A15;
+  background: #fff;
+  border-color: #E8652B;
+}
+
+.oakCase .moreBtn {
+  color: #5b4a2e;
+  background: #fff;
+  border-color: #d8c3a0;
+}
+
+.oakCase .moreBtn:hover:not(:disabled),
+.oakCase .moreBtn[aria-expanded="true"] {
+  color: #0f1d36;
+  background: #f6efe2;
+}
+
+.oakCase .missingBook {
+  color: #a07a2c;
+  background:
+    repeating-linear-gradient(135deg, rgba(160, 120, 40, 0.09) 0 12px, transparent 12px 24px),
+    rgba(255, 255, 255, 0.35);
+  border-color: rgba(160, 120, 40, 0.55);
+}
+
+.oakCase .missingBook b {
+  color: #b8902f;
+}
+
+.oakCase .missingSlot:hover .missingBook {
+  background:
+    repeating-linear-gradient(135deg, rgba(160, 120, 40, 0.16) 0 12px, transparent 12px 24px),
+    rgba(255, 255, 255, 0.55);
+  border-color: #b8902f;
+}
+
+.oakCase .missingText {
+  color: #7a4a10;
+}
+
+.oakCase .yearBadgeEmpty {
+  color: #7a5a18;
+  background: rgba(216, 174, 63, 0.22);
+}
+
+.oakCase .interiorState,
+.oakCase .emptyShelf p {
+  color: #6b5a3e;
+}
+
+.oakCase .emptyShelf strong {
+  color: #0f1d36;
+}
+
+.oakCase .bookBtn:focus-visible,
+.oakCase .missingSlot:focus-visible {
+  outline-color: rgba(232, 101, 43, 0.6);
+}
