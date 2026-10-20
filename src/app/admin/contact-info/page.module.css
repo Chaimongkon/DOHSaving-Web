@@ -1,282 +1,632 @@
-/* Admin Contact Info Module Styles */
+/* ============================================================
+   ข้อมูลติดต่อสหกรณ์ (/admin/contact-info)
+   ฟอร์มเดียว บันทึกครั้งเดียว · ตรวจรูปแบบทันที · เห็นตัวอย่างที่สมาชิกเห็นข้าง ๆ
+   โทนเดียวกับแดชบอร์ด admin: กรมท่า · ทอง · ส้ม
+   ============================================================ */
 
 .page {
-    padding: 12px 16px;
-    animation: fadeIn 0.4s ease;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-bottom: 96px; /* เผื่อแถบบันทึกด้านล่าง */
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(5px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* ── หัวหน้า ── */
+.head {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 22px 26px;
+  overflow: hidden;
+  color: #fff;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #0a1628 0%, #0f1d36 50%, #172c52 100%);
+  box-shadow: 0 24px 48px -32px rgba(15, 29, 54, 0.9);
 }
 
-/* ── Hero Header ── */
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    gap: 12px;
-    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%);
-    padding: 12px 20px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(3, 105, 161, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    border: none;
-    position: relative;
-    overflow: hidden;
+.head::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, #E8652B, #D8AE3F 45%, #F7E3A1 60%, #E8652B);
 }
 
-.header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: radial-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px);
-    background-size: 24px 24px;
-    pointer-events: none;
-    opacity: 0.6;
+.headText {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
 }
 
-.headerTitleWrap {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    position: relative;
-    z-index: 1;
-}
-
-.headerIcon {
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.headIcon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  color: #0f1d36;
+  background: linear-gradient(145deg, #F7E3A1, #D8AE3F);
+  border-radius: 14px;
 }
 
 .title {
-    font-size: 18px;
-    font-weight: 800;
-    color: #ffffff;
-    margin: 0 0 4px 0;
-    letter-spacing: -0.5px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
 }
 
 .subtitle {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.9);
-    margin: 0;
-    font-weight: 400;
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: rgba(232, 240, 252, 0.78);
 }
 
-/* ── Content Grid ── */
-.formGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 16px;
-    align-items: start;
+.updated {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  color: #E3C169;
 }
 
-/* ── Category Card ── */
-.categoryCard {
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03), 0 1px 3px rgba(15, 23, 42, 0.02);
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    overflow: hidden;
-    transition: all 0.3s ease;
+.headLinks {
+  display: flex;
+  gap: 8px;
 }
 
-.categoryCard:hover {
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-    border-color: #cbd5e1;
+.headLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 15px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 11px;
 }
 
-.cardHeader {
-    padding: 12px 16px;
-    background: #f8fafc;
-    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.headLink:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* ── โครงหน้า: ฟอร์มซ้าย · ตัวอย่างขวา ── */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 20px;
+  align-items: start;
+}
+
+.sections {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  padding: 20px 22px 22px;
+  background: #fff;
+  border: 1px solid #e8ebf1;
+  border-radius: 18px;
+  box-shadow: 0 12px 28px -24px rgba(15, 29, 54, 0.5);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* การ์ดที่มีช่องแก้ไขแล้ว — ขอบส้มบอกว่ายังไม่ได้บันทึก */
+.cardDirty {
+  border-color: #f5c3a2;
+  box-shadow: 0 0 0 3px rgba(232, 101, 43, 0.08), 0 12px 28px -24px rgba(15, 29, 54, 0.5);
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .cardIcon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    background: #e0f2fe;
-    color: #0284c7;
-    border-radius: 6px;
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: #D4541A;
+  background: #fff1e6;
+  border-radius: 11px;
 }
 
 .cardTitle {
-    font-size: 14px;
-    font-weight: 700;
-    color: #0f172a;
-    margin: 0;
+  margin: 0;
+  font-size: 16.5px;
+  font-weight: 800;
+  color: #0f1d36;
 }
 
-.cardBody {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+.cardDesc {
+  margin: 2px 0 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #6b7280;
 }
 
-/* ── Form Inputs ── */
-.fieldGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
 }
 
-.fieldLabel {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 12px;
-    font-weight: 700;
-    color: #334155;
+.gridThree {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.fieldKey {
-    font-size: 10px;
-    color: #94a3b8;
-    font-weight: 500;
-    background: #f1f5f9;
-    padding: 2px 6px;
-    border-radius: 4px;
+/* แฟกซ์: เบอร์แคบ · ฝ่ายกว้าง */
+.gridPairs {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
 }
 
-.inputWrap {
-    position: relative;
-    display: flex;
+.field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldWide {
+  grid-column: 1 / -1;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #374151;
+}
+
+.required {
+  color: #dc2626;
+}
+
+.changed {
+  margin-left: auto;
+  padding: 1px 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #C24A15;
+  background: #fff1e6;
+  border-radius: 999px;
 }
 
 .input {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    font-size: 13px;
-    color: #0f172a;
-    background: #ffffff;
-    transition: all 0.2s ease;
-    font-family: inherit;
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 12px;
+  font-family: inherit;
+  font-size: 14.5px;
+  color: #0f1d36;
+  background: #fafbfc;
+  border: 1.5px solid #dfe3ea;
+  border-radius: 11px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  font-variant-numeric: tabular-nums;
+}
+
+.input:hover:not(:disabled) {
+  border-color: #c3cad6;
 }
 
 .input:focus {
-    outline: none;
-    border-color: #0ea5e9;
-    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+  background: #fff;
+  border-color: #E8652B;
+  box-shadow: 0 0 0 3px rgba(232, 101, 43, 0.15);
+}
+
+.input:disabled {
+  opacity: 0.6;
+}
+
+.inputMain {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.inputError,
+.inputError:focus {
+  background: #fff8f8;
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
 }
 
 .textarea {
-    resize: vertical;
-    min-height: 60px;
+  min-height: 108px;
+  line-height: 1.7;
+  resize: vertical;
 }
 
-.actionRow {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 2px;
+.hint {
+  font-size: 12.5px;
+  color: #8a93a3;
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #dc2626;
+}
+
+.skeleton {
+  height: 96px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #eef0f4 25%, #e5e8ee 50%, #eef0f4 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ── ข้อมูลที่จัดการที่หน้าอื่น ── */
+.related {
+  padding: 16px 20px;
+  background: #fafbfc;
+  border: 1px dashed #d6dbe3;
+  border-radius: 16px;
+}
+
+.relatedTitle {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #5b6474;
+}
+
+.relatedLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.relatedLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f1d36;
+  background: #fff;
+  border: 1px solid #e3e7ee;
+  border-radius: 11px;
+}
+
+.relatedLink svg {
+  color: #D4541A;
+}
+
+.relatedLink:hover {
+  color: #C24A15;
+  border-color: #f5a878;
+}
+
+/* ── ตัวอย่างที่สมาชิกเห็น ── */
+.previewCol {
+  position: sticky;
+  top: 16px;
+}
+
+.preview {
+  padding: 18px;
+  background: #fff;
+  border: 1px solid #e8ebf1;
+  border-radius: 18px;
+  box-shadow: 0 12px 28px -24px rgba(15, 29, 54, 0.5);
+}
+
+.previewTitle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #5b6474;
+}
+
+.previewBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  color: #fff;
+  border-radius: 14px;
+  background: linear-gradient(150deg, #22406f 0%, #13274a 50%, #0b172d 100%);
+}
+
+.pvHours {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.pvHours strong {
+  display: block;
+  font-size: 14.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pvHours span {
+  font-size: 12.5px;
+  color: rgba(232, 240, 252, 0.75);
+}
+
+.pvOpenDot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  margin-top: 7px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+}
+
+.pvCall {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  font-size: 15px;
+  font-weight: 800;
+  border-radius: 11px;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+  font-variant-numeric: tabular-nums;
+}
+
+.pvRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: rgba(232, 240, 252, 0.9);
+  overflow-wrap: anywhere;
+}
+
+.pvRow svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: #E3C169;
+}
+
+.pvRow small {
+  display: block;
+  font-size: 12px;
+  color: rgba(232, 240, 252, 0.6);
+}
+
+.pvAddress span {
+  white-space: pre-line;
+}
+
+.previewNote {
+  margin: 10px 2px 0;
+  font-size: 12px;
+  color: #8a93a3;
+}
+
+/* ── แถบบันทึก ── */
+.saveBar {
+  position: fixed;
+  right: 24px;
+  bottom: 20px;
+  left: calc(260px + 24px); /* ความกว้างเมนูซ้ายของ admin */
+  z-index: 50;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 12px 14px 12px 20px;
+  color: #fff;
+  border-radius: 16px;
+  background: #0f1d36;
+  box-shadow: 0 20px 44px -16px rgba(15, 29, 54, 0.75);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(16px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.saveBarShow {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.saveText {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.saveText em {
+  font-style: normal;
+  color: #fca5a5;
+}
+
+.saveActions {
+  display: flex;
+  gap: 8px;
+}
+
+.discardBtn,
+.saveBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 8px 16px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  border-radius: 11px;
+  transition: background 0.15s, filter 0.15s;
+}
+
+.discardBtn {
+  color: #fff;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.discardBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .saveBtn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    background: #0284c7;
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);
+  color: #fff;
+  border: none;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
 }
 
-.saveBtn:hover {
-    background: #0369a1;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(2, 132, 199, 0.3);
+.saveBtn:hover:not(:disabled) {
+  filter: brightness(1.08);
 }
 
-.saveBtn:active {
-    transform: translateY(0);
+.discardBtn:disabled,
+.saveBtn:disabled {
+  cursor: default;
+  opacity: 0.7;
 }
 
-.savedStatus {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #10b981;
-    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+.spin {
+  animation: spin 0.9s linear infinite;
 }
 
-@keyframes popIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* ── Toast Notification ── */
+/* ── แจ้งผล ── */
 .toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: #1e293b;
-    color: #ffffff;
-    padding: 12px 24px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 500;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 9999;
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  background: #fff;
+  border-radius: 13px;
+  box-shadow: 0 16px 36px -12px rgba(15, 29, 54, 0.45);
+  animation: toastIn 0.2s ease;
 }
 
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+.toastOk {
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.toastError {
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+.stateBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 48px 20px;
+  color: #b3bac6;
+  text-align: center;
+}
+
+.stateBox p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.headLink:focus-visible,
+.relatedLink:focus-visible,
+.discardBtn:focus-visible,
+.saveBtn:focus-visible {
+  outline: 3px solid rgba(232, 101, 43, 0.55);
+  outline-offset: 2px;
+}
+
+/* ── จอแคบ ── */
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* ตัวอย่างขึ้นไปอยู่บนสุด ไม่ติดหนึบ */
+  .previewCol {
+    position: static;
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .saveBar {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+  }
+
+  .grid,
+  .gridThree,
+  .gridPairs {
+    grid-template-columns: 1fr;
+  }
+
+  .head {
+    padding: 18px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .spin {
+    animation: none;
+  }
+
+  .saveBar {
+    transition: none;
+  }
 }
