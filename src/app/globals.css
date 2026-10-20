@@ -91,6 +91,15 @@ img {
   font-size: 12px !important;
 }
 
+a.topbar-text {
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+a.topbar-text:hover {
+  color: #f7e3a1 !important;
+}
+
 .topbar .anticon {
   color: rgba(255, 255, 255, 0.45);
   font-size: 11px;

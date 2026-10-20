@@ -10,7 +10,6 @@ import {
   CheckCircleOutlined,
   EyeOutlined,
   EyeInvisibleOutlined,
-  ArrowLeftOutlined,
   UploadOutlined,
   LoadingOutlined,
   FileTextOutlined,
@@ -122,6 +121,7 @@ export default function MemberMediaAdmin() {
     }
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- โหลดข้อมูลเมื่อเปิดหน้า
   useEffect(() => { fetchItems(); }, [fetchItems]);
 
   // Stats

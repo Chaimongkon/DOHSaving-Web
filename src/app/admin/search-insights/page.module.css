@@ -1,0 +1,143 @@
+/* ============================================================
+   สมาชิกค้นหา/ดาวน์โหลด (/admin/search-insights)
+   ใช้โครงหลักร่วมกับ page-analytics/page.module.css — ไฟล์นี้มีเฉพาะส่วนเพิ่ม
+   ============================================================ */
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #1e3a5f;
+  background: #f1f6fd;
+  border: 1px dashed #b9cbe6;
+  border-radius: 14px;
+}
+
+.notice svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: #2563eb;
+}
+
+.term {
+  font-weight: 800;
+  color: #0f1d36;
+  overflow-wrap: anywhere;
+}
+
+.termLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.termLink:hover .term {
+  color: #C24A15;
+}
+
+.pageTag {
+  display: inline-block;
+  padding: 2px 9px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  white-space: nowrap;
+  background: #f1f4f9;
+  border-radius: 999px;
+}
+
+.when {
+  font-size: 12.5px;
+  color: #8a93a3;
+  white-space: nowrap;
+}
+
+.clearBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #166534;
+  white-space: nowrap;
+  cursor: pointer;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 9px;
+}
+
+.clearBtn:hover:not(:disabled) {
+  background: #dcfce7;
+}
+
+.clearBtn:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.clearBtn:focus-visible {
+  outline: 3px solid rgba(22, 101, 52, 0.35);
+  outline-offset: 2px;
+}
+
+.hot {
+  color: #C24A15;
+}
+
+.formMeta {
+  display: block;
+  font-size: 12px;
+  color: #8a93a3;
+}
+
+.removed {
+  color: #b45309;
+}
+
+.split {
+  font-size: 12px;
+  color: #8a93a3;
+  white-space: nowrap;
+}
+
+.unused {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 6px 18px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13.5px;
+}
+
+.unused li {
+  padding: 7px 0;
+  color: #374151;
+  border-bottom: 1px dashed #f0e2b6;
+}
+
+.unused small {
+  display: block;
+  font-size: 12px;
+  color: #8a93a3;
+}
+
+.actionCol {
+  width: 1%;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .hideSm {
+    display: none;
+  }
+}
+
+.sectionLink {
+  color: inherit;
+  text-decoration: none;
+}

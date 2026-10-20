@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/seo";
 import DepartmentStaffContent from "@/components/about/DepartmentStaffContent";
 
-export const metadata: Metadata = {
-  title: "ฝ่ายสินเชื่อ | สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
+export const metadata = createPageMetadata({
+  title: "ฝ่ายสินเชื่อ",
   description: "บุคลากรฝ่ายสินเชื่อ สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
-};
+  path: "/about/dept-credit",
+});
 
 export default function DeptCreditPage() {
   return (

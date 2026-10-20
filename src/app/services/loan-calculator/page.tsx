@@ -194,6 +194,7 @@ export default function LoanCalculatorPage() {
     }, []);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- โหลดข้อมูลเมื่อเปิดหน้า/เปลี่ยนตัวกรอง
         fetchLoanTypes();
     }, [fetchLoanTypes]);
 
@@ -203,7 +204,6 @@ export default function LoanCalculatorPage() {
     const isShareBased = currentLoanType?.category === "special";
     
     // Constants for share calculation
-    const SHARE_VALUE = 100; // มูลค่าหุ้นละ 100 บาท
     const SHARE_LOAN_PERCENTAGE = 0.9; // กู้ได้ 90% ของมูลค่าหุ้น
 
     // For emergency loan: loan amount = salary × 2, rounded down to nearest 100

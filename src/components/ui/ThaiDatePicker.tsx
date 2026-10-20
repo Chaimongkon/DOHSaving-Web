@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import css from "./ThaiDatePicker.module.css";
 
 const THAI_MONTHS = [
@@ -25,10 +25,6 @@ interface ThaiDatePickerProps {
 
 function toBE(ceYear: number) {
   return ceYear + 543;
-}
-
-function toCE(beYear: number) {
-  return beYear - 543;
 }
 
 /** Format "YYYY-MM-DD" to Thai display */
@@ -61,13 +57,14 @@ export default function ThaiDatePicker({ value, onChange, placeholder }: ThaiDat
   const [viewYear, setViewYear] = useState(initYear);
   const [viewMonth, setViewMonth] = useState(initMonth);
 
-  // Sync view to value when opening
-  useEffect(() => {
-    if (open && value) {
+  // เปิดปฏิทินแล้วให้แสดงเดือนของวันที่ที่เลือกไว้
+  const toggleOpen = () => {
+    if (!open && value) {
       setViewYear(parseInt(value.slice(0, 4)));
       setViewMonth(parseInt(value.slice(5, 7)) - 1);
     }
-  }, [open, value]);
+    setOpen(!open);
+  };
 
   const prevMonth = useCallback(() => {
     setViewMonth((m) => {
@@ -146,7 +143,7 @@ export default function ThaiDatePicker({ value, onChange, placeholder }: ThaiDat
       <button
         type="button"
         className={`${css.trigger} ${open ? css.triggerOpen : ""}`}
-        onClick={() => setOpen(!open)}
+        onClick={toggleOpen}
       >
         <span className={css.triggerIcon}>📅</span>
         <span className={css.triggerText}>

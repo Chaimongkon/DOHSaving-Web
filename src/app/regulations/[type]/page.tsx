@@ -29,6 +29,7 @@ import {
 import { Book3D, Scales3D, Bell3D } from "@/components/icons/ThreeDIcons";
 import { getPdfCoverDataUrl } from "@/lib/pdfCover";
 import { type MemberKey, memberKeyOf, readSavedMember, saveMember } from "@/lib/memberType";
+import { useSearchMiss } from "@/lib/trackEvent";
 import css from "./page.module.css";
 
 interface RegItem {
@@ -221,6 +222,7 @@ export default function RegulationsPage() {
   const listItems = q
     ? items.filter((i) => `${i.title ?? ""} ${i.description ?? ""} ${groupOf(i)}`.toLowerCase().includes(q))
     : items.filter((i) => groupOf(i) === activeGroup);
+  useSearchMiss(`regulations:${type}`, query, loading || !q ? null : listItems.length);
 
   // เอกสารน้อย (เช่น ข้อบังคับมีฉบับเดียว) → แสดงแบบฉบับเด่นพร้อมหน้าปก
   const featuredMode = items.length > 0 && items.length <= 2;

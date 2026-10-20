@@ -1,9 +1,10 @@
-import type { NextRequest } from "next/server";
+import { after, type NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { getClientIp } from "@/lib/requestIp";
 import { consumeRateLimit } from "@/lib/rateLimit";
 import { randomInt } from "node:crypto";
 import { TRACKING_ALPHABET, normalizeTrackingCode, isValidTrackingCode } from "@/lib/complaintTracking";
+import { notifyNewComplaint } from "@/lib/telegram";
 
 // ─── XSS Sanitizer — strip dangerous HTML/script tags ───
 function sanitize(input: string | null | undefined): string {
@@ -135,6 +136,8 @@ export async function POST(req: NextRequest) {
         const record = await prisma.complaint.create({
           data: { ...data, trackingCode: generateTrackingCode() },
         });
+        // แจ้งเจ้าหน้าที่หลังตอบผู้ส่งแล้ว — Telegram ช้าหรือล่มก็ไม่ทำให้การส่งเรื่องสะดุด
+        after(() => notifyNewComplaint(record));
         return Response.json({
           ok: true,
           trackingCode: record.trackingCode,

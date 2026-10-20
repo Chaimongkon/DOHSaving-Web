@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import { trackEvent, trackOnce, useSearchMiss } from "@/lib/trackEvent";
 import {
   ArrowLeft,
   ChevronRight,
@@ -133,7 +134,8 @@ function FormsContent() {
     router.push("/forms");
   };
 
-  const markRecent = (id: number) => {
+  const markRecent = (id: number, action: "view" | "download" = "download") => {
+    trackEvent("form_download", id, action);
     const next = [id, ...recentIds.filter((r) => r !== id)].slice(0, RECENT_MAX);
     setRecentIds(next);
     try {
@@ -179,6 +181,13 @@ function FormsContent() {
     : inScope.filter((i) => i.category === activeTab);
   // หน้าหมวด (มีแท็บประเภทสมาชิก) แสดงเมื่อไม่ได้ค้นหา
   const groupView = query ? null : activeGroup;
+
+  // นับหมวดที่เปิด และคำค้นที่หาไม่เจอ — ให้แอดมินเห็นว่าสมาชิกมองหาอะไร
+  const groupViewKey = groupView?.key;
+  useEffect(() => {
+    if (groupViewKey) trackOnce("form_group", groupViewKey);
+  }, [groupViewKey]);
+  useSearchMiss("forms", search, loading || !query ? null : listItems.length);
   // อยู่ในหมวดที่มีหลายประเภทสมาชิก แต่ยังไม่ได้เลือกประเภท → ให้เลือกก่อนแสดงรายการ
   const needsMember = !!groupView && !activeTab && tabs.length > 0;
 
@@ -417,7 +426,7 @@ function FormsContent() {
                               rel="noopener noreferrer"
                               className={css.viewBtn}
                               aria-label={`เปิดดู ${item.title}`}
-                              onClick={() => markRecent(item.id)}
+                              onClick={() => markRecent(item.id, "view")}
                             >
                               <Eye size={16} /> เปิดดู
                             </a>

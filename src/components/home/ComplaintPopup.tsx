@@ -34,7 +34,7 @@ export default function ComplaintPopup({ open, onClose }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [resultCode, setResultCode] = useState("");
   const [pdpaConsent, setPdpaConsent] = useState(false);
-  const [hp, setHp] = useState(""); // honeypot anti-bot
+  const [hp] = useState(""); // honeypot anti-bot
 
   if (!open) return null;
 

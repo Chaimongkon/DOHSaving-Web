@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { getClientIp } from "@/lib/requestIp";
 import { consumeRateLimit } from "@/lib/rateLimit";
 import { purgeExpiredData } from "@/lib/retention";
+import { maybeSendDailyDigest } from "@/lib/telegram";
 
 const VISIT_LIMIT = 60;
 const VISIT_WINDOW_SECONDS = 60;
@@ -50,6 +51,7 @@ export async function POST(req: NextRequest) {
     });
 
     void purgeExpiredData();
+    void maybeSendDailyDigest();
 
     return Response.json({ ok: true });
   } catch (error) {

@@ -100,6 +100,8 @@ const ALL_MENU_GROUPS = [
   {
     group: "ระบบ",
     items: [
+      { label: "ยอดนิยมเดือนนี้", href: "/admin/page-analytics" },
+      { label: "สมาชิกค้นหา/ดาวน์โหลด", href: "/admin/search-insights" },
       { label: "รูปเมนูหลัก", href: "/admin/mega-images" },
       { label: "Festival Theme", href: "/admin/festivals" },
       { label: "ผู้ใช้งาน", href: "/admin/users" },
@@ -116,8 +118,8 @@ const ROLE_PRESETS: Record<string, string[]> = {
     "/admin/news", "/admin/videos", "/admin/photo-albums", "/admin/member-media",
     // จัดการหน้าเว็บทั้งหมด
     "/admin/slides", "/admin/notifications", "/admin/service-pages", "/admin/app-guide", "/admin/download-app",
-    // เอกสาร: แค่แบบฟอร์ม
-    "/admin/forms",
+    // เอกสาร: แค่แบบฟอร์ม (+ สถิติดาวน์โหลด/คำค้นที่ไม่เจอ ไว้ปรับชื่อแบบฟอร์ม)
+    "/admin/forms", "/admin/search-insights",
     // สื่อสาร: แค่กระดานถามตอบ
     "/admin/qna",
   ],
@@ -127,7 +129,7 @@ const ROLE_PRESETS: Record<string, string[]> = {
     // จัดการหน้าเว็บทั้งหมด
     "/admin/slides", "/admin/notifications", "/admin/service-pages", "/admin/app-guide", "/admin/download-app",
     // เอกสารทั้งหมด
-    "/admin/regulations", "/admin/forms", "/admin/annual-reports", "/admin/meeting-documents",
+    "/admin/regulations", "/admin/forms", "/admin/annual-reports", "/admin/meeting-documents", "/admin/search-insights",
     // หน้าเพจทั้งหมด
     "/admin/pages/history", "/admin/chairman-message", "/admin/vision-data",
     "/admin/policy-items", "/admin/ethics-board-items", "/admin/ethics-staff-items",
@@ -180,6 +182,7 @@ export default function UsersPage() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- โหลดข้อมูลเมื่อเปิดหน้า/เปลี่ยนตัวกรอง
     fetchUsers();
   }, [fetchUsers]);
 

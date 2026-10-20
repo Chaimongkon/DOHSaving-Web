@@ -107,6 +107,7 @@ export default function AdminActivityAlbumsPage() {
     }
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- โหลดข้อมูลเมื่อเปิดหน้า
   useEffect(() => { load(); }, [load]);
 
   // Stats

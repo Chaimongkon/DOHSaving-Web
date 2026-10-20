@@ -47,6 +47,12 @@ export default function GlobalError({
                         }}
                     >
                         ระบบไม่สามารถแสดงผลได้ กรุณาลองใหม่อีกครั้ง
+                        {/* รหัสอ้างอิงตรงกับ log ฝั่งเซิร์ฟเวอร์ — สมาชิกแจ้งรหัสนี้ให้เจ้าหน้าที่ค้นหาสาเหตุได้ */}
+                        {error.digest && (
+                            <span style={{ display: "block", marginTop: "0.5rem", fontSize: "0.8rem", color: "#999" }}>
+                                รหัสอ้างอิง: {error.digest}
+                            </span>
+                        )}
                     </p>
                     <button
                         onClick={reset}

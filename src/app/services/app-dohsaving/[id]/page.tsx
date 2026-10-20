@@ -44,6 +44,7 @@ export default function AppGuideDetailPage() {
     setLoading(false);
   }, [id]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- โหลดข้อมูลเมื่อเปิดหน้า
   useEffect(() => { load(); }, [load]);
 
   let images: GuideImage[] = [];
@@ -54,13 +55,21 @@ export default function AppGuideDetailPage() {
   const openLightbox = (index: number) => {
     setLightboxIndex(index);
     setLightboxOpen(true);
-    document.body.style.overflow = "hidden";
   };
 
   const closeLightbox = () => {
     setLightboxOpen(false);
-    document.body.style.overflow = "";
   };
+
+  // ล็อกการเลื่อนหน้าขณะเปิดดูรูป — คืนค่าเสมอแม้ออกจากหน้าไปทั้งที่ยังเปิดอยู่
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [lightboxOpen]);
 
   const prevImage = () => setLightboxIndex((i) => (i > 0 ? i - 1 : images.length - 1));
   const nextImage = () => setLightboxIndex((i) => (i < images.length - 1 ? i + 1 : 0));

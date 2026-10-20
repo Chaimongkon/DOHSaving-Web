@@ -1,0 +1,184 @@
+/**
+ * แจ้งเตือนเจ้าหน้าที่ทาง Telegram (ฟรี ไม่จำกัดจำนวนข้อความ) — ฝั่งเซิร์ฟเวอร์เท่านั้น
+ *
+ * ตั้งค่าใน .env (วิธีสร้างบอทดู DEPLOY.md):
+ *   TELEGRAM_BOT_TOKEN=123456:ABC...
+ *   TELEGRAM_CHAT_ID=-1001234567890        (หลายห้องคั่นด้วย ,)
+ * ไม่ได้ตั้ง = ปิดการแจ้งเตือนเงียบ ๆ เว็บทำงานปกติ
+ *
+ * ข้อความส่งออกนอกระบบ → ไม่ใส่ชื่อ เบอร์โทร อีเมล เลขสมาชิก ส่งแค่หัวข้อพร้อมลิงก์ให้เข้าไปดูในระบบหลังบ้าน
+ */
+import prisma from "@/lib/prisma";
+import { absoluteUrl } from "@/lib/seo";
+
+const API = "https://api.telegram.org";
+const TIMEOUT_MS = 5000;
+
+function config() {
+  const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
+  const chats = (process.env.TELEGRAM_CHAT_ID ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+  return token && chats.length ? { token, chats } : null;
+}
+
+export const isTelegramConfigured = () => config() !== null;
+
+/** ข้อความจากฐานข้อมูลบางส่วนถูก escape เป็น HTML entity ไว้แล้ว — ถอดกลับก่อน แล้วค่อย escape ใหม่ให้ Telegram */
+function plain(s: string) {
+  return s
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'")
+    .replace(/&#x2F;/g, "/")
+    .replace(/&amp;/g, "&");
+}
+
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+/** หัวข้อสั้น ๆ ที่ปิดตัวเลขยาว (เบอร์โทร/เลขสมาชิก/เลขบัตร) แล้ว */
+function safeTitle(s: string | null | undefined, max = 90) {
+  const t = plain(s ?? "").replace(/\s+/g, " ").trim().replace(/\d[\d\s-]{4,}\d/g, "•••");
+  return esc(t.length > max ? `${t.slice(0, max).trimEnd()}…` : t || "(ไม่มีหัวข้อ)");
+}
+
+function adminLink(path: string, label: string) {
+  try {
+    return `<a href="${esc(absoluteUrl(path))}">${label}</a>`;
+  } catch {
+    return ""; // ไม่ได้ตั้ง NEXT_PUBLIC_SITE_URL — ส่งข้อความโดยไม่มีลิงก์
+  }
+}
+
+/** ส่งข้อความ (HTML) ไปทุกห้องที่ตั้งไว้ · ล้มเหลวแค่บันทึก log ไม่โยน error */
+export async function sendTelegram(html: string): Promise<boolean> {
+  const cfg = config();
+  if (!cfg) return false;
+  const results = await Promise.all(
+    cfg.chats.map(async (chat_id) => {
+      try {
+        const res = await fetch(`${API}/bot${cfg.token}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id, text: html, parse_mode: "HTML", link_preview_options: { is_disabled: true } }),
+          signal: AbortSignal.timeout(TIMEOUT_MS),
+        });
+        if (!res.ok) console.error(`[telegram] ส่งไม่สำเร็จ (${res.status}):`, (await res.text()).slice(0, 200));
+        return res.ok;
+      } catch (error) {
+        console.error("[telegram] ส่งไม่สำเร็จ:", error instanceof Error ? error.message : error);
+        return false;
+      }
+    })
+  );
+  return results.some(Boolean);
+}
+
+/* ═════════ เหตุการณ์ ═════════ */
+
+const COMPLAINT_LABELS: Record<string, string> = {
+  complaint: "ร้องเรียน",
+  suggestion: "ข้อเสนอแนะ",
+  inquiry: "สอบถาม",
+};
+
+export function notifyNewComplaint(c: { trackingCode: string; category: string; subject: string | null }) {
+  return sendTelegram(
+    [
+      `📮 <b>เรื่อง${COMPLAINT_LABELS[c.category] ?? "ร้องเรียน"}ใหม่</b>`,
+      safeTitle(c.subject),
+      `เลขที่ ${esc(c.trackingCode)}`,
+      adminLink("/admin/complaints", "เปิดในระบบหลังบ้าน →"),
+    ].filter(Boolean).join("\n")
+  );
+}
+
+export function notifyNewQuestion(q: { id: number; title: string }) {
+  return sendTelegram(
+    [
+      `💬 <b>คำถามใหม่ในกระดานถาม-ตอบ</b>`,
+      safeTitle(q.title),
+      adminLink("/admin/qna", "ตอบในระบบหลังบ้าน →"),
+    ].filter(Boolean).join("\n")
+  );
+}
+
+export function notifyMemberReply(q: { id: number; title: string }) {
+  return sendTelegram(
+    [
+      `↩️ <b>สมาชิกถามต่อในกระทู้</b>`,
+      safeTitle(q.title),
+      adminLink("/admin/qna", "ตอบในระบบหลังบ้าน →"),
+    ].filter(Boolean).join("\n")
+  );
+}
+
+/* ═════════ สรุปงานค้างประจำวัน ═════════ */
+
+const DIGEST_KEY = "telegram_digest_last";
+const DIGEST_HOUR = 8; // หลัง 08:00 น. วันทำการ
+const CHECK_EVERY_MS = 10 * 60 * 1000;
+const TH = 7 * 60 * 60 * 1000;
+
+let lastCheck = 0;
+let running = false;
+
+/**
+ * ส่งสรุปงานค้าง (ร้องเรียน + กระทู้รอตอบ) วันละครั้ง จันทร์–ศุกร์
+ * เรียกจากเส้นทางที่มีคนเข้าบ่อย ไม่ต้องตั้ง cron · จำวันที่ส่งไว้ในฐานข้อมูล รีสตาร์ตเซิร์ฟเวอร์แล้วไม่ส่งซ้ำ
+ */
+export async function maybeSendDailyDigest(): Promise<void> {
+  const now = Date.now();
+  if (running || now - lastCheck < CHECK_EVERY_MS || !isTelegramConfigured()) return;
+  lastCheck = now;
+
+  const th = new Date(now + TH);
+  const weekday = th.getUTCDay();
+  if (weekday === 0 || weekday === 6 || th.getUTCHours() < DIGEST_HOUR) return;
+  const today = th.toISOString().slice(0, 10);
+
+  running = true;
+  try {
+    const last = await prisma.siteSetting.findUnique({ where: { key: DIGEST_KEY }, select: { value: true } });
+    if (last?.value === today) return;
+    // จองวันนี้ก่อนส่ง — ถ้าส่งล้มเหลวก็ไม่วนส่งซ้ำทั้งวัน
+    await prisma.siteSetting.upsert({
+      where: { key: DIGEST_KEY },
+      update: { value: today },
+      create: { key: DIGEST_KEY, value: today, remark: "วันที่ส่งสรุปงานค้างทาง Telegram ล่าสุด" },
+    });
+
+    const [pending, reviewing, open] = await Promise.all([
+      prisma.complaint.count({ where: { status: "pending" } }),
+      prisma.complaint.count({ where: { status: "reviewing" } }),
+      prisma.qnaQuestion.findMany({
+        where: { isActive: true, isClosed: false },
+        select: {
+          createdAt: true,
+          replies: { where: { isActive: true }, orderBy: { createdAt: "desc" }, take: 1, select: { isAdmin: true, createdAt: true } },
+        },
+      }),
+    ]);
+    const waiting = open
+      .filter((q) => !q.replies[0] || !q.replies[0].isAdmin)
+      .map((q) => (q.replies[0]?.createdAt ?? q.createdAt).getTime());
+    if (pending + reviewing === 0 && waiting.length === 0) return; // ไม่มีงานค้าง ไม่ต้องรบกวน
+
+    const oldestDays = waiting.length ? Math.floor((now - Math.min(...waiting)) / 86400000) : 0;
+    const lines = [`☀️ <b>งานค้างประจำวัน</b> (${th.getUTCDate()}/${th.getUTCMonth() + 1})`];
+    if (pending + reviewing > 0) {
+      lines.push(`📮 ร้องเรียน/เสนอแนะ ${pending + reviewing} เรื่อง (รอรับเรื่อง ${pending} · กำลังตรวจสอบ ${reviewing})`);
+      const link = adminLink("/admin/complaints", "เปิดรายการร้องเรียน →");
+      if (link) lines.push(link);
+    }
+    if (waiting.length > 0) {
+      lines.push(`💬 กระทู้รอตอบ ${waiting.length} กระทู้${oldestDays > 0 ? ` (รอนานสุด ${oldestDays} วัน)` : ""}`);
+      const link = adminLink("/admin/qna", "เปิดกระดานถาม-ตอบ →");
+      if (link) lines.push(link);
+    }
+    await sendTelegram(lines.join("\n"));
+  } catch (error) {
+    console.error("[telegram] daily digest failed:", error);
+  } finally {
+    running = false;
+  }
+}

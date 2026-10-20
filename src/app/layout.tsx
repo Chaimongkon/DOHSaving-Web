@@ -21,16 +21,18 @@ const notoSansThai = Noto_Sans_Thai({
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
-  title: `${SITE_NAME} | ${SITE_SHORT_NAME}`,
+  title: { default: `${SITE_NAME} | ${SITE_SHORT_NAME}`, template: `%s | ${SITE_NAME}` },
   description: DEFAULT_DESCRIPTION,
   applicationName: SITE_SHORT_NAME,
   keywords: [
-    "Department of Highways Saving Cooperative",
+    "สหกรณ์ออมทรัพย์กรมทางหลวง",
+    "สหกรณ์กรมทางหลวง",
     "DOHSaving",
-    "saving cooperative",
-    "deposit",
-    "loan",
-    "member services",
+    "เงินกู้สหกรณ์",
+    "เงินฝากสหกรณ์",
+    "แบบฟอร์มสหกรณ์",
+    "อัตราดอกเบี้ย",
+    "Department of Highways Saving Cooperative",
   ],
   alternates: {
     canonical: "/",
@@ -40,7 +42,7 @@ export const metadata: Metadata = {
     description: DEFAULT_DESCRIPTION,
     url: "/",
     siteName: SITE_NAME,
-    locale: "en_US",
+    locale: "th_TH",
     type: "website",
     images: [{ url: DEFAULT_OG_IMAGE }],
   },

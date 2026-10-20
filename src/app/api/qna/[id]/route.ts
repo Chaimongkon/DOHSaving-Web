@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import prisma from "@/lib/prisma";
 import { getClientIp } from "@/lib/requestIp";
 import { consumeRateLimit } from "@/lib/rateLimit";
 import { decodeEntities } from "@/lib/decodeEntities";
+import { notifyMemberReply } from "@/lib/telegram";
 import {
   BLOCKED_DATA_ERROR,
   RESERVED_NAME_ERROR,
@@ -182,6 +183,7 @@ export async function POST(
       },
     });
 
+    after(() => notifyMemberReply(question));
     return NextResponse.json({ reply: { id: reply.id } }, { status: 201 });
   } catch (error) {
     console.error("Failed to create reply:", error);

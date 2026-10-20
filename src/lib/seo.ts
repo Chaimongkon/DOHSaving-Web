@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 
-export const SITE_NAME = "Department of Highways Saving Cooperative Ltd.";
+export const SITE_NAME = "สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด";
+export const SITE_NAME_EN = "Department of Highways Saving Cooperative Ltd.";
 export const SITE_SHORT_NAME = "DOHSaving";
 export const DEFAULT_DESCRIPTION =
-  "Official website of the Department of Highways Saving Cooperative with news, services, forms, rates, and member information.";
+  "เว็บไซต์ทางการของสหกรณ์ออมทรัพย์กรมทางหลวง จำกัด — ข่าวสาร บริการเงินฝาก เงินกู้ สวัสดิการ ดาวน์โหลดแบบฟอร์ม อัตราดอกเบี้ย และข้อมูลสำหรับสมาชิก";
 export const DEFAULT_OG_IMAGE = "/images/logo/logo.png";
 
 function normalizeUrl(url: string) {
@@ -60,38 +61,41 @@ export function createPageMetadata({
   image = DEFAULT_OG_IMAGE,
   noIndex = false,
 }: PageMetadataInput): Metadata {
+  const fullTitle = `${title} | ${SITE_NAME}`;
   return {
-    title,
+    // absolute: layout ซ้อนกัน (เช่น /qna → /qna/new) ทำให้ template ของ root ไม่ถูกส่งต่อ — ต่อชื่อเว็บเองให้แน่นอน
+    title: { absolute: fullTitle },
     description,
     alternates: {
       canonical: path,
     },
     openGraph: {
-      title,
+      title: fullTitle,
       description,
       url: absoluteUrl(path),
       siteName: SITE_NAME,
-      locale: "en_US",
+      locale: "th_TH",
       type: "website",
       images: [{ url: image }],
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: fullTitle,
       description,
       images: [image],
     },
-    robots: noIndex
-      ? {
+    // ไม่ใส่ robots เลยเมื่อให้ index — ใส่ undefined จะลบค่าจาก root (max-image-preview ฯลฯ) ทิ้ง
+    ...(noIndex && {
+      robots: {
+        index: false,
+        follow: false,
+        nocache: true,
+        googleBot: {
           index: false,
           follow: false,
-          nocache: true,
-          googleBot: {
-            index: false,
-            follow: false,
-            noimageindex: true,
-          },
-        }
-      : undefined,
+          noimageindex: true,
+        },
+      },
+    }),
   };
 }

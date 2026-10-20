@@ -46,7 +46,7 @@ import css from "./page.module.css";
 import "react-quill-new/dist/quill.snow.css";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 interface News {
   id: number;
@@ -148,6 +148,7 @@ export default function NewsPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- โหลดข้อมูลเมื่อเปิดหน้า/เปลี่ยนตัวกรอง
     fetchNews();
   }, []);
 
@@ -321,11 +322,6 @@ export default function NewsPage() {
   // Format number
   const formatNum = (n: number) =>
     n >= 1000 ? `${(n / 1000).toFixed(1)}k` : n.toString();
-
-  // Reset page when filter/search changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filter, searchText]);
 
   // Filtered list
   const filtered = news.filter((n) => {
@@ -583,7 +579,7 @@ export default function NewsPage() {
             <Input
               placeholder="ค้นหาข่าว..."
               prefix={<SearchOutlined style={{ color: "#94a3b8" }} />}
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={(e) => { setSearchText(e.target.value); setCurrentPage(1); }}
               className={css.searchInput}
               allowClear
               size="middle"
@@ -619,7 +615,7 @@ export default function NewsPage() {
               <button
                 key={cat.value}
                 className={`${css.chip} ${filter === cat.value ? css.chipActive : ""}`}
-                onClick={() => setFilter(cat.value)}
+                onClick={() => { setFilter(cat.value); setCurrentPage(1); }}
               >
                 {cat.label}
                 <span className={css.chipCount}>{count}</span>

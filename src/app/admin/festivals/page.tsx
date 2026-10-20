@@ -8,7 +8,6 @@ import {
   CloseOutlined,
   CalendarOutlined,
   ThunderboltOutlined,
-  BgColorsOutlined,
   PoweroffOutlined,
 } from "@ant-design/icons";
 import { FESTIVAL_THEMES, EFFECT_OPTIONS, THEME_KEY_OPTIONS, ANIMATION_OPTIONS, THEME_PRESETS } from "@/components/festival/themes";
@@ -264,6 +263,7 @@ export default function FestivalsPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- โหลดข้อมูลเมื่อเปิดหน้า/เปลี่ยนตัวกรอง
     fetchItems();
   }, []);
 

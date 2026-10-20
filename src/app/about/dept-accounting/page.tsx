@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/seo";
 import DepartmentStaffContent from "@/components/about/DepartmentStaffContent";
 
-export const metadata: Metadata = {
-  title: "ฝ่ายบัญชี | สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
+export const metadata = createPageMetadata({
+  title: "ฝ่ายบัญชี",
   description: "บุคลากรฝ่ายบัญชี สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
-};
+  path: "/about/dept-accounting",
+});
 
 export default function DeptAccountingPage() {
   return (

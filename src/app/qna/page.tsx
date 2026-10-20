@@ -3,6 +3,7 @@
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useSearchMiss } from "@/lib/trackEvent";
 import {
   Search,
   Plus,
@@ -144,6 +145,9 @@ function QnaBoard() {
     })();
     return () => ctrl.abort();
   }, [page, search, filter, sort, reloadKey]);
+
+  // ค้นหาไม่เจอ (นับเฉพาะตอนดูทุกกระทู้ — ตัวกรองอื่นทำให้ไม่เจอได้แม้มีกระทู้เรื่องนั้น)
+  useSearchMiss("qna", search, loading || failed || filter !== "all" ? null : total);
 
   const applySearch = (value: string) => {
     setSearchInput(value);

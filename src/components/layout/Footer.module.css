@@ -59,6 +59,16 @@
   color: rgba(255, 255, 255, 0.65);
 }
 
+.contactItem a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.contactItem a:hover {
+  color: #f7e3a1;
+}
+
 .contactIcon {
   color: var(--color-primary);
   font-size: 13px;

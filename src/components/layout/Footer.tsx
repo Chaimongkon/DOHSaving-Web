@@ -12,8 +12,8 @@ import {
   TeamOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
-import Image from "next/image";
 import css from "./Footer.module.css";
+import { clean, mergeFaxes, telHref, useContactData } from "@/lib/contactInfo";
 
 const quickLinks = [
   { label: "หน้าแรก", href: "/" },
@@ -34,6 +34,11 @@ const serviceLinks = [
 ];
 
 export default function Footer() {
+  const { info } = useContactData();
+  const address = clean(info.address).replace(/\s*\n\s*/g, " ");
+  const phone = clean(info.mainPhone) || clean(info.phone);
+  const fax = mergeFaxes(info)[0]?.number;
+  const email = clean(info.email);
   const [stats, setStats] = useState<{ total: number; today: number } | null>(null);
 
   useEffect(() => {
@@ -63,19 +68,21 @@ export default function Footer() {
           <div className={css.contactList}>
             <div className={css.contactItem}>
               <EnvironmentOutlined className={css.contactIcon} />
-              <span>2/486 อาคาร 26 ถนนศรีอยุธยา แขวงทุ่งพญาไท เขตราชเทวี กทม. 10400</span>
+              <span>{address}</span>
             </div>
             <div className={css.contactItem}>
               <PhoneOutlined className={css.contactIcon} />
-              <span>02-644-4633 ต่อ 205</span>
+              <span><a href={telHref(phone)}>{phone}</a></span>
             </div>
-            <div className={css.contactItem}>
-              <PrinterOutlined className={css.contactIcon} />
-              <span>02-354-5717</span>
-            </div>
+            {fax && (
+              <div className={css.contactItem}>
+                <PrinterOutlined className={css.contactIcon} />
+                <span>โทรสาร {fax}</span>
+              </div>
+            )}
             <div className={css.contactItem}>
               <MailOutlined className={css.contactIcon} />
-              <span><a href="mailto:[dohcoop@hotmail.com]">dohcoop@hotmail.com</a></span>
+              <span><a href={`mailto:${email}`}>{email}</a></span>
             </div>
           </div>
         </div>

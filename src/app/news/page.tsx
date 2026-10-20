@@ -6,6 +6,7 @@ import {
   LeftOutlined, RightOutlined, PushpinOutlined,
 } from "@ant-design/icons";
 import { categoryMap, type NewsData } from "@/data/mockNews";
+import { useSearchMiss } from "@/lib/trackEvent";
 import css from "./page.module.css";
 
 const categories = [
@@ -66,8 +67,11 @@ export default function NewsListPage() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- โหลดข้อมูลเมื่อเปิดหน้า/เปลี่ยนตัวกรอง
     fetchNews(page, filter, search);
   }, [page, filter, search, fetchNews]);
+
+  useSearchMiss("news", search, loading || filter !== "all" ? null : total);
 
   // Debounced search
   const handleSearchInput = (val: string) => {

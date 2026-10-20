@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Plus, Edit2, Trash2, X, UploadCloud, Link as LinkIcon, Download, FileText, CheckCircle, XCircle, LayoutGrid, Settings2, ChevronDown } from "lucide-react";
+import { Plus, Edit2, Trash2, X, UploadCloud, Download, FileText, CheckCircle, XCircle, LayoutGrid, Settings2, ChevronDown } from "lucide-react";
 import css from "./page.module.css";
 
 const MONTHS_SHORT = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
@@ -136,10 +136,6 @@ export default function AdminFinancialSummaryPage() {
   };
 
   // Helper func to format number with commas
-  const formatNumberForInput = (val: string | number | null | undefined) => {
-    if (!val) return "";
-    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
 
   return (
     <div className={css.container}>

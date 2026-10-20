@@ -125,32 +125,47 @@ export interface ContactData {
   lineContacts: LineData[];
 }
 
+/** แถบบน · ส่วนท้าย · หน้าติดต่อ ใช้ข้อมูลชุดเดียวกัน — ดึงครั้งเดียวต่อการเปิดหน้าเว็บ */
+let shared: Promise<ContactData> | null = null;
+let loaded: ContactData | null = null;
+
+function loadContactData() {
+  shared ??= fetch("/api/contact")
+    .then((r) => r.json())
+    .then((json) => {
+      const info = json.info && Object.keys(json.info).length
+        ? { ...DEFAULT_CONTACT_INFO, ...json.info }
+        : DEFAULT_CONTACT_INFO;
+      loaded = {
+        info,
+        departments: json.departments?.length ? json.departments : DEFAULT_DEPARTMENTS,
+        lineContacts: json.lineContacts?.length ? json.lineContacts : DEFAULT_LINE_CONTACTS,
+      };
+      return loaded;
+    })
+    .catch((err) => {
+      shared = null; // ให้ลองใหม่ได้ในหน้าถัดไป
+      throw err;
+    });
+  return shared;
+}
+
 /**
  * ดึงข้อมูลติดต่อจาก API พร้อมค่าสำรอง
  * onInfo เรียกทุกครั้งที่ได้ข้อมูลใหม่ ใช้สำหรับงานที่ต้องทำนอก React เช่นตั้งเวลาทำการ
  */
 export function useContactData(onInfo?: (info: ContactInfoMap) => void): ContactData {
-  const [data, setData] = useState<ContactData>({
-    info: DEFAULT_CONTACT_INFO,
-    departments: DEFAULT_DEPARTMENTS,
-    lineContacts: DEFAULT_LINE_CONTACTS,
-  });
+  const [data, setData] = useState<ContactData>(
+    () => loaded ?? { info: DEFAULT_CONTACT_INFO, departments: DEFAULT_DEPARTMENTS, lineContacts: DEFAULT_LINE_CONTACTS }
+  );
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/contact")
-      .then((r) => r.json())
-      .then((json) => {
+    loadContactData()
+      .then((next) => {
         if (cancelled) return;
-        const info = json.info && Object.keys(json.info).length
-          ? { ...DEFAULT_CONTACT_INFO, ...json.info }
-          : DEFAULT_CONTACT_INFO;
-        setData({
-          info,
-          departments: json.departments?.length ? json.departments : DEFAULT_DEPARTMENTS,
-          lineContacts: json.lineContacts?.length ? json.lineContacts : DEFAULT_LINE_CONTACTS,
-        });
-        onInfo?.(info);
+        setData(next);
+        onInfo?.(next.info);
       })
       .catch(() => {
         /* ใช้ค่าสำรองต่อไป */

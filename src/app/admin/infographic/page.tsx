@@ -7,7 +7,6 @@ import {
   DeleteOutlined,
   EyeOutlined,
   PictureOutlined,
-  AuditOutlined,
 } from "@ant-design/icons";
 import css from "./page.module.css";
 

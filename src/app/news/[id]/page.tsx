@@ -26,26 +26,28 @@ export async function generateMetadata(
 
     if (!news) {
       return {
-        title: `News Not Found | ${SITE_NAME}`,
+        title: { absolute: `ไม่พบข่าว | ${SITE_NAME}` },
         robots: { index: false, follow: false },
       };
     }
 
-    const title = news.title || "News";
+    const title = news.title?.trim() || "ข่าวสาร";
     const description = news.details
       ? stripHtml(news.details).slice(0, 160)
-      : "News and announcements from the Department of Highways Saving Cooperative.";
+      : "ข่าวประชาสัมพันธ์และประกาศจากสหกรณ์ออมทรัพย์กรมทางหลวง จำกัด";
     const image = news.imagePath || DEFAULT_OG_IMAGE;
     const canonicalPath = `/news/${id}`;
 
     return {
-      title: `${title} | ${SITE_NAME}`,
+      title: { absolute: `${title} | ${SITE_NAME}` },
       description,
       alternates: {
         canonical: canonicalPath,
       },
       openGraph: {
-        title,
+        title: `${title} | ${SITE_NAME}`,
+        siteName: SITE_NAME,
+        locale: "th_TH",
         description,
         url: absoluteUrl(canonicalPath),
         type: "article",
@@ -61,7 +63,7 @@ export async function generateMetadata(
       },
     };
   } catch {
-    return { title: `News | ${SITE_NAME}` };
+    return { title: { absolute: `ข่าวสาร | ${SITE_NAME}` } };
   }
 }
 

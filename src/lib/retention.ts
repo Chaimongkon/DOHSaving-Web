@@ -5,6 +5,7 @@
  */
 import prisma from "@/lib/prisma";
 import { RETENTION_YEARS } from "@/lib/retentionPolicy";
+import { purgeSiteEvents } from "@/lib/siteEvents";
 
 export { RETENTION_YEARS };
 
@@ -20,13 +21,14 @@ export async function purgeExpiredData(): Promise<void> {
   try {
     const cutoff = new Date(now);
     cutoff.setFullYear(cutoff.getFullYear() - RETENTION_YEARS);
-    const [visits, consents] = await Promise.all([
+    const [visits, consents, events] = await Promise.all([
       prisma.visitLog.deleteMany({ where: { visitDate: { lt: cutoff } } }),
       // นับจากการตัดสินใจครั้งล่าสุด — คนที่ยังกลับมาเปลี่ยนใจจะถูกเก็บต่อ
       prisma.cookieConsent.deleteMany({ where: { updatedAt: { lt: cutoff } } }),
+      purgeSiteEvents(cutoff),
     ]);
-    if (visits.count || consents.count) {
-      console.info(`[retention] ลบข้อมูลเกิน ${RETENTION_YEARS} ปี: visit_logs ${visits.count}, cookie_consents ${consents.count}`);
+    if (visits.count || consents.count || events) {
+      console.info(`[retention] ลบข้อมูลเกิน ${RETENTION_YEARS} ปี: visit_logs ${visits.count}, cookie_consents ${consents.count}, site_events ${events}`);
     }
   } catch (error) {
     lastRun = 0; // ล้มเหลว → ลองใหม่ครั้งหน้า

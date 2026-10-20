@@ -1,9 +1,10 @@
-import type { NextRequest } from "next/server";
+import { after, type NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { getClientIp } from "@/lib/requestIp";
 import { consumeRateLimit } from "@/lib/rateLimit";
 import { quoteMatches, splitQuote } from "@/lib/qnaQuote";
 import { decodeEntities } from "@/lib/decodeEntities";
+import { notifyNewQuestion } from "@/lib/telegram";
 import {
   BLOCKED_DATA_ERROR,
   RESERVED_NAME_ERROR,
@@ -247,6 +248,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    after(() => notifyNewQuestion(question));
     return Response.json({ question: { id: question.id } }, { status: 201 });
   } catch (error) {
     console.error("Failed to create question:", error);

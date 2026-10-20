@@ -17,7 +17,6 @@ import {
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import Link from "next/link";
-import Image from "next/image";
 import { ABOUT_NAV_GROUPS } from "@/components/about/aboutNav";
 
 // ─── Menu data structure ─────────────────────────────────────

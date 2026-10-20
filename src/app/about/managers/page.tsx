@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/seo";
 import DepartmentStaffContent from "@/components/about/DepartmentStaffContent";
 
-export const metadata: Metadata = {
-  title: "ผู้จัดการใหญ่และรองผู้จัดการฯ | สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
+export const metadata = createPageMetadata({
+  title: "ผู้จัดการใหญ่และรองผู้จัดการฯ",
   description: "ผู้จัดการใหญ่และรองผู้จัดการฯ สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
-};
+  path: "/about/managers",
+});
 
 const MANAGER_TIER_LABELS: Record<number, string> = {
   1: "ผู้จัดการใหญ่",

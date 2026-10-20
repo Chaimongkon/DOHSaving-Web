@@ -76,6 +76,7 @@ export default function NotificationsPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- โหลดข้อมูลเมื่อเปิดหน้า/เปลี่ยนตัวกรอง
     fetchItems();
   }, []);
 

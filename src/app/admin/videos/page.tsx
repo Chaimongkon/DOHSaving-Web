@@ -8,7 +8,6 @@ import {
   DeleteOutlined,
   PlayCircleOutlined,
   YoutubeOutlined,
-  EyeOutlined,
   EyeInvisibleOutlined,
   CheckCircleOutlined,
   VideoCameraAddOutlined,
@@ -24,7 +23,6 @@ import {
   Drawer,
   Tooltip,
   Popconfirm,
-  Tag,
   Empty,
 } from "antd";
 import css from "./page.module.css";
@@ -88,6 +86,7 @@ export default function AdminVideosPage() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- โหลดข้อมูลเมื่อเปิดหน้า/เปลี่ยนตัวกรอง
     fetchVideos();
   }, [fetchVideos]);
 
