@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
+  CornerDownRight,
   Eye,
   MessageCircle,
   Pin,
@@ -26,6 +27,7 @@ import {
 import { ANONYMOUS, Avatar, QnaHero, RichText, formatDate, timeAgo, usePrivacyGate } from "../qnaShared";
 import { isMyQuestion, markSeen } from "../myQuestions";
 import { RESERVED_NAME_ERROR, isReservedName, removeSensitive } from "@/lib/qnaPrivacy";
+import { quoteMatches, splitQuote } from "@/lib/qnaQuote";
 import css from "../qna.module.css";
 
 interface Reply {
@@ -303,9 +305,38 @@ export default function QnaThreadPage() {
                         {r.isAdmin && <span className={css.staffTag}><ShieldCheck size={12} /> เจ้าหน้าที่สหกรณ์</span>}
                         <span className={css.replyTime} title={formatDate(r.createdAt, true)}>{timeAgo(r.createdAt)}</span>
                       </div>
-                      <div className={css.replyBody}>
-                        <RichText text={r.body} reveal={{ qid: question.id, src: String(r.id) }} />
-                      </div>
+                      {(() => {
+                        // คำตอบเจ้าหน้าที่ที่ระบุว่าตอบข้อความไหน → วาดกรอบอ้างอิง กดแล้วเลื่อนไปที่ข้อความนั้น
+                        const { quote, rest } = r.isAdmin ? splitQuote(r.body) : { quote: null, rest: r.body };
+                        const target = quote
+                          ? question.replies.find((x) => !x.isAdmin && quoteMatches(quote, x.authorName, x.body))
+                          : undefined;
+                        return (
+                          <>
+                            {quote && (
+                              <a
+                                className={css.replyQuote}
+                                href={target ? `#reply-${target.id}` : "#replies-title"}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  document
+                                    .getElementById(target ? `reply-${target.id}` : "replies-title")
+                                    ?.scrollIntoView({ behavior: "smooth", block: "center" });
+                                }}
+                              >
+                                <span className={css.replyQuoteHead}>
+                                  <CornerDownRight size={13} aria-hidden="true" /> ตอบ
+                                  {quote.author === ANONYMOUS ? quote.author : `คุณ${quote.author}`}
+                                </span>
+                                <span className={css.replyQuoteText}>“{quote.excerpt}”</span>
+                              </a>
+                            )}
+                            <div className={css.replyBody}>
+                              <RichText text={rest} reveal={{ qid: question.id, src: String(r.id) }} />
+                            </div>
+                          </>
+                        );
+                      })()}
                     </div>
                   </li>
                 ))}

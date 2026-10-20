@@ -2277,3 +2277,42 @@
   flex-shrink: 0;
   margin-top: 3px;
 }
+
+/* คำตอบเจ้าหน้าที่ที่ระบุว่าตอบข้อความไหน — กดแล้วเลื่อนไปที่ข้อความต้นฉบับ */
+.replyQuote {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 2px 0 8px;
+  padding: 8px 12px;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.85);
+  border-left: 3px solid #16a34a;
+  border-radius: 0 10px 10px 0;
+  transition: background 0.15s;
+}
+
+.replyQuote:hover {
+  background: #fff;
+}
+
+.replyQuote:focus-visible {
+  outline: 3px solid rgba(22, 163, 74, 0.35);
+  outline-offset: 2px;
+}
+
+.replyQuoteHead {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #15803d;
+}
+
+.replyQuoteText {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #4b5563;
+  overflow-wrap: anywhere;
+}

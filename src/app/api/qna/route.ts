@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { getClientIp } from "@/lib/requestIp";
 import { consumeRateLimit } from "@/lib/rateLimit";
+import { quoteMatches, splitQuote } from "@/lib/qnaQuote";
 import { decodeEntities } from "@/lib/decodeEntities";
 import {
   BLOCKED_DATA_ERROR,
@@ -120,8 +121,18 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "asc" },
       select: { questionId: true, authorName: true, body: true, createdAt: true },
     });
+    // ใช้คำตอบที่ตอบตัวคำถามจริง — ข้ามคำตอบที่อ้างถึงข้อความถามต่อของสมาชิกคนอื่น
+    // (ไม่มีคำตอบแบบนั้นเลยจึงใช้คำตอบแรกของเจ้าหน้าที่) และตัดบรรทัดอ้างอิงออกจากข้อความย่อ
     const firstStaff = new Map<number, (typeof staffReplies)[number]>();
-    for (const r of staffReplies) if (!firstStaff.has(r.questionId)) firstStaff.set(r.questionId, r);
+    for (const q of questions) {
+      const mine = staffReplies.filter((r) => r.questionId === q.id);
+      const direct = mine.find((r) => {
+        const { quote } = splitQuote(decodeEntities(r.body));
+        return !quote || quoteMatches(quote, decodeEntities(q.authorName), decodeEntities(q.body));
+      });
+      const pick = direct ?? mine[0];
+      if (pick) firstStaff.set(q.id, { ...pick, body: splitQuote(decodeEntities(pick.body)).rest });
+    }
 
     return Response.json({
       questions: questions.map((q) => ({
