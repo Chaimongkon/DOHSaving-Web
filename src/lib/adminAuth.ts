@@ -42,6 +42,7 @@ function resolveAdminWritePermission(pathname: string): string | null {
       return ADMIN_ONLY;
     case "upload":
     case "visitor-stats":
+    case "dashboard": // ข้อมูลแต่ละส่วนกรองตามสิทธิ์ภายใน route เอง
       return ANY_PERMISSION;
     case "activity-albums":
     case "activity-photos":
