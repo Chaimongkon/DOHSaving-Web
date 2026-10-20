@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
+import { getUploadFileSize } from "@/lib/uploadFileSize";
 
 // GET /api/forms — public: fetch active forms, optionally filter by category/group
 export async function GET(req: NextRequest) {
@@ -25,7 +26,10 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return Response.json(items);
+    const withSize = await Promise.all(
+      items.map(async (item) => ({ ...item, fileSize: await getUploadFileSize(item.fileUrl) }))
+    );
+    return Response.json(withSize);
   } catch (error) {
     console.error("Failed to fetch forms:", error);
     return Response.json({ error: "Failed to fetch" }, { status: 500 });
