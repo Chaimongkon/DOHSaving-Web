@@ -1,250 +1,661 @@
-/* ── Hero ── */
+/* ============================================================
+   รายงานประจำปี (/annual-reports) — ชั้นหนังสือ eBook
+   ภาษาภาพเดียวกับทั้งเว็บ: hero กรมท่า · เส้นประทอง · ปุ่มหลักสีส้ม
+   ทุกเล่มเป็นหนังสือ 3 มิติ (ปก + สันกระดาษ + เงา) ฉบับล่าสุดเด่นอยู่ใน hero
+   ============================================================ */
+
+/* ═══════════════════════ Hero ═══════════════════════ */
 .hero {
-  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8f 60%, #1a4b8c 100%);
-  padding: 48px 24px 64px;
-  text-align: center;
-  color: #fff;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0a1628 0%, #0f1d36 50%, #172c52 100%);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 2;
+  height: 3px;
+  background: linear-gradient(90deg, #E8652B, #D8AE3F 45%, #F7E3A1 60%, #E8652B);
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  height: 3px;
+  opacity: 0.35;
+  background: repeating-linear-gradient(90deg, #D8AE3F 0 34px, transparent 34px 60px);
+}
+
+.heroGlow {
+  position: absolute;
+  top: -160px;
+  right: 2%;
+  width: 640px;
+  height: 640px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(216, 174, 63, 0.22), transparent 64%);
+}
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 48px;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 26px 24px 64px;
+}
+
+.heroText {
+  min-width: 0;
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-size: 13.5px;
+  color: rgba(232, 240, 252, 0.6);
+}
+
+.breadcrumb a {
+  display: inline-flex;
+  color: #E3C169;
+}
+
+.breadcrumbActive {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .heroTitle {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 8px;
+  margin: 0;
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.35;
+  color: #fff;
 }
 
 .heroSub {
-  font-size: 14px;
-  opacity: 0.8;
+  max-width: 560px;
+  margin: 6px 0 0;
+  font-size: 16px;
+  line-height: 1.75;
+  color: rgba(232, 240, 252, 0.75);
 }
 
-/* ── Content ── */
-.content {
-  max-width: 1100px;
-  margin: -28px auto 0;
-  padding: 0 24px 60px;
-  position: relative;
-  z-index: 1;
+/* ── ฉบับล่าสุด ── */
+.latest {
+  max-width: 580px;
+  margin-top: 24px;
+  padding: 20px 22px 22px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(227, 193, 105, 0.3);
+  border-radius: 18px;
+  backdrop-filter: blur(6px);
 }
 
-/* ── Book Grid ── */
-.grid {
+.latestBadge {
+  display: inline-flex;
+  padding: 4px 12px;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0f1d36;
+  background: linear-gradient(145deg, #F7E3A1, #D8AE3F);
+  border-radius: 999px;
+}
+
+.latestTitle {
+  margin: 10px 0 0;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.45;
+  color: #fff;
+}
+
+.latestDesc {
+  display: -webkit-box;
+  margin: 6px 0 0;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(232, 240, 252, 0.75);
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.latestActions {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 40px 36px;
+  gap: 10px;
+  margin-top: 16px;
 }
 
-/* ── Book Card ── */
-.card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-  width: 220px;
-  transition: transform 0.35s ease;
-}
-
-.card:hover {
-  transform: translateY(-8px);
-}
-
-/* ── Book ── */
-.bookWrap {
-  position: relative;
-  width: 190px;
-  height: 270px;
-  margin-bottom: 14px;
-}
-
-/* Front cover */
-.coverFront {
-  position: absolute;
-  inset: 0;
-  border-radius: 0 6px 6px 0;
-  overflow: hidden;
-  background: linear-gradient(135deg, #1e3a5f, #2d5a8f);
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.15),
-    0 8px 24px rgba(0, 0, 0, 0.2);
-  z-index: 3;
-  transition: box-shadow 0.35s ease;
-}
-
-.card:hover .coverFront {
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.2),
-    0 12px 36px rgba(0, 0, 0, 0.28);
-}
-
-.coverImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.coverPlaceholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.coverPlaceholder svg {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 4px;
-}
-
-/* ── Spine (dark strip on left) ── */
-.spine {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 14px;
-  background: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.4) 0%,
-    rgba(0, 0, 0, 0.15) 40%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  z-index: 4;
-  pointer-events: none;
-  border-radius: 0;
-}
-
-/* ── Stacked pages behind (visible on right edge) ── */
-.pageEdges {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  right: -5px;
-  bottom: -4px;
-  border-radius: 0 6px 6px 0;
-  background: #f5f1ea;
-  z-index: 1;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.pageEdges::before {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  right: -4px;
-  bottom: -3px;
-  border-radius: 0 6px 6px 0;
-  background: #ece6da;
-  z-index: -1;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-}
-
-/* ── Info ── */
-.info {
-  text-align: center;
-  padding: 0 4px;
-  width: 100%;
-}
-
-.year {
+.primaryBtn,
+.ghostBtn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  background: #dbeafe;
-  color: #1e40af;
-  padding: 3px 10px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  font-size: 16px;
+  font-weight: 800;
+  border-radius: 12px;
+  transition: filter 0.18s, background 0.18s, transform 0.18s;
 }
 
-.title {
-  font-size: 14px;
-  font-weight: 600;
-  margin: 6px 0 4px;
-  line-height: 1.4;
-  color: #1f2937;
+.primaryBtn {
+  color: #fff;
+  background: linear-gradient(145deg, #F0803F, #D4541A);
+  box-shadow: 0 12px 24px -12px rgba(232, 101, 43, 1);
 }
 
-.description {
-  font-size: 11px;
-  color: #6b7280;
-  line-height: 1.4;
-  display: -webkit-box;
-  line-clamp: 2;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.primaryBtn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
 }
 
-.readBtn {
+.ghostBtn {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.ghostBtn:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.ghostBtn svg {
+  color: #E3C169;
+}
+
+.heroChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.heroChip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 20px;
-  margin-top: 10px;
-  background: #1e3a5f;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.25s;
-}
-
-.card:hover .readBtn {
-  background: #2d5a8f;
-}
-
-/* ── Empty State ── */
-.empty {
-  text-align: center;
-  padding: 80px 20px;
-  color: #9ca3af;
-}
-
-.empty svg {
-  width: 64px;
-  height: 64px;
-  margin-bottom: 16px;
-  opacity: 0.4;
-}
-
-/* ── Loading ── */
-.loading {
-  text-align: center;
-  padding: 80px 20px;
-  color: #6b7280;
+  padding: 6px 14px;
   font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
 }
 
-/* ── Responsive ── */
-@media (max-width: 768px) {
-  .hero {
-    padding: 36px 16px 52px;
+.heroChip svg {
+  color: #E3C169;
+}
+
+/* หนังสือเล่มใหญ่ใน hero */
+.heroBook {
+  display: block;
+  width: 290px;
+  margin-right: 28px;
+  border-radius: 6px;
+}
+
+.heroBook .book {
+  --d: 38px;
+  --tilt: -28deg;
+}
+
+.heroBook .bookShadow {
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.7), transparent 70%);
+}
+
+.heroBook:focus-visible,
+.card:focus-visible {
+  outline: 3px solid rgba(232, 101, 43, 0.6);
+  outline-offset: 6px;
+}
+
+/* ═══════════════════════ หนังสือ 3 มิติ ═══════════════════════ */
+.book {
+  --d: 24px;        /* ความหนาเล่ม */
+  --tilt: -24deg;   /* มุมเอียงตอนวางบนชั้น */
+  position: relative;
+  width: 100%;
+  perspective: 1400px;
+}
+
+.bookBody {
+  position: relative;
+  aspect-ratio: 210 / 297;
+  transform-style: preserve-3d;
+  transform: rotateY(var(--tilt));
+  transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* ชี้/โฟกัส → หนังสือหันหน้าเข้าหาผู้อ่านและลอยขึ้น */
+.card:hover .bookBody,
+.card:focus-visible .bookBody,
+.heroBook:hover .bookBody,
+.heroBook:focus-visible .bookBody {
+  transform: translateY(-10px) rotateY(-6deg);
+}
+
+.bookFront,
+.bookBack {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px 5px 5px 2px;
+}
+
+.bookFront {
+  overflow: hidden;
+  container-type: inline-size;
+  background: linear-gradient(150deg, #22406f 0%, #13274a 55%, #0b172d 100%);
+  transform: translateZ(calc(var(--d) / 2));
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+.bookBack {
+  background: #0b172d;
+  transform: translateZ(calc(var(--d) / -2));
+}
+
+/* สันกระดาษด้านขวา */
+.bookPages {
+  position: absolute;
+  top: 1.2%;
+  bottom: 1.2%;
+  left: calc(100% - 3px);
+  width: var(--d);
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.14), transparent 30%, transparent 70%, rgba(0, 0, 0, 0.2)),
+    repeating-linear-gradient(90deg, #fbf9f4 0 1px, #dcd6c8 1px 2px);
+  transform: translateX(-50%) rotateY(90deg);
+}
+
+.coverImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* รอยพับสันปก */
+.bookCrease {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 9%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.34) 0%,
+    rgba(0, 0, 0, 0.06) 34%,
+    rgba(255, 255, 255, 0.28) 52%,
+    rgba(0, 0, 0, 0.1) 70%,
+    transparent 100%
+  );
+}
+
+/* แสงเงาบนปก */
+.bookGloss {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0) 38%,
+    rgba(0, 0, 0, 0) 62%,
+    rgba(0, 0, 0, 0.14) 100%
+  );
+}
+
+.bookShadow {
+  position: absolute;
+  left: 6%;
+  right: -8%;
+  bottom: -22px;
+  height: 30px;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(15, 29, 54, 0.42), transparent 70%);
+  filter: blur(6px);
+  transition: opacity 0.55s, transform 0.55s;
+}
+
+.card:hover .bookShadow,
+.card:focus-visible .bookShadow,
+.heroBook:hover .bookShadow,
+.heroBook:focus-visible .bookShadow {
+  opacity: 0.6;
+  transform: scale(0.92);
+}
+
+/* ปกสำรอง — ระหว่างรอ/ไม่มีภาพปก */
+.coverFallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10cqw;
+  text-align: center;
+  color: #fff;
+  border-top: 2.4cqw solid #D8AE3F;
+}
+
+.coverFallback::after {
+  content: "";
+  position: absolute;
+  left: 12cqw;
+  right: 12cqw;
+  bottom: 9cqw;
+  height: 1cqw;
+  opacity: 0.6;
+  background: repeating-linear-gradient(90deg, #D8AE3F 0 7cqw, transparent 7cqw 12cqw);
+}
+
+.coverFallbackLabel {
+  font-size: 9cqw;
+  font-weight: 700;
+  color: #E3C169;
+}
+
+.coverFallbackYear {
+  font-size: 27cqw;
+  font-weight: 900;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.coverFallbackOrg {
+  margin-top: 4cqw;
+  font-size: 6.4cqw;
+  line-height: 1.5;
+  color: rgba(232, 240, 252, 0.75);
+}
+
+/* ═══════════════════════ ชั้นหนังสือ ═══════════════════════ */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 26px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e3e7ee;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.sectionTitle svg {
+  color: #D4541A;
+}
+
+.sectionCount {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #5b6474;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 22px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 26px 20px 20px;
+  color: inherit;
+  background: #fff;
+  border: 1px solid #e3e7ee;
+  border-radius: 18px;
+  box-shadow: 0 16px 36px -28px rgba(15, 29, 54, 0.45);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  border-color: rgba(232, 101, 43, 0.45);
+  box-shadow: 0 24px 44px -28px rgba(15, 29, 54, 0.6);
+}
+
+/* เว้นขวาเผื่อสันกระดาษที่ยื่นออกมา */
+.cardBook {
+  padding: 0 18px 30px 8px;
+}
+
+.cardInfo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cardYear {
+  padding: 3px 11px;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #8a6a12;
+  background: #fbf3d9;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cardTitle {
+  margin: 8px 0 0;
+  font-size: 16.5px;
+  font-weight: 800;
+  line-height: 1.5;
+  color: #0f1d36;
+  overflow-wrap: anywhere;
+}
+
+.cardDesc {
+  display: -webkit-box;
+  margin: 4px 0 0;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #5b6474;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.cardRead {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: auto;
+  padding-top: 12px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #D4541A;
+}
+
+.cardRead svg {
+  transition: transform 0.2s;
+}
+
+.card:hover .cardRead svg {
+  transform: translateX(4px);
+}
+
+/* ═══════════════════════ States ═══════════════════════ */
+.skeletonCard {
+  padding: 26px 20px 20px;
+  background: #fff;
+  border: 1px solid #e3e7ee;
+  border-radius: 18px;
+}
+
+.skeletonBook,
+.skeletonLine {
+  border-radius: 6px;
+  background: linear-gradient(90deg, #eef0f4 25%, #e5e8ee 50%, #eef0f4 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+.skeletonBook {
+  aspect-ratio: 210 / 297;
+  margin: 0 18px 30px 8px;
+}
+
+.skeletonLine {
+  width: 70%;
+  height: 18px;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
   }
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 56px 20px;
+  text-align: center;
+  color: #b3bac6;
+}
+
+.empty h2 {
+  margin: 6px 0 0;
+  font-size: 20px;
+  color: #0f1d36;
+}
+
+.empty p {
+  margin: 0;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+/* ═══════════════════════ Responsive ═══════════════════════ */
+@media (max-width: 860px) {
+  .heroInner {
+    grid-template-columns: 1fr;
+    gap: 34px;
+    padding-bottom: 60px;
+  }
+
+  /* มือถือ: เห็นหนังสือก่อน แล้วค่อยอ่านรายละเอียด */
+  .heroBook {
+    order: -1;
+    width: 210px;
+    margin: 6px auto 0;
+  }
+
+  .heroBook .book {
+    --d: 28px;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroInner {
+    padding: 20px 16px 54px;
+  }
+
   .heroTitle {
-    font-size: 24px;
+    font-size: 28px;
   }
-  .content {
-    padding: 0 16px 40px;
+
+  .heroSub {
+    font-size: 15px;
   }
+
+  .latest {
+    padding: 18px 16px;
+  }
+
+  .latestTitle {
+    font-size: 19px;
+  }
+
+  .latestActions > * {
+    flex: 1 1 100%;
+  }
+
+  .main {
+    padding: 26px 16px 64px;
+  }
+
+  .sectionTitle {
+    font-size: 20px;
+  }
+
   .grid {
-    gap: 32px 20px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
-  .card {
-    width: 160px;
+
+  .card,
+  .skeletonCard {
+    padding: 18px 12px 14px;
   }
-  .bookWrap {
-    width: 145px;
-    height: 206px;
+
+  .book {
+    --d: 16px;
+  }
+
+  .cardBook {
+    padding: 0 12px 24px 4px;
+  }
+
+  .skeletonBook {
+    margin: 0 12px 24px 4px;
+  }
+
+  .cardTitle {
+    font-size: 15px;
+  }
+
+  .cardDesc {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bookBody,
+  .bookShadow,
+  .cardRead svg {
+    transition: none;
+  }
+
+  .skeletonBook,
+  .skeletonLine {
+    animation: none;
   }
 }

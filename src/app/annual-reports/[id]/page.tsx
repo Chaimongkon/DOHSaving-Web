@@ -1,123 +1,37 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback, forwardRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  useSyncExternalStore,
+  forwardRef,
+} from "react";
 import { useParams, useRouter } from "next/navigation";
 import HTMLFlipBook from "react-pageflip";
-import { ChevronLeft, ChevronRight, ArrowLeft, Maximize2, Minimize2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowLeft, Download, Maximize2, Minimize2 } from "lucide-react";
+import { PageStore } from "./pageStore";
 import css from "./page.module.css";
 
-/* ─────────── PDF Render Queue (one at a time, with retry) ─────────── */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let pdfDoc: any = null;
-let pdfDocUrl = "";
-const pageImageCache = new Map<string, string>();
-
-type RenderCallback = (pageNum: number, dataUrl: string) => void;
-
-class PageRenderQueue {
-  private queue: number[] = [];
-  private processing = false;
-  private url = "";
-  private callback: RenderCallback = () => {};
-
-  configure(url: string, cb: RenderCallback) {
-    this.url = url;
-    this.callback = cb;
-  }
-
-  enqueue(pages: number[]) {
-    for (const p of pages) {
-      const key = `${this.url}:${p}`;
-      if (pageImageCache.has(key)) {
-        this.callback(p, pageImageCache.get(key)!);
-        continue;
-      }
-      if (!this.queue.includes(p)) {
-        this.queue.push(p);
-      }
-    }
-    this.process();
-  }
-
-  // Move these pages to front of queue
-  prioritize(pages: number[]) {
-    const remaining = this.queue.filter(p => !pages.includes(p));
-    const priority = pages.filter(p => !pageImageCache.has(`${this.url}:${p}`));
-    this.queue = [...priority, ...remaining];
-  }
-
-  private async process() {
-    if (this.processing) return;
-    this.processing = true;
-
-    while (this.queue.length > 0) {
-      const pageNum = this.queue.shift()!;
-      const key = `${this.url}:${pageNum}`;
-      if (pageImageCache.has(key)) {
-        this.callback(pageNum, pageImageCache.get(key)!);
-        continue;
-      }
-
-      for (let attempt = 0; attempt < 2; attempt++) {
-        try {
-          const dataUrl = await this.renderPage(pageNum);
-          pageImageCache.set(key, dataUrl);
-          this.callback(pageNum, dataUrl);
-          break;
-        } catch (err) {
-          console.warn(`Render page ${pageNum} attempt ${attempt + 1} failed:`, err);
-          if (attempt === 0) await new Promise(r => setTimeout(r, 100));
-        }
-      }
-    }
-
-    this.processing = false;
-  }
-
-  private async renderPage(pageNum: number): Promise<string> {
-    if (!pdfDoc || pdfDocUrl !== this.url) {
-      const pdfjsLib = await import("pdfjs-dist");
-      pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-      pdfDoc = await pdfjsLib.getDocument(this.url).promise;
-      pdfDocUrl = this.url;
-    }
-
-    const page = await pdfDoc.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 1.5 });
-
-    const canvas = document.createElement("canvas");
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    const ctx = canvas.getContext("2d")!;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const task = (page as any).render({ canvasContext: ctx, viewport });
-    if (task.promise) {
-      await task.promise;
-    } else {
-      await task;
-    }
-
-    const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
-    canvas.width = 0;
-    canvas.height = 0;
-    return dataUrl;
-  }
-}
-
-const renderQueue = new PageRenderQueue();
-
 /* ─────────── FlipBook Page (forwardRef required) ─────────── */
-const FlipPage = forwardRef<HTMLDivElement, { src: string | null; pageNum: number; width: number; height: number }>(
-  function FlipPage({ src, pageNum, width, height }, ref) {
+const FlipPage = forwardRef<HTMLDivElement, { store: PageStore; pageNum: number }>(
+  function FlipPage({ store, pageNum }, ref) {
+    const subscribe = useCallback(
+      (listener: () => void) => store.subscribe(pageNum, listener),
+      [store, pageNum]
+    );
+    const src = useSyncExternalStore(subscribe, () => store.get(pageNum), () => null);
+
     return (
-      <div ref={ref} className={css.page} style={{ width, height }}>
+      <div ref={ref} className={css.page}>
         {src ? (
-          <img src={src} alt={`หน้า ${pageNum}`} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          <img src={src} alt={`หน้า ${pageNum}`} className={css.pageImage} draggable={false} />
         ) : (
           <div className={css.pageLoading}>
             <div className={css.spinner} />
-            <span>หน้า {pageNum}</span>
+            <span>กำลังโหลดหน้า {pageNum}</span>
           </div>
         )}
       </div>
@@ -125,21 +39,26 @@ const FlipPage = forwardRef<HTMLDivElement, { src: string | null; pageNum: numbe
   }
 );
 
+const FLIPBOOK_STYLE: React.CSSProperties = {};
+const BASE_PAGE_WIDTH = 500;
+const MIN_PAGE_WIDTH = 300;
+const SINGLE_PAGE_MAX = MIN_PAGE_WIDTH * 2;
+
 /* ─────────── Main Viewer ─────────── */
 export default function FlipbookViewer() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
 
+  const [store] = useState(() => new PageStore());
   const [report, setReport] = useState<{ title: string; fileUrl: string; year: number } | null>(null);
+  const [notFound, setNotFound] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
+  const [aspect, setAspect] = useState(1.414); // สูง ÷ กว้าง ของหน้ากระดาษ
+  const [area, setArea] = useState({ w: 0, h: 0 });
+  const [loadError, setLoadError] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [loadingProgress, setLoadingProgress] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [bookSize, setBookSize] = useState({ width: 500, height: 700 });
-  const [pageImages, setPageImages] = useState<Record<number, string>>({});
-  const [isMobile, setIsMobile] = useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const flipBookRef = useRef<any>(null);
@@ -153,97 +72,78 @@ export default function FlipbookViewer() {
         if (res.ok) {
           const items = await res.json();
           const found = items.find((i: { id: number }) => i.id === Number(id));
-          if (found) setReport(found);
+          if (found) {
+            setReport(found);
+            return;
+          }
         }
       } catch { /* ignore */ }
+      setNotFound(true);
     })();
   }, [id]);
 
-  // Configure render queue callback
-  useEffect(() => {
-    if (!report?.fileUrl) return;
-    renderQueue.configure(report.fileUrl, (pageNum, dataUrl) => {
-      setPageImages(prev => ({ ...prev, [pageNum]: dataUrl }));
-    });
-  }, [report?.fileUrl]);
-
-  // Load PDF and get page count, then pre-render first pages
+  // เปิดไฟล์ PDF — store จะเรนเดอร์หน้าต่าง ๆ ต่อเนื่องอยู่เบื้องหลังเอง
   useEffect(() => {
     if (!report?.fileUrl) return;
     let cancelled = false;
-    (async () => {
-      try {
-        setLoadingProgress(10);
-        const pdfjsLib = await import("pdfjs-dist");
-        pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-        setLoadingProgress(30);
-        const doc = await pdfjsLib.getDocument(report.fileUrl).promise;
-        pdfDoc = doc;
-        pdfDocUrl = report.fileUrl;
-        if (cancelled) return;
-        setTotalPages(doc.numPages);
-        setLoadingProgress(100);
-        // Enqueue first batch of pages
-        const firstBatch = Array.from({ length: Math.min(8, doc.numPages) }, (_, i) => i + 1);
-        renderQueue.enqueue(firstBatch);
-        setTimeout(() => { if (!cancelled) setLoading(false); }, 200);
-      } catch (err) {
+    store
+      .open(report.fileUrl)
+      .then((info) => {
+        if (cancelled || !info) return;
+        setAspect(info.aspect);
+        setTotalPages(info.numPages);
+      })
+      .catch((err) => {
         console.error("Failed to load PDF:", err);
-        if (!cancelled) setLoading(false);
+        if (!cancelled) setLoadError(true);
+      });
+    return () => {
+      cancelled = true;
+      store.close();
+    };
+  }, [report?.fileUrl, store]);
+
+  // วัดพื้นที่วางหนังสือจริง (หักแถบเมนูของเว็บ/แถบควบคุมแล้ว) เพื่อให้เห็นทั้งเล่มโดยไม่ต้องเลื่อนจอ
+  const flipAreaRef = useCallback((el: HTMLDivElement | null) => {
+    if (!el) return;
+    const ro = new ResizeObserver(() => {
+      const viewer = containerRef.current;
+      if (viewer) {
+        const top = document.fullscreenElement
+          ? 0
+          : viewer.getBoundingClientRect().top + window.scrollY;
+        viewer.style.setProperty("--viewer-top", `${Math.round(top)}px`);
       }
-    })();
-    return () => { cancelled = true; };
-  }, [report?.fileUrl]);
-
-  // When page changes, prioritize nearby pages
-  useEffect(() => {
-    if (!report?.fileUrl || totalPages === 0) return;
-    const RANGE = 4;
-    const start = Math.max(1, currentPage + 1 - RANGE);
-    const end = Math.min(totalPages, currentPage + 1 + RANGE + 2);
-    const nearby = Array.from({ length: end - start + 1 }, (_, i) => start + i);
-    renderQueue.prioritize(nearby);
-    renderQueue.enqueue(nearby);
-  }, [currentPage, totalPages, report?.fileUrl]);
-
-  // Calculate book size (portrait single-page on mobile)
-  const calculateSize = useCallback(() => {
-    const vh = window.innerHeight;
-    const vw = window.innerWidth;
-    const mobile = vw < 768;
-    setIsMobile(mobile);
-
-    if (mobile) {
-      const availW = vw - 24;
-      const availH = vh - 130;
-      const pageW = availW;
-      const pageH = Math.min(availH, pageW * 1.414);
-      setBookSize({ width: Math.round(pageW), height: Math.round(pageH) });
-    } else {
-      const availH = vh - 140;
-      const availW = vw - 80;
-      const pageW = Math.min(availW / 2, 500);
-      const pageH = Math.min(availH, pageW * 1.414);
-      setBookSize({ width: Math.round(pageW), height: Math.round(pageH) });
-    }
+      const w = el.clientWidth;
+      const h = el.clientHeight;
+      setArea((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
+  // ขนาดหนังสือตามสัดส่วนหน้ากระดาษจริง (จอแคบ = หน้าเดี่ยว)
+  const bookWidth = useMemo(() => {
+    if (area.w === 0 || area.h === 0) return 0;
+    const pad = area.w < 768 ? 8 : 40;
+    const availW = area.w - pad;
+    const availH = area.h - pad;
+    const single = Math.min(availW, availH / aspect, SINGLE_PAGE_MAX);
+    if (area.w < 768) return Math.floor(single);
+    const pageW = Math.min(availW / 2, availH / aspect);
+    // ตัวพลิกหน้าจะสลับเป็นหน้าเดี่ยวเองเมื่อกว้างไม่เกิน MIN_PAGE_WIDTH × 2
+    return Math.floor(pageW > MIN_PAGE_WIDTH ? pageW * 2 : single);
+  }, [area, aspect]);
+
   useEffect(() => {
-    calculateSize();
-    window.addEventListener("resize", calculateSize);
-    return () => window.removeEventListener("resize", calculateSize);
-  }, [calculateSize]);
+    if (bookWidth > 0) flipBookRef.current?.pageFlip()?.update();
+  }, [bookWidth]);
 
   // Fullscreen
   const toggleFullscreen = () => {
     if (!containerRef.current) return;
-    if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen();
-      setIsFullscreen(true);
-    } else {
-      document.exitFullscreen();
-      setIsFullscreen(false);
-    }
+    if (!document.fullscreenElement) containerRef.current.requestFullscreen();
+    else document.exitFullscreen();
   };
 
   useEffect(() => {
@@ -253,22 +153,70 @@ export default function FlipbookViewer() {
   }, []);
 
   // Navigation
-  const flipPrev = () => flipBookRef.current?.pageFlip()?.flipPrev();
-  const flipNext = () => flipBookRef.current?.pageFlip()?.flipNext();
-  const onFlip = (e: { data: number }) => setCurrentPage(e.data);
+  const flipPrev = useCallback(() => flipBookRef.current?.pageFlip()?.flipPrev(), []);
+  const flipNext = useCallback(() => flipBookRef.current?.pageFlip()?.flipNext(), []);
 
-  // Loading
-  if (!report || loading) {
+  const onFlip = useCallback(
+    (e: { data: number }) => {
+      setCurrentPage(e.data);
+      store.setCenter(e.data);
+    },
+    [store]
+  );
+
+  const onChangeState = useCallback(
+    (e: { data: string }) => store.setBusy(e.data === "flipping"),
+    [store]
+  );
+
+  // เลื่อนแถบ = กระโดดไปหน้านั้นทันที (ไม่ต้องรอแอนิเมชันพลิกทีละหน้า)
+  const jumpTo = (page: number) => {
+    setCurrentPage(page);
+    store.setCenter(page);
+    flipBookRef.current?.pageFlip()?.turnToPage(page);
+  };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") flipPrev();
+      else if (e.key === "ArrowRight") flipNext();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [flipPrev, flipNext]);
+
+  // รายการหน้าต้องคงที่ — ถ้าเปลี่ยนทุกครั้งที่ render ตัวพลิกหน้าจะถูกรีเซ็ตกลางแอนิเมชัน
+  const pages = useMemo(
+    () =>
+      Array.from({ length: totalPages }, (_, i) => (
+        <FlipPage key={i + 1} store={store} pageNum={i + 1} />
+      )),
+    [totalPages, store]
+  );
+
+  if (notFound || loadError) {
+    return (
+      <div className={css.loadingState}>
+        <p style={{ fontSize: 16, color: "#f9fafb" }}>
+          {notFound ? "ไม่พบรายงานฉบับนี้" : "เปิดไฟล์ eBook ไม่สำเร็จ"}
+        </p>
+        {loadError && report && (
+          <a href={report.fileUrl} target="_blank" rel="noopener noreferrer" className={css.navBtn}>
+            <Download size={16} /> เปิดไฟล์ PDF แทน
+          </a>
+        )}
+        <button className={css.navBtn} onClick={() => router.push("/annual-reports")}>
+          <ArrowLeft size={16} /> กลับหน้ารายงานประจำปี
+        </button>
+      </div>
+    );
+  }
+
+  if (!report || totalPages === 0) {
     return (
       <div className={css.loadingState}>
         <div className={css.spinner} />
         <p style={{ fontSize: 14 }}>{!report ? "กำลังโหลดข้อมูล..." : "กำลังเตรียม eBook..."}</p>
-        {loadingProgress > 0 && (
-          <div className={css.progressBar}>
-            <div className={css.progressFill} style={{ width: `${loadingProgress}%` }} />
-          </div>
-        )}
-        {totalPages > 0 && <p style={{ fontSize: 12, opacity: 0.6 }}>{totalPages} หน้า</p>}
       </div>
     );
   }
@@ -283,6 +231,15 @@ export default function FlipbookViewer() {
         <span className={css.topTitle}>{report.title}</span>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <span className={css.pageInfo}>{totalPages} หน้า</span>
+          <a
+            className={css.fullscreenBtn}
+            href={report.fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="ดาวน์โหลด PDF"
+          >
+            <Download size={14} /> PDF
+          </a>
           <button className={css.fullscreenBtn} onClick={toggleFullscreen}>
             {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
             {isFullscreen ? "ย่อ" : "เต็มจอ"}
@@ -291,25 +248,28 @@ export default function FlipbookViewer() {
       </div>
 
       {/* ── Flipbook ── */}
-      <div className={css.flipArea}>
+      <div ref={flipAreaRef} className={css.flipArea}>
+        {bookWidth > 0 && (
+        <div style={{ width: bookWidth }}>
         <HTMLFlipBook
           ref={flipBookRef}
-          width={bookSize.width}
-          height={bookSize.height}
+          width={BASE_PAGE_WIDTH}
+          height={Math.round(BASE_PAGE_WIDTH * aspect)}
           size="stretch"
-          minWidth={300}
-          maxWidth={600}
-          minHeight={400}
-          maxHeight={900}
+          minWidth={MIN_PAGE_WIDTH}
+          maxWidth={2000}
+          minHeight={100}
+          maxHeight={3000}
           showCover={true}
           mobileScrollSupport={true}
           onFlip={onFlip}
+          onChangeState={onChangeState}
           className="flipbook"
-          style={{}}
+          style={FLIPBOOK_STYLE}
           startPage={0}
           drawShadow={true}
           flippingTime={600}
-          usePortrait={isMobile}
+          usePortrait={true}
           startZIndex={0}
           autoSize={true}
           maxShadowOpacity={0.5}
@@ -319,16 +279,10 @@ export default function FlipbookViewer() {
           swipeDistance={30}
           clickEventForward={true}
         >
-          {Array.from({ length: totalPages }, (_, i) => (
-            <FlipPage
-              key={i + 1}
-              pageNum={i + 1}
-              src={pageImages[i + 1] || null}
-              width={bookSize.width}
-              height={bookSize.height}
-            />
-          ))}
+          {pages}
         </HTMLFlipBook>
+        </div>
+        )}
       </div>
 
       {/* ── Navigation Controls ── */}
@@ -342,11 +296,9 @@ export default function FlipbookViewer() {
           min={0}
           max={totalPages - 1}
           value={currentPage}
-          onChange={(e) => {
-            const page = Number(e.target.value);
-            flipBookRef.current?.pageFlip()?.flip(page);
-          }}
+          onChange={(e) => jumpTo(Number(e.target.value))}
           className={css.pageSlider}
+          aria-label="เลื่อนไปยังหน้า"
         />
 
         <span className={css.pageNumber}>

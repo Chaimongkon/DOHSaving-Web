@@ -1,5 +1,7 @@
 import { NextRequest } from "next/server";
-import { readFile, stat } from "fs/promises";
+import { createReadStream } from "fs";
+import { stat } from "fs/promises";
+import { Readable } from "stream";
 import path from "path";
 
 const MIME_TYPES: Record<string, string> = {
@@ -14,9 +16,33 @@ const MIME_TYPES: Record<string, string> = {
     ".ico": "image/x-icon",
 };
 
+/** แปลง header Range (เฉพาะช่วงเดียว) → [start, end] หรือ null ถ้าไม่ถูกต้อง */
+function parseRange(header: string, size: number): [number, number] | null {
+    const match = /^bytes=(\d*)-(\d*)$/.exec(header.trim());
+    if (!match || (match[1] === "" && match[2] === "")) return null;
+
+    let start: number;
+    let end: number;
+    if (match[1] === "") {
+        // bytes=-N → N ไบต์สุดท้าย
+        start = Math.max(0, size - Number(match[2]));
+        end = size - 1;
+    } else {
+        start = Number(match[1]);
+        end = match[2] === "" ? size - 1 : Math.min(Number(match[2]), size - 1);
+    }
+    return start > end || start >= size ? null : [start, end];
+}
+
+function fileStream(filePath: string, start?: number, end?: number) {
+    return Readable.toWeb(createReadStream(filePath, { start, end })) as ReadableStream;
+}
+
 // GET /uploads/[...path] — serve dynamically uploaded files
+// ส่งแบบ stream และรองรับ Range request — ไฟล์ PDF ขนาดใหญ่ (eBook รายงานประจำปี)
+// จึงเปิดอ่านหน้าไหนก็ได้ทันที ไม่ต้องรอดาวน์โหลดทั้งไฟล์
 export async function GET(
-    _req: NextRequest,
+    req: NextRequest,
     { params }: { params: Promise<{ path: string[] }> }
 ) {
     const { path: segments } = await params;
@@ -35,16 +61,37 @@ export async function GET(
             return new Response("Not found", { status: 404 });
         }
 
-        const buffer = await readFile(filePath);
+        const size = fileStat.size;
         const ext = path.extname(filePath).toLowerCase();
-        const contentType = MIME_TYPES[ext] || "application/octet-stream";
+        const headers: Record<string, string> = {
+            "Content-Type": MIME_TYPES[ext] || "application/octet-stream",
+            "Accept-Ranges": "bytes",
+            "Last-Modified": fileStat.mtime.toUTCString(),
+            "Cache-Control": "public, max-age=31536000, immutable",
+        };
 
-        return new Response(buffer, {
-            headers: {
-                "Content-Type": contentType,
-                "Content-Length": String(buffer.length),
-                "Cache-Control": "public, max-age=31536000, immutable",
-            },
+        const rangeHeader = req.headers.get("range");
+        if (rangeHeader) {
+            const range = parseRange(rangeHeader, size);
+            if (!range) {
+                return new Response(null, {
+                    status: 416,
+                    headers: { ...headers, "Content-Range": `bytes */${size}` },
+                });
+            }
+            const [start, end] = range;
+            return new Response(fileStream(filePath, start, end), {
+                status: 206,
+                headers: {
+                    ...headers,
+                    "Content-Range": `bytes ${start}-${end}/${size}`,
+                    "Content-Length": String(end - start + 1),
+                },
+            });
+        }
+
+        return new Response(fileStream(filePath), {
+            headers: { ...headers, "Content-Length": String(size) },
         });
     } catch {
         return new Response("Not found", { status: 404 });

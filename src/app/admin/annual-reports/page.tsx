@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { PlusOutlined, EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, UploadOutlined, FilePdfOutlined, LoadingOutlined, BookOutlined, PictureOutlined } from "@ant-design/icons";
+import { createPdfCoverFile } from "@/lib/pdfCover";
 
 interface ReportItem {
   id?: number;
@@ -68,20 +69,43 @@ export default function AdminAnnualReportsPage() {
     load();
   };
 
+  const postUpload = async (file: File): Promise<string | null> => {
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("folder", "annual-reports");
+    const res = await fetch("/api/admin/upload", { method: "POST", body: fd, credentials: "include" });
+    if (!res.ok) return null;
+    return (await res.json()).url as string;
+  };
+
+  // สร้างภาพปกจากหน้าแรกของ PDF แล้วอัปโหลดเป็นภาพปก
+  const generateCover = async (src: string | ArrayBuffer, silent = false) => {
+    setUploading("cover");
+    try {
+      const url = await postUpload(await createPdfCoverFile(src));
+      if (url) setEditing((prev) => (prev ? { ...prev, coverUrl: url } : prev));
+      else if (!silent) alert("สร้างภาพปกไม่สำเร็จ");
+    } catch {
+      if (!silent) alert("สร้างภาพปกไม่สำเร็จ");
+    }
+    setUploading(null);
+  };
+
   const uploadFile = async (file: File, type: "pdf" | "cover") => {
     setUploading(type);
+    const needCover = type === "pdf" && !editing?.coverUrl;
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("folder", "annual-reports");
-      const res = await fetch("/api/admin/upload", { method: "POST", body: fd, credentials: "include" });
-      if (res.ok) {
-        const data = await res.json();
-        if (editing) {
-          if (type === "pdf") setEditing({ ...editing, fileUrl: data.url });
-          else setEditing({ ...editing, coverUrl: data.url });
-        }
+      const url = await postUpload(file);
+      if (url) {
+        setEditing((prev) =>
+          prev ? { ...prev, ...(type === "pdf" ? { fileUrl: url } : { coverUrl: url }) } : prev
+        );
       } else alert("อัปโหลดไม่สำเร็จ");
+      // ยังไม่มีภาพปก → ใช้หน้าแรกของ PDF เป็นปกให้อัตโนมัติ
+      if (url && needCover) {
+        await generateCover(await file.arrayBuffer(), true);
+        return;
+      }
     } catch { alert("อัปโหลดไม่สำเร็จ"); }
     setUploading(null);
   };
@@ -170,10 +194,22 @@ export default function AdminAnnualReportsPage() {
                   {uploading === "cover" ? <LoadingOutlined spin /> : <PictureOutlined />}
                   {uploading === "cover" ? "กำลังอัปโหลด..." : "เลือกภาพปก"}
                 </button>
+                {editing.fileUrl && (
+                  <button
+                    onClick={() => generateCover(editing.fileUrl)}
+                    disabled={uploading !== null}
+                    style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", border: "1px solid #d1d5db", borderRadius: 8, background: "#f9fafb", cursor: "pointer", fontSize: 12 }}
+                  >
+                    <FilePdfOutlined /> ใช้หน้าแรกของ PDF
+                  </button>
+                )}
                 {editing.coverUrl && (
                   <img src={editing.coverUrl} alt="cover" style={{ height: 36, borderRadius: 4, border: "1px solid #e5e7eb" }} />
                 )}
               </div>
+              <span style={{ fontSize: 11, color: "#9ca3af", marginTop: 4, display: "block" }}>
+                ถ้าไม่เลือกภาพปก ระบบจะใช้หน้าแรกของ PDF เป็นปกให้อัตโนมัติ
+              </span>
             </div>
           </div>
 

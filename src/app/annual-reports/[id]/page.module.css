@@ -1,6 +1,9 @@
 /* ── Viewer Container ── */
 .viewer {
-  min-height: 100vh;
+  /* --viewer-top = ความสูงของแถบเมนูเว็บด้านบน (วัดตอนแสดงผล) → ทั้งตัวอ่านพอดีหนึ่งจอ */
+  height: calc(100vh - var(--viewer-top, 0px));
+  height: calc(100dvh - var(--viewer-top, 0px));
+  min-height: 420px;
   background: #111827;
   display: flex;
   flex-direction: column;
@@ -52,6 +55,7 @@
 /* ── Flipbook Area ── */
 .flipArea {
   flex: 1;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,8 +73,12 @@
   overflow: hidden;
 }
 
-.page canvas {
+.pageImage {
   display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
 }
 
 .pageLoading {
@@ -119,6 +127,7 @@
   cursor: pointer;
   font-size: 13px;
   font-family: var(--font-noto-sans-thai), "Noto Sans Thai", sans-serif;
+  text-decoration: none;
   transition: all 0.2s;
 }
 
@@ -158,6 +167,7 @@
   cursor: pointer;
   font-size: 12px;
   font-family: var(--font-noto-sans-thai), "Noto Sans Thai", sans-serif;
+  text-decoration: none;
   transition: all 0.2s;
 }
 
