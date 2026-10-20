@@ -8,14 +8,12 @@ import css from "./CookieConsent.module.css";
 interface CookieCategories {
   necessary: boolean;
   analytics: boolean;
-  marketing: boolean;
   preferences: boolean;
 }
 
 const defaultCategories: CookieCategories = {
   necessary: true, // จำเป็น — ปิดไม่ได้
   analytics: false,
-  marketing: false,
   preferences: false,
 };
 
@@ -66,7 +64,6 @@ export default function CookieConsentBanner() {
     const allAccepted: CookieCategories = {
       necessary: true,
       analytics: true,
-      marketing: true,
       preferences: true,
     };
     saveConsent(true, allAccepted);
@@ -77,7 +74,7 @@ export default function CookieConsentBanner() {
   }, [saveConsent]);
 
   const handleSaveSettings = useCallback(() => {
-    const accepted = categories.analytics || categories.marketing || categories.preferences;
+    const accepted = categories.analytics || categories.preferences;
     saveConsent(accepted, categories);
   }, [categories, saveConsent]);
 
@@ -98,8 +95,8 @@ export default function CookieConsentBanner() {
           <div className={css.bannerInner}>
             <div className={css.bannerContent}>
               <p className={css.bannerText}>
-                เราใช้คุกกี้เพื่อปรับปรุงการใช้งาน วิเคราะห์การเข้าชม
-                และนำเสนอเนื้อหาที่เหมาะสม{" "}
+                เราใช้คุกกี้เพื่อให้เว็บไซต์ทำงานได้ จดจำการตั้งค่า
+                และวิเคราะห์การเข้าชมเพื่อปรับปรุงบริการ ไม่มีคุกกี้โฆษณา{" "}
                 <Link href="/cookie-policy" className={css.bannerLink}>
                   อ่านนโยบายคุกกี้
                 </Link>
@@ -170,29 +167,6 @@ export default function CookieConsentBanner() {
                       checked={categories.analytics}
                       onChange={(e) =>
                         setCategories((prev) => ({ ...prev, analytics: e.target.checked }))
-                      }
-                    />
-                    <span className={css.toggleSlider} />
-                  </label>
-                </div>
-              </div>
-
-              {/* Marketing */}
-              <div className={`${css.categoryCard} ${categories.marketing ? css.categoryCardActive : ""}`}>
-                <div className={css.categoryHeader}>
-                  <div className={css.categoryInfo}>
-                    <span className={css.categoryName}>คุกกี้การตลาด</span>
-                    <span className={css.categoryDesc}>
-                      ใช้ติดตามพฤติกรรมเพื่อนำเสนอโฆษณาและเนื้อหาที่เหมาะสมกับคุณ
-                    </span>
-                  </div>
-                  <label className={css.toggle}>
-                    <input
-                      type="checkbox"
-                      className={css.toggleInput}
-                      checked={categories.marketing}
-                      onChange={(e) =>
-                        setCategories((prev) => ({ ...prev, marketing: e.target.checked }))
                       }
                     />
                     <span className={css.toggleSlider} />

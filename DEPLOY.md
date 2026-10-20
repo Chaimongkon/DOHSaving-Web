@@ -159,6 +159,7 @@ notepad .env.local
 DATABASE_URL="mysql://dohsaving:รหัสผ่าน-database@localhost:3306/dohsaving"
 JWT_SECRET="ใส่-string-สุ่ม-ยาวๆ"
 JWT_EXPIRES_IN="8h"
+TRUST_PROXY_HEADERS="true"
 NODE_ENV="production"
 ```
 
@@ -176,6 +177,7 @@ node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 DATABASE_URL="mysql://dohsaving:MyStr0ngP@ss!@localhost:3306/dohsaving"
 JWT_SECRET="7f3a2b8c9d1e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a"
 JWT_EXPIRES_IN="8h"
+TRUST_PROXY_HEADERS="true"
 NODE_ENV="production"
 ```
 
@@ -557,7 +559,7 @@ mysqldump -u dohsaving -p dohsaving > C:\Backup\dohsaving_%date:~-4%-%date:~4,2%
 - [ ] MariaDB ทำงาน + สร้าง database/user แล้ว
 
 ### Application
-- [ ] `.env.local` ตั้งค่าครบ (DATABASE_URL, JWT_SECRET)
+- [ ] `.env.local` ตั้งค่าครบ (DATABASE_URL, JWT_SECRET, TRUST_PROXY_HEADERS=true)
 - [ ] `npx prisma db push` สำเร็จ
 - [ ] สร้าง Admin user ใน database แล้ว
 - [ ] `npm run build` สำเร็จ

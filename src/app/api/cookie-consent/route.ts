@@ -8,7 +8,14 @@ const isSecureCookie = process.env.NODE_ENV === "production";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { consentStatus, cookieCategories } = body;
+    // หมวดที่เว็บใช้จริงมีแค่ วิเคราะห์ และ ตั้งค่า — ไม่รับค่าอื่นจากผู้ส่ง
+    const raw = body?.cookieCategories ?? {};
+    const cookieCategories = {
+      necessary: true,
+      analytics: raw.analytics === true,
+      preferences: raw.preferences === true,
+    };
+    const consentStatus = cookieCategories.analytics || cookieCategories.preferences;
 
     let visitorId = req.cookies.get("visitor_id")?.value;
     if (!visitorId) {
@@ -28,7 +35,7 @@ export async function POST(req: NextRequest) {
           where: { id: existing.id },
           data: {
             consentStatus,
-            cookieCategories: cookieCategories || null,
+            cookieCategories,
             ipAddress: ip,
             userAgent: userAgent?.slice(0, 255) || null,
           },
@@ -37,7 +44,7 @@ export async function POST(req: NextRequest) {
           data: {
             userId: visitorId,
             consentStatus,
-            cookieCategories: cookieCategories || null,
+            cookieCategories,
             ipAddress: ip,
             userAgent: userAgent?.slice(0, 255) || null,
           },
@@ -52,6 +59,14 @@ export async function POST(req: NextRequest) {
       sameSite: "lax",
     });
     res.cookies.set("cookie_consent", consentStatus ? "accepted" : "rejected", {
+      secure: isSecureCookie,
+      maxAge: 365 * 24 * 60 * 60,
+      path: "/",
+      sameSite: "lax",
+    });
+    // /api/visitor-track อ่านค่านี้เพื่อตัดสินว่าจะเก็บ IP/อุปกรณ์หรือไม่
+    res.cookies.set("consent_analytics", cookieCategories.analytics ? "1" : "0", {
+      httpOnly: true,
       secure: isSecureCookie,
       maxAge: 365 * 24 * 60 * 60,
       path: "/",

@@ -7,6 +7,7 @@ import {
   EnvironmentOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
+import { RETENTION_YEARS } from "@/lib/retentionPolicy";
 import css from "./page.module.css";
 
 export default function CookiePolicyPage() {
@@ -19,7 +20,7 @@ export default function CookiePolicyPage() {
   return (
     <div className={css.container}>
       <h1 className={css.title}>นโยบายคุกกี้ (Cookie Policy)</h1>
-      <p className={css.updated}>อัปเดตล่าสุด: 18 กุมภาพันธ์ 2569</p>
+      <p className={css.updated}>อัปเดตล่าสุด: 19 ตุลาคม 2569</p>
 
       {/* What are cookies */}
       <div className={css.section}>
@@ -42,7 +43,6 @@ export default function CookiePolicyPage() {
           <li>เพื่อให้เว็บไซต์ทำงานได้อย่างถูกต้องและปลอดภัย</li>
           <li>เพื่อจดจำการตั้งค่าและความชอบของผู้ใช้</li>
           <li>เพื่อวิเคราะห์การใช้งานเว็บไซต์และปรับปรุงการให้บริการ</li>
-          <li>เพื่อนำเสนอเนื้อหาและข้อมูลที่เกี่ยวข้องกับความต้องการของผู้ใช้</li>
         </ul>
       </div>
 
@@ -73,20 +73,11 @@ export default function CookiePolicyPage() {
             <tr>
               <td><strong>คุกกี้วิเคราะห์</strong></td>
               <td>
-                เก็บข้อมูลสถิติการเข้าชมเว็บไซต์ เช่น จำนวนผู้เข้าชม หน้าที่ได้รับความนิยม
-                เพื่อปรับปรุงการให้บริการ
+                เก็บสถิติการเข้าชม ได้แก่ หน้าที่เข้าชม เวลา หมายเลข IP และข้อมูลเบราว์เซอร์/อุปกรณ์
+                เพื่อปรับปรุงการให้บริการ หากไม่ยินยอม ระบบจะนับเพียงจำนวนการเข้าชมและประเภทอุปกรณ์
+                (มือถือหรือคอมพิวเตอร์) โดยไม่เก็บหมายเลข IP หรือข้อมูลที่ระบุตัวตนได้
               </td>
               <td>1 ปี</td>
-              <td>
-                <span className={`${css.badge} ${css.badgeOptional}`}>เลือกได้</span>
-              </td>
-            </tr>
-            <tr>
-              <td><strong>คุกกี้การตลาด</strong></td>
-              <td>
-                ใช้ติดตามพฤติกรรมการเข้าชมเว็บไซต์เพื่อนำเสนอโฆษณาและเนื้อหาที่เหมาะสมกับผู้ใช้
-              </td>
-              <td>6 เดือน</td>
               <td>
                 <span className={`${css.badge} ${css.badgeOptional}`}>เลือกได้</span>
               </td>
@@ -103,6 +94,16 @@ export default function CookiePolicyPage() {
             </tr>
           </tbody>
         </table>
+      </div>
+
+      {/* Retention */}
+      <div className={css.section}>
+        <h2 className={css.sectionTitle}>ระยะเวลาการเก็บรักษาข้อมูล</h2>
+        <p className={css.text}>
+          เว็บไซต์นี้ไม่ใช้คุกกี้เพื่อการโฆษณาหรือคุกกี้ของบุคคลที่สาม
+          ประวัติการเข้าชมและบันทึกการให้ความยินยอมจะถูกเก็บไว้ไม่เกิน {RETENTION_YEARS} ปี
+          นับจากวันที่บันทึก (หรือวันที่ท่านเปลี่ยนการตั้งค่าครั้งล่าสุด) จากนั้นระบบจะลบโดยอัตโนมัติ
+        </p>
       </div>
 
       {/* Managing cookies */}
