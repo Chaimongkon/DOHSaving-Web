@@ -12,7 +12,7 @@
   margin-bottom: 30px;
   padding: 18px 22px;
   background: linear-gradient(135deg, #fffdf8, #fdf6ea);
-  border: 1px solid rgba(216, 174, 63, 0.38);
+  border: 1px solid rgb(var(--brand-gold-400-rgb) / 0.38);
   border-radius: 14px;
 }
 
@@ -29,7 +29,7 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.3px;
-  color: #8a6520;
+  color: var(--brand-gold-700);
 }
 
 .docMetaValue {
@@ -48,14 +48,14 @@
   font-size: 13px;
   font-weight: 700;
   color: #ffffff;
-  background: linear-gradient(135deg, #0f1d36, #1c3157);
+  background: linear-gradient(135deg, var(--brand-navy-900), var(--brand-navy-700));
   border-radius: 9px;
   text-decoration: none;
   transition: box-shadow 0.2s, transform 0.2s;
 }
 
 .docMetaLink:hover {
-  box-shadow: 0 8px 20px rgba(15, 29, 54, 0.26);
+  box-shadow: 0 8px 20px rgb(var(--brand-navy-900-rgb) / 0.26);
   transform: translateY(-1px);
 }
 
@@ -87,8 +87,8 @@
   border-radius: 20px;
   overflow: hidden;
   box-shadow:
-    0 1px 2px rgba(15, 29, 54, 0.04),
-    0 8px 24px -12px rgba(15, 29, 54, 0.08);
+    0 1px 2px rgb(var(--brand-navy-900-rgb) / 0.04),
+    0 8px 24px -12px rgb(var(--brand-navy-900-rgb) / 0.08);
   opacity: 0;
   transform: translateY(22px);
   transition:
@@ -107,7 +107,7 @@
   width: 190px;
   height: 190px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(216, 174, 63, 0.2), transparent 68%);
+  background: radial-gradient(circle, rgb(var(--brand-gold-400-rgb) / 0.2), transparent 68%);
   opacity: 0.55;
   transition: opacity 0.35s ease;
   pointer-events: none;
@@ -121,7 +121,7 @@
   right: 0;
   bottom: 0;
   height: 3px;
-  background: linear-gradient(90deg, #E8652B, #D8AE3F 60%, #F7E3A1);
+  background: linear-gradient(90deg, var(--brand-orange-500), var(--brand-gold-400) 60%, var(--brand-gold-200));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
@@ -133,10 +133,10 @@
 }
 
 .card:hover {
-  border-color: rgba(216, 174, 63, 0.6);
+  border-color: rgb(var(--brand-gold-400-rgb) / 0.6);
   box-shadow:
-    0 2px 4px rgba(15, 29, 54, 0.04),
-    0 20px 40px -14px rgba(15, 29, 54, 0.18);
+    0 2px 4px rgb(var(--brand-navy-900-rgb) / 0.04),
+    0 20px 40px -14px rgb(var(--brand-navy-900-rgb) / 0.18);
 }
 
 .card:hover::before {
@@ -170,7 +170,7 @@
 }
 
 .card:hover .cardNum {
-  color: rgba(216, 174, 63, 0.16);
+  color: rgb(var(--brand-gold-400-rgb) / 0.16);
   -webkit-text-stroke-color: rgba(201, 162, 39, 0.85);
   transform: translateY(-2px);
 }
@@ -215,20 +215,20 @@
   height: 52px;
   flex-shrink: 0;
   border-radius: 15px;
-  background: linear-gradient(145deg, #16294a, #0f1d36);
-  color: #E3C169;
+  background: linear-gradient(145deg, var(--brand-navy-800), var(--brand-navy-900));
+  color: var(--brand-gold-300);
   box-shadow:
-    0 8px 18px -6px rgba(15, 29, 54, 0.45),
+    0 8px 18px -6px rgb(var(--brand-navy-900-rgb) / 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
   transition: background 0.3s ease, color 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
 }
 
 .card:hover .cardIcon {
-  background: linear-gradient(145deg, #F0883F, #E8652B);
+  background: linear-gradient(145deg, var(--brand-orange-400), var(--brand-orange-500));
   color: #ffffff;
   transform: rotate(-6deg) scale(1.05);
   box-shadow:
-    0 10px 22px -6px rgba(232, 101, 43, 0.55),
+    0 10px 22px -6px rgb(var(--brand-orange-500-rgb) / 0.55),
     inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
@@ -242,7 +242,7 @@
   font-size: 17.5px;
   line-height: 1.5;
   font-weight: 800;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 .cardText {
@@ -263,7 +263,7 @@
   margin-top: 36px;
   padding: 28px 30px;
   border-radius: 18px;
-  background: linear-gradient(135deg, #0f1d36, #1c3157);
+  background: linear-gradient(135deg, var(--brand-navy-900), var(--brand-navy-700));
   display: flex;
   align-items: center;
   gap: 24px;
@@ -278,7 +278,7 @@
   width: 220px;
   height: 220px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(216, 174, 63, 0.24), transparent 68%);
+  background: radial-gradient(circle, rgb(var(--brand-gold-400-rgb) / 0.24), transparent 68%);
   pointer-events: none;
 }
 
@@ -290,9 +290,9 @@
   height: 54px;
   flex-shrink: 0;
   border-radius: 15px;
-  border: 1px solid rgba(227, 193, 105, 0.36);
+  border: 1px solid rgb(var(--brand-gold-300-rgb) / 0.36);
   background: rgba(255, 255, 255, 0.07);
-  color: #E3C169;
+  color: var(--brand-gold-300);
   font-size: 24px;
 }
 
@@ -314,7 +314,7 @@
   margin: 7px 0 0;
   font-size: 15px;
   line-height: 1.85;
-  color: rgba(232, 240, 252, 0.76);
+  color: rgb(var(--brand-on-navy-rgb) / 0.76);
 }
 
 .ctaBtn {
@@ -328,16 +328,16 @@
   font-size: 14px;
   font-weight: 700;
   color: #ffffff;
-  background: linear-gradient(135deg, #E8652B, #F0883F);
+  background: linear-gradient(135deg, var(--brand-orange-500), var(--brand-orange-400));
   border-radius: 11px;
   text-decoration: none;
-  box-shadow: 0 8px 22px rgba(232, 101, 43, 0.34);
+  box-shadow: 0 8px 22px rgb(var(--brand-orange-500-rgb) / 0.34);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .ctaBtn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(232, 101, 43, 0.44);
+  box-shadow: 0 12px 28px rgb(var(--brand-orange-500-rgb) / 0.44);
 }
 
 /* ── Print ───────────────────────────────────────────────── */
@@ -382,7 +382,7 @@
   .cardIcon {
     background: none;
     box-shadow: none;
-    color: #8a6520;
+    color: var(--brand-gold-700);
     width: 32px;
     height: 32px;
   }
@@ -403,7 +403,7 @@
   }
 
   .ctaTitle {
-    color: #0f1d36;
+    color: var(--brand-navy-900);
   }
 
   .ctaText {

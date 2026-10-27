@@ -7,7 +7,7 @@
 .slide {
   position: relative;
   overflow: hidden;
-  background: #0f1d36;
+  background: var(--brand-navy-900);
 }
 
 .slideImg {
@@ -31,7 +31,7 @@
   transform: translateY(-50%);
   z-index: 2;
   max-width: 600px;
-  background: rgba(15, 29, 54, 0.33);
+  background: rgb(var(--brand-navy-900-rgb) / 0.33);
   backdrop-filter: blur(1px);
   padding: 28px 32px;
   border-radius: 14px;
@@ -39,8 +39,8 @@
 
 .badge {
   display: inline-block;
-  background: rgba(232, 101, 43, 0.2);
-  border: 1px solid rgba(232, 101, 43, 0.4);
+  background: rgb(var(--brand-orange-500-rgb) / 0.2);
+  border: 1px solid rgb(var(--brand-orange-500-rgb) / 0.4);
   color: #f09060;
   font-size: 12px;
   font-weight: 600;
@@ -80,21 +80,21 @@
   align-items: center;
   gap: 8px;
   padding: 12px 32px;
-  background: #E8652B;
+  background: var(--brand-orange-500);
   color: #ffffff;
   font-size: 15px;
   font-weight: 600;
   border-radius: 8px;
   text-decoration: none;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 16px rgba(232, 101, 43, 0.3);
+  box-shadow: 0 4px 16px rgb(var(--brand-orange-500-rgb) / 0.3);
 }
 
 .cta:hover {
-  background: #d45a24;
+  background: var(--brand-orange-550);
   color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(232, 101, 43, 0.45);
+  box-shadow: 0 6px 24px rgb(var(--brand-orange-500-rgb) / 0.45);
 }
 
 .slideLink {
@@ -176,8 +176,8 @@
 }
 
 .slider :global(.slick-dots li.slick-active button) {
-  background: #E8652B;
-  border-color: #E8652B;
+  background: var(--brand-orange-500);
+  border-color: var(--brand-orange-500);
   width: 28px;
   border-radius: 6px;
 }

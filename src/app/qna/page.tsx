@@ -93,6 +93,7 @@ function QnaBoard() {
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [total, setTotal] = useState(0);
+  const [approximate, setApproximate] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -133,6 +134,7 @@ function QnaBoard() {
         const data = await res.json();
         setQuestions(data.questions || []);
         setTotal(data.total || 0);
+        setApproximate(!!data.approximate);
         setTotalPages(Math.max(1, data.totalPages || 1));
         if (data.stats) setStats(data.stats);
         setLoading(false);
@@ -252,7 +254,11 @@ function QnaBoard() {
                 "กำลังโหลด..."
               ) : search ? (
                 <>
-                  พบ <strong>{total.toLocaleString("th-TH")}</strong> คำถามเกี่ยวกับ “{search}”{" "}
+                  {approximate ? (
+                    <>ไม่พบคำถามที่ตรงกับ “{search}” พอดี · แสดง <strong>{total.toLocaleString("th-TH")}</strong> คำถามที่ใกล้เคียง</>
+                  ) : (
+                    <>พบ <strong>{total.toLocaleString("th-TH")}</strong> คำถามเกี่ยวกับ “{search}”</>
+                  )}{" "}
                   <button className={css.textBtn} onClick={() => applySearch("")}>ล้าง</button>
                 </>
               ) : (

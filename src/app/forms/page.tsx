@@ -24,6 +24,7 @@ import {
   Complaint3D, Certificate3D, Shield3D, Folder3D,
 } from "@/components/icons/ThreeDIcons";
 import { type MemberKey, memberKeyOf, readSavedMember, saveMember } from "@/lib/memberType";
+import { createSmartSearch } from "@/lib/smartSearch";
 import css from "./page.module.css";
 
 interface FormItem {
@@ -145,8 +146,9 @@ function FormsContent() {
 
   const countOf = (key: string) => (items ?? []).filter((i) => groupKeyOf(i) === key).length;
 
-  const matchesQuery = (i: FormItem) =>
-    !query || `${i.title} ${i.group} ${i.category}`.toLowerCase().includes(query);
+  // ค้นหาแบบยอมพิมพ์ไม่ตรงชื่อ (คำผิด คำความหมายเดียวกัน ประโยคยาว) — ดู lib/smartSearch
+  const searchForms = useMemo(() => createSmartSearch(items ?? [], (i) => `${i.title} ${i.group} ${i.category}`), [items]);
+  const searchResult = useMemo(() => (query ? searchForms(search) : null), [query, search, searchForms]);
 
   // แบบฟอร์มในหมวดที่เลือก (หน้ารวม + ค้นหา = ค้นจากทุกหมวด)
   const inScope = useMemo(
@@ -176,9 +178,7 @@ function FormsContent() {
   const tabCount = (c: string) => inScope.filter((i) => i.category === c).length;
 
   // ค้นหาจากทุกหมวดเสมอ — พิมพ์ชื่อแบบฟอร์มแล้วเจอแน่ ไม่ว่ากำลังอยู่หมวดไหน
-  const listItems = query
-    ? (items ?? []).filter(matchesQuery)
-    : inScope.filter((i) => i.category === activeTab);
+  const listItems = searchResult ? searchResult.items : inScope.filter((i) => i.category === activeTab);
   // หน้าหมวด (มีแท็บประเภทสมาชิก) แสดงเมื่อไม่ได้ค้นหา
   const groupView = query ? null : activeGroup;
 
@@ -319,7 +319,9 @@ function FormsContent() {
                       "เลือกประเภทสมาชิกของคุณด้านล่าง"
                     ) : (
                       <>
-                        พบ {listItems.length} รายการ{query ? " · ค้นหาจากทุกหมวด" : ""}
+                        {searchResult && !searchResult.exact && listItems.length > 0
+                          ? `ไม่พบชื่อที่ตรงกันพอดี · แสดง ${listItems.length} แบบฟอร์มที่ใกล้เคียง`
+                          : `พบ ${listItems.length} รายการ${query ? " · ค้นหาจากทุกหมวด" : ""}`}
                       </>
                     )}
                   </p>

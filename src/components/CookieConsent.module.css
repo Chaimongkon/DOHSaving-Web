@@ -10,7 +10,7 @@
   z-index: 9998;
   width: 420px;
   max-width: calc(100vw - 48px);
-  background: #0f1d36;
+  background: var(--brand-navy-900);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -23,7 +23,7 @@
 }
 
 .bannerHeader {
-  background: linear-gradient(135deg, #E8652B, #f09060);
+  background: linear-gradient(135deg, var(--brand-orange-500), #f09060);
   padding: 20px 24px;
   display: flex;
   align-items: center;
@@ -91,7 +91,7 @@
 
 .btnAccept {
   padding: 12px 24px;
-  background: linear-gradient(135deg, #E8652B, #f09060);
+  background: linear-gradient(135deg, var(--brand-orange-500), #f09060);
   color: #ffffff;
   font-size: 14px;
   font-weight: 700;
@@ -107,7 +107,7 @@
 
 .btnAccept:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(232, 101, 43, 0.4);
+  box-shadow: 0 6px 20px rgb(var(--brand-orange-500-rgb) / 0.4);
 }
 
 .bannerSecondary {
@@ -197,7 +197,7 @@
 .modalTitle {
   font-size: 17px;
   font-weight: 700;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   margin: 0;
 }
 
@@ -245,8 +245,8 @@
 }
 
 .categoryCardActive {
-  border-color: #E8652B;
-  background: rgba(232, 101, 43, 0.02);
+  border-color: var(--brand-orange-500);
+  background: rgb(var(--brand-orange-500-rgb) / 0.02);
 }
 
 .categoryHeader {
@@ -263,7 +263,7 @@
 .categoryName {
   font-size: 14px;
   font-weight: 600;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   display: block;
 }
 
@@ -276,7 +276,7 @@
 
 .categoryRequired {
   font-size: 11px;
-  color: #E8652B;
+  color: var(--brand-orange-500);
   font-weight: 500;
 }
 
@@ -316,7 +316,7 @@
 }
 
 .toggleInput:checked + .toggleSlider {
-  background: #E8652B;
+  background: var(--brand-orange-500);
 }
 
 .toggleInput:checked + .toggleSlider::before {

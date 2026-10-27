@@ -7,7 +7,8 @@ import css from "./AppDownloadBar.module.css";
 export default function AppDownloadBar() {
   return (
     <div className={css.bar}>
-      <div className={css.inner}>
+      {/* data-festival-slot: ที่วางของตกแต่งธีมเทศกาล (FestivalDecor.module.css) */}
+      <div className={css.inner} data-festival-slot="app-bar">
         {/* Left: App icon + text */}
         <div className={css.info}>
           {/* eslint-disable-next-line @next/next/no-img-element */}

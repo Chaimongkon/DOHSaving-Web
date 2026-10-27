@@ -47,7 +47,7 @@
   height: 36px;
   border-radius: 50%;
   border: 3px solid #ffffff;
-  background: #E8652B;
+  background: var(--brand-orange-500);
   color: #ffffff;
   font-size: 14px;
   cursor: pointer;
@@ -56,13 +56,13 @@
   justify-content: center;
   transition: all 0.2s;
   z-index: 2;
-  box-shadow: 0 4px 12px rgba(232, 101, 43, 0.4);
+  box-shadow: 0 4px 12px rgb(var(--brand-orange-500-rgb) / 0.4);
 }
 
 .closeBtn:hover {
-  background: #d45a24;
+  background: var(--brand-orange-550);
   transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(232, 101, 43, 0.5);
+  box-shadow: 0 6px 16px rgb(var(--brand-orange-500-rgb) / 0.5);
 }
 
 /* Image body */

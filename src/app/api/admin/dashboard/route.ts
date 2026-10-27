@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
+import { MOURNING_KEY, isMourningLive, parseMourning } from "@/lib/mourningMode";
+import { TABLE_LABELS } from "@/lib/auditLabels";
 
 /* ── เวลาไทย (UTC+7) — นับ "วันนี้/เดือนนี้" ตามปฏิทินไทย ไม่ขึ้นกับเขตเวลาของเซิร์ฟเวอร์ ── */
 const TH_OFFSET = 7 * 60 * 60 * 1000;
@@ -18,29 +20,6 @@ const MONTHS_TH = [
   "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม",
 ];
 
-const TABLE_LABELS: Record<string, string> = {
-  news: "ข่าวประชาสัมพันธ์",
-  forms: "แบบฟอร์ม",
-  regulations: "ข้อบังคับ/ระเบียบ/ประกาศ",
-  slides: "สไลด์หน้าแรก",
-  notifications: "ป๊อปอัพแจ้งเตือน",
-  service_pages: "หน้าบริการ",
-  financial_summaries: "รายการย่อสินทรัพย์และหนี้สิน",
-  annual_reports: "รายงานประจำปี",
-  meeting_documents: "เอกสารประกอบการประชุม",
-  interest_rates: "อัตราดอกเบี้ย",
-  member_media: "สื่อสำหรับสมาชิก",
-  site_settings: "ตั้งค่าหน้าเว็บ",
-  videos: "วิดีโอ",
-  photo_albums: "อัลบั้มภาพ",
-  activity_albums: "อัลบั้มภาพ",
-  complaints: "ร้องเรียน/เสนอแนะ",
-  qna_questions: "กระดานถาม-ตอบ",
-  qna_replies: "กระดานถาม-ตอบ",
-  users: "ผู้ใช้งาน",
-  loan_types: "ประเภทเงินกู้",
-  festival_themes: "Festival Theme",
-};
 
 type TaskLevel = "urgent" | "warning" | "info" | "ok";
 interface Task {
@@ -268,17 +247,16 @@ export async function GET(req: NextRequest) {
     }
 
     if (can("/admin/mourning")) {
-      const row = await prisma.siteSetting.findUnique({ where: { key: "mourning_mode" }, select: { value: true } });
-      let active = false;
-      try {
-        active = Boolean(row?.value && JSON.parse(row.value).active);
-      } catch { /* ค่าเสีย = ถือว่าปิด */ }
-      if (active) {
+      const row = await prisma.siteSetting.findUnique({ where: { key: MOURNING_KEY }, select: { value: true } });
+      const mourning = parseMourning(row?.value);
+      if (isMourningLive(mourning)) {
         tasks.push({
           key: "mourning",
           level: "info",
           title: "โหมดไว้อาลัยเปิดอยู่",
-          detail: "หน้าเว็บแสดงเป็นโทนขาวดำ",
+          detail: mourning.endsAt
+            ? `หน้าเว็บแสดงเป็นโทนขาวดำ · ปิดอัตโนมัติ ${new Date(mourning.endsAt).toLocaleDateString("th-TH", { timeZone: "Asia/Bangkok", day: "numeric", month: "short", year: "2-digit" })}`
+            : "หน้าเว็บแสดงเป็นโทนขาวดำ · ยังไม่ได้กำหนดวันปิด",
           href: "/admin/mourning",
         });
       }

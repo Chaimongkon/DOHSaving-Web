@@ -42,8 +42,8 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // Login สำเร็จ — redirect ไป admin dashboard
-      router.push("/admin");
+      // Login สำเร็จ — ยังใช้รหัสผ่านชั่วคราว → ตั้งรหัสใหม่ก่อน · ไม่ใช่ → แดชบอร์ด
+      router.push(data.user?.mustChangePassword ? "/admin/account" : "/admin");
     } catch {
       setError("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้");
       setLoading(false);

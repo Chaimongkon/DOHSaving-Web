@@ -2,89 +2,82 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
 import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
+import {
+  MOURNING_DEFAULTS,
+  MOURNING_KEY,
+  MOURNING_TEXT_MAX,
+  type MourningSettings,
+  clampIntensity,
+  isMourningLive,
+  parseMourning,
+} from "@/lib/mourningMode";
 
-const DB_KEY = "mourning_mode";
+const REMARK = "โหมดไว้อาลัย (ลดสีหน้าเว็บ + banner)";
 
-type MourningModeData = {
-  active: boolean;
-  intensity: number;
-  bannerText: string;
-};
-
-const DEFAULTS: MourningModeData = {
-  active: false,
-  intensity: 100,
-  bannerText: "",
-};
-
-function clampIntensity(raw: unknown): number {
-  const n = typeof raw === "number" ? raw : parseInt(String(raw ?? ""), 10);
-  if (!Number.isFinite(n)) return 100;
-  return Math.min(100, Math.max(0, Math.round(n)));
-}
-
-function parseStored(value: string | null | undefined): MourningModeData {
-  if (!value) return DEFAULTS;
-  try {
-    const parsed = JSON.parse(value);
-    return {
-      active: Boolean(parsed.active),
-      intensity: clampIntensity(parsed.intensity),
-      bannerText: typeof parsed.bannerText === "string" ? parsed.bannerText : "",
-    };
-  } catch {
-    return DEFAULTS;
-  }
-}
+const respond = (s: MourningSettings, updatedAt: Date | null) =>
+  NextResponse.json({ ...s, live: isMourningLive(s), updatedAt: updatedAt?.toISOString() ?? null });
 
 export async function GET(req: NextRequest) {
   const user = await requireAdminRouteAccess(req);
   if (user instanceof NextResponse) return user;
 
   try {
-    const setting = await prisma.siteSetting.findUnique({ where: { key: DB_KEY } });
-    return NextResponse.json(parseStored(setting?.value));
+    const setting = await prisma.siteSetting.findUnique({ where: { key: MOURNING_KEY } });
+    return respond(parseMourning(setting?.value), setting?.updatedAt ?? null);
   } catch (error) {
     console.error("Failed to read mourning mode:", error);
-    return NextResponse.json(DEFAULTS, { status: 500 });
+    return NextResponse.json({ ...MOURNING_DEFAULTS, live: false, updatedAt: null }, { status: 500 });
   }
 }
 
+// POST { active, intensity, bannerText, endsAt } — บันทึกทั้งชุด
 export async function POST(req: NextRequest) {
   const user = await requireAdminRouteAccess(req);
   if (user instanceof NextResponse) return user;
 
   try {
-    const body = await req.json();
-    const next: MourningModeData = {
-      active: Boolean(body.active),
+    const body = await req.json().catch(() => ({}));
+    const existing = await prisma.siteSetting.findUnique({ where: { key: MOURNING_KEY } });
+    const previous = parseMourning(existing?.value);
+
+    let endsAt: string | null = null;
+    if (typeof body.endsAt === "string" && body.endsAt) {
+      const d = new Date(body.endsAt);
+      if (Number.isNaN(d.getTime())) return NextResponse.json({ error: "วันปิดอัตโนมัติไม่ถูกต้อง" }, { status: 400 });
+      if (Boolean(body.active) && d.getTime() <= Date.now()) {
+        return NextResponse.json({ error: "วันปิดอัตโนมัติต้องอยู่ในอนาคต" }, { status: 400 });
+      }
+      endsAt = d.toISOString();
+    }
+
+    const active = Boolean(body.active);
+    const next: MourningSettings = {
+      active,
       intensity: clampIntensity(body.intensity),
-      bannerText: typeof body.bannerText === "string" ? body.bannerText.trim().slice(0, 500) : "",
+      bannerText: typeof body.bannerText === "string" ? body.bannerText.trim().slice(0, MOURNING_TEXT_MAX) : "",
+      endsAt,
+      // เริ่มนับ "เปิดตั้งแต่" ใหม่เมื่อเปลี่ยนจากไม่แสดง → แสดง
+      since: active ? (isMourningLive(previous) ? previous.since ?? new Date().toISOString() : new Date().toISOString()) : null,
+      updatedBy: user.fullName || user.userName,
     };
 
-    const existing = await prisma.siteSetting.findUnique({ where: { key: DB_KEY } });
-    const previous = parseStored(existing?.value);
-
-    await prisma.siteSetting.upsert({
-      where: { key: DB_KEY },
-      update: { value: JSON.stringify(next), remark: "โหมดไว้อาลัย (ลดสีหน้าเว็บ + banner)" },
-      create: {
-        key: DB_KEY,
-        value: JSON.stringify(next),
-        remark: "โหมดไว้อาลัย (ลดสีหน้าเว็บ + banner)",
-      },
+    const saved = await prisma.siteSetting.upsert({
+      where: { key: MOURNING_KEY },
+      update: { value: JSON.stringify(next), remark: REMARK },
+      create: { key: MOURNING_KEY, value: JSON.stringify(next), remark: REMARK },
     });
 
     await writeAuditLog({
       userId: user.userId,
       action: "update",
       tableName: "site_settings",
+      recordId: saved.id,
       ipAddress: getAuditIpAddress(req),
-      oldValues: { key: DB_KEY, ...previous },
-      newValues: { key: DB_KEY, ...next },
+      oldValues: { key: MOURNING_KEY, ...previous },
+      newValues: { key: MOURNING_KEY, ...next },
     });
 
-    return NextResponse.json(next);
+    return respond(next, saved.updatedAt);
   } catch (error) {
     console.error("Failed to save mourning mode:", error);
     return NextResponse.json({ error: "บันทึกไม่สำเร็จ" }, { status: 500 });

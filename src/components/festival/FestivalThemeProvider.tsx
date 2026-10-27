@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { resolveFestival } from "@/lib/festivalClient";
 
 // Default brand colors — must match globals.css :root
 const DEFAULTS = {
@@ -21,9 +22,9 @@ const DEFAULTS = {
  */
 export default function FestivalThemeProvider() {
   useEffect(() => {
-    fetch("/api/festival/active")
-      .then((res) => res.json())
-      .then((data) => {
+    // ธีมที่ควรแสดง (ดูตัวอย่างของเจ้าหน้าที่ / ธีมที่เปิดอยู่ · ไว้อาลัย = ไม่มี)
+    resolveFestival()
+      .then(({ festival: data }) => {
         const root = document.documentElement;
 
         // No active festival → reset to defaults
@@ -32,8 +33,8 @@ export default function FestivalThemeProvider() {
           return;
         }
 
-        const primary = data.colorPrimary;
-        const bg = data.colorBg;
+        const primary = data.colorPrimary as string | null | undefined;
+        const bg = data.colorBg as string | null | undefined;
 
         // No custom colors set → reset to defaults
         if (!primary && !bg) {

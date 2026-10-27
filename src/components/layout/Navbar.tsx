@@ -18,6 +18,7 @@ import {
 import type { MenuProps } from "antd";
 import Link from "next/link";
 import { ABOUT_NAV_GROUPS } from "@/components/about/aboutNav";
+import { resolveFestival } from "@/lib/festivalClient";
 
 // ─── Menu data structure ─────────────────────────────────────
 
@@ -362,16 +363,12 @@ export default function Navbar() {
       .catch(() => { });
   }, []);
 
-  // Fetch active festival logo
+  // โลโก้เทศกาล — ธีมเดียวกับที่หน้าเว็บแสดง (ดูตัวอย่างของเจ้าหน้าที่ / ธีมที่เปิดอยู่ · ไว้อาลัย = ใช้โลโก้ปกติ)
   useEffect(() => {
-    fetch("/api/festival/active")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data?.festivalLogoUrl) {
-          setFestivalLogo(data.festivalLogoUrl);
-        } else {
-          setFestivalLogo(null);
-        }
+    resolveFestival()
+      .then(({ festival }) => {
+        const logo = festival?.festivalLogoUrl;
+        setFestivalLogo(typeof logo === "string" && logo ? logo : null);
       })
       .catch(() => setFestivalLogo(null));
   }, []);

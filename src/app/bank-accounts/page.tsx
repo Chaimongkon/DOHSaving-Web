@@ -473,7 +473,7 @@ export default function BankAccountsPage() {
               </a>
 
               <a href="tel:0989984420" className={css.channel}>
-                <span className={css.channelIcon} style={{ background: "#E8652B" }} aria-hidden="true">
+                <span className={css.channelIcon} style={{ background: "var(--brand-orange-500)" }} aria-hidden="true">
                   <Phone size={22} strokeWidth={2.2} />
                 </span>
                 <span className={css.channelBody}>

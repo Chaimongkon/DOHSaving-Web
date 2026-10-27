@@ -4,7 +4,7 @@
 
 /* ── Hero ── */
 .hero {
-  background: linear-gradient(160deg, #0a1628 0%, #1a2d4a 40%, #1e3a5f 70%, #1a4a6a 100%);
+  background: linear-gradient(160deg, var(--brand-navy-950) 0%, #1a2d4a 40%, #1e3a5f 70%, #1a4a6a 100%);
   padding: 44px 24px 56px;
   text-align: center;
 }
@@ -69,9 +69,9 @@
   color: #334155;
 }
 .tabActive {
-  background: linear-gradient(135deg, #E8652B, #f59e0b) !important;
+  background: linear-gradient(135deg, var(--brand-orange-500), #f59e0b) !important;
   color: #fff !important;
-  box-shadow: 0 2px 8px rgba(232, 101, 43, 0.25);
+  box-shadow: 0 2px 8px rgb(var(--brand-orange-500-rgb) / 0.25);
 }
 
 .tabCount {
@@ -99,8 +99,8 @@
   transition: border-color 0.2s;
 }
 .searchBar:focus-within {
-  border-color: #E8652B;
-  box-shadow: 0 0 0 3px rgba(232, 101, 43, 0.08);
+  border-color: var(--brand-orange-500);
+  box-shadow: 0 0 0 3px rgb(var(--brand-orange-500-rgb) / 0.08);
 }
 
 .searchIcon {
@@ -140,8 +140,8 @@
   flex-direction: column;
 }
 .card:hover {
-  border-color: #E8652B;
-  box-shadow: 0 8px 30px rgba(232, 101, 43, 0.12);
+  border-color: var(--brand-orange-500);
+  box-shadow: 0 8px 30px rgb(var(--brand-orange-500-rgb) / 0.12);
   transform: translateY(-4px);
 }
 
@@ -214,14 +214,14 @@
   gap: 5px;
   font-size: 11px;
   font-weight: 700;
-  color: #E8652B;
+  color: var(--brand-orange-500);
   margin-bottom: 6px;
 }
 .cardCategoryDot {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #E8652B;
+  background: var(--brand-orange-500);
 }
 
 .cardTitle {
@@ -271,7 +271,7 @@
   font-size: 12px;
   font-weight: 700;
   color: #fff;
-  background: linear-gradient(135deg, #E8652B, #f59e0b);
+  background: linear-gradient(135deg, var(--brand-orange-500), #f59e0b);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -280,7 +280,7 @@
   transition: all 0.2s;
 }
 .cardBtn:hover {
-  box-shadow: 0 4px 12px rgba(232, 101, 43, 0.3);
+  box-shadow: 0 4px 12px rgb(var(--brand-orange-500-rgb) / 0.3);
   transform: translateY(-1px);
 }
 

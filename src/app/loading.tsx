@@ -16,7 +16,7 @@ export default function Loading() {
                     width: "40px",
                     height: "40px",
                     border: "3px solid #f0f0f0",
-                    borderTopColor: "#E8652B",
+                    borderTopColor: "var(--brand-orange-500, #E8652B)",
                     borderRadius: "50%",
                     animation: "spin 0.8s linear infinite",
                 }}

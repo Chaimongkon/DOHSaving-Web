@@ -9,7 +9,20 @@ interface Props {
   size?: number;   // px per icon (20-120)
   count?: number;  // total icons on screen
   speed?: number;  // 10-100, maps to velocity
+  /** หลังเปิดหน้าไประยะหนึ่ง — เหลือไอคอนราว 1 ใน 3 */
+  calm?: boolean;
+  /** จอแคบ (มือถือ) — แนวขอบจอแคบลง */
+  narrow?: boolean;
 }
+
+/** ไอคอนอยู่เฉพาะแนวขอบซ้าย/ขวา ไม่ผ่านกลางจอ (ป้ายหน้าแรก ปุ่ม และตัวหนังสือ) */
+function pickLane(vw: number, size: number, narrow: boolean): [number, number] {
+  const band = Math.max(size + 16, vw * (narrow ? 0.12 : 0.2));
+  return Math.random() < 0.5 ? [4, Math.max(4, band - size)] : [Math.min(vw - size - 4, vw - band), vw - size - 4];
+}
+
+/** จำนวนที่ยังแสดงหลังสงบลง */
+const calmLimit = (count: number) => Math.max(2, Math.ceil(count * 0.35));
 
 function rand(min: number, max: number) {
   return Math.random() * (max - min) + min;
@@ -25,14 +38,16 @@ export default function IconEffect({
   size = 50,
   count = 15,
   speed = 50,
+  calm = false,
+  narrow = false,
 }: Props) {
   if (!iconUrls || iconUrls.length === 0) return null;
 
   if (mode === "falling") {
-    return <FallingMode iconUrls={iconUrls} size={size} count={count} speed={speed} />;
+    return <FallingMode iconUrls={iconUrls} size={size} count={count} speed={speed} calm={calm} narrow={narrow} />;
   }
 
-  return <BouncingMode iconUrls={iconUrls} size={size} count={count} speed={speed} />;
+  return <BouncingMode iconUrls={iconUrls} size={size} count={count} speed={speed} calm={calm} narrow={narrow} />;
 }
 
 // ════════════════════════════════════════════════════
@@ -47,6 +62,9 @@ interface FallingItem {
   x: number;
   y: number;
   baseX: number;
+  minX: number;
+  maxX: number;
+  retired: boolean;
   size: number;
   speedY: number;
   rotation: number;
@@ -64,9 +82,13 @@ interface FallingItem {
   fadeTimer: number;      // frames since landed (for fade-out)
 }
 
-function FallingMode({ iconUrls, size, count, speed }: Omit<Props, "mode"> & { iconUrls: string[] }) {
+function FallingMode({ iconUrls, size, count, speed, calm, narrow }: Omit<Props, "mode"> & { iconUrls: string[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number>(0);
+  const limitRef = useRef(count!);
+  useEffect(() => {
+    limitRef.current = calm ? calmLimit(count!) : count!;
+  }, [calm, count]);
 
   // Speed: 10→0.4px/frame, 50→1.2px/frame, 100→2.5px/frame
   const baseSpeed = 0.4 + (speed! / 100) * 2.1;
@@ -84,10 +106,10 @@ function FallingMode({ iconUrls, size, count, speed }: Omit<Props, "mode"> & { i
     const heightMap = new Float32Array(numCols); // stores how high the pile is from the bottom (px)
 
     // Time (frames) a landed icon stays before fading; fade to recycle
-    const LAND_STAY = 300;  // ~5s at 60fps
+    const LAND_STAY = 90;  // ~5s at 60fps
     const FADE_DURATION = 90; // ~1.5s fade out
     // Max pile height before we start forcing faster fades
-    const MAX_PILE_RATIO = 0.45; // 45% of screen height
+    const MAX_PILE_RATIO = 0.12; // 45% of screen height
 
     function getGroundY(x: number, iconSize: number): number {
       // Get the lowest ground level across columns this icon spans
@@ -137,10 +159,11 @@ function FallingMode({ iconUrls, size, count, speed }: Omit<Props, "mode"> & { i
       el.style.width = `${sizeVar}px`;
       el.style.height = `${sizeVar}px`;
       const pattern = FALL_PATTERNS[randInt(0, FALL_PATTERNS.length - 1)];
-      const baseX = rand(10, vw - sizeVar - 10);
+      const [minX, maxX] = pickLane(vw, sizeVar, !!narrow);
+      const baseX = rand(minX, maxX);
       return {
         el, size: sizeVar,
-        x: baseX,
+        x: baseX, minX, maxX, retired: false,
         y: stagger ? rand(-vh, -sizeVar) : rand(-sizeVar * 2, -sizeVar),
         baseX,
         speedY: baseSpeed * rand(0.6, 1.5),
@@ -169,7 +192,8 @@ function FallingMode({ iconUrls, size, count, speed }: Omit<Props, "mode"> & { i
       item.el.style.width = `${sizeVar}px`;
       item.el.style.height = `${sizeVar}px`;
       const pattern = FALL_PATTERNS[randInt(0, FALL_PATTERNS.length - 1)];
-      item.baseX = rand(10, vw - sizeVar - 10);
+      [item.minX, item.maxX] = pickLane(vw, sizeVar, !!narrow);
+      item.baseX = rand(item.minX, item.maxX);
       item.x = item.baseX;
       item.y = rand(-sizeVar * 2, -sizeVar);
       item.speedY = baseSpeed * rand(0.6, 1.5);
@@ -217,7 +241,17 @@ function FallingMode({ iconUrls, size, count, speed }: Omit<Props, "mode"> & { i
         ? 1 + (pileRatio - MAX_PILE_RATIO) / (1 - MAX_PILE_RATIO) * 4
         : 1;
 
-      for (const item of items) {
+      for (let idx = 0; idx < items.length; idx++) {
+        const item = items[idx];
+        if (item.retired) {
+          // กลับมาแสดงอีกครั้งถ้าจำนวนที่อนุญาตเพิ่มขึ้น
+          if (idx < limitRef.current) {
+            item.retired = false;
+            item.el.style.display = "";
+            resetItem(item);
+          }
+          continue;
+        }
         if (item.landed) {
           // ── Landed: settling bounce then idle, then fade ──
           item.fadeTimer += fadeSpeedMultiplier;
@@ -236,6 +270,11 @@ function FallingMode({ iconUrls, size, count, speed }: Omit<Props, "mode"> & { i
             item.el.style.opacity = String(item.opacity);
             if (fadeProgress >= 1) {
               resetItem(item);
+              if (idx >= limitRef.current) {
+                // สงบลงแล้ว — เก็บไอคอนนี้ไว้ก่อน
+                item.retired = true;
+                item.el.style.display = "none";
+              }
             }
           }
           continue;
@@ -272,7 +311,7 @@ function FallingMode({ iconUrls, size, count, speed }: Omit<Props, "mode"> & { i
         }
 
         // Clamp X within screen
-        item.x = Math.max(0, Math.min(window.innerWidth - item.size, item.x));
+        item.x = Math.max(item.minX, Math.min(item.maxX, item.x));
 
         // Check if reached ground / pile
         const groundY = getGroundY(item.x, item.size);
@@ -301,7 +340,7 @@ function FallingMode({ iconUrls, size, count, speed }: Omit<Props, "mode"> & { i
       cancelAnimationFrame(rafRef.current);
       items.forEach((item) => item.el.remove());
     };
-  }, [count, iconUrls, size, baseSpeed]);
+  }, [count, iconUrls, size, baseSpeed, narrow]);
 
   return <div ref={containerRef} className={styles.container} />;
 }
@@ -316,15 +355,25 @@ interface BouncingItem {
   y: number;
   vx: number;
   vy: number;
+  minX: number;
+  maxX: number;
   size: number;
   rotation: number;
   rotationSpeed: number;
 }
 
-function BouncingMode({ iconUrls, size, count, speed }: Omit<Props, "mode"> & { iconUrls: string[] }) {
+function BouncingMode({ iconUrls, size, count, speed, calm, narrow }: Omit<Props, "mode"> & { iconUrls: string[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<BouncingItem[]>([]);
   const rafRef = useRef<number>(0);
+
+  // สงบลง: ค่อย ๆ จางไอคอนส่วนเกิน
+  useEffect(() => {
+    const limit = calm ? calmLimit(count!) : count!;
+    itemsRef.current.forEach((item, i) => {
+      item.el.style.opacity = i < limit ? "1" : "0";
+    });
+  }, [calm, count]);
 
   // Speed: 10→0.5px/frame, 50→1.5px/frame, 100→3px/frame
   const baseVelocity = 0.5 + (speed! / 100) * 2.5;
@@ -340,7 +389,9 @@ function BouncingMode({ iconUrls, size, count, speed }: Omit<Props, "mode"> & { 
     for (let i = 0; i < count!; i++) {
       const el = document.createElement("div");
       el.className = styles.bouncingIcon;
+      el.style.transition = "opacity 1.5s";
       const sizeVar = size! * rand(0.7, 1.3);
+      const [minX, maxX] = pickLane(vw, sizeVar, !!narrow);
       el.style.width = `${sizeVar}px`;
       el.style.height = `${sizeVar}px`;
 
@@ -358,8 +409,10 @@ function BouncingMode({ iconUrls, size, count, speed }: Omit<Props, "mode"> & { 
 
       items.push({
         el,
-        x: rand(10, vw - sizeVar - 10),
+        x: rand(minX, maxX),
         y: rand(10, vh - sizeVar - 10),
+        minX,
+        maxX,
         vx: Math.cos(angle) * v,
         vy: Math.sin(angle) * v,
         size: sizeVar,
@@ -370,7 +423,6 @@ function BouncingMode({ iconUrls, size, count, speed }: Omit<Props, "mode"> & { 
     itemsRef.current = items;
 
     const animate = () => {
-      const w = window.innerWidth;
       const h = window.innerHeight;
 
       for (const item of items) {
@@ -379,12 +431,12 @@ function BouncingMode({ iconUrls, size, count, speed }: Omit<Props, "mode"> & { 
         item.rotation += item.rotationSpeed;
 
         // Bounce off left/right edges
-        if (item.x <= 0) {
-          item.x = 0;
+        if (item.x <= item.minX) {
+          item.x = item.minX;
           item.vx = Math.abs(item.vx) * rand(0.9, 1.1);
           item.rotationSpeed = rand(-2, 2);
-        } else if (item.x + item.size >= w) {
-          item.x = w - item.size;
+        } else if (item.x >= item.maxX) {
+          item.x = item.maxX;
           item.vx = -Math.abs(item.vx) * rand(0.9, 1.1);
           item.rotationSpeed = rand(-2, 2);
         }
@@ -429,7 +481,7 @@ function BouncingMode({ iconUrls, size, count, speed }: Omit<Props, "mode"> & { 
       items.forEach((item) => item.el.remove());
       itemsRef.current = [];
     };
-  }, [count, iconUrls, size, baseVelocity]);
+  }, [count, iconUrls, size, baseVelocity, narrow]);
 
   return <div ref={containerRef} className={styles.container} />;
 }

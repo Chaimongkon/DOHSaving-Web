@@ -3,6 +3,8 @@ import prisma from "@/lib/prisma";
 import { requireAdminRouteAccess } from "@/lib/adminAuth";
 import { ensureSiteEventsTable } from "@/lib/siteEvents";
 import { FORM_GROUP_LABELS, SEARCH_PAGES } from "@/lib/siteEventTypes";
+import { createSmartSearch } from "@/lib/smartSearch";
+import { decodeEntities } from "@/lib/decodeEntities";
 
 const DAY = 24 * 60 * 60 * 1000;
 const PERIODS = [7, 30, 90, 365];
@@ -76,13 +78,31 @@ export async function GET(req: NextRequest) {
       })
       .sort((a, b) => b.views - a.views);
 
-    const misses = missRows.map((r) => ({
-      term: r.target,
-      page: r.meta ?? "",
-      pageLabel: SEARCH_PAGES[r.meta ?? ""]?.label ?? r.meta ?? "-",
-      count: Number(r.c),
-      last: new Date(r.last).toISOString(),
-    }));
+    // คำที่เคยหาไม่เจอ (หน้าแบบฟอร์ม/ถาม-ตอบ) — ลองค้นด้วยระบบค้นหาปัจจุบัน ว่าตอนนี้เจอแล้วหรือยัง
+    // (กระทู้ที่ตั้งหลังจากค้นไม่เจอ ก็นับว่าเจอแล้ว)
+    const searchForms = createSmartSearch(forms, (f) => `${f.title} ${f.group} ${f.category}`);
+    const qnaRows = missRows.some((r) => r.meta === "qna")
+      ? await prisma.qnaQuestion.findMany({
+          where: { isActive: true },
+          orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
+          select: { title: true, body: true, replies: { where: { isActive: true, isAdmin: true }, select: { body: true } } },
+        })
+      : [];
+    const searchQna = createSmartSearch(qnaRows, (q) => [q.title, q.body, ...q.replies.map((r) => r.body)].map(decodeEntities).join(" "));
+    const misses = missRows.map((r) => {
+      const page = r.meta ?? "";
+      const found = page === "forms" ? searchForms(r.target) : page === "qna" ? searchQna(r.target) : null;
+      return {
+        term: r.target,
+        page,
+        pageLabel: SEARCH_PAGES[page]?.label ?? (page || "-"),
+        count: Number(r.c),
+        last: new Date(r.last).toISOString(),
+        nowFound: found && found.items.length
+          ? { count: found.items.length, exact: found.exact, titles: [...new Set(found.items.map((f) => f.title))].slice(0, 2) }
+          : null,
+      };
+    });
 
     const total = (type: string) => {
       const row = totalRows.find((r) => r.type === type);
@@ -103,6 +123,7 @@ export async function GET(req: NextRequest) {
         groupViews: total("form_group"),
         misses: total("search_miss"),
         missTerms: new Set(misses.map((m) => m.term)).size,
+        missesNowFound: misses.filter((m) => m.nowFound).length,
       },
       topForms,
       unused,

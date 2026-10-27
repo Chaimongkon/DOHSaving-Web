@@ -1,0 +1,600 @@
+/* ============================================================
+   ตั้งค่าระบบ (/admin/settings)
+   การแจ้งเตือน Telegram · สถานะระบบ · พื้นที่ไฟล์อัปโหลด
+   โทนเดียวกับ admin: กรมท่า · ทอง · ส้ม
+   ============================================================ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── หัวหน้า ── */
+.head {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 20px;
+  overflow: hidden;
+  color: #fff;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #0a1628 0%, #0f1d36 50%, #172c52 100%);
+  box-shadow: 0 20px 40px -30px rgba(15, 29, 54, 0.9);
+}
+
+.head::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, #E8652B, #D8AE3F 45%, #F7E3A1 60%, #E8652B);
+}
+
+.headText {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.headIcon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: #0f1d36;
+  background: linear-gradient(145deg, #F7E3A1, #D8AE3F);
+  border-radius: 13px;
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.subtitle {
+  margin: 2px 0 0;
+  font-size: 13.5px;
+  color: rgba(232, 240, 252, 0.75);
+}
+
+.headBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 11px;
+}
+
+.headBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* ── การ์ด ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 16px;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px 20px;
+  background: #fff;
+  border: 1px solid #e8ebf1;
+  border-radius: 16px;
+  box-shadow: 0 12px 28px -24px rgba(15, 29, 54, 0.5);
+}
+
+.cardHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 15.5px;
+  font-weight: 800;
+  color: #0f1d36;
+}
+
+.cardTitle svg {
+  color: #D4541A;
+}
+
+.pillOk,
+.pillOff {
+  padding: 2px 10px;
+  font-size: 12.5px;
+  font-weight: 800;
+  border-radius: 999px;
+}
+
+.pillOk {
+  color: #15803d;
+  background: #e7f6ec;
+}
+
+.pillOff {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.muted {
+  margin: 0;
+  font-size: 12.5px;
+  color: #8a93a3;
+}
+
+.bad {
+  color: #b91c1c;
+}
+
+.warnBox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+}
+
+.page code {
+  padding: 0 5px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.92em;
+  background: rgba(15, 29, 54, 0.06);
+  border-radius: 4px;
+}
+
+/* ── Telegram ── */
+.testRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+
+.testRow strong {
+  font-size: 14px;
+  color: #0f1d36;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  background: #0f1d36;
+  border: none;
+  border-radius: 10px;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: #172c52;
+}
+
+.btnPrimary:disabled,
+.headBtn:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.toggles {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toggles li + li {
+  border-top: 1px solid #f1f3f7;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 2px;
+  cursor: pointer;
+}
+
+.toggleText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.toggleText strong {
+  font-size: 14px;
+  color: #0f1d36;
+}
+
+.toggleText small {
+  font-size: 12.5px;
+  color: #8a93a3;
+}
+
+.toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.switchUi {
+  position: relative;
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 42px;
+  height: 24px;
+  color: #fff;
+  background: #cbd2db;
+  border-radius: 999px;
+  transition: background 0.15s;
+}
+
+.switchUi::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.15s;
+}
+
+.toggle input:checked + .switchUi {
+  background: #15803d;
+}
+
+.toggle input:checked + .switchUi::after {
+  transform: translateX(18px);
+}
+
+.toggle input:focus-visible + .switchUi {
+  outline: 3px solid rgba(232, 101, 43, 0.5);
+  outline-offset: 2px;
+}
+
+.toggle input:disabled + .switchUi {
+  opacity: 0.7;
+}
+
+.setup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13.5px;
+  color: #374151;
+}
+
+.setup p {
+  margin: 0;
+}
+
+.setup ol {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding-left: 1.3em;
+}
+
+/* ── สถานะระบบ ── */
+.checks {
+  display: flex;
+  flex-direction: column;
+}
+
+.check {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.check + .check {
+  border-top: 1px solid #f1f3f7;
+}
+
+.iconOk,
+.iconWarn,
+.iconBad {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.iconOk {
+  color: #15803d;
+}
+
+.iconWarn {
+  color: #d97706;
+}
+
+.iconBad {
+  color: #dc2626;
+}
+
+.checkBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.checkHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2px 10px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.checkHead strong {
+  color: #0f1d36;
+  font-variant-numeric: tabular-nums;
+}
+
+.checkHint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #8a93a3;
+}
+
+/* ── พื้นที่จัดเก็บ ── */
+.disk {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+
+.diskHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 13.5px;
+  color: #374151;
+}
+
+.diskHead span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.diskHead strong {
+  color: #0f1d36;
+}
+
+.meter {
+  height: 9px;
+  overflow: hidden;
+  background: #e5e9f0;
+  border-radius: 999px;
+}
+
+.meter span {
+  display: block;
+  height: 100%;
+  background: #1F5C9E;
+  border-radius: 999px;
+}
+
+.meter .meterWarn {
+  background: #d97706;
+}
+
+.meter .meterBad {
+  background: #dc2626;
+}
+
+.folders {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.folders li {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr) 70px 64px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.folderName {
+  overflow: hidden;
+  color: #374151;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.folderBar {
+  height: 7px;
+  overflow: hidden;
+  background: #f1f3f7;
+  border-radius: 999px;
+}
+
+.folderBar span {
+  display: block;
+  height: 100%;
+  background: #D8AE3F;
+  border-radius: 999px;
+}
+
+.folderSize {
+  font-weight: 700;
+  color: #0f1d36;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.folderFiles {
+  color: #8a93a3;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.footNote {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 12.5px;
+  color: #8a93a3;
+}
+
+.state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 16px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+  max-width: calc(100vw - 32px);
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f1d36;
+  background: #fff;
+  border: 1px solid #e3e7ee;
+  border-left: 4px solid #15803d;
+  border-radius: 12px;
+  box-shadow: 0 16px 36px -12px rgba(15, 29, 54, 0.45);
+}
+
+.toastErr {
+  border-left-color: #b91c1c;
+}
+
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.headBtn:focus-visible,
+.btnPrimary:focus-visible {
+  outline: 3px solid rgba(232, 101, 43, 0.5);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1000px) {
+  .grid,
+  .folders {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .head {
+    padding: 14px 16px;
+  }
+
+  .card {
+    padding: 16px 14px;
+  }
+
+  .testRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .folders li {
+    grid-template-columns: 90px minmax(0, 1fr) 64px;
+  }
+
+  .folderFiles {
+    display: none;
+  }
+
+  .toast {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+
+  .switchUi,
+  .switchUi::after {
+    transition: none;
+  }
+}

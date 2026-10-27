@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-60 -80 120 110" width="120" height="110">
+  <!-- กระทงใบตอง + กลีบบัว + เทียนจุด (ลอยบนเส้นน้ำระหว่างส่วนของหน้าแรก) -->
+  <defs>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4f9a57"/>
+      <stop offset="1" stop-color="#22612f"/>
+    </linearGradient>
+    <linearGradient id="petal" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#fdeaf2"/>
+      <stop offset="1" stop-color="#e8679f"/>
+    </linearGradient>
+    <radialGradient id="flame">
+      <stop offset="0" stop-color="#fff7cf"/>
+      <stop offset="0.45" stop-color="#ffc14a"/>
+      <stop offset="1" stop-color="#ff7a1a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow">
+      <stop offset="0" stop-color="#ffd27a" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#ffd27a" stop-opacity="0"/>
+    </radialGradient>
+    <path id="p" d="M0 0 C-8 -12 -7 -30 0 -38 C7 -30 8 -12 0 0 Z" fill="url(#petal)" stroke="#e7a9c4" stroke-width="0.5"/>
+  </defs>
+  <!-- แสงเทียน -->
+  <circle cx="0" cy="-52" r="34" fill="url(#glow)"/>
+  <!-- ระลอกน้ำใต้กระทง -->
+  <ellipse cx="0" cy="18" rx="52" ry="7" fill="#d8ae3f" opacity="0.18"/>
+  <ellipse cx="0" cy="16" rx="40" ry="5" fill="none" stroke="#d8ae3f" stroke-opacity="0.45" stroke-width="1.4"/>
+  <!-- ฐานใบตอง -->
+  <ellipse cx="0" cy="12" rx="40" ry="9" fill="#1d4f2a"/>
+  <path d="M-38 8 Q-40 -4 -26 -8 L26 -8 Q40 -4 38 8 Z" fill="url(#leaf)"/>
+  <path d="M-31 -6 l7 -14 l7 14 M-17 -6 l7 -15 l7 15 M-3 -6 l7 -15 l7 15 M11 -6 l7 -14 l7 14" fill="#2f7a3e" stroke="#174223" stroke-width="1"/>
+  <!-- กลีบบัว -->
+  <use href="#p" transform="translate(0 -8) rotate(-58) scale(0.85)"/>
+  <use href="#p" transform="translate(0 -8) rotate(58) scale(0.85)"/>
+  <use href="#p" transform="translate(0 -8) rotate(-30)"/>
+  <use href="#p" transform="translate(0 -8) rotate(30)"/>
+  <use href="#p" transform="translate(0 -8) scale(1.05)"/>
+  <!-- เทียนและธูป -->
+  <line x1="9" y1="-20" x2="15" y2="-50" stroke="#b07a3a" stroke-width="1.4"/>
+  <line x1="-9" y1="-20" x2="-14" y2="-48" stroke="#b07a3a" stroke-width="1.4"/>
+  <rect x="-3" y="-44" width="6" height="22" rx="2" fill="#fbf1d6"/>
+  <ellipse cx="0" cy="-52" rx="5" ry="9" fill="url(#flame)"/>
+</svg>

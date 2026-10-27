@@ -8,7 +8,7 @@
 .hero {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #0a1628 0%, #0f1d36 50%, #172c52 100%);
+  background: linear-gradient(135deg, var(--brand-navy-950) 0%, var(--brand-navy-900) 50%, var(--brand-navy-750) 100%);
 }
 
 .hero::before {
@@ -17,7 +17,7 @@
   inset: 0 0 auto 0;
   z-index: 2;
   height: 3px;
-  background: linear-gradient(90deg, #E8652B, #D8AE3F 45%, #F7E3A1 60%, #E8652B);
+  background: linear-gradient(90deg, var(--brand-orange-500), var(--brand-gold-400) 45%, var(--brand-gold-200) 60%, var(--brand-orange-500));
 }
 
 .hero::after {
@@ -28,7 +28,7 @@
   bottom: 12px;
   height: 3px;
   opacity: 0.35;
-  background: repeating-linear-gradient(90deg, #D8AE3F 0 34px, transparent 34px 60px);
+  background: repeating-linear-gradient(90deg, var(--brand-gold-400) 0 34px, transparent 34px 60px);
 }
 
 .heroGlow {
@@ -39,7 +39,7 @@
   height: 640px;
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(216, 174, 63, 0.22), transparent 64%);
+  background: radial-gradient(circle, rgb(var(--brand-gold-400-rgb) / 0.22), transparent 64%);
 }
 
 .heroInner {
@@ -65,12 +65,12 @@
   gap: 6px;
   margin-bottom: 12px;
   font-size: 13.5px;
-  color: rgba(232, 240, 252, 0.6);
+  color: rgb(var(--brand-on-navy-rgb) / 0.6);
 }
 
 .breadcrumb a {
   display: inline-flex;
-  color: #E3C169;
+  color: var(--brand-gold-300);
 }
 
 .breadcrumbActive {
@@ -90,7 +90,7 @@
   margin: 6px 0 0;
   font-size: 16px;
   line-height: 1.75;
-  color: rgba(232, 240, 252, 0.75);
+  color: rgb(var(--brand-on-navy-rgb) / 0.75);
 }
 
 /* ── ฉบับล่าสุด ── */
@@ -99,7 +99,7 @@
   margin-top: 24px;
   padding: 20px 22px 22px;
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(227, 193, 105, 0.3);
+  border: 1px solid rgb(var(--brand-gold-300-rgb) / 0.3);
   border-radius: 18px;
   backdrop-filter: blur(6px);
 }
@@ -109,8 +109,8 @@
   padding: 4px 12px;
   font-size: 13.5px;
   font-weight: 800;
-  color: #0f1d36;
-  background: linear-gradient(145deg, #F7E3A1, #D8AE3F);
+  color: var(--brand-navy-900);
+  background: linear-gradient(145deg, var(--brand-gold-200), var(--brand-gold-400));
   border-radius: 999px;
 }
 
@@ -128,7 +128,7 @@
   overflow: hidden;
   font-size: 15px;
   line-height: 1.7;
-  color: rgba(232, 240, 252, 0.75);
+  color: rgb(var(--brand-on-navy-rgb) / 0.75);
   line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -156,8 +156,8 @@
 
 .primaryBtn {
   color: #fff;
-  background: linear-gradient(145deg, #F0803F, #D4541A);
-  box-shadow: 0 12px 24px -12px rgba(232, 101, 43, 1);
+  background: linear-gradient(145deg, var(--brand-orange-450), var(--brand-orange-600));
+  box-shadow: 0 12px 24px -12px rgb(var(--brand-orange-500-rgb) / 1);
 }
 
 .primaryBtn:hover {
@@ -176,7 +176,7 @@
 }
 
 .ghostBtn svg {
-  color: #E3C169;
+  color: var(--brand-gold-300);
 }
 
 .heroChips {
@@ -201,7 +201,7 @@
 }
 
 .heroChip svg {
-  color: #E3C169;
+  color: var(--brand-gold-300);
 }
 
 /* หนังสือเล่มใหญ่ใน hero */
@@ -223,7 +223,7 @@
 
 .heroBook:focus-visible,
 .card:focus-visible {
-  outline: 3px solid rgba(232, 101, 43, 0.6);
+  outline: 3px solid rgb(var(--brand-orange-500-rgb) / 0.6);
   outline-offset: 6px;
 }
 
@@ -262,13 +262,13 @@
 .bookFront {
   overflow: hidden;
   container-type: inline-size;
-  background: linear-gradient(150deg, #22406f 0%, #13274a 55%, #0b172d 100%);
+  background: linear-gradient(150deg, var(--brand-navy-600) 0%, var(--brand-navy-850) 55%, var(--brand-navy-925) 100%);
   transform: translateZ(calc(var(--d) / 2));
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
 .bookBack {
-  background: #0b172d;
+  background: var(--brand-navy-925);
   transform: translateZ(calc(var(--d) / -2));
 }
 
@@ -329,7 +329,7 @@
   bottom: -22px;
   height: 30px;
   pointer-events: none;
-  background: radial-gradient(ellipse at center, rgba(15, 29, 54, 0.42), transparent 70%);
+  background: radial-gradient(ellipse at center, rgb(var(--brand-navy-900-rgb) / 0.42), transparent 70%);
   filter: blur(6px);
   transition: opacity 0.55s, transform 0.55s;
 }
@@ -353,7 +353,7 @@
   padding: 10cqw;
   text-align: center;
   color: #fff;
-  border-top: 2.4cqw solid #D8AE3F;
+  border-top: 2.4cqw solid var(--brand-gold-400);
 }
 
 .coverFallback::after {
@@ -364,13 +364,13 @@
   bottom: 9cqw;
   height: 1cqw;
   opacity: 0.6;
-  background: repeating-linear-gradient(90deg, #D8AE3F 0 7cqw, transparent 7cqw 12cqw);
+  background: repeating-linear-gradient(90deg, var(--brand-gold-400) 0 7cqw, transparent 7cqw 12cqw);
 }
 
 .coverFallbackLabel {
   font-size: 9cqw;
   font-weight: 700;
-  color: #E3C169;
+  color: var(--brand-gold-300);
 }
 
 .coverFallbackYear {
@@ -384,7 +384,7 @@
   margin-top: 4cqw;
   font-size: 6.4cqw;
   line-height: 1.5;
-  color: rgba(232, 240, 252, 0.75);
+  color: rgb(var(--brand-on-navy-rgb) / 0.75);
 }
 
 /* ═══════════════════════ ชั้นหนังสือ ═══════════════════════ */
@@ -411,11 +411,11 @@
   margin: 0;
   font-size: 22px;
   font-weight: 800;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 .sectionTitle svg {
-  color: #D4541A;
+  color: var(--brand-orange-600);
 }
 
 .sectionCount {
@@ -438,13 +438,13 @@
   background: #fff;
   border: 1px solid #e3e7ee;
   border-radius: 18px;
-  box-shadow: 0 16px 36px -28px rgba(15, 29, 54, 0.45);
+  box-shadow: 0 16px 36px -28px rgb(var(--brand-navy-900-rgb) / 0.45);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .card:hover {
-  border-color: rgba(232, 101, 43, 0.45);
-  box-shadow: 0 24px 44px -28px rgba(15, 29, 54, 0.6);
+  border-color: rgb(var(--brand-orange-500-rgb) / 0.45);
+  box-shadow: 0 24px 44px -28px rgb(var(--brand-navy-900-rgb) / 0.6);
 }
 
 /* เว้นขวาเผื่อสันกระดาษที่ยื่นออกมา */
@@ -474,7 +474,7 @@
   font-size: 16.5px;
   font-weight: 800;
   line-height: 1.5;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   overflow-wrap: anywhere;
 }
 
@@ -498,7 +498,7 @@
   padding-top: 12px;
   font-size: 15px;
   font-weight: 800;
-  color: #D4541A;
+  color: var(--brand-orange-600);
 }
 
 .cardRead svg {
@@ -554,7 +554,7 @@
 .empty h2 {
   margin: 6px 0 0;
   font-size: 20px;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 .empty p {

@@ -129,7 +129,7 @@ function MonthlyChart({ data }: { data: Stats["monthly"] }) {
         })}
       </svg>
       {h && hover !== null && (
-        <div className={css.tooltip} style={{ left: `${((P.left + hover * slot + slot / 2) / W) * 100}%`, top: `${(y(h.accepted + h.rejected) / H) * 100}%` }}>
+        <div className={css.tooltip} style={{ left: `${Math.min(82, Math.max(18, ((P.left + hover * slot + slot / 2) / W) * 100))}%`, top: `${(y(h.accepted + h.rejected) / H) * 100}%` }}>
           <strong>{monthLabel(h.month)}</strong>
           <span><i className={css.keyAccept} /> ยอมรับ {fmt(h.accepted)}</span>
           <span><i className={css.keyReject} /> ปฏิเสธ {fmt(h.rejected)}</span>

@@ -189,6 +189,27 @@
   font-weight: 400;
 }
 
+.accountLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  transition: all 0.2s;
+}
+
+.accountLink:hover,
+.accountLinkActive {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+}
+
 .logoutBtn {
   display: flex;
   align-items: center;
@@ -215,6 +236,7 @@
 /* ── Main content ── */
 .main {
   flex: 1;
+  min-width: 0;
   margin-left: 260px;
   display: flex;
   flex-direction: column;
@@ -279,6 +301,10 @@
 
   .main {
     margin-left: 0;
+  }
+
+  .content {
+    padding: 16px;
   }
 
   .menuToggle {

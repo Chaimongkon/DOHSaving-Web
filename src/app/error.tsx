@@ -64,7 +64,7 @@ export default function Error({
                         padding: "0.625rem 1.5rem",
                         borderRadius: "8px",
                         border: "none",
-                        background: "#E8652B",
+                        background: "var(--brand-orange-500, #E8652B)",
                         color: "#fff",
                         fontWeight: 500,
                         fontSize: "0.95rem",

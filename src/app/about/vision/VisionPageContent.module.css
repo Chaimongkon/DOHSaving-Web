@@ -39,10 +39,10 @@
   padding: 40px 46px 58px;
   border-radius: 22px;
   background:
-    radial-gradient(circle at 88% 12%, rgba(216, 174, 63, 0.22), transparent 42%),
-    linear-gradient(160deg, #1c3157 0%, #0f1d36 58%, #0a1628 100%);
+    radial-gradient(circle at 88% 12%, rgb(var(--brand-gold-400-rgb) / 0.22), transparent 42%),
+    linear-gradient(160deg, var(--brand-navy-700) 0%, var(--brand-navy-900) 58%, var(--brand-navy-950) 100%);
   color: #ffffff;
-  box-shadow: 0 28px 56px -26px rgba(15, 29, 54, 0.7);
+  box-shadow: 0 28px 56px -26px rgb(var(--brand-navy-900-rgb) / 0.7);
 }
 
 /* ขอบในสีทองแบบป้ายทางหลวง */
@@ -50,7 +50,7 @@
   content: "";
   position: absolute;
   inset: 10px;
-  border: 1.5px solid rgba(227, 193, 105, 0.42);
+  border: 1.5px solid rgb(var(--brand-gold-300-rgb) / 0.42);
   border-radius: 15px;
   pointer-events: none;
 }
@@ -62,7 +62,7 @@
   font-family: Georgia, "Times New Roman", serif;
   font-size: 220px;
   line-height: 1;
-  color: rgba(227, 193, 105, 0.1);
+  color: rgb(var(--brand-gold-300-rgb) / 0.1);
   pointer-events: none;
   user-select: none;
 }
@@ -77,8 +77,8 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1.5px;
-  color: #0f1d36;
-  background: linear-gradient(135deg, #F7E3A1, #D8AE3F);
+  color: var(--brand-navy-900);
+  background: linear-gradient(135deg, var(--brand-gold-200), var(--brand-gold-400));
   border-radius: 999px;
 }
 
@@ -88,7 +88,7 @@
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 1px;
-  color: #E3C169;
+  color: var(--brand-gold-300);
 }
 
 .signText {
@@ -111,7 +111,7 @@
   border-radius: 3px;
   background: repeating-linear-gradient(
     90deg,
-    rgba(227, 193, 105, 0.75) 0 26px,
+    rgb(var(--brand-gold-300-rgb) / 0.75) 0 26px,
     transparent 26px 44px
   );
 }
@@ -138,16 +138,16 @@
      (ถ้าใช้ 999px แนวนอน โค้งจะไปกองที่มุม ดูเป็นแค่กล่องมุมมน) */
   border-radius: 50% 50% 16px 16px / 64px 64px 16px 16px;
   box-shadow:
-    0 1px 2px rgba(15, 29, 54, 0.04),
-    0 14px 28px -16px rgba(15, 29, 54, 0.2);
+    0 1px 2px rgb(var(--brand-navy-900-rgb) / 0.04),
+    0 14px 28px -16px rgb(var(--brand-navy-900-rgb) / 0.2);
   text-align: center;
 }
 
 .post:hover {
-  border-color: rgba(216, 174, 63, 0.65);
+  border-color: rgb(var(--brand-gold-400-rgb) / 0.65);
   box-shadow:
-    0 2px 4px rgba(15, 29, 54, 0.05),
-    0 22px 40px -16px rgba(15, 29, 54, 0.28);
+    0 2px 4px rgb(var(--brand-navy-900-rgb) / 0.05),
+    0 22px 40px -16px rgb(var(--brand-navy-900-rgb) / 0.28);
 }
 
 .revealed.post:hover {
@@ -161,8 +161,8 @@
   align-items: center;
   gap: 8px;
   padding: 38px 12px 20px;
-  background: linear-gradient(160deg, #1c3157, #0f1d36);
-  color: #E3C169;
+  background: linear-gradient(160deg, var(--brand-navy-700), var(--brand-navy-900));
+  color: var(--brand-gold-300);
 }
 
 /* แถบสะท้อนแสงใต้หัวหลักกิโล */
@@ -173,7 +173,7 @@
   right: 0;
   bottom: 0;
   height: 5px;
-  background: linear-gradient(90deg, #E8652B, #D8AE3F 55%, #F7E3A1);
+  background: linear-gradient(90deg, var(--brand-orange-500), var(--brand-gold-400) 55%, var(--brand-gold-200));
 }
 
 .postNum {
@@ -181,7 +181,7 @@
   font-weight: 800;
   letter-spacing: 2px;
   font-variant-numeric: tabular-nums;
-  color: rgba(247, 227, 161, 0.75);
+  color: rgb(var(--brand-gold-200-rgb) / 0.75);
 }
 
 .postText {
@@ -194,7 +194,7 @@
   font-size: 19px;
   line-height: 1.55;
   font-weight: 800;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 /* ── Print ───────────────────────────────────────────────── */
@@ -206,7 +206,7 @@
 
   .sign {
     background: none;
-    color: #0f1d36;
+    color: var(--brand-navy-900);
     border: 1.5px solid #c9a227;
     box-shadow: none;
     padding: 18px 20px;
@@ -220,7 +220,7 @@
   }
 
   .signText {
-    color: #0f1d36;
+    color: var(--brand-navy-900);
     font-size: 20px;
   }
 
@@ -231,7 +231,7 @@
 
   .postCap {
     background: none;
-    color: #8a6520;
+    color: var(--brand-gold-700);
     border-bottom: 1px solid #d1d5db;
   }
 }
@@ -292,7 +292,7 @@
     top: 0;
     width: 5px;
     height: auto;
-    background: linear-gradient(180deg, #E8652B, #D8AE3F 55%, #F7E3A1);
+    background: linear-gradient(180deg, var(--brand-orange-500), var(--brand-gold-400) 55%, var(--brand-gold-200));
   }
 
   .postText {

@@ -21,7 +21,7 @@
 .hero {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #0a1628 0%, #0f1d36 50%, #172c52 100%);
+  background: linear-gradient(135deg, var(--brand-navy-950) 0%, var(--brand-navy-900) 50%, var(--brand-navy-750) 100%);
 }
 
 .hero::before {
@@ -30,7 +30,7 @@
   inset: 0 0 auto 0;
   z-index: 2;
   height: 3px;
-  background: linear-gradient(90deg, #E8652B, #D8AE3F 45%, #F7E3A1 60%, #E8652B);
+  background: linear-gradient(90deg, var(--brand-orange-500), var(--brand-gold-400) 45%, var(--brand-gold-200) 60%, var(--brand-orange-500));
 }
 
 .hero::after {
@@ -41,7 +41,7 @@
   bottom: 12px;
   height: 3px;
   opacity: 0.35;
-  background: repeating-linear-gradient(90deg, #D8AE3F 0 34px, transparent 34px 60px);
+  background: repeating-linear-gradient(90deg, var(--brand-gold-400) 0 34px, transparent 34px 60px);
 }
 
 .heroGlowGold,
@@ -56,7 +56,7 @@
   right: 4%;
   width: 520px;
   height: 520px;
-  background: radial-gradient(circle, rgba(216, 174, 63, 0.22), transparent 64%);
+  background: radial-gradient(circle, rgb(var(--brand-gold-400-rgb) / 0.22), transparent 64%);
 }
 
 .heroGlowOrange {
@@ -64,7 +64,7 @@
   left: -140px;
   width: 520px;
   height: 520px;
-  background: radial-gradient(circle, rgba(232, 101, 43, 0.2), transparent 64%);
+  background: radial-gradient(circle, rgb(var(--brand-orange-500-rgb) / 0.2), transparent 64%);
 }
 
 .heroGrid {
@@ -103,14 +103,14 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1.5px;
-  color: #E3C169;
+  color: var(--brand-gold-300);
 }
 
 .eyebrowRule {
   width: 28px;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, #E8652B, #E3C169);
+  background: linear-gradient(90deg, var(--brand-orange-500), var(--brand-gold-300));
 }
 
 .crumb {
@@ -118,12 +118,12 @@
   align-items: center;
   gap: 6px;
   letter-spacing: 0.5px;
-  color: #E3C169;
+  color: var(--brand-gold-300);
   transition: color 0.18s;
 }
 
 .crumb:hover {
-  color: #F7E3A1;
+  color: var(--brand-gold-200);
   text-decoration: underline;
 }
 
@@ -144,7 +144,7 @@
 }
 
 .heroTitleAccent {
-  background: linear-gradient(90deg, #F7E3A1, #E3C169 45%, #F0803F);
+  background: linear-gradient(90deg, var(--brand-gold-200), var(--brand-gold-300) 45%, var(--brand-orange-450));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -155,7 +155,7 @@
   max-width: 58ch;
   font-size: 14.5px;
   line-height: 1.8;
-  color: rgba(232, 240, 252, 0.74);
+  color: rgb(var(--brand-on-navy-rgb) / 0.74);
 }
 
 /* ── ค้นหาใน hero ── */
@@ -193,8 +193,8 @@
 
 .heroSearchInput:focus {
   outline: none;
-  border-color: #E3C169;
-  box-shadow: 0 0 0 4px rgba(227, 193, 105, 0.3), 0 20px 40px -20px rgba(0, 0, 0, 0.7);
+  border-color: var(--brand-gold-300);
+  box-shadow: 0 0 0 4px rgb(var(--brand-gold-300-rgb) / 0.3), 0 20px 40px -20px rgba(0, 0, 0, 0.7);
 }
 
 .heroSearchClear {
@@ -238,15 +238,15 @@
 }
 
 .topicChip:hover {
-  background: rgba(227, 193, 105, 0.16);
-  border-color: rgba(227, 193, 105, 0.55);
+  background: rgb(var(--brand-gold-300-rgb) / 0.16);
+  border-color: rgb(var(--brand-gold-300-rgb) / 0.55);
 }
 
 .topicChipActive,
 .topicChipActive:hover {
-  color: #0f1d36;
-  background: #E3C169;
-  border-color: #E3C169;
+  color: var(--brand-navy-900);
+  background: var(--brand-gold-300);
+  border-color: var(--brand-gold-300);
 }
 
 .threadTags {
@@ -262,7 +262,7 @@
   align-items: center;
   gap: 5px;
   font-size: 13px;
-  color: rgba(232, 240, 252, 0.66);
+  color: rgb(var(--brand-on-navy-rgb) / 0.66);
 }
 
 /* ═══════════════════════ Layout ═══════════════════════ */
@@ -333,13 +333,13 @@
 }
 
 .tabBtn:hover {
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 .tabActive,
 .tabActive:hover {
-  color: #0f1d36;
-  border-bottom-color: #E8652B;
+  color: var(--brand-navy-900);
+  border-bottom-color: var(--brand-orange-500);
 }
 
 .tabCount {
@@ -356,7 +356,7 @@
 
 .tabActive .tabCount {
   color: #fff;
-  background: #E8652B;
+  background: var(--brand-orange-500);
 }
 
 .listHead {
@@ -388,14 +388,14 @@
 }
 
 .sortBtn:hover {
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   background: #eef0f4;
 }
 
 .sortActive,
 .sortActive:hover {
   color: #fff;
-  background: #0f1d36;
+  background: var(--brand-navy-900);
 }
 
 .textBtn {
@@ -403,7 +403,7 @@
   font-family: inherit;
   font-size: inherit;
   font-weight: 700;
-  color: #D4541A;
+  color: var(--brand-orange-600);
   cursor: pointer;
   background: none;
   border: none;
@@ -432,23 +432,23 @@
   background: #fff;
   border: 1px solid #e3e7ee;
   border-radius: 16px;
-  box-shadow: 0 1px 2px rgba(15, 29, 54, 0.04), 0 10px 24px -18px rgba(15, 29, 54, 0.4);
+  box-shadow: 0 1px 2px rgb(var(--brand-navy-900-rgb) / 0.04), 0 10px 24px -18px rgb(var(--brand-navy-900-rgb) / 0.4);
   transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
 }
 
 .qa:hover {
-  border-color: rgba(232, 101, 43, 0.45);
-  box-shadow: 0 18px 32px -20px rgba(232, 101, 43, 0.55);
+  border-color: rgb(var(--brand-orange-500-rgb) / 0.45);
+  box-shadow: 0 18px 32px -20px rgb(var(--brand-orange-500-rgb) / 0.55);
   transform: translateY(-1px);
 }
 
 .qa:focus-visible {
-  outline: 3px solid rgba(232, 101, 43, 0.45);
+  outline: 3px solid rgb(var(--brand-orange-500-rgb) / 0.45);
   outline-offset: 2px;
 }
 
 .qaPinned {
-  border-color: rgba(216, 174, 63, 0.6);
+  border-color: rgb(var(--brand-gold-400-rgb) / 0.6);
   background: linear-gradient(170deg, #fffbef, #fff 45%);
 }
 
@@ -490,7 +490,7 @@
 
 .qaMarkQ {
   color: #fff;
-  background: linear-gradient(145deg, #1a3561, #0f1d36);
+  background: linear-gradient(145deg, #1a3561, var(--brand-navy-900));
 }
 
 .qaMarkStaff {
@@ -514,12 +514,12 @@
   font-size: 18.5px;
   font-weight: 800;
   line-height: 1.5;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   overflow-wrap: anywhere;
 }
 
 .qa:hover .qaQuestion {
-  color: #C24A15;
+  color: var(--brand-orange-700);
 }
 
 /* คำตอบเป็นกล่องคำพูด มีหางชี้ไปที่ป้าย A */
@@ -584,7 +584,7 @@
 
 .qaHelp {
   font-weight: 700;
-  color: #D4541A;
+  color: var(--brand-orange-600);
 }
 
 .qaFoot {
@@ -607,7 +607,7 @@
 .qaMore {
   margin-left: auto;
   font-weight: 700;
-  color: #D4541A;
+  color: var(--brand-orange-600);
 }
 
 .rowArrow {
@@ -638,7 +638,7 @@
 .helpChip {
   padding: 7px 14px;
   font-weight: 600;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   background: #fff;
   border: 1px solid #dfe3ea;
   border-radius: 999px;
@@ -646,8 +646,8 @@
 }
 
 .helpChip:hover {
-  color: #C24A15;
-  border-color: rgba(232, 101, 43, 0.5);
+  color: var(--brand-orange-700);
+  border-color: rgb(var(--brand-orange-500-rgb) / 0.5);
 }
 
 /* ── Tags ── */
@@ -740,7 +740,7 @@
   margin: 6px 0 0;
   font-size: 17px;
   font-weight: 800;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 .empty p {
@@ -789,8 +789,8 @@
 .pageActive,
 .pageActive:hover:not(:disabled) {
   color: #fff;
-  background: #0f1d36;
-  border-color: #0f1d36;
+  background: var(--brand-navy-900);
+  border-color: var(--brand-navy-900);
 }
 
 .pageGap {
@@ -810,8 +810,8 @@
   color: #fff;
   cursor: pointer;
   border: none;
-  background: linear-gradient(145deg, #F0803F, #D4541A);
-  box-shadow: 0 12px 24px -12px rgba(232, 101, 43, 1);
+  background: linear-gradient(145deg, var(--brand-orange-450), var(--brand-orange-600));
+  box-shadow: 0 12px 24px -12px rgb(var(--brand-orange-500-rgb) / 1);
   transition: filter 0.18s, transform 0.18s;
 }
 
@@ -877,14 +877,14 @@
 }
 
 .iconBtn:hover {
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   background: #e8ebf0;
 }
 
 .inlineLink,
 .bodyLink {
   font-weight: 700;
-  color: #D4541A;
+  color: var(--brand-orange-600);
   text-decoration: underline;
   text-underline-offset: 2px;
   overflow-wrap: anywhere;
@@ -917,8 +917,8 @@
   cursor: pointer;
   border: none;
   border-radius: 999px;
-  background: linear-gradient(145deg, #F0803F, #D4541A);
-  box-shadow: 0 14px 28px -10px rgba(232, 101, 43, 0.9);
+  background: linear-gradient(145deg, var(--brand-orange-450), var(--brand-orange-600));
+  box-shadow: 0 14px 28px -10px rgb(var(--brand-orange-500-rgb) / 0.9);
 }
 
 /* ═══════════════════════ Aside ═══════════════════════ */
@@ -935,7 +935,7 @@
   background: #fff;
   border: 1px solid #e6e9ef;
   border-radius: 16px;
-  box-shadow: 0 16px 36px -28px rgba(15, 29, 54, 0.45);
+  box-shadow: 0 16px 36px -28px rgb(var(--brand-navy-900-rgb) / 0.45);
 }
 
 .asideTitle {
@@ -945,11 +945,11 @@
   margin: 0 0 14px;
   font-size: 16px;
   font-weight: 800;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 .asideTitle svg {
-  color: #D4541A;
+  color: var(--brand-orange-600);
 }
 
 /* ── กฎก่อนโพสต์ (ไอคอน + ข้อความ) ── */
@@ -972,7 +972,7 @@
 
 .ruleList strong {
   display: block;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 .ruleIcon {
@@ -981,7 +981,7 @@
   place-items: center;
   width: 32px;
   height: 32px;
-  color: #D4541A;
+  color: var(--brand-orange-600);
   background: #fff1e8;
   border-radius: 9px;
 }
@@ -1094,7 +1094,7 @@
   background: #fff;
   border: 1px solid #e6e9ef;
   border-radius: 16px;
-  box-shadow: 0 16px 36px -28px rgba(15, 29, 54, 0.45);
+  box-shadow: 0 16px 36px -28px rgb(var(--brand-navy-900-rgb) / 0.45);
 }
 
 .postHead {
@@ -1117,7 +1117,7 @@
 
 .postWho strong {
   font-size: 15px;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   overflow-wrap: anywhere;
 }
 
@@ -1150,7 +1150,7 @@
   margin: 0 0 12px;
   font-size: 18px;
   font-weight: 800;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 .repliesCount {
@@ -1159,7 +1159,7 @@
   font-size: 13px;
   text-align: center;
   color: #fff;
-  background: #0f1d36;
+  background: var(--brand-navy-900);
   border-radius: 999px;
 }
 
@@ -1218,7 +1218,7 @@
   gap: 4px 8px;
   margin-bottom: 6px;
   font-size: 14px;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 .staffTag {
@@ -1271,7 +1271,7 @@
   background: #fff;
   border: 1px solid #e6e9ef;
   border-radius: 16px;
-  box-shadow: 0 16px 36px -28px rgba(15, 29, 54, 0.45);
+  box-shadow: 0 16px 36px -28px rgb(var(--brand-navy-900-rgb) / 0.45);
 }
 
 .composer {
@@ -1289,11 +1289,11 @@
   margin: 0;
   font-size: 17px;
   font-weight: 800;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 .composerTitle svg {
-  color: #D4541A;
+  color: var(--brand-orange-600);
 }
 
 .composerRow {
@@ -1380,8 +1380,8 @@
 .input:focus {
   outline: none;
   background: #fff;
-  border-color: #E8652B;
-  box-shadow: 0 0 0 4px rgba(232, 101, 43, 0.12);
+  border-color: var(--brand-orange-500);
+  box-shadow: 0 0 0 4px rgb(var(--brand-orange-500-rgb) / 0.12);
 }
 
 
@@ -1456,7 +1456,7 @@
   margin: 0;
   font-size: 17px;
   font-weight: 800;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 .stepNum {
@@ -1467,7 +1467,7 @@
   font-size: 14px;
   color: #fff;
   border-radius: 8px;
-  background: linear-gradient(145deg, #F0803F, #D4541A);
+  background: linear-gradient(145deg, var(--brand-orange-450), var(--brand-orange-600));
 }
 
 /* ช่องหัวข้อที่มีป้าย Q ติดอยู่ — ภาษาภาพเดียวกับการ์ดบนกระดาน */
@@ -1488,8 +1488,8 @@
 
 .qInput:focus-within {
   background: #fff;
-  border-color: #E8652B;
-  box-shadow: 0 0 0 4px rgba(232, 101, 43, 0.12);
+  border-color: var(--brand-orange-500);
+  box-shadow: 0 0 0 4px rgb(var(--brand-orange-500-rgb) / 0.12);
 }
 
 .qInputField {
@@ -1499,7 +1499,7 @@
   font-family: inherit;
   font-size: 17px;
   font-weight: 700;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   background: transparent;
   border: none;
 }
@@ -1571,7 +1571,7 @@
 }
 
 .toggle input:checked + .toggleTrack {
-  background: #0f1d36;
+  background: var(--brand-navy-900);
 }
 
 .toggle input:checked + .toggleTrack .toggleThumb {
@@ -1579,7 +1579,7 @@
 }
 
 .toggle input:focus-visible + .toggleTrack {
-  outline: 3px solid rgba(232, 101, 43, 0.4);
+  outline: 3px solid rgb(var(--brand-orange-500-rgb) / 0.4);
   outline-offset: 2px;
 }
 
@@ -1596,7 +1596,7 @@
   align-items: center;
   gap: 6px;
   font-size: 14.5px;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 /* ── คำถามที่คล้ายกัน ── */
@@ -1675,7 +1675,7 @@
   font-size: 14px;
   font-weight: 700;
   color: #fff;
-  background: #0f1d36;
+  background: var(--brand-navy-900);
   border-radius: 999px;
   box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5);
   opacity: 0;
@@ -1898,7 +1898,7 @@
   font-family: inherit;
   font-size: 14px;
   line-height: 1.5;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   vertical-align: middle;
   cursor: pointer;
   background: #fff7ed;
@@ -1913,7 +1913,7 @@
 }
 
 .phoneBtn svg {
-  color: #D4541A;
+  color: var(--brand-orange-600);
 }
 
 .phoneMasked {
@@ -1927,7 +1927,7 @@
   font-size: 12.5px;
   font-weight: 700;
   color: #fff;
-  background: #E8652B;
+  background: var(--brand-orange-500);
   border-radius: 999px;
 }
 
@@ -1966,7 +1966,7 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(10, 22, 40, 0.55);
+  background: rgb(var(--brand-navy-950-rgb) / 0.55);
   backdrop-filter: blur(4px);
 }
 
@@ -1988,7 +1988,7 @@
   width: 48px;
   height: 48px;
   margin-bottom: 12px;
-  color: #D4541A;
+  color: var(--brand-orange-600);
   background: #fff1e8;
   border-radius: 14px;
 }
@@ -2003,7 +2003,7 @@
   font-size: 19px;
   font-weight: 800;
   line-height: 1.45;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 .dialogText {
@@ -2033,7 +2033,7 @@
 .dialogFound code {
   font-family: inherit;
   font-weight: 800;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   font-variant-numeric: tabular-nums;
 }
 
@@ -2057,7 +2057,7 @@
 .dialogPoints svg {
   flex-shrink: 0;
   margin-top: 4px;
-  color: #D4541A;
+  color: var(--brand-orange-600);
 }
 
 .dialogActions {
@@ -2091,11 +2091,11 @@
   margin: 0;
   font-size: 17px;
   font-weight: 800;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 .mineTitle svg {
-  color: #D4541A;
+  color: var(--brand-orange-600);
 }
 
 .mineNewAll {
@@ -2137,7 +2137,7 @@
 }
 
 .mineLink:hover .mineQ {
-  color: #C24A15;
+  color: var(--brand-orange-700);
 }
 
 .mineText {
@@ -2152,7 +2152,7 @@
   overflow: hidden;
   font-size: 16px;
   font-weight: 700;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -2209,7 +2209,7 @@
   font-family: inherit;
   font-size: 14px;
   font-weight: 700;
-  color: #D4541A;
+  color: var(--brand-orange-600);
   cursor: pointer;
   background: none;
   border: none;

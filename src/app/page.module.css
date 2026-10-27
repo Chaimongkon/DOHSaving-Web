@@ -62,17 +62,17 @@
   left: 0;
   width: 3px;
   border-radius: 0 3px 3px 0;
-  background: var(--accent, #E8652B);
+  background: var(--accent, var(--brand-orange-500));
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-8px);
-  border-color: var(--accent, #E8652B);
+  border-color: var(--accent, var(--brand-orange-500));
   box-shadow:
     0 12px 30px rgba(0,0,0,0.08),
-    0 0 0 1px var(--accent, #E8652B);
+    0 0 0 1px var(--accent, var(--brand-orange-500));
 }
 
 .card:hover::before {
@@ -117,7 +117,7 @@
 }
 
 .card:hover .cardTitle {
-  color: var(--accent, #E8652B);
+  color: var(--accent, var(--brand-orange-500));
 }
 
 .cardDesc {
@@ -135,7 +135,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--accent, #E8652B);
+  background: var(--accent, var(--brand-orange-500));
   margin-top: auto;
   opacity: 0;
   transform: translateY(4px);

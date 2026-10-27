@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 18" width="240" height="18">
+  <!-- เส้นระลอกน้ำสีทอง ใช้เรียงซ้ำแนวนอนเป็นรอยต่อระหว่างส่วนของหน้าแรก -->
+  <path d="M0 9 Q30 2 60 9 T120 9 T180 9 T240 9" fill="none" stroke="#d8ae3f" stroke-opacity="0.55" stroke-width="1.6"/>
+  <path d="M0 13 Q30 7 60 13 T120 13 T180 13 T240 13" fill="none" stroke="#d8ae3f" stroke-opacity="0.25" stroke-width="1.2"/>
+</svg>

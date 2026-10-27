@@ -45,6 +45,8 @@ interface Miss {
   pageLabel: string;
   count: number;
   last: string;
+  /** หน้าแบบฟอร์ม/ถาม-ตอบ: ระบบค้นหาปัจจุบันเจอรายการสำหรับคำนี้แล้ว */
+  nowFound: { count: number; exact: boolean; titles: string[] } | null;
 }
 
 interface Payload {
@@ -271,6 +273,7 @@ export default function SearchInsightsPage() {
             <p className={css.hint}>
               คำที่ถูกค้นบ่อยคือสิ่งที่สมาชิกต้องการแต่หาไม่เจอ — เพิ่มคำนั้นในชื่อหรือคำอธิบายของแบบฟอร์ม/เอกสาร
               หรือเพิ่มเอกสารที่ขาด แล้วกด “จัดการแล้ว” เพื่อเอาออกจากรายการ (ตัวเลขยาว ๆ เช่นเลขสมาชิก ถูกปิดเป็น ••• ก่อนเก็บ)
+              · หน้าแบบฟอร์มและถาม-ตอบค้นหาแบบยอมคำผิดและคำความหมายเดียวกันแล้ว คำที่ขึ้น “ตอนนี้ค้นเจอแล้ว” ตรวจแล้วกด “จัดการแล้ว” ได้เลย
             </p>
 
             {misses.length === 0 ? (
@@ -303,6 +306,12 @@ export default function SearchInsightsPage() {
                                 </a>
                               ) : (
                                 <span className={css.term}>{m.term}</span>
+                              )}
+                              {m.nowFound && (
+                                <span className={css.foundNow} title={m.nowFound.titles.join("\n")}>
+                                  <Check size={12} /> ตอนนี้ค้นเจอแล้ว: {m.nowFound.titles[0]}
+                                  {m.nowFound.count > 1 ? ` และอีก ${fmt(m.nowFound.count - 1)}` : ""}
+                                </span>
                               )}
                             </td>
                             <td className={css.hideSm}><span className={css.pageTag}>{m.pageLabel}</span></td>

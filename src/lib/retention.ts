@@ -10,6 +10,8 @@ import { purgeSiteEvents } from "@/lib/siteEvents";
 export { RETENTION_YEARS };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+/** ผลการลบครั้งล่าสุด — แสดงในหน้าตั้งค่าระบบ (/admin/settings) */
+export const RETENTION_LAST_RUN_KEY = "retention_last_run";
 let lastRun = 0;
 let running = false;
 
@@ -30,6 +32,12 @@ export async function purgeExpiredData(): Promise<void> {
     if (visits.count || consents.count || events) {
       console.info(`[retention] ลบข้อมูลเกิน ${RETENTION_YEARS} ปี: visit_logs ${visits.count}, cookie_consents ${consents.count}, site_events ${events}`);
     }
+    const value = JSON.stringify({ at: new Date(now).toISOString(), visits: visits.count, consents: consents.count, events });
+    await prisma.siteSetting.upsert({
+      where: { key: RETENTION_LAST_RUN_KEY },
+      update: { value },
+      create: { key: RETENTION_LAST_RUN_KEY, value, remark: "ผลการลบข้อมูลที่เกินระยะเวลาเก็บครั้งล่าสุด" },
+    });
   } catch (error) {
     lastRun = 0; // ล้มเหลว → ลองใหม่ครั้งหน้า
     console.error("[retention] purge failed:", error);

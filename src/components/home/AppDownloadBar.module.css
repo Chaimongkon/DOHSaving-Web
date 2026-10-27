@@ -1,7 +1,7 @@
 .bar {
-  background: linear-gradient(90deg, #0f1d36 0%, #1a2d4a 50%, #0f1d36 100%);
+  background: linear-gradient(90deg, var(--brand-navy-900) 0%, #1a2d4a 50%, var(--brand-navy-900) 100%);
   padding: 0 32px;
-  border-top: 3px solid #E8652B;
+  border-top: 3px solid var(--brand-orange-500);
 }
 
 .inner {
@@ -37,7 +37,7 @@
 }
 
 .highlight {
-  color: #E8652B;
+  color: var(--brand-orange-500);
   font-weight: 700;
 }
 
@@ -84,7 +84,7 @@
   align-items: center;
   gap: 6px;
   padding: 8px 20px;
-  background: #E8652B;
+  background: var(--brand-orange-500);
   color: #ffffff;
   font-size: 13px;
   font-weight: 600;
@@ -96,10 +96,10 @@
 }
 
 .cta:hover {
-  background: #d45a24;
+  background: var(--brand-orange-550);
   color: #ffffff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(232, 101, 43, 0.35);
+  box-shadow: 0 4px 12px rgb(var(--brand-orange-500-rgb) / 0.35);
 }
 
 @media (max-width: 576px) {

@@ -5,7 +5,15 @@ import { authenticateRequest, type JwtPayload } from "@/lib/auth";
 export interface AuthenticatedAdminUser extends JwtPayload {
   isActive: boolean;
   menuPermissions: string[];
+  mustChangePassword: boolean;
 }
+
+/** ยังใช้รหัสผ่านชั่วคราวอยู่ — ใช้ API หลังบ้านไม่ได้จนกว่าจะเปลี่ยนรหัสผ่าน (/admin/account) */
+const mustChangePasswordResponse = () =>
+  NextResponse.json(
+    { error: "กรุณาเปลี่ยนรหัสผ่านชั่วคราวก่อนใช้งาน", code: "MUST_CHANGE_PASSWORD" },
+    { status: 403 }
+  );
 
 const ADMIN_ONLY = "__admin_only__";
 const ANY_PERMISSION = "__any_permission__";
@@ -76,6 +84,7 @@ async function getAuthenticatedAdminUser(
       userRole: true,
       isActive: true,
       menuPermissions: true,
+      mustChangePassword: true,
     },
   });
 
@@ -90,6 +99,7 @@ async function getAuthenticatedAdminUser(
     userRole: user.userRole || "viewer",
     isActive: user.isActive,
     menuPermissions: normalizeMenuPermissions(user.menuPermissions),
+    mustChangePassword: user.mustChangePassword,
   };
 }
 
@@ -124,6 +134,8 @@ export async function requireAdmin(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  if (user.mustChangePassword) return mustChangePasswordResponse();
+
   if (user.userRole !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
@@ -139,6 +151,8 @@ export async function requirePermission(
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  if (user.mustChangePassword) return mustChangePasswordResponse();
 
   if (!hasPermission(user, permission)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });

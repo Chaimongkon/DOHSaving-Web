@@ -11,7 +11,7 @@
 .heading {
   font-size: 28px;
   font-weight: 700;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   margin: 0 0 8px;
 }
 
@@ -53,9 +53,9 @@
 }
 
 .filterActive {
-  background: #E8652B;
+  background: var(--brand-orange-500);
   color: #ffffff;
-  border-color: #E8652B;
+  border-color: var(--brand-orange-500);
 }
 
 .searchWrap {
@@ -84,7 +84,7 @@
 }
 
 .searchInput:focus {
-  border-color: #E8652B;
+  border-color: var(--brand-orange-500);
 }
 
 /* Result count */
@@ -160,7 +160,7 @@
 }
 
 .card:hover {
-  border-color: #E8652B;
+  border-color: var(--brand-orange-500);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   transform: translateY(-3px);
 }
@@ -287,8 +287,8 @@
 }
 
 .pageBtn:hover:not(:disabled) {
-  border-color: #E8652B;
-  color: #E8652B;
+  border-color: var(--brand-orange-500);
+  color: var(--brand-orange-500);
 }
 
 .pageBtn:disabled {
@@ -319,14 +319,14 @@
 }
 
 .pageNum:hover {
-  border-color: #E8652B;
-  color: #E8652B;
+  border-color: var(--brand-orange-500);
+  color: var(--brand-orange-500);
 }
 
 .pageActive {
-  background: #E8652B;
+  background: var(--brand-orange-500);
   color: #ffffff;
-  border-color: #E8652B;
+  border-color: var(--brand-orange-500);
 }
 
 .pageDots {

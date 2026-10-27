@@ -2,38 +2,9 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import {
-  DashboardOutlined,
-  PictureOutlined,
-  NotificationOutlined,
-  FileTextOutlined,
-  VideoCameraOutlined,
-  CameraOutlined,
-  DollarOutlined,
-  CalculatorOutlined,
-  TeamOutlined,
-  SafetyCertificateOutlined,
-  SettingOutlined,
-  LogoutOutlined,
-  MenuOutlined,
-  HistoryOutlined,
-  EyeOutlined,
-  AuditOutlined,
-  SolutionOutlined,
-  BankOutlined,
-  CrownOutlined,
-  SearchOutlined,
-  MessageOutlined,
-  PhoneOutlined,
-  CustomerServiceOutlined,
-  FormOutlined,
-  BookOutlined,
-  GiftOutlined,
-  DownloadOutlined,
-  RightOutlined,
-  HeartOutlined,
-} from "@ant-design/icons";
+import { LogoutOutlined, MenuOutlined, RightOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import { navItems } from "./adminNav";
 import { usePathname, useRouter } from "next/navigation";
 import css from "./layout.module.css";
 
@@ -42,92 +13,11 @@ interface UserData {
   userRole: string;
   avatarPath: string | null;
   menuPermissions: string[] | null;
+  mustChangePassword?: boolean;
 }
 
-const navItems = [
-  { label: "แดชบอร์ด", href: "/admin", icon: <DashboardOutlined /> },
-  {
-    group: "จัดการเนื้อหา",
-    items: [
-      { label: "ข่าวประชาสัมพันธ์", href: "/admin/news", icon: <FileTextOutlined /> },
-      { label: "วิดีโอ", href: "/admin/videos", icon: <VideoCameraOutlined /> },
-      { label: "อัลบั้มภาพ", href: "/admin/photo-albums", icon: <CameraOutlined /> },
-      { label: "สื่อสำหรับสมาชิก", href: "/admin/member-media", icon: <BookOutlined /> },
-    ],
-  },
-  {
-    group: "จัดการหน้าเว็บ",
-    items: [
-      { label: "สไลด์หน้าแรก", href: "/admin/slides", icon: <PictureOutlined /> },
-      { label: "ป๊อปอัพแจ้งเตือน", href: "/admin/notifications", icon: <NotificationOutlined /> },
-      { label: "หน้าบริการ", href: "/admin/service-pages", icon: <PictureOutlined /> },
-      { label: "วิธีใช้งาน App", href: "/admin/app-guide", icon: <FileTextOutlined /> },
-      { label: "ดาวน์โหลดแอป", href: "/admin/download-app", icon: <DownloadOutlined /> },
-    ],
-  },
-  {
-    group: "หน้าเพจ",
-    items: [
-      { label: "ประวัติสหกรณ์", href: "/admin/pages/history", icon: <HistoryOutlined /> },
-      { label: "สารจากประธานฯ", href: "/admin/chairman-message", icon: <CrownOutlined /> },
-      { label: "วิสัยทัศน์และพันธกิจ", href: "/admin/vision-data", icon: <EyeOutlined /> },
-      { label: "นโยบายสหกรณ์", href: "/admin/policy-items", icon: <SafetyCertificateOutlined /> },
-      { label: "จรรยาบรรณคณะกรรมการ", href: "/admin/ethics-board-items", icon: <AuditOutlined /> },
-      { label: "จรรยาบรรณเจ้าหน้าที่", href: "/admin/ethics-staff-items", icon: <SolutionOutlined /> },
-      { label: "คณะกรรมการ", href: "/admin/board-members", icon: <TeamOutlined /> },
-      { label: "ผู้ตรวจสอบ", href: "/admin/auditors", icon: <SearchOutlined /> },
-      { label: "บุคลากร/ฝ่ายต่างๆ", href: "/admin/department-staff", icon: <TeamOutlined /> },
-      { label: "โครงสร้างองค์กร", href: "/admin/pages/organization/images", icon: <BankOutlined /> },
-    ],
-  },
-  {
-    group: "การเงิน",
-    items: [
-      { label: "อัตราดอกเบี้ย", href: "/admin/interest-rates", icon: <DollarOutlined /> },
-      { label: "ประเภทเงินกู้", href: "/admin/loan-types", icon: <CalculatorOutlined /> },
-      { label: "สินทรัพย์และหนี้สิน", href: "/admin/financial-summary", icon: <BankOutlined /> },
-    ],
-  },
-  {
-    group: "เอกสาร",
-    items: [
-      { label: "ข้อบังคับ ระเบียบ ประกาศ", href: "/admin/regulations", icon: <AuditOutlined /> },
-      { label: "แบบฟอร์มต่างๆ", href: "/admin/forms", icon: <FormOutlined /> },
-      { label: "รายงานประจำปี", href: "/admin/annual-reports", icon: <BookOutlined /> },
-      { label: "เอกสารประกอบการประชุม", href: "/admin/meeting-documents", icon: <FileTextOutlined /> },
-    ],
-  },
-  {
-    group: "สื่อสาร",
-    items: [
-      { label: "กระดานถาม-ตอบ", href: "/admin/qna", icon: <MessageOutlined /> },
-      { label: "ร้องเรียน/เสนอแนะ", href: "/admin/complaints", icon: <FileTextOutlined /> },
-    ],
-  },
-  {
-    group: "ข้อมูลติดต่อ",
-    items: [
-      { label: "ข้อมูลสหกรณ์", href: "/admin/contact-info", icon: <PhoneOutlined /> },
-      { label: "ฝ่ายงาน/เบอร์โทร", href: "/admin/departments", icon: <CustomerServiceOutlined /> },
-      { label: "LINE ฝ่ายต่างๆ", href: "/admin/line-contacts", icon: <MessageOutlined /> },
-      { label: "บัญชีธนาคาร", href: "/admin/bank-accounts", icon: <BankOutlined /> },
-    ],
-  },
-  {
-    group: "ระบบ",
-    items: [
-      { label: "ยอดนิยมเดือนนี้", href: "/admin/page-analytics", icon: <EyeOutlined /> },
-      { label: "สมาชิกค้นหา/ดาวน์โหลด", href: "/admin/search-insights", icon: <SearchOutlined /> },
-      { label: "รูปเมนูหลัก", href: "/admin/mega-images", icon: <PictureOutlined /> },
-      { label: "Festival Theme", href: "/admin/festivals", icon: <GiftOutlined /> },
-      { label: "โหมดไว้อาลัย", href: "/admin/mourning", icon: <HeartOutlined /> },
-      { label: "ผู้ใช้งาน", href: "/admin/users", icon: <TeamOutlined /> },
-      { label: "Cookie Consent", href: "/admin/cookie-consent", icon: <SafetyCertificateOutlined /> },
-      { label: "ตั้งค่าแสดงชื่อ URL", href: "/admin/url-mappings", icon: <SettingOutlined /> },
-      { label: "ตั้งค่า", href: "/admin/settings", icon: <SettingOutlined /> },
-    ],
-  },
-];
+/** หน้าที่ใช้ได้ระหว่างยังใช้รหัสผ่านชั่วคราว */
+const ACCOUNT_PATH = "/admin/account";
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -136,6 +26,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const [user, setUser] = useState<UserData | null>(null);
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
   const isLoginPage = pathname === "/admin/login";
+  const [meVersion, setMeVersion] = useState(0);
 
   useEffect(() => {
     if (isLoginPage) return;
@@ -148,7 +39,20 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       .catch(() => {
         // ไม่ redirect เพราะ middleware จะจัดการ
       });
-  }, [isLoginPage]);
+  }, [isLoginPage, meVersion]);
+
+  // เปลี่ยนรหัสผ่านสำเร็จ (หน้าบัญชีของฉัน) → โหลดข้อมูลผู้ใช้/เมนูใหม่
+  useEffect(() => {
+    const reload = () => setMeVersion((n) => n + 1);
+    window.addEventListener("admin:password-changed", reload);
+    return () => window.removeEventListener("admin:password-changed", reload);
+  }, []);
+
+  // ยังใช้รหัสผ่านชั่วคราว → ต้องตั้งรหัสใหม่ก่อน (API หลังบ้านก็ปฏิเสธจนกว่าจะเปลี่ยน)
+  const mustChange = !!user?.mustChangePassword;
+  useEffect(() => {
+    if (mustChange && pathname !== ACCOUNT_PATH) router.replace(ACCOUNT_PATH);
+  }, [mustChange, pathname, router]);
 
   const isActive = (href: string) => {
     if (href === "/admin") return pathname === "/admin";
@@ -182,6 +86,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
   // กรองเมนูตามสิทธิ์ — admin เห็นทั้งหมด
   const filteredNavItems = useMemo(() => {
+    if (user?.mustChangePassword) return [];
     if (!user || user.userRole === "admin") return navItems;
     const allowed = new Set(user.menuPermissions || []);
     return navItems
@@ -289,6 +194,13 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
               <span className={css.userRole}>{user?.userRole || "admin"}</span>
             </p>
           </div>
+          <Link
+            href={ACCOUNT_PATH}
+            className={`${css.accountLink} ${pathname === ACCOUNT_PATH ? css.accountLinkActive : ""}`}
+            onClick={() => setSidebarOpen(false)}
+          >
+            <UserOutlined /> บัญชีของฉัน / เปลี่ยนรหัสผ่าน
+          </Link>
           <button className={css.logoutBtn} onClick={handleLogout}>
             <LogoutOutlined /> ออกจากระบบ
           </button>

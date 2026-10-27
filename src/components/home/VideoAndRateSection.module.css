@@ -44,7 +44,7 @@
 }
 
 .viewAll {
-  color: #E8652B;
+  color: var(--brand-orange-500);
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
@@ -55,7 +55,7 @@
 }
 
 .viewAll:hover {
-  color: #d45a24;
+  color: var(--brand-orange-550);
   gap: 9px;
 }
 
@@ -258,7 +258,7 @@
 }
 
 .thumbItem:hover .thumbTitle {
-  color: #E8652B;
+  color: var(--brand-orange-500);
 }
 
 /* ── Rate Tables (right side) ── */
@@ -286,11 +286,11 @@
 }
 
 .rateHeaderDeposit {
-  background: linear-gradient(135deg, #0f1d36, #1a3a5c);
+  background: linear-gradient(135deg, var(--brand-navy-900), #1a3a5c);
 }
 
 .rateHeaderLoan {
-  background: linear-gradient(135deg, #E8652B, #d45a24);
+  background: linear-gradient(135deg, var(--brand-orange-500), var(--brand-orange-550));
 }
 
 .rateBody {
@@ -321,7 +321,7 @@
 .rateValue strong {
   font-size: 18px;
   font-weight: 700;
-  color: #E8652B;
+  color: var(--brand-orange-500);
 }
 
 .rateValue small {
@@ -331,7 +331,7 @@
 }
 
 .rateViewAll {
-  color: #E8652B;
+  color: var(--brand-orange-500);
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
@@ -342,7 +342,7 @@
 }
 
 .rateViewAll:hover {
-  color: #d45a24;
+  color: var(--brand-orange-550);
   gap: 10px;
 }
 

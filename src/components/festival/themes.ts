@@ -1,5 +1,6 @@
 // Festival Theme Definitions — particle configs per themeKey
 import type { ISourceOptions } from "@tsparticles/engine";
+import { REAL_ART } from "./realArt.generated";
 
 export interface FestivalThemeConfig {
   label: string;
@@ -118,24 +119,75 @@ const christmasParticles = (intensity: number, colorOverride?: string | null): I
 });
 
 // ────── Loy Krathong: floating lanterns ──────
-const loyKrathongParticles = (intensity: number, colorOverride?: string | null): ISourceOptions => ({
+// ใช้ภาพโคมลอยจริงของชุดลอยกระทง (icon-2 จากฝ่ายประชาสัมพันธ์ · ถ้ายังไม่มีใช้ภาพวาด) — ลอยขึ้นช้า ๆ ตั้งตรง ไหวเบา ๆ
+const LANTERN_SRC = REAL_ART["loy-krathong"] ? "/festival/loy-krathong/icon-2.webp" : "/festival/loy-krathong/icon-3.svg";
+const loyKrathongParticles = (intensity: number): ISourceOptions => ({
   fullScreen: { enable: false },
   particles: {
-    number: { value: scale(intensity, 8, 35) },
-    shape: { type: "circle" },
-    color: { value: colorOverride || ["#ffab00", "#ff8f00", "#ffca28", "#ffe082"] },
+    number: { value: scale(intensity, 6, 24) },
+    shape: { type: "image", options: { image: { src: LANTERN_SRC, width: 256, height: 256 } } },
     opacity: {
-      value: { min: 0.3, max: 0.8 },
-      animation: { enable: true, speed: 0.3 },
+      value: { min: 0.55, max: 0.95 },
+      animation: { enable: true, speed: 0.25, sync: false },
     },
-    size: { value: { min: 6, max: 16 } },
+    // ใกล้ (ใหญ่) – ไกล (เล็ก) ให้เห็นความลึก
+    size: { value: { min: 7, max: 17 } },
     move: {
       enable: true,
       direction: "top",
-      speed: { min: 0.5, max: 1.5 },
+      speed: { min: 0.35, max: 1.1 },
       outModes: { default: "out" },
     },
-    wobble: { enable: true, distance: 25, speed: 3 },
+    wobble: { enable: true, distance: 14, speed: 2 },
+  },
+  detectRetina: true,
+});
+
+// ────── Halloween: bats ──────
+// ภาพค้างคาวของชุดฮาโลวีน (icon-2 จากฝ่ายประชาสัมพันธ์ · ถ้ายังไม่มีใช้ภาพวาด) — บินวกไปมาช้า ๆ ไม่มีทิศตายตัว
+const BAT_SRC = REAL_ART["halloween"] ? "/festival/halloween/icon-2.webp" : "/festival/halloween/icon-2.svg";
+const halloweenParticles = (intensity: number): ISourceOptions => ({
+  fullScreen: { enable: false },
+  particles: {
+    number: { value: scale(intensity, 4, 18) },
+    shape: { type: "image", options: { image: { src: BAT_SRC, width: 256, height: 170 } } },
+    opacity: { value: { min: 0.6, max: 0.95 } },
+    size: { value: { min: 7, max: 15 } },
+    move: {
+      enable: true,
+      direction: "none",
+      random: true,
+      speed: { min: 0.6, max: 1.6 },
+      outModes: { default: "out" },
+    },
+    wobble: { enable: true, distance: 18, speed: 6 },
+  },
+  detectRetina: true,
+});
+
+// ────── Gold sparkle (งานทางการ เช่น ประชุมใหญ่): ดาวทองเล็ก ๆ ระยิบระยับ ลอยช้า ๆ ──────
+const goldSparkleParticles = (intensity: number, colorOverride?: string | null): ISourceOptions => ({
+  fullScreen: { enable: false },
+  particles: {
+    number: { value: scale(intensity, 8, 40) },
+    shape: { type: "star", options: { star: { sides: 4, inset: 3 } } },
+    color: { value: colorOverride || ["#d8ae3f", "#f7e3a1", "#e8c76a"] },
+    opacity: {
+      value: { min: 0.15, max: 0.85 },
+      animation: { enable: true, speed: 0.8, sync: false },
+    },
+    size: {
+      value: { min: 2, max: 6 },
+      animation: { enable: true, speed: 2, sync: false },
+    },
+    move: {
+      enable: true,
+      direction: "top",
+      random: true,
+      speed: { min: 0.15, max: 0.5 },
+      outModes: { default: "out" },
+    },
+    rotate: { value: { min: 0, max: 90 }, animation: { enable: true, speed: 3 } },
   },
   detectRetina: true,
 });
@@ -235,6 +287,41 @@ export const FESTIVAL_THEMES: Record<string, FestivalThemeConfig> = {
     defaultBg: "#e8f5e9",
     particles: confettiParticles,
   },
+  "makha-bucha": {
+    label: "วันมาฆบูชา",
+    emoji: "🪷",
+    defaultColor: "#d9a93c",
+    defaultBg: "#111c44",
+    particles: goldSparkleParticles,
+  },
+  savings: {
+    label: "วันออม",
+    emoji: "🐷",
+    defaultColor: "#e0b44a",
+    defaultBg: "#123a66",
+    particles: confettiParticles,
+  },
+  halloween: {
+    label: "ฮาโลวีน",
+    emoji: "🎃",
+    defaultColor: "#f97316",
+    defaultBg: "#24134a",
+    particles: halloweenParticles,
+  },
+  agm: {
+    label: "ประชุมใหญ่สามัญประจำปี",
+    emoji: "🗳️",
+    defaultColor: "#d8ae3f",
+    defaultBg: "#0f1d36",
+    particles: goldSparkleParticles,
+  },
+  anniversary: {
+    label: "วันครบรอบสหกรณ์",
+    emoji: "🏅",
+    defaultColor: "#d8ae3f",
+    defaultBg: "#0f1d36",
+    particles: confettiParticles,
+  },
 };
 
 export const EFFECT_OPTIONS = [
@@ -245,13 +332,20 @@ export const EFFECT_OPTIONS = [
   { value: "confetti", label: "🎉 Confetti" },
   { value: "water-drops", label: "💧 หยดน้ำ" },
   { value: "lanterns", label: "🏮 โคมลอย" },
+  { value: "bats", label: "🦇 ค้างคาวบินวน" },
+  { value: "gold-sparkle", label: "✨ ประกายดาวทอง (ทางการ)" },
 ];
 
 export const THEME_KEY_OPTIONS = [
+  { value: "savings", label: "🐷 วันออม" },
+  { value: "halloween", label: "🎃 ฮาโลวีน" },
+  { value: "agm", label: "🗳️ ประชุมใหญ่สามัญประจำปี" },
+  { value: "anniversary", label: "🏅 วันครบรอบสหกรณ์" },
   { value: "songkran", label: "💧 สงกรานต์" },
   { value: "labor-day", label: "⚒️ วันแรงงาน" },
   { value: "coronation", label: "👑 วันฉัตรมงคล" },
   { value: "ploughing", label: "🌾 วันพืชมงคล" },
+  { value: "makha-bucha", label: "🪷 วันมาฆบูชา" },
   { value: "valentine", label: "💕 วาเลนไทน์" },
   { value: "newyear", label: "🎆 ปีใหม่" },
   { value: "christmas", label: "🎄 คริสต์มาส" },
@@ -267,9 +361,42 @@ export interface ThemePreset {
   bannerEmoji: string;
   colorPrimary: string;
   colorBg: string;
+  /** ค่าเริ่มต้นเพิ่มเติม — ใส่ให้เมื่อช่องนั้นยังว่าง/ยังเป็น "ไม่มี" */
+  effect?: string;
+  intensity?: number;
+  animation?: string;
+  bannerText?: string;
 }
 
 export const THEME_PRESETS: Record<string, ThemePreset> = {
+  agm: {
+    bannerBg: "#0f1d36",
+    bannerTextColor: "#f7e3a1",
+    bannerEmoji: "🗳️",
+    colorPrimary: "",
+    colorBg: "",
+  },
+  halloween: {
+    bannerBg: "#24134a",
+    bannerTextColor: "#fde3b8",
+    bannerEmoji: "🎃",
+    colorPrimary: "",
+    colorBg: "",
+  },
+  savings: {
+    bannerBg: "#123a66",
+    bannerTextColor: "#fef3c7",
+    bannerEmoji: "🐷",
+    colorPrimary: "",
+    colorBg: "",
+  },
+  anniversary: {
+    bannerBg: "#0f1d36",
+    bannerTextColor: "#f7e3a1",
+    bannerEmoji: "🏅",
+    colorPrimary: "",
+    colorBg: "",
+  },
   songkran: {
     bannerBg: "#0097a7",
     bannerTextColor: "#ffffff",
@@ -298,6 +425,13 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
     colorPrimary: "#43a047",
     colorBg: "#1b3a1b",
   },
+  "makha-bucha": {
+    bannerBg: "#111c44",
+    bannerTextColor: "#fde9b5",
+    bannerEmoji: "🪷",
+    colorPrimary: "",
+    colorBg: "",
+  },
   valentine: {
     bannerBg: "#c2185b",
     bannerTextColor: "#ffffff",
@@ -320,11 +454,15 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
     colorBg: "#1b3a20",
   },
   "loy-krathong": {
-    bannerBg: "#e65100",
-    bannerTextColor: "#ffffff",
-    bannerEmoji: "🏮",
-    colorPrimary: "#ff8f00",
-    colorBg: "#1a1a2e",
+    bannerBg: "#13274a",
+    bannerTextColor: "#fbe8b0",
+    bannerEmoji: "🪷",
+    // เว้นสีว่าง — ธีมนี้มีชุดตกแต่งทั้งเว็บที่จัดสีให้แล้ว
+    colorPrimary: "",
+    colorBg: "",
+    effect: "lanterns",
+    intensity: 25,
+    animation: "krathong-float",
   },
   confetti: {
     bannerBg: "#E8652B",
@@ -340,6 +478,11 @@ export const ANIMATION_OPTIONS = [
   { value: "santa-sleigh", label: "🎅 ซานต้าขี่กวาง" },
   { value: "cupid", label: "💘 กามเทพยิงธนู" },
   { value: "rocket", label: "🚀 จรวดพลุ" },
+  { value: "krathong-float", label: "🪷 กระทงลอยผ่าน" },
+  { value: "elephant-splash", label: "🐘 ช้างพ่นน้ำเดินผ่าน" },
+  { value: "balloons-up", label: "🎈 ลูกโป่งลอยขึ้น" },
+  { value: "piggy-walk", label: "🐷 กระปุกออมสินเดินผ่าน" },
+  { value: "ghost-float", label: "👻 ผีน้อยลอยผ่าน" },
 ];
 
 // Map effect string → themeKey for particle lookup
@@ -350,4 +493,6 @@ export const EFFECT_TO_THEME_KEY: Record<string, string> = {
   confetti: "confetti",
   "water-drops": "songkran",
   lanterns: "loy-krathong",
+  bats: "halloween",
+  "gold-sparkle": "agm",
 };

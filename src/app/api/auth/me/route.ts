@@ -22,6 +22,11 @@ export async function GET(req: NextRequest) {
         department: true,
         phone: true,
         menuPermissions: true,
+        mustChangePassword: true,
+        lastPasswordChange: true,
+        lastLoginAt: true,
+        loginCount: true,
+        createdAt: true,
       },
     });
 

@@ -28,6 +28,28 @@
   overflow-wrap: anywhere;
 }
 
+.foundNow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 3px;
+  padding: 1px 8px;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 700;
+  color: #15803d;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background: #e7f6ec;
+  border-radius: 999px;
+}
+
+.foundNow svg {
+  flex-shrink: 0;
+}
+
 .termLink {
   color: inherit;
   text-decoration: none;

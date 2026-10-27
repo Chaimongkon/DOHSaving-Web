@@ -4,6 +4,7 @@ import { getClientIp } from "@/lib/requestIp";
 import { consumeRateLimit } from "@/lib/rateLimit";
 import { quoteMatches, splitQuote } from "@/lib/qnaQuote";
 import { decodeEntities } from "@/lib/decodeEntities";
+import { createSmartSearch } from "@/lib/smartSearch";
 import { notifyNewQuestion } from "@/lib/telegram";
 import {
   BLOCKED_DATA_ERROR,
@@ -71,7 +72,6 @@ export async function GET(req: NextRequest) {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = { isActive: true };
-    if (search) where.OR = [{ title: { contains: search } }, { body: { contains: search } }];
     if (filter === "answered") where.replies = { some: { isActive: true } };
     if (filter === "unanswered") where.replies = { none: { isActive: true } };
 
@@ -80,12 +80,30 @@ export async function GET(req: NextRequest) {
         ? [{ isPinned: "desc" as const }, { views: "desc" as const }]
         : [{ isPinned: "desc" as const }, { createdAt: "desc" as const }];
 
-    const [questions, total, totalAll, totalAnswered] = await Promise.all([
-      prisma.qnaQuestion.findMany({
+    // ค้นหา: ค้นในหัวข้อ เนื้อหา และคำตอบของเจ้าหน้าที่ แบบยอมพิมพ์ไม่ตรง (ดู lib/smartSearch)
+    // กระทู้มีไม่มาก จึงดึงมาจัดอันดับในโค้ด แล้วแบ่งหน้าจากผลที่ได้
+    let pageIds: number[] | null = null;
+    let searchTotal = 0;
+    let approximate = false;
+    if (search) {
+      const candidates = await prisma.qnaQuestion.findMany({
         where,
         orderBy,
-        skip,
-        take: limit,
+        select: { id: true, title: true, body: true, replies: { where: { isActive: true, isAdmin: true }, select: { body: true } } },
+      });
+      const result = createSmartSearch(candidates, (q) =>
+        [q.title, q.body, ...q.replies.map((r) => r.body)].map(decodeEntities).join(" ")
+      )(search);
+      approximate = !result.exact && result.items.length > 0;
+      searchTotal = result.items.length;
+      pageIds = result.items.slice(skip, skip + limit).map((q) => q.id);
+    }
+
+    const [found, total, totalAll, totalAnswered] = await Promise.all([
+      prisma.qnaQuestion.findMany({
+        where: pageIds ? { id: { in: pageIds } } : where,
+        orderBy,
+        ...(pageIds ? {} : { skip, take: limit }),
         select: {
           id: true,
           authorName: true,
@@ -109,12 +127,14 @@ export async function GET(req: NextRequest) {
           },
         },
       }),
-      prisma.qnaQuestion.count({ where }),
+      pageIds ? searchTotal : prisma.qnaQuestion.count({ where }),
       prisma.qnaQuestion.count({ where: { isActive: true } }),
       prisma.qnaQuestion.count({
         where: { isActive: true, replies: { some: { isActive: true } } },
       }),
     ]);
+    // ผลค้นหา: เรียงตามความเกี่ยวข้อง (ลำดับจาก smartSearch) ไม่ใช่ลำดับของฐานข้อมูล
+    const questions = pageIds ? pageIds.map((id) => found.find((q) => q.id === id)).filter((q): q is (typeof found)[number] => !!q) : found;
 
     // คำตอบแรกของเจ้าหน้าที่ต่อกระทู้ — การ์ด "ถาม → ตอบ" แสดงคำตอบนี้ก่อนคำตอบสมาชิกเสมอ
     const staffReplies = await prisma.qnaReply.findMany({
@@ -168,6 +188,8 @@ export async function GET(req: NextRequest) {
       total,
       page,
       totalPages: Math.ceil(total / limit),
+      // ไม่มีกระทู้ที่ตรงกับคำค้นพอดี — แสดงกระทู้ที่ใกล้เคียงแทน
+      approximate,
       stats: {
         total: totalAll,
         answered: totalAnswered,

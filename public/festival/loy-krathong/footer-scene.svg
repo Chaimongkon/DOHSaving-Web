@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 460" preserveAspectRatio="xMidYMax slice">
+  <!-- ฉากส่วนท้ายเว็บ ธีมลอยกระทง: ท้องฟ้ายามค่ำ · พระจันทร์เต็มดวง · เงาวัด · แม่น้ำ · กระทง · ดอกบัว -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#081530"/>
+      <stop offset="0.65" stop-color="#132a57"/>
+      <stop offset="1" stop-color="#1d3a6e"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#112a5c"/>
+      <stop offset="1" stop-color="#040b1d"/>
+    </linearGradient>
+    <radialGradient id="moon" cx="0.42" cy="0.4" r="0.65">
+      <stop offset="0" stop-color="#fffbe8"/>
+      <stop offset="0.7" stop-color="#fbe7a6"/>
+      <stop offset="1" stop-color="#f1cf73"/>
+    </radialGradient>
+    <radialGradient id="moonGlow">
+      <stop offset="0" stop-color="#ffe9a8" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#ffe9a8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="flame">
+      <stop offset="0" stop-color="#fff6c8"/>
+      <stop offset="0.45" stop-color="#ffc24a"/>
+      <stop offset="1" stop-color="#ff7a1a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="candleGlow">
+      <stop offset="0" stop-color="#ffcf6b" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ffcf6b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="petal" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#fde6ef"/>
+      <stop offset="1" stop-color="#e8679f"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3f8a4b"/>
+      <stop offset="1" stop-color="#1f5a2e"/>
+    </linearGradient>
+    <linearGradient id="lantern" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd27a"/>
+      <stop offset="1" stop-color="#ff8a2a"/>
+    </linearGradient>
+
+    <!-- กลีบบัว (ฐานที่ 0,0 ชี้ขึ้น) -->
+    <path id="p" d="M0 0 C-11 -16 -9 -40 0 -50 C9 -40 11 -16 0 0 Z" fill="url(#petal)"/>
+    <!-- ดอกบัวบาน -->
+    <g id="lotus">
+      <use href="#p" transform="rotate(-62) scale(0.9)"/>
+      <use href="#p" transform="rotate(62) scale(0.9)"/>
+      <use href="#p" transform="rotate(-38)"/>
+      <use href="#p" transform="rotate(38)"/>
+      <use href="#p" transform="rotate(-16) scale(1.05)"/>
+      <use href="#p" transform="rotate(16) scale(1.05)"/>
+      <use href="#p" transform="scale(1.1)"/>
+      <ellipse cx="0" cy="-6" rx="7" ry="4" fill="#f6c94a"/>
+    </g>
+    <!-- กระทง: ใบตองพับ + กลีบบัว + เทียน -->
+    <g id="krathong">
+      <ellipse cx="0" cy="14" rx="46" ry="11" fill="#1d4f2a"/>
+      <path d="M-44 10 Q-46 -6 -30 -10 L30 -10 Q46 -6 44 10 Z" fill="url(#leaf)"/>
+      <path d="M-36 -8 l8 -16 l8 16 M-20 -8 l8 -18 l8 18 M-4 -8 l8 -18 l8 18 M12 -8 l8 -18 l8 18" fill="#2f7a3e" stroke="#174223" stroke-width="1.2"/>
+      <use href="#lotus" transform="translate(0 -12) scale(0.55)"/>
+      <rect x="-3" y="-52" width="6" height="22" rx="2" fill="#fbf1d6"/>
+      <circle cx="0" cy="-58" r="30" fill="url(#candleGlow)"/>
+      <ellipse cx="0" cy="-58" rx="5" ry="9" fill="url(#flame)"/>
+      <line x1="10" y1="-30" x2="16" y2="-62" stroke="#b07a3a" stroke-width="1.6"/>
+      <line x1="-10" y1="-30" x2="-15" y2="-60" stroke="#b07a3a" stroke-width="1.6"/>
+    </g>
+    <!-- โคมลอย -->
+    <g id="lamp">
+      <circle cx="0" cy="0" r="34" fill="url(#candleGlow)"/>
+      <path d="M-11 -16 L11 -16 L14 14 L-14 14 Z" fill="url(#lantern)"/>
+      <rect x="-14" y="12" width="28" height="3" fill="#c25a14"/>
+      <ellipse cx="0" cy="10" rx="5" ry="3" fill="#fff4c4"/>
+    </g>
+    <!-- กอบัว: ใบ + ดอก + ดอกตูม -->
+    <g id="cluster">
+      <ellipse cx="-40" cy="22" rx="62" ry="18" fill="url(#leaf)"/>
+      <ellipse cx="52" cy="30" rx="54" ry="15" fill="url(#leaf)"/>
+      <path d="M-40 22 L-4 18 L-40 10 Z" fill="#163f22"/>
+      <path d="M8 4 Q10 -40 4 -70" stroke="#2c6b38" stroke-width="5" fill="none"/>
+      <use href="#lotus" transform="translate(4 -70) scale(1.25)"/>
+      <path d="M-70 14 Q-74 -20 -66 -42" stroke="#2c6b38" stroke-width="4" fill="none"/>
+      <path d="M-66 -42 C-78 -56 -72 -78 -66 -86 C-60 -78 -54 -56 -66 -42 Z" fill="url(#petal)"/>
+    </g>
+  </defs>
+
+  <!-- ท้องฟ้าและดาว -->
+  <rect width="1600" height="460" fill="url(#sky)"/>
+  <g fill="#fff">
+    <circle cx="80" cy="40" r="1.4" opacity="0.8"/><circle cx="190" cy="92" r="1" opacity="0.6"/>
+    <circle cx="300" cy="30" r="1.6" opacity="0.7"/><circle cx="420" cy="120" r="1" opacity="0.5"/>
+    <circle cx="540" cy="58" r="1.3" opacity="0.8"/><circle cx="660" cy="22" r="1" opacity="0.6"/>
+    <circle cx="760" cy="100" r="1.5" opacity="0.7"/><circle cx="880" cy="46" r="1" opacity="0.5"/>
+    <circle cx="990" cy="130" r="1.2" opacity="0.6"/><circle cx="1090" cy="26" r="1.6" opacity="0.8"/>
+    <circle cx="1180" cy="190" r="1" opacity="0.5"/><circle cx="1470" cy="40" r="1.4" opacity="0.7"/>
+    <circle cx="1540" cy="150" r="1" opacity="0.5"/><circle cx="360" cy="190" r="1" opacity="0.4"/>
+    <circle cx="620" cy="170" r="1.2" opacity="0.5"/><circle cx="1010" cy="200" r="1" opacity="0.4"/>
+  </g>
+
+  <!-- พระจันทร์เต็มดวง -->
+  <circle cx="1335" cy="82" r="150" fill="url(#moonGlow)"/>
+  <circle cx="1335" cy="82" r="52" fill="url(#moon)"/>
+  <g fill="#e2c271" opacity="0.35">
+    <circle cx="1319" cy="70" r="8"/><circle cx="1351" cy="96" r="6"/><circle cx="1331" cy="104" r="4"/>
+  </g>
+
+  <!-- โคมลอยบนฟ้า -->
+  <use href="#lamp" transform="translate(470 120) scale(0.7)"/>
+  <use href="#lamp" transform="translate(610 70) scale(0.5)"/>
+  <use href="#lamp" transform="translate(860 150) scale(0.6)"/>
+  <use href="#lamp" transform="translate(1120 80) scale(0.45)"/>
+  <use href="#lamp" transform="translate(230 160) scale(0.4)"/>
+
+  <!-- เงาวัดและต้นไม้ริมฝั่ง -->
+  <g fill="#0a1733">
+    <path d="M900 300 L900 268 Q930 250 960 268 L960 300 Z"/>
+    <path d="M1000 300 L1000 255 Q1012 240 1018 222 L1022 168 L1026 222 Q1032 240 1044 255 L1044 300 Z"/>
+    <path d="M1060 300 L1060 232 Q1076 210 1084 182 L1090 110 L1096 182 Q1104 210 1120 232 L1120 300 Z"/>
+    <path d="M1136 300 L1136 250 Q1148 236 1153 218 L1157 160 L1161 218 Q1166 236 1178 250 L1178 300 Z"/>
+    <path d="M1196 300 L1196 262 L1230 240 L1264 262 L1264 300 Z"/>
+    <path d="M1430 300 L1430 252 Q1441 238 1446 220 L1450 172 L1454 220 Q1459 238 1470 252 L1470 300 Z"/>
+    <path d="M0 300 Q60 262 120 280 Q170 250 230 278 Q290 258 340 286 L340 300 Z"/>
+    <path d="M1490 300 Q1540 268 1600 276 L1600 300 Z"/>
+    <rect y="296" width="1600" height="8"/>
+  </g>
+
+  <!-- แม่น้ำ -->
+  <rect y="302" width="1600" height="158" fill="url(#water)"/>
+  <g fill="#ffe7a6">
+    <rect x="1285" y="314" width="100" height="3" rx="1.5" opacity="0.45"/>
+    <rect x="1299" y="330" width="72" height="3" rx="1.5" opacity="0.38"/>
+    <rect x="1277" y="348" width="116" height="3" rx="1.5" opacity="0.3"/>
+    <rect x="1307" y="368" width="56" height="3" rx="1.5" opacity="0.26"/>
+    <rect x="1291" y="390" width="88" height="2.5" rx="1.2" opacity="0.2"/>
+    <rect x="1315" y="414" width="40" height="2.5" rx="1.2" opacity="0.15"/>
+  </g>
+  <g fill="#9fb6e8" opacity="0.12">
+    <rect x="120" y="330" width="160" height="2" rx="1"/><rect x="640" y="352" width="200" height="2" rx="1"/>
+    <rect x="980" y="388" width="140" height="2" rx="1"/><rect x="420" y="410" width="180" height="2" rx="1"/>
+  </g>
+
+  <!-- กระทงลอยน้ำ (แถบล่างสุด ใต้ตัวหนังสือ) -->
+  <use href="#krathong" transform="translate(470 428) scale(0.62)"/>
+  <use href="#krathong" transform="translate(645 440) scale(0.72)"/>
+  <use href="#krathong" transform="translate(835 424) scale(0.58)"/>
+  <use href="#krathong" transform="translate(1008 442) scale(0.75)"/>
+  <use href="#krathong" transform="translate(1168 430) scale(0.6)"/>
+
+  <!-- กอบัวมุมซ้าย-ขวา -->
+  <use href="#cluster" transform="translate(262 452) scale(0.7)"/>
+  <use href="#cluster" transform="translate(1340 456) scale(-0.72 0.72)"/>
+</svg>

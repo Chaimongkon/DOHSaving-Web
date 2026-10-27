@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import styles from "./FestivalBanner.module.css";
+import { resolveFestival } from "@/lib/festivalClient";
 
 interface BannerData {
   bannerText: string | null;
@@ -17,15 +18,13 @@ export default function FestivalBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Check if user already dismissed today
-    const dismissed = sessionStorage.getItem(STORAGE_KEY);
-    if (dismissed) return;
-
-    fetch("/api/festival/active")
-      .then((res) => res.json())
-      .then((data) => {
+    // ธีมที่ควรแสดง (ดูตัวอย่างของเจ้าหน้าที่ / ธีมที่เปิดอยู่ · ไว้อาลัย = ไม่มี)
+    resolveFestival()
+      .then(({ festival: data, preview }) => {
+        // ปิดแถบไปแล้วในแท็บนี้ — ไม่แสดงซ้ำ (ยกเว้นกำลังดูตัวอย่าง)
+        if (!preview && sessionStorage.getItem(STORAGE_KEY)) return;
         if (data && data.bannerText) {
-          setBanner(data);
+          setBanner(data as unknown as BannerData);
           // Small delay for entrance animation
           requestAnimationFrame(() => setVisible(true));
         }

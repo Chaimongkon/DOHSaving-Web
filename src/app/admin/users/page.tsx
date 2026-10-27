@@ -1,150 +1,32 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
-  Table,
-  Button,
-  Modal,
-  Form,
-  Input,
-  Select,
-  Switch,
-  Checkbox,
-  Tag,
-  Space,
-  message,
-  Popconfirm,
-  Card,
-  Typography,
-  Divider,
-  Row,
-  Col,
-} from "antd";
-import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  KeyOutlined,
-} from "@ant-design/icons";
+  AlertTriangle,
+  Check,
+  Copy,
+  Eye,
+  EyeOff,
+  History,
+  KeyRound,
+  Loader2,
+  Lock,
+  LockOpen,
+  Pencil,
+  Plus,
+  Search,
+  ShieldCheck,
+  Trash2,
+  UserCog,
+  UserRound,
+  Users,
+  Wand2,
+  X,
+} from "lucide-react";
+import { permissionGroups } from "../adminNav";
+import css from "./page.module.css";
 
-const { Title, Text } = Typography;
-
-// ── เมนูทั้งหมดที่ใช้กำหนดสิทธิ์ ──
-const ALL_MENU_GROUPS = [
-  {
-    group: "จัดการเนื้อหา",
-    items: [
-      { label: "ข่าวประชาสัมพันธ์", href: "/admin/news" },
-      { label: "วิดีโอ", href: "/admin/videos" },
-      { label: "อัลบั้มภาพ", href: "/admin/photo-albums" },
-      { label: "สื่อสำหรับสมาชิก", href: "/admin/member-media" },
-    ],
-  },
-  {
-    group: "จัดการหน้าเว็บ",
-    items: [
-      { label: "สไลด์หน้าแรก", href: "/admin/slides" },
-      { label: "ป๊อปอัพแจ้งเตือน", href: "/admin/notifications" },
-      { label: "หน้าบริการ", href: "/admin/service-pages" },
-      { label: "วิธีใช้งาน App", href: "/admin/app-guide" },
-      { label: "ดาวน์โหลดแอป", href: "/admin/download-app" },
-    ],
-  },
-  {
-    group: "หน้าเพจ",
-    items: [
-      { label: "ประวัติสหกรณ์", href: "/admin/pages/history" },
-      { label: "สารจากประธานฯ", href: "/admin/chairman-message" },
-      { label: "วิสัยทัศน์และพันธกิจ", href: "/admin/vision-data" },
-      { label: "นโยบายสหกรณ์", href: "/admin/policy-items" },
-      { label: "จรรยาบรรณคณะกรรมการ", href: "/admin/ethics-board-items" },
-      { label: "จรรยาบรรณเจ้าหน้าที่", href: "/admin/ethics-staff-items" },
-      { label: "คณะกรรมการ", href: "/admin/board-members" },
-      { label: "ผู้ตรวจสอบ", href: "/admin/auditors" },
-      { label: "บุคลากร/ฝ่ายต่างๆ", href: "/admin/department-staff" },
-      { label: "โครงสร้างองค์กร", href: "/admin/pages/organization/images" },
-    ],
-  },
-  {
-    group: "การเงิน",
-    items: [
-      { label: "อัตราดอกเบี้ย", href: "/admin/interest-rates" },
-      { label: "สินทรัพย์และหนี้สิน", href: "/admin/financial-summary" },
-    ],
-  },
-  {
-    group: "เอกสาร",
-    items: [
-      { label: "ข้อบังคับ ระเบียบ ประกาศ", href: "/admin/regulations" },
-      { label: "แบบฟอร์มต่างๆ", href: "/admin/forms" },
-      { label: "รายงานประจำปี", href: "/admin/annual-reports" },
-      { label: "เอกสารประกอบการประชุม", href: "/admin/meeting-documents" },
-    ],
-  },
-  {
-    group: "สื่อสาร",
-    items: [
-      { label: "กระดานถาม-ตอบ", href: "/admin/qna" },
-      { label: "ร้องเรียน/เสนอแนะ", href: "/admin/complaints" },
-    ],
-  },
-  {
-    group: "ข้อมูลติดต่อ",
-    items: [
-      { label: "ข้อมูลสหกรณ์", href: "/admin/contact-info" },
-      { label: "ฝ่ายงาน/เบอร์โทร", href: "/admin/departments" },
-      { label: "LINE ฝ่ายต่างๆ", href: "/admin/line-contacts" },
-      { label: "บัญชีธนาคาร", href: "/admin/bank-accounts" },
-    ],
-  },
-  {
-    group: "ระบบ",
-    items: [
-      { label: "ยอดนิยมเดือนนี้", href: "/admin/page-analytics" },
-      { label: "สมาชิกค้นหา/ดาวน์โหลด", href: "/admin/search-insights" },
-      { label: "รูปเมนูหลัก", href: "/admin/mega-images" },
-      { label: "Festival Theme", href: "/admin/festivals" },
-      { label: "ผู้ใช้งาน", href: "/admin/users" },
-      { label: "Cookie Consent", href: "/admin/cookie-consent" },
-      { label: "ตั้งค่า", href: "/admin/settings" },
-    ],
-  },
-];
-
-// ── Preset templates ──
-const ROLE_PRESETS: Record<string, string[]> = {
-  "ฝ่ายสวัสดิการ": [
-    // จัดการเนื้อหาทั้งหมด
-    "/admin/news", "/admin/videos", "/admin/photo-albums", "/admin/member-media",
-    // จัดการหน้าเว็บทั้งหมด
-    "/admin/slides", "/admin/notifications", "/admin/service-pages", "/admin/app-guide", "/admin/download-app",
-    // เอกสาร: แค่แบบฟอร์ม (+ สถิติดาวน์โหลด/คำค้นที่ไม่เจอ ไว้ปรับชื่อแบบฟอร์ม)
-    "/admin/forms", "/admin/search-insights",
-    // สื่อสาร: แค่กระดานถามตอบ
-    "/admin/qna",
-  ],
-  "ฝ่ายบริหาร": [
-    // จัดการเนื้อหาทั้งหมด
-    "/admin/news", "/admin/videos", "/admin/photo-albums", "/admin/member-media",
-    // จัดการหน้าเว็บทั้งหมด
-    "/admin/slides", "/admin/notifications", "/admin/service-pages", "/admin/app-guide", "/admin/download-app",
-    // เอกสารทั้งหมด
-    "/admin/regulations", "/admin/forms", "/admin/annual-reports", "/admin/meeting-documents", "/admin/search-insights",
-    // หน้าเพจทั้งหมด
-    "/admin/pages/history", "/admin/chairman-message", "/admin/vision-data",
-    "/admin/policy-items", "/admin/ethics-board-items", "/admin/ethics-staff-items",
-    "/admin/board-members", "/admin/auditors", "/admin/department-staff", "/admin/pages/organization/images",
-    // สื่อสารทั้งหมด
-    "/admin/qna", "/admin/complaints",
-    // ข้อมูลติดต่อทั้งหมด
-    "/admin/contact-info", "/admin/departments", "/admin/line-contacts", "/admin/bank-accounts",
-  ],
-  "ฝ่ายบัญชี": [
-    // การเงิน: แค่สินทรัพย์และหนี้สิน
-    "/admin/financial-summary",
-  ],
-};
-
+/* ═════════ ชนิดข้อมูล ═════════ */
 interface UserRecord {
   id: number;
   fullName: string | null;
@@ -155,399 +37,749 @@ interface UserRecord {
   isActive: boolean;
   menuPermissions: string[] | null;
   lastLoginAt: string | null;
+  loginCount: number;
+  lockedUntil: string | null;
+  failedLoginAttempts: number;
+  mustChangePassword: boolean;
+  lastPasswordChange: string | null;
   createdAt: string;
 }
 
-export default function UsersPage() {
-  const [users, setUsers] = useState<UserRecord[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<UserRecord | null>(null);
-  const [form] = Form.useForm();
-  const [selectedPerms, setSelectedPerms] = useState<Set<string>>(new Set());
-  const [saving, setSaving] = useState(false);
+type RoleKind = "admin" | "staff";
+type Filter = "all" | "admin" | "staff" | "attention";
 
-  const fetchUsers = useCallback(async () => {
-    setLoading(true);
+interface Draft {
+  fullName: string;
+  userName: string;
+  password: string;
+  department: string;
+  phone: string;
+  role: RoleKind;
+  isActive: boolean;
+  perms: Set<string>;
+}
+
+/* ═════════ สิทธิ์สำเร็จรูป ═════════ */
+const ROLE_PRESETS: Record<string, string[]> = {
+  ฝ่ายสวัสดิการ: [
+    "/admin/news", "/admin/videos", "/admin/photo-albums", "/admin/member-media",
+    "/admin/slides", "/admin/notifications", "/admin/service-pages", "/admin/app-guide", "/admin/download-app",
+    "/admin/forms", "/admin/search-insights",
+    "/admin/qna",
+  ],
+  ฝ่ายบริหาร: [
+    "/admin/news", "/admin/videos", "/admin/photo-albums", "/admin/member-media",
+    "/admin/slides", "/admin/notifications", "/admin/service-pages", "/admin/app-guide", "/admin/download-app",
+    "/admin/regulations", "/admin/forms", "/admin/annual-reports", "/admin/meeting-documents", "/admin/search-insights",
+    "/admin/pages/history", "/admin/chairman-message", "/admin/vision-data",
+    "/admin/policy-items", "/admin/ethics-board-items", "/admin/ethics-staff-items",
+    "/admin/board-members", "/admin/auditors", "/admin/department-staff", "/admin/pages/organization/images",
+    "/admin/qna", "/admin/complaints",
+    "/admin/contact-info", "/admin/departments", "/admin/line-contacts", "/admin/bank-accounts",
+  ],
+  ฝ่ายบัญชี: ["/admin/financial-summary"],
+  ฝ่ายสินเชื่อ: ["/admin/interest-rates", "/admin/loan-types"],
+};
+
+const ALL_PERMS = permissionGroups.flatMap((g) => g.items.map((i) => i.href));
+const PERM_LABEL = new Map(permissionGroups.flatMap((g) => g.items.map((i) => [i.href, i.label] as const)));
+
+/* ═════════ ตัวช่วย ═════════ */
+const fmt = (n: number) => n.toLocaleString("th-TH");
+const nameOf = (u: UserRecord) => u.fullName || u.userName;
+const initials = (u: UserRecord) => nameOf(u).trim().slice(0, 1).toUpperCase();
+const isLocked = (u: UserRecord, now: number) => !!u.lockedUntil && new Date(u.lockedUntil).getTime() > now;
+const roleOf = (u: UserRecord): RoleKind => (u.userRole === "admin" ? "admin" : "staff");
+const time = (iso: string) => new Date(iso).toLocaleTimeString("th-TH", { timeZone: "Asia/Bangkok", hour: "2-digit", minute: "2-digit" });
+const date = (iso: string) => new Date(iso).toLocaleDateString("th-TH", { timeZone: "Asia/Bangkok", day: "numeric", month: "short", year: "2-digit" });
+
+function lastSeen(iso: string | null, now: number): string {
+  if (!iso) return "ยังไม่เคยเข้าใช้";
+  const days = Math.floor((now - new Date(iso).getTime()) / 864e5);
+  if (days < 1) return `วันนี้ ${time(iso)}`;
+  if (days < 2) return "เมื่อวาน";
+  if (days < 30) return `${days} วันก่อน`;
+  return date(iso);
+}
+
+/** ต้องดูแล: ถูกล็อก · ยังไม่เคยเข้าใช้ · ไม่ได้เข้าใช้เกิน 90 วัน */
+const needsAttention = (u: UserRecord, now: number) =>
+  u.isActive && (isLocked(u, now) || !u.lastLoginAt || now - new Date(u.lastLoginAt).getTime() > 90 * 864e5);
+
+/** รหัสผ่านสุ่ม 10 ตัว (ไม่มีตัวที่สับสนง่าย เช่น 0/O 1/l) มีทั้งตัวอักษรและตัวเลข */
+function randomPassword(): string {
+  const letters = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
+  const digits = "23456789";
+  const all = letters + digits;
+  const pick = (set: string) => set[crypto.getRandomValues(new Uint32Array(1))[0] % set.length];
+  const chars = [pick(letters), pick(digits), ...Array.from({ length: 8 }, () => pick(all))];
+  for (let i = chars.length - 1; i > 0; i--) {
+    const j = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
+    [chars[i], chars[j]] = [chars[j], chars[i]];
+  }
+  return chars.join("");
+}
+
+const emptyDraft = (): Draft => ({
+  fullName: "",
+  userName: "",
+  password: randomPassword(),
+  department: "",
+  phone: "",
+  role: "staff",
+  isActive: true,
+  perms: new Set(),
+});
+
+const draftOf = (u: UserRecord): Draft => ({
+  fullName: u.fullName ?? "",
+  userName: u.userName,
+  password: "",
+  department: u.department ?? "",
+  phone: u.phone ?? "",
+  role: roleOf(u),
+  isActive: u.isActive,
+  perms: new Set(u.menuPermissions ?? []),
+});
+
+/* ═════════ ประวัติล่าสุด (โหลดเมื่อกดเปิด) ═════════ */
+interface ActivityItem {
+  id: number;
+  at: string;
+  action: string;
+  label: string;
+  section: string;
+  by: string | null;
+  ip: string | null;
+  count: number;
+  kind: "self" | "account";
+}
+
+function Activity({ userId }: { userId: number }) {
+  const [items, setItems] = useState<ActivityItem[] | null>(null);
+  const [failed, setFailed] = useState(false);
+
+  const load = async () => {
+    if (items || failed) return;
     try {
-      const res = await fetch("/api/admin/users");
-      if (!res.ok) throw new Error("Failed to fetch");
-      const data = await res.json();
-      setUsers(data);
+      const res = await fetch(`/api/admin/users/${userId}/activity`);
+      if (!res.ok) throw new Error();
+      setItems((await res.json()).items);
     } catch {
-      message.error("ไม่สามารถโหลดข้อมูลผู้ใช้ได้");
-    } finally {
-      setLoading(false);
+      setFailed(true);
     }
-  }, []);
+  };
+
+  return (
+    <details className={css.section} onToggle={(e) => (e.currentTarget as HTMLDetailsElement).open && load()}>
+      <summary className={css.activitySummary}>
+        <History size={16} /> ประวัติล่าสุด
+        <small>เข้าสู่ระบบ · แก้ไขข้อมูล · การเปลี่ยนแปลงบัญชีนี้</small>
+      </summary>
+      {failed ? (
+        <p className={css.hint}>โหลดประวัติไม่สำเร็จ</p>
+      ) : !items ? (
+        <p className={css.hint}><Loader2 size={14} className={css.spin} /> กำลังโหลด…</p>
+      ) : items.length === 0 ? (
+        <p className={css.hint}>ยังไม่มีประวัติ</p>
+      ) : (
+        <ol className={css.timeline}>
+          {items.map((it) => (
+            <li key={it.id} className={`${css.tlItem} ${it.kind === "account" ? css.tlAccount : ""} ${it.action === "login_failed" || it.action === "delete" ? css.tlWarn : ""}`}>
+              <span className={css.tlTime}>{date(it.at)} {time(it.at)}</span>
+              <span className={css.tlText}>
+                <strong>{it.label}</strong>
+                {it.section && <> · {it.section}</>}
+                {it.count > 1 && <span className={css.tlCount}>×{it.count}</span>}
+                {it.by && <span className={css.tlBy}>โดย {it.by}</span>}
+                {it.ip && <span className={css.tlIp}>IP {it.ip}</span>}
+              </span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </details>
+  );
+}
+
+/* ═════════ แผงแก้ไข ═════════ */
+function Editor({
+  user,
+  isSelf,
+  users,
+  onClose,
+  onSaved,
+}: {
+  user: UserRecord | null;
+  isSelf: boolean;
+  users: UserRecord[];
+  onClose: () => void;
+  onSaved: (msg: string, password?: { userName: string; password: string }) => void;
+}) {
+  const [d, setD] = useState<Draft>(() => (user ? draftOf(user) : emptyDraft()));
+  const [showPw, setShowPw] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const set = <K extends keyof Draft>(k: K, v: Draft[K]) => setD((p) => ({ ...p, [k]: v }));
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- โหลดข้อมูลเมื่อเปิดหน้า/เปลี่ยนตัวกรอง
-    fetchUsers();
-  }, [fetchUsers]);
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
 
-  // ── Open modal ──
-  const openCreate = () => {
-    setEditingUser(null);
-    form.resetFields();
-    form.setFieldsValue({ userRole: "editor", isActive: true });
-    setSelectedPerms(new Set());
-    setModalOpen(true);
-  };
-
-  const openEdit = (user: UserRecord) => {
-    setEditingUser(user);
-    form.setFieldsValue({
-      fullName: user.fullName,
-      userName: user.userName,
-      userRole: user.userRole,
-      department: user.department,
-      phone: user.phone,
-      isActive: user.isActive,
-      password: "",
+  const toggle = (href: string) =>
+    setD((p) => {
+      const perms = new Set(p.perms);
+      if (perms.has(href)) perms.delete(href);
+      else perms.add(href);
+      return { ...p, perms };
     });
-    setSelectedPerms(new Set(user.menuPermissions || []));
-    setModalOpen(true);
-  };
+  const toggleGroup = (hrefs: string[]) =>
+    setD((p) => {
+      const perms = new Set(p.perms);
+      const all = hrefs.every((h) => perms.has(h));
+      hrefs.forEach((h) => (all ? perms.delete(h) : perms.add(h)));
+      return { ...p, perms };
+    });
 
-  // ── Save ──
-  const handleSave = async () => {
+  const copyFrom = users.filter((u) => u.id !== user?.id && roleOf(u) === "staff" && (u.menuPermissions ?? []).length > 0);
+  const selected = ALL_PERMS.filter((h) => d.perms.has(h)).length;
+
+  const save = async () => {
+    setError("");
+    if (!d.fullName.trim()) return setError("กรุณากรอกชื่อ-นามสกุล");
+    if (!user && !/^[a-z0-9._-]{3,50}$/.test(d.userName.trim().toLowerCase())) return setError("ชื่อผู้ใช้ใช้ได้เฉพาะ a-z 0-9 . _ - ยาว 3–50 ตัว");
+    if (!user && (d.password.length < 8 || !/[a-zA-Z]/.test(d.password) || !/\d/.test(d.password))) {
+      return setError("รหัสผ่านต้องยาวอย่างน้อย 8 ตัว และมีทั้งตัวอักษรและตัวเลข");
+    }
+    if (d.role === "staff" && selected === 0 && !window.confirm("ยังไม่ได้ให้สิทธิ์เมนูใดเลย ผู้ใช้จะเห็นแค่แดชบอร์ด บันทึกต่อไหม?")) return;
+
+    // เจ้าหน้าที่เดิมที่เป็น viewer คงบทบาทเดิมไว้ (ทำงานเหมือน editor)
+    const userRole = d.role === "admin" ? "admin" : user && user.userRole !== "admin" && user.userRole ? user.userRole : "editor";
+    const body: Record<string, unknown> = {
+      fullName: d.fullName,
+      department: d.department,
+      phone: d.phone,
+      userRole,
+      isActive: d.isActive,
+      menuPermissions: d.role === "admin" ? [] : [...d.perms],
+    };
+    if (!user) {
+      body.userName = d.userName.trim().toLowerCase();
+      body.password = d.password;
+    }
+
+    setSaving(true);
     try {
-      const values = await form.validateFields();
-      setSaving(true);
-
-      const payload = {
-        ...values,
-        menuPermissions: Array.from(selectedPerms),
-      };
-
-      // ไม่ส่ง password ว่างไป
-      if (!payload.password) delete payload.password;
-
-      let res: Response;
-      if (editingUser) {
-        // แก้ไข — ไม่ส่ง userName
-        delete payload.userName;
-        res = await fetch(`/api/admin/users/${editingUser.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-      } else {
-        res = await fetch("/api/admin/users", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-      }
-
-      if (!res.ok) {
-        const err = await res.json();
-        message.error(err.error || "เกิดข้อผิดพลาด");
-        return;
-      }
-
-      message.success(editingUser ? "แก้ไขสำเร็จ" : "สร้างผู้ใช้สำเร็จ");
-      setModalOpen(false);
-      fetchUsers();
+      const res = await fetch(user ? `/api/admin/users/${user.id}` : "/api/admin/users", {
+        method: user ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) return setError(json.error || "บันทึกไม่สำเร็จ");
+      onSaved(user ? `บันทึก ${d.fullName} แล้ว` : `สร้างบัญชี ${d.fullName} แล้ว`, user ? undefined : { userName: json.userName, password: d.password });
     } catch {
-      // validation error
+      setError("เชื่อมต่อไม่สำเร็จ");
     } finally {
       setSaving(false);
     }
   };
 
-  // ── Delete ──
-  const handleDelete = async (id: number) => {
-    try {
-      const res = await fetch(`/api/admin/users/${id}`, { method: "DELETE" });
-      if (!res.ok) {
-        const err = await res.json();
-        message.error(err.error || "ลบไม่สำเร็จ");
-        return;
-      }
-      message.success("ลบสำเร็จ");
-      fetchUsers();
-    } catch {
-      message.error("เกิดข้อผิดพลาด");
-    }
-  };
-
-  // ── Permission helpers ──
-  const togglePerm = (href: string) => {
-    setSelectedPerms((prev) => {
-      const next = new Set(prev);
-      if (next.has(href)) next.delete(href);
-      else next.add(href);
-      return next;
-    });
-  };
-
-  const toggleGroupAll = (groupItems: { href: string }[]) => {
-    const allHrefs = groupItems.map((i) => i.href);
-    const allChecked = allHrefs.every((h) => selectedPerms.has(h));
-    setSelectedPerms((prev) => {
-      const next = new Set(prev);
-      if (allChecked) {
-        allHrefs.forEach((h) => next.delete(h));
-      } else {
-        allHrefs.forEach((h) => next.add(h));
-      }
-      return next;
-    });
-  };
-
-  const applyPreset = (presetName: string) => {
-    const perms = ROLE_PRESETS[presetName];
-    if (perms) {
-      setSelectedPerms(new Set(perms));
-      message.info(`โหลดสิทธิ์ "${presetName}" แล้ว`);
-    }
-  };
-
-  const selectAll = () => {
-    const all = ALL_MENU_GROUPS.flatMap((g) => g.items.map((i) => i.href));
-    setSelectedPerms(new Set(all));
-  };
-
-  const clearAll = () => {
-    setSelectedPerms(new Set());
-  };
-
-  // ── Watch userRole to auto-apply preset ──
-  const watchedRole = Form.useWatch("userRole", form);
-  const isAdmin = watchedRole === "admin";
-
-  // ── Table columns ──
-  const columns = [
-    {
-      title: "ชื่อ-นามสกุล",
-      dataIndex: "fullName",
-      key: "fullName",
-      render: (v: string | null, r: UserRecord) => v || r.userName,
-    },
-    {
-      title: "ชื่อผู้ใช้",
-      dataIndex: "userName",
-      key: "userName",
-    },
-    {
-      title: "บทบาท",
-      dataIndex: "userRole",
-      key: "userRole",
-      render: (v: string | null) => {
-        const color = v === "admin" ? "red" : v === "editor" ? "blue" : "default";
-        return <Tag color={color}>{v || "viewer"}</Tag>;
-      },
-    },
-    {
-      title: "ฝ่าย/แผนก",
-      dataIndex: "department",
-      key: "department",
-      render: (v: string | null) => v || "-",
-    },
-    {
-      title: "สิทธิ์เมนู",
-      key: "perms",
-      render: (_: unknown, r: UserRecord) => {
-        if (r.userRole === "admin") return <Tag color="red">เข้าถึงทั้งหมด</Tag>;
-        const count = (r.menuPermissions || []).length;
-        return <Text type="secondary">{count} เมนู</Text>;
-      },
-    },
-    {
-      title: "สถานะ",
-      dataIndex: "isActive",
-      key: "isActive",
-      render: (v: boolean) =>
-        v ? <Tag color="green">เปิดใช้งาน</Tag> : <Tag>ปิดใช้งาน</Tag>,
-    },
-    {
-      title: "จัดการ",
-      key: "actions",
-      width: 120,
-      render: (_: unknown, record: UserRecord) => (
-        <Space>
-          <Button
-            type="text"
-            icon={<EditOutlined />}
-            onClick={() => openEdit(record)}
-          />
-          <Popconfirm
-            title="ยืนยันลบผู้ใช้นี้?"
-            onConfirm={() => handleDelete(record.id)}
-            okText="ลบ"
-            cancelText="ยกเลิก"
-            okButtonProps={{ danger: true }}
-          >
-            <Button type="text" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
-
   return (
-    <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-        <Title level={4} style={{ margin: 0 }}>จัดการผู้ใช้งาน</Title>
-        <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
-          เพิ่มผู้ใช้
-        </Button>
-      </div>
+    <div className={css.overlay} onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+      <aside className={css.drawer} role="dialog" aria-modal="true" aria-label={user ? `แก้ไข ${nameOf(user)}` : "เพิ่มผู้ใช้"}>
+        <header className={css.drawerHead}>
+          <div>
+            <h2 className={css.drawerTitle}>{user ? `แก้ไข ${nameOf(user)}` : "เพิ่มผู้ใช้"}</h2>
+            {user && <p className={css.drawerSub}>@{user.userName}{isSelf && " · บัญชีของคุณ"}</p>}
+          </div>
+          <button type="button" className={css.iconBtn} onClick={onClose} aria-label="ปิด"><X size={18} /></button>
+        </header>
 
-      <Table
-        dataSource={users}
-        columns={columns}
-        rowKey="id"
-        loading={loading}
-        pagination={{ pageSize: 20 }}
-        size="middle"
-      />
+        <div className={css.drawerBody}>
+          {/* ข้อมูลบัญชี */}
+          <section className={css.section}>
+            <h3 className={css.sectionTitle}>ข้อมูลบัญชี</h3>
+            <div className={css.fields}>
+              <label className={css.field}>
+                <span>ชื่อ-นามสกุล *</span>
+                <input className={css.input} value={d.fullName} onChange={(e) => set("fullName", e.target.value)} autoFocus={!user} />
+              </label>
+              <label className={css.field}>
+                <span>ชื่อผู้ใช้ (ใช้ล็อกอิน) *</span>
+                <input
+                  className={css.input}
+                  value={d.userName}
+                  onChange={(e) => set("userName", e.target.value.toLowerCase().replace(/\s/g, ""))}
+                  disabled={!!user}
+                  placeholder="เช่น welfare01"
+                  autoComplete="off"
+                />
+              </label>
+              <label className={css.field}>
+                <span>ฝ่าย/แผนก</span>
+                <input className={css.input} value={d.department} onChange={(e) => set("department", e.target.value)} placeholder="เช่น ฝ่ายสวัสดิการ" />
+              </label>
+              <label className={css.field}>
+                <span>เบอร์โทร</span>
+                <input className={css.input} value={d.phone} onChange={(e) => set("phone", e.target.value)} inputMode="tel" />
+              </label>
+            </div>
+            {!user && (
+              <label className={css.field}>
+                <span>รหัสผ่านชั่วคราว * <small>อย่างน้อย 8 ตัว มีตัวอักษรและตัวเลข</small></span>
+                <div className={css.pwRow}>
+                  <input
+                    className={`${css.input} ${css.mono}`}
+                    type={showPw ? "text" : "password"}
+                    value={d.password}
+                    onChange={(e) => set("password", e.target.value)}
+                    autoComplete="new-password"
+                  />
+                  <button type="button" className={css.iconBtn} onClick={() => setShowPw((s) => !s)} aria-label={showPw ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน"}>
+                    {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                  <button type="button" className={css.btnSm} onClick={() => set("password", randomPassword())}>
+                    <Wand2 size={14} /> สุ่มใหม่
+                  </button>
+                </div>
+              </label>
+            )}
+          </section>
 
-      {/* ── Modal สร้าง/แก้ไข ── */}
-      <Modal
-        title={editingUser ? `แก้ไขผู้ใช้: ${editingUser.userName}` : "เพิ่มผู้ใช้ใหม่"}
-        open={modalOpen}
-        onCancel={() => setModalOpen(false)}
-        onOk={handleSave}
-        confirmLoading={saving}
-        okText="บันทึก"
-        cancelText="ยกเลิก"
-        width={720}
-        styles={{ body: { maxHeight: "70vh", overflowY: "auto" } }}
-      >
-        <Form form={form} layout="vertical" size="middle">
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                label="ชื่อ-นามสกุล"
-                name="fullName"
-                rules={[{ required: true, message: "กรุณากรอกชื่อ" }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="ชื่อผู้ใช้ (Login)"
-                name="userName"
-                rules={[{ required: true, message: "กรุณากรอกชื่อผู้ใช้" }]}
-              >
-                <Input disabled={!!editingUser} />
-              </Form.Item>
-            </Col>
-          </Row>
+          {/* บทบาท */}
+          <section className={css.section}>
+            <h3 className={css.sectionTitle}>บทบาท</h3>
+            <div className={css.roles} role="radiogroup" aria-label="บทบาท">
+              {([
+                ["staff", "เจ้าหน้าที่", "เข้าได้เฉพาะเมนูที่เลือกด้านล่าง", UserRound],
+                ["admin", "ผู้ดูแลระบบ", "เข้าได้ทุกเมนู รวมถึงจัดการผู้ใช้", ShieldCheck],
+              ] as const).map(([k, label, hint, Icon]) => (
+                <button
+                  key={k}
+                  type="button"
+                  role="radio"
+                  aria-checked={d.role === k}
+                  className={`${css.role} ${d.role === k ? css.roleOn : ""}`}
+                  onClick={() => set("role", k)}
+                  disabled={isSelf && user?.userRole === "admin" && k === "staff"}
+                >
+                  <Icon size={18} />
+                  <span><strong>{label}</strong><small>{hint}</small></span>
+                </button>
+              ))}
+            </div>
+            {isSelf && user?.userRole === "admin" && <p className={css.hint}>ลดสิทธิ์บัญชีของตัวเองไม่ได้ ให้ผู้ดูแลระบบคนอื่นทำแทน</p>}
+          </section>
 
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item
-                label={editingUser ? "รหัสผ่านใหม่ (เว้นว่างถ้าไม่เปลี่ยน)" : "รหัสผ่าน"}
-                name="password"
-                rules={editingUser ? [] : [{ required: true, message: "กรุณากรอกรหัสผ่าน" }]}
-              >
-                <Input.Password prefix={<KeyOutlined />} />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="บทบาท" name="userRole">
-                <Select>
-                  <Select.Option value="admin">Admin (เข้าถึงทั้งหมด)</Select.Option>
-                  <Select.Option value="editor">Editor</Select.Option>
-                  <Select.Option value="viewer">Viewer</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="ฝ่าย/แผนก" name="department">
-                <Input placeholder="เช่น ฝ่ายสวัสดิการ" />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item label="เบอร์โทร" name="phone">
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="สถานะ" name="isActive" valuePropName="checked">
-                <Switch checkedChildren="เปิด" unCheckedChildren="ปิด" />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          {/* ── สิทธิ์เมนู ── */}
-          <Divider style={{ fontSize: 14 }}>
-            สิทธิ์การเข้าถึงเมนู
-          </Divider>
-
-          {isAdmin ? (
-            <Card size="small" style={{ background: "#fff7e6", borderColor: "#ffd591" }}>
-              <Text type="warning">
-                บทบาท Admin เข้าถึงทุกเมนูอัตโนมัติ ไม่ต้องกำหนดสิทธิ์
-              </Text>
-            </Card>
-          ) : (
-            <>
-              <div style={{ marginBottom: 12, display: "flex", gap: 8, flexWrap: "wrap" }}>
-                <Button size="small" onClick={selectAll}>เลือกทั้งหมด</Button>
-                <Button size="small" onClick={clearAll}>ล้างทั้งหมด</Button>
-                <Divider type="vertical" />
-                <Text type="secondary" style={{ lineHeight: "32px", fontSize: 12 }}>
-                  โหลดสิทธิ์สำเร็จรูป:
-                </Text>
-                {Object.keys(ROLE_PRESETS).map((name) => (
-                  <Button key={name} size="small" type="dashed" onClick={() => applyPreset(name)}>
-                    {name}
-                  </Button>
-                ))}
+          {/* สิทธิ์เมนู */}
+          {d.role === "staff" && (
+            <section className={css.section}>
+              <div className={css.sectionHead}>
+                <h3 className={css.sectionTitle}>สิทธิ์เข้าถึงเมนู</h3>
+                <span className={css.count}>เลือกแล้ว {selected} / {ALL_PERMS.length}</span>
               </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                {ALL_MENU_GROUPS.map((group) => {
-                  const allHrefs = group.items.map((i) => i.href);
-                  const checkedCount = allHrefs.filter((h) => selectedPerms.has(h)).length;
-                  const allChecked = checkedCount === allHrefs.length;
-                  const indeterminate = checkedCount > 0 && !allChecked;
-
+              <div className={css.permTools}>
+                <span className={css.toolLabel}>สิทธิ์สำเร็จรูป</span>
+                {Object.keys(ROLE_PRESETS).map((name) => (
+                  <button key={name} type="button" className={css.chip} onClick={() => set("perms", new Set(ROLE_PRESETS[name]))}>
+                    {name}
+                  </button>
+                ))}
+                {copyFrom.length > 0 && (
+                  <select
+                    className={css.select}
+                    value=""
+                    onChange={(e) => {
+                      const src = users.find((u) => u.id === Number(e.target.value));
+                      if (src) set("perms", new Set(src.menuPermissions ?? []));
+                    }}
+                    aria-label="คัดลอกสิทธิ์จากผู้ใช้อื่น"
+                  >
+                    <option value="">คัดลอกจากผู้ใช้…</option>
+                    {copyFrom.map((u) => (
+                      <option key={u.id} value={u.id}>{nameOf(u)} ({(u.menuPermissions ?? []).length})</option>
+                    ))}
+                  </select>
+                )}
+                <span className={css.toolSpacer} />
+                <button type="button" className={css.linkBtn} onClick={() => set("perms", new Set(ALL_PERMS))}>เลือกทั้งหมด</button>
+                <button type="button" className={css.linkBtn} onClick={() => set("perms", new Set())}>ล้าง</button>
+              </div>
+              <div className={css.permGrid}>
+                {permissionGroups.map((g) => {
+                  const hrefs = g.items.map((i) => i.href);
+                  const n = hrefs.filter((h) => d.perms.has(h)).length;
                   return (
-                    <Card
-                      key={group.group}
-                      size="small"
-                      title={
-                        <Checkbox
-                          checked={allChecked}
-                          indeterminate={indeterminate}
-                          onChange={() => toggleGroupAll(group.items)}
-                          style={{ fontWeight: 600 }}
-                        >
-                          {group.group}
-                        </Checkbox>
-                      }
-                      styles={{ body: { padding: "8px 12px" } }}
-                    >
-                      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                        {group.items.map((item) => (
-                          <Checkbox
-                            key={item.href}
-                            checked={selectedPerms.has(item.href)}
-                            onChange={() => togglePerm(item.href)}
-                            style={{ fontSize: 13 }}
-                          >
-                            {item.label}
-                          </Checkbox>
-                        ))}
-                      </div>
-                    </Card>
+                    <div key={g.group} className={`${css.permGroup} ${n ? css.permGroupOn : ""}`}>
+                      <label className={css.permGroupHead}>
+                        <input
+                          type="checkbox"
+                          checked={n === hrefs.length}
+                          ref={(el) => {
+                            if (el) el.indeterminate = n > 0 && n < hrefs.length;
+                          }}
+                          onChange={() => toggleGroup(hrefs)}
+                        />
+                        <span>{g.group}</span>
+                        <small>{n}/{hrefs.length}</small>
+                      </label>
+                      {g.items.map((i) => (
+                        <label key={i.href} className={css.permItem}>
+                          <input type="checkbox" checked={d.perms.has(i.href)} onChange={() => toggle(i.href)} />
+                          <span>{i.label}</span>
+                        </label>
+                      ))}
+                    </div>
                   );
                 })}
               </div>
-            </>
+              <p className={css.hint}>ทุกคนเห็นแดชบอร์ดเสมอ · เมนู “ผู้ใช้งาน” เฉพาะผู้ดูแลระบบ · สิทธิ์ที่เปลี่ยนมีผลทันทีโดยไม่ต้องล็อกอินใหม่</p>
+            </section>
           )}
-        </Form>
-      </Modal>
+
+          {user && <Activity userId={user.id} />}
+        </div>
+
+        <footer className={css.drawerFoot}>
+          {user ? (
+            <label className={`${css.switch} ${isSelf ? css.switchDisabled : ""}`} title={isSelf ? "ปิดใช้งานบัญชีตัวเองไม่ได้" : undefined}>
+              <input type="checkbox" checked={d.isActive} disabled={isSelf} onChange={(e) => set("isActive", e.target.checked)} />
+              <span className={css.switchUi} aria-hidden />
+              {d.isActive ? "เปิดใช้งาน" : "ปิดใช้งาน"}
+            </label>
+          ) : (
+            <span />
+          )}
+          {error && <span className={css.formError}><AlertTriangle size={14} /> {error}</span>}
+          <div className={css.footActions}>
+            <button type="button" className={css.btnGhost} onClick={onClose}>ยกเลิก</button>
+            <button type="button" className={css.btnPrimary} onClick={save} disabled={saving}>
+              {saving ? <Loader2 size={16} className={css.spin} /> : <Check size={16} />} {user ? "บันทึก" : "สร้างบัญชี"}
+            </button>
+          </div>
+        </footer>
+      </aside>
+    </div>
+  );
+}
+
+/* ═════════ หน้า ═════════ */
+export default function UsersPage() {
+  const [users, setUsers] = useState<UserRecord[] | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  // เวลาที่โหลดข้อมูล — ใช้คำนวณสถานะ (ล็อก/เข้าใช้ล่าสุด) ให้คงที่ระหว่างเรนเดอร์
+  const [now, setNow] = useState(0);
+  const [failed, setFailed] = useState(false);
+  const [tick, setTick] = useState(0);
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<Filter>("all");
+  const [editing, setEditing] = useState<UserRecord | "new" | null>(null);
+  const [credential, setCredential] = useState<{ title: string; userName: string; password: string } | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [busyId, setBusyId] = useState<number | null>(null);
+  const [toast, setToast] = useState<{ text: string; error?: boolean } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/admin/users");
+        if (!res.ok) throw new Error();
+        const json = await res.json();
+        if (!cancelled) {
+          setUsers(json.users);
+          setNow(Date.now());
+          setCurrentUserId(json.currentUserId);
+        }
+      } catch {
+        if (!cancelled) setFailed(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [tick]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 3200);
+    return () => clearTimeout(t);
+  }, [toast]);
+
+  const stats = useMemo(() => {
+    const list = users ?? [];
+    const active = list.filter((u) => u.isActive);
+    return {
+      total: list.length,
+      active: active.length,
+      admins: active.filter((u) => u.userRole === "admin").length,
+      recent: active.filter((u) => u.lastLoginAt && now - new Date(u.lastLoginAt).getTime() < 30 * 864e5).length,
+      attention: list.filter((u) => needsAttention(u, now)).length,
+      locked: list.filter((u) => isLocked(u, now)).length,
+    };
+  }, [users, now]);
+
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return (users ?? [])
+      .filter((u) =>
+        filter === "admin" ? roleOf(u) === "admin" : filter === "staff" ? roleOf(u) === "staff" : filter === "attention" ? needsAttention(u, now) : true
+      )
+      .filter((u) => !q || `${u.fullName ?? ""} ${u.userName} ${u.department ?? ""}`.toLowerCase().includes(q))
+      .sort((a, b) => Number(b.isActive) - Number(a.isActive) || (roleOf(a) === "admin" ? -1 : 0) - (roleOf(b) === "admin" ? -1 : 0));
+  }, [users, query, filter, now]);
+
+  const put = async (u: UserRecord, body: Record<string, unknown>, ok: string) => {
+    setBusyId(u.id);
+    try {
+      const res = await fetch(`/api/admin/users/${u.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setToast({ text: json.error || "ทำรายการไม่สำเร็จ", error: true });
+        return false;
+      }
+      setToast({ text: ok });
+      setTick((n) => n + 1);
+      return true;
+    } catch {
+      setToast({ text: "เชื่อมต่อไม่สำเร็จ", error: true });
+      return false;
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const resetPassword = async (u: UserRecord) => {
+    if (!window.confirm(`รีเซ็ตรหัสผ่านของ ${nameOf(u)}?\n\nระบบจะสุ่มรหัสผ่านชั่วคราวใหม่ และออกจากระบบทุกเครื่องที่ใช้บัญชีนี้อยู่`)) return;
+    const password = randomPassword();
+    if (await put(u, { password }, `รีเซ็ตรหัสผ่านของ ${nameOf(u)} แล้ว`)) {
+      setCopied(false);
+      setCredential({ title: "รีเซ็ตรหัสผ่านแล้ว", userName: u.userName, password });
+    }
+  };
+
+  const toggleActive = (u: UserRecord) => {
+    if (u.isActive && !window.confirm(`ปิดใช้งานบัญชี ${nameOf(u)}?\nผู้ใช้จะถูกออกจากระบบทันที และล็อกอินไม่ได้จนกว่าจะเปิดใหม่`)) return;
+    put(u, { isActive: !u.isActive }, u.isActive ? `ปิดใช้งาน ${nameOf(u)} แล้ว` : `เปิดใช้งาน ${nameOf(u)} แล้ว`);
+  };
+
+  const remove = async (u: UserRecord) => {
+    if (!window.confirm(`ลบบัญชี ${nameOf(u)} ถาวร?\n\nถ้าแค่ไม่ให้เข้าใช้ชั่วคราว แนะนำ “ปิดใช้งาน” แทน · ประวัติการแก้ไขของผู้ใช้นี้ยังอยู่ แต่จะไม่แสดงชื่อผู้แก้ไข`)) return;
+    setBusyId(u.id);
+    const res = await fetch(`/api/admin/users/${u.id}`, { method: "DELETE" }).catch(() => null);
+    const json = res ? await res.json().catch(() => ({})) : {};
+    setBusyId(null);
+    if (res?.ok) {
+      setToast({ text: `ลบบัญชี ${nameOf(u)} แล้ว` });
+      setTick((n) => n + 1);
+    } else setToast({ text: json.error || "ลบไม่สำเร็จ", error: true });
+  };
+
+  if (failed) {
+    return <div className={css.page}><div className={css.state}><AlertTriangle size={26} /> โหลดข้อมูลไม่สำเร็จ ลองรีเฟรชหน้าอีกครั้ง</div></div>;
+  }
+  if (!users) {
+    return <div className={css.page}><div className={css.state}><Loader2 size={22} className={css.spin} /> กำลังโหลด…</div></div>;
+  }
+
+  const FILTERS: [Filter, string, number][] = [
+    ["all", "ทั้งหมด", stats.total],
+    ["admin", "ผู้ดูแลระบบ", users.filter((u) => roleOf(u) === "admin").length],
+    ["staff", "เจ้าหน้าที่", users.filter((u) => roleOf(u) === "staff").length],
+    ["attention", "ต้องดูแล", stats.attention],
+  ];
+
+  return (
+    <div className={css.page}>
+      {/* ── หัวหน้า ── */}
+      <header className={css.head}>
+        <div className={css.headText}>
+          <span className={css.headIcon}><Users size={22} /></span>
+          <div>
+            <h1 className={css.title}>ผู้ใช้งานหลังบ้าน</h1>
+            <p className={css.subtitle}>บัญชีเจ้าหน้าที่ บทบาท และสิทธิ์เข้าถึงแต่ละเมนู</p>
+          </div>
+        </div>
+        <button type="button" className={css.headBtn} onClick={() => setEditing("new")}>
+          <Plus size={16} /> เพิ่มผู้ใช้
+        </button>
+      </header>
+
+      {/* ── ตัวเลขหลัก ── */}
+      <section className={css.kpis}>
+        <div className={css.kpi}>
+          <span className={css.kpiLabel}>บัญชีที่ใช้งานได้</span>
+          <span className={css.kpiValue}>{fmt(stats.active)}</span>
+          <span className={css.kpiFoot}>จากทั้งหมด {fmt(stats.total)} บัญชี</span>
+        </div>
+        <div className={`${css.kpi} ${stats.admins <= 1 ? css.kpiWarn : ""}`}>
+          <span className={css.kpiLabel}>ผู้ดูแลระบบ</span>
+          <span className={css.kpiValue}>{fmt(stats.admins)}</span>
+          <span className={css.kpiFoot}>{stats.admins <= 1 ? "ควรมีอย่างน้อย 2 คน กันเข้าระบบไม่ได้" : "เข้าได้ทุกเมนู"}</span>
+        </div>
+        <div className={css.kpi}>
+          <span className={css.kpiLabel}>เข้าใช้ใน 30 วัน</span>
+          <span className={css.kpiValue}>{fmt(stats.recent)}</span>
+          <span className={css.kpiFoot}>บัญชี</span>
+        </div>
+        <button type="button" className={`${css.kpi} ${css.kpiBtn} ${stats.attention ? css.kpiWarn : ""}`} onClick={() => setFilter("attention")}>
+          <span className={css.kpiLabel}>ต้องดูแล</span>
+          <span className={css.kpiValue}>{fmt(stats.attention)}</span>
+          <span className={css.kpiFoot}>{stats.locked ? `ถูกล็อก ${stats.locked} · ` : ""}ไม่เคยเข้า/ไม่ได้เข้าเกิน 90 วัน</span>
+        </button>
+      </section>
+
+      {/* ── รายการ ── */}
+      <section className={css.card}>
+        <div className={css.toolbar}>
+          <div className={css.seg} role="group" aria-label="กรองผู้ใช้">
+            {FILTERS.map(([k, label, n]) => (
+              <button key={k} type="button" aria-pressed={filter === k} className={filter === k ? css.segOn : ""} onClick={() => setFilter(k)}>
+                {label} <span className={css.segCount}>{fmt(n)}</span>
+              </button>
+            ))}
+          </div>
+          <label className={css.search}>
+            <Search size={16} />
+            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="ค้นหาชื่อ ชื่อผู้ใช้ หรือฝ่าย" aria-label="ค้นหาผู้ใช้" />
+            {query && <button type="button" onClick={() => setQuery("")} aria-label="ล้าง"><X size={14} /></button>}
+          </label>
+        </div>
+
+        {visible.length === 0 ? (
+          <div className={css.state}>{filter === "attention" && !query ? <><Check size={20} /> ไม่มีบัญชีที่ต้องดูแล</> : "ไม่พบผู้ใช้"}</div>
+        ) : (
+          <ul className={css.list}>
+            {visible.map((u) => {
+              const admin = roleOf(u) === "admin";
+              const perms = (u.menuPermissions ?? []).filter((h) => PERM_LABEL.has(h));
+              const self = u.id === currentUserId;
+              const locked = isLocked(u, now);
+              return (
+                <li key={u.id} className={`${css.row} ${!u.isActive ? css.rowOff : ""}`}>
+                  <span className={`${css.avatar} ${admin ? css.avatarAdmin : ""}`} aria-hidden>{initials(u)}</span>
+
+                  <div className={css.who}>
+                    <div className={css.nameLine}>
+                      <strong>{nameOf(u)}</strong>
+                      {self && <span className={css.youTag}>คุณ</span>}
+                    </div>
+                    <span className={css.meta}>@{u.userName}{u.department ? ` · ${u.department}` : ""}</span>
+                  </div>
+
+                  <div className={css.access}>
+                    {admin ? (
+                      <span className={css.roleAdmin}><ShieldCheck size={13} /> ผู้ดูแลระบบ · ทุกเมนู</span>
+                    ) : (
+                      <span className={css.roleStaff} title={perms.map((h) => PERM_LABEL.get(h)).join("\n")}>
+                        <UserCog size={13} /> {perms.length ? `${perms.length} เมนู · ${PERM_LABEL.get(perms[0])}${perms.length > 1 ? " …" : ""}` : "ยังไม่มีสิทธิ์เมนู"}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className={css.status}>
+                    {!u.isActive ? (
+                      <span className={css.badgeOff}>ปิดใช้งาน</span>
+                    ) : locked ? (
+                      <span className={css.badgeLock}><Lock size={12} /> ล็อกถึง {time(u.lockedUntil!)}</span>
+                    ) : (
+                      <span className={css.badgeOn}>ใช้งานได้</span>
+                    )}
+                    <span className={!u.lastLoginAt ? css.seenNever : css.seen}>{lastSeen(u.lastLoginAt, now)}</span>
+                  </div>
+
+                  <div className={css.actions}>
+                    {busyId === u.id ? (
+                      <Loader2 size={18} className={css.spin} />
+                    ) : (
+                      <>
+                        {locked && (
+                          <button type="button" className={css.btnWarnSm} onClick={() => put(u, { unlock: true }, `ปลดล็อก ${nameOf(u)} แล้ว`)}>
+                            <LockOpen size={14} /> ปลดล็อก
+                          </button>
+                        )}
+                        <button type="button" className={css.btnSm} onClick={() => setEditing(u)}>
+                          <Pencil size={14} /> แก้ไข
+                        </button>
+                        <details className={css.more}>
+                          <summary aria-label={`ตัวเลือกเพิ่มเติมของ ${nameOf(u)}`}>⋯</summary>
+                          <div className={css.menu} onClick={(e) => ((e.currentTarget.parentElement as HTMLDetailsElement).open = false)}>
+                            <button type="button" onClick={() => resetPassword(u)}><KeyRound size={14} /> รีเซ็ตรหัสผ่าน</button>
+                            {!self && (
+                              <button type="button" onClick={() => toggleActive(u)}>
+                                {u.isActive ? <><Lock size={14} /> ปิดใช้งาน</> : <><LockOpen size={14} /> เปิดใช้งาน</>}
+                              </button>
+                            )}
+                            {!self && <button type="button" className={css.danger} onClick={() => remove(u)}><Trash2 size={14} /> ลบบัญชี</button>}
+                          </div>
+                        </details>
+                      </>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+
+      {editing && (
+        <Editor
+          key={editing === "new" ? "new" : editing.id}
+          user={editing === "new" ? null : editing}
+          isSelf={editing !== "new" && editing.id === currentUserId}
+          users={users}
+          onClose={() => setEditing(null)}
+          onSaved={(msg, cred) => {
+            setEditing(null);
+            setToast({ text: msg });
+            setTick((n) => n + 1);
+            if (cred) {
+              setCopied(false);
+              setCredential({ title: "สร้างบัญชีแล้ว", ...cred });
+            }
+          }}
+        />
+      )}
+
+      {/* ── แสดงรหัสผ่านครั้งเดียว ── */}
+      {credential && (
+        <div className={css.overlayCenter}>
+          <div className={css.dialog} role="dialog" aria-modal="true" aria-label={credential.title}>
+            <h2 className={css.dialogTitle}><KeyRound size={18} /> {credential.title}</h2>
+            <p className={css.dialogText}>
+              ส่งข้อมูลนี้ให้ผู้ใช้ทางช่องทางที่ปลอดภัย รหัสผ่านจะแสดงครั้งเดียว ปิดหน้าต่างนี้แล้วดูอีกไม่ได้
+              · ผู้ใช้ต้องตั้งรหัสผ่านของตัวเองเมื่อเข้าใช้ครั้งแรก จึงจะใช้เมนูอื่นได้
+            </p>
+            <dl className={css.cred}>
+              <dt>ชื่อผู้ใช้</dt>
+              <dd className={css.mono}>{credential.userName}</dd>
+              <dt>รหัสผ่านชั่วคราว</dt>
+              <dd className={css.mono}>{credential.password}</dd>
+            </dl>
+            <div className={css.dialogActions}>
+              <button
+                type="button"
+                className={css.btnGhost}
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(`ชื่อผู้ใช้: ${credential.userName}\nรหัสผ่าน: ${credential.password}`);
+                    setCopied(true);
+                  } catch { /* คัดลอกไม่ได้ ผู้ใช้เลือกข้อความเองได้ */ }
+                }}
+              >
+                {copied ? <Check size={15} /> : <Copy size={15} />} {copied ? "คัดลอกแล้ว" : "คัดลอก"}
+              </button>
+              <button type="button" className={css.btnPrimary} onClick={() => setCredential(null)}>เสร็จแล้ว</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {toast && <div className={`${css.toast} ${toast.error ? css.toastErr : ""}`} role="status">{toast.text}</div>}
     </div>
   );
 }

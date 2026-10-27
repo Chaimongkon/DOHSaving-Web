@@ -13,6 +13,59 @@
   pointer-events: none;
 }
 
+/* ── ภาพจริงที่หันขวา (ซานต้า/กามเทพจากฝ่ายประชาสัมพันธ์): บินซ้าย→ขวาไม่กลับด้าน · ขวา→ซ้ายกลับด้านให้หันไปทางที่บิน ──
+   (ท่าบินเดิมทำไว้สำหรับ Lottie/ภาพที่หันซ้าย) · กลับด้านด้วย scaleX(-1) ท้ายสุดของ transform = กลับเฉพาะภาพ ไม่กลับทิศทางที่บิน */
+.flyAcrossFaceL,
+.flyAcrossLtrFaceR,
+.floatAcrossFaceL,
+.floatAcrossLtrFaceR {
+  height: auto;
+  animation-fill-mode: forwards;
+}
+
+.flyAcrossFaceL,
+.flyAcrossLtrFaceR {
+  animation-timing-function: linear;
+}
+
+.floatAcrossFaceL,
+.floatAcrossLtrFaceR {
+  animation-timing-function: ease-in-out;
+}
+
+.flyAcrossFaceL { animation-name: flyAcrossFaceL; }
+.flyAcrossLtrFaceR { animation-name: flyAcrossLtrFaceR; }
+.floatAcrossFaceL { animation-name: floatAcrossFaceL; }
+.floatAcrossLtrFaceR { animation-name: floatAcrossLtrFaceR; }
+
+@keyframes flyAcrossFaceL {
+  0% { transform: translateX(calc(100vw + 200px)) rotate(-5deg) scaleX(-1); }
+  50% { transform: translateX(30vw) rotate(0deg) translateY(-20px) scaleX(-1); }
+  100% { transform: translateX(-400px) rotate(5deg) scaleX(-1); }
+}
+
+@keyframes flyAcrossLtrFaceR {
+  0% { transform: translateX(-400px) rotate(5deg); }
+  50% { transform: translateX(50vw) rotate(0deg) translateY(-20px); }
+  100% { transform: translateX(calc(100vw + 200px)) rotate(-5deg); }
+}
+
+@keyframes floatAcrossFaceL {
+  0% { transform: translateX(calc(100vw + 200px)) rotate(-5deg) scaleX(-1); }
+  25% { transform: translateX(70vw) rotate(5deg) translateY(-40px) scaleX(-1); }
+  50% { transform: translateX(40vw) rotate(-5deg) translateY(20px) scaleX(-1); }
+  75% { transform: translateX(15vw) rotate(5deg) translateY(-30px) scaleX(-1); }
+  100% { transform: translateX(-300px) rotate(-5deg) scaleX(-1); }
+}
+
+@keyframes floatAcrossLtrFaceR {
+  0% { transform: translateX(-300px) rotate(5deg); }
+  25% { transform: translateX(20vw) rotate(-5deg) translateY(-40px); }
+  50% { transform: translateX(50vw) rotate(5deg) translateY(20px); }
+  75% { transform: translateX(80vw) rotate(-5deg) translateY(-30px); }
+  100% { transform: translateX(calc(100vw + 200px)) rotate(5deg); }
+}
+
 /* ── Santa Sleigh: Right to Left ── */
 .flyAcross {
   height: auto;
@@ -139,3 +192,57 @@
 
 /* ── Responsive: smaller on mobile ── */
 
+
+/* ── กระทงลอยผ่าน: แนวล่างของจอ โยกขึ้นลงตามคลื่น ── */
+.waterRtl,
+.waterLtr {
+  height: auto;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  filter: drop-shadow(0 8px 10px rgba(80, 50, 15, 0.25));
+}
+
+.waterRtl {
+  animation-name: waterRtl;
+}
+
+.waterLtr {
+  animation-name: waterLtr;
+}
+
+@keyframes waterRtl {
+  0% { transform: translateX(calc(100vw + 40px)) translateY(0) rotate(-2deg); }
+  12.5% { transform: translateX(calc(87.5vw - 30px)) translateY(-6px) rotate(2deg); }
+  25% { transform: translateX(calc(75vw - 60px)) translateY(0) rotate(-2deg); }
+  37.5% { transform: translateX(calc(62.5vw - 90px)) translateY(-6px) rotate(2deg); }
+  50% { transform: translateX(calc(50vw - 120px)) translateY(0) rotate(-2deg); }
+  62.5% { transform: translateX(calc(37.5vw - 150px)) translateY(-6px) rotate(2deg); }
+  75% { transform: translateX(calc(25vw - 180px)) translateY(0) rotate(-2deg); }
+  87.5% { transform: translateX(calc(12.5vw - 210px)) translateY(-6px) rotate(2deg); }
+  100% { transform: translateX(-260px) translateY(0) rotate(-2deg); }
+}
+
+@keyframes waterLtr {
+  0% { transform: translateX(-260px) translateY(0) rotate(2deg); }
+  12.5% { transform: translateX(calc(12.5vw - 210px)) translateY(-6px) rotate(-2deg); }
+  25% { transform: translateX(calc(25vw - 180px)) translateY(0) rotate(2deg); }
+  37.5% { transform: translateX(calc(37.5vw - 150px)) translateY(-6px) rotate(-2deg); }
+  50% { transform: translateX(calc(50vw - 120px)) translateY(0) rotate(2deg); }
+  62.5% { transform: translateX(calc(62.5vw - 90px)) translateY(-6px) rotate(-2deg); }
+  75% { transform: translateX(calc(75vw - 60px)) translateY(0) rotate(2deg); }
+  87.5% { transform: translateX(calc(87.5vw - 30px)) translateY(-6px) rotate(-2deg); }
+  100% { transform: translateX(calc(100vw + 40px)) translateY(0) rotate(2deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .waterRtl,
+  .waterLtr {
+    display: none;
+  }
+
+  /* โหมดดูตัวอย่างของเจ้าหน้าที่: แสดงให้เห็นว่าสมาชิกทั่วไปจะเห็นอะไร */
+  .waterRtl.force,
+  .waterLtr.force {
+    display: block;
+  }
+}

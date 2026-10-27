@@ -3,19 +3,7 @@ import prisma from "@/lib/prisma";
 import { hashPassword } from "@/lib/auth";
 import { requireAdmin } from "@/lib/adminAuth";
 import { getAuditIpAddress, writeAuditLog } from "@/lib/auditLog";
-
-const userSelect = {
-  id: true,
-  fullName: true,
-  userName: true,
-  userRole: true,
-  department: true,
-  phone: true,
-  isActive: true,
-  menuPermissions: true,
-  lastLoginAt: true,
-  createdAt: true,
-} as const;
+import { ROLES, cleanPermissions, otherActiveAdmins, passwordProblem, userSelect } from "@/lib/adminUsers";
 
 export async function GET(
   req: NextRequest,
@@ -43,6 +31,7 @@ export async function GET(
   }
 }
 
+// PUT — แก้ไขข้อมูล/บทบาท/สิทธิ์ · { password } = รีเซ็ตรหัสผ่าน · { unlock: true } = ปลดล็อกบัญชี
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -64,24 +53,53 @@ export async function PUT(
       return NextResponse.json({ error: "ไม่พบผู้ใช้" }, { status: 404 });
     }
 
-    const body = await req.json();
-    const { fullName, userRole, department, phone, isActive, menuPermissions, password } = body;
+    const body = await req.json().catch(() => ({}));
+    const { fullName, userRole, department, phone, isActive, menuPermissions, password, unlock } = body;
+    const isSelf = userId === payload.userId;
 
     const updateData: Record<string, unknown> = {};
-    if (fullName !== undefined) updateData.fullName = fullName;
-    if (userRole !== undefined) updateData.userRole = userRole;
-    if (department !== undefined) updateData.department = department;
-    if (phone !== undefined) updateData.phone = phone;
-    if (isActive !== undefined) updateData.isActive = isActive;
-    if (menuPermissions !== undefined) updateData.menuPermissions = menuPermissions;
+    if (typeof fullName === "string") {
+      if (!fullName.trim()) return NextResponse.json({ error: "กรุณากรอกชื่อ-นามสกุล" }, { status: 400 });
+      updateData.fullName = fullName.trim();
+    }
+    if (userRole !== undefined) {
+      if (!ROLES.includes(userRole)) return NextResponse.json({ error: "บทบาทไม่ถูกต้อง" }, { status: 400 });
+      updateData.userRole = userRole;
+    }
+    if (department !== undefined) updateData.department = typeof department === "string" ? department.trim() || null : null;
+    if (phone !== undefined) updateData.phone = typeof phone === "string" ? phone.trim() || null : null;
+    if (isActive !== undefined) updateData.isActive = Boolean(isActive);
+    if (menuPermissions !== undefined) updateData.menuPermissions = cleanPermissions(menuPermissions);
 
-    if (password && password.trim()) {
-      updateData.password = await hashPassword(password);
-      updateData.mustChangePassword = true;
-      updateData.sessionToken = null;
+    // กันล็อกตัวเองออก และกันระบบไม่เหลือผู้ดูแลระบบ
+    const losingAdmin =
+      existingUser.userRole === "admin" &&
+      existingUser.isActive &&
+      ((updateData.userRole !== undefined && updateData.userRole !== "admin") || updateData.isActive === false);
+    if (losingAdmin && isSelf) {
+      return NextResponse.json({ error: "ลดสิทธิ์หรือปิดใช้งานบัญชีตัวเองไม่ได้ ให้ผู้ดูแลระบบคนอื่นทำแทน" }, { status: 400 });
+    }
+    if (losingAdmin && (await otherActiveAdmins(userId)) === 0) {
+      return NextResponse.json({ error: "ต้องมีผู้ดูแลระบบที่ใช้งานได้อย่างน้อย 1 คน" }, { status: 400 });
     }
 
-    if (isActive === false) {
+    if (password !== undefined && password !== "") {
+      const pwError = passwordProblem(password);
+      if (pwError) return NextResponse.json({ error: pwError }, { status: 400 });
+      updateData.password = await hashPassword(password);
+      updateData.mustChangePassword = true;
+      updateData.lastPasswordChange = new Date();
+      updateData.sessionToken = null;
+      updateData.failedLoginAttempts = 0;
+      updateData.lockedUntil = null;
+    }
+
+    if (unlock === true) {
+      updateData.failedLoginAttempts = 0;
+      updateData.lockedUntil = null;
+    }
+
+    if (updateData.isActive === false) {
       updateData.sessionToken = null;
     }
 
@@ -93,7 +111,7 @@ export async function PUT(
 
     await writeAuditLog({
       userId: payload.userId,
-      action: "update",
+      action: unlock === true ? "unlock" : password ? "reset_password" : "update",
       tableName: "users",
       recordId: user.id,
       ipAddress,
@@ -134,6 +152,9 @@ export async function DELETE(
 
     if (!existingUser) {
       return NextResponse.json({ error: "ไม่พบผู้ใช้" }, { status: 404 });
+    }
+    if (existingUser.userRole === "admin" && existingUser.isActive && (await otherActiveAdmins(userId)) === 0) {
+      return NextResponse.json({ error: "ต้องมีผู้ดูแลระบบที่ใช้งานได้อย่างน้อย 1 คน" }, { status: 400 });
     }
 
     await prisma.user.delete({ where: { id: userId } });

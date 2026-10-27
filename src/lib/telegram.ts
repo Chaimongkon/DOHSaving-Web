@@ -21,6 +21,49 @@ function config() {
 }
 
 export const isTelegramConfigured = () => config() !== null;
+export const telegramChatCount = () => config()?.chats.length ?? 0;
+
+/* ═════════ เปิด/ปิดการแจ้งเตือนแต่ละแบบ (ตั้งที่ /admin/settings) ═════════ */
+
+export const TELEGRAM_SETTINGS_KEY = "telegram_settings";
+export type TelegramEvent = "complaint" | "question" | "reply" | "digest";
+export type TelegramToggles = Record<TelegramEvent, boolean>;
+export const TELEGRAM_DEFAULTS: TelegramToggles = { complaint: true, question: true, reply: true, digest: true };
+
+let togglesCache: { at: number; value: TelegramToggles } | null = null;
+
+export function parseTelegramToggles(raw: string | null | undefined): TelegramToggles {
+  try {
+    const p = raw ? JSON.parse(raw) : {};
+    return {
+      complaint: p.complaint !== false,
+      question: p.question !== false,
+      reply: p.reply !== false,
+      digest: p.digest !== false,
+    };
+  } catch {
+    return TELEGRAM_DEFAULTS;
+  }
+}
+
+/** อ่านสวิตช์ (จำไว้ 1 นาที ไม่ต้องอ่านฐานข้อมูลทุกครั้งที่มีเรื่องใหม่) */
+export async function getTelegramToggles(): Promise<TelegramToggles> {
+  if (togglesCache && Date.now() - togglesCache.at < 60_000) return togglesCache.value;
+  const row = await prisma.siteSetting.findUnique({ where: { key: TELEGRAM_SETTINGS_KEY }, select: { value: true } }).catch(() => null);
+  const value = parseTelegramToggles(row?.value);
+  togglesCache = { at: Date.now(), value };
+  return value;
+}
+
+/** เรียกหลังบันทึกสวิตช์ใหม่ ให้มีผลทันที */
+export const resetTelegramToggles = () => {
+  togglesCache = null;
+};
+
+const enabled = async (event: TelegramEvent) => (await getTelegramToggles())[event];
+
+/** ผลการส่งครั้งล่าสุด (นับตั้งแต่เซิร์ฟเวอร์เริ่มทำงาน) — แสดงในหน้าตั้งค่า */
+export let lastDelivery: { at: string; ok: boolean; error: string | null } | null = null;
 
 /** ข้อความจากฐานข้อมูลบางส่วนถูก escape เป็น HTML entity ไว้แล้ว — ถอดกลับก่อน แล้วค่อย escape ใหม่ให้ Telegram */
 function plain(s: string) {
@@ -62,15 +105,40 @@ export async function sendTelegram(html: string): Promise<boolean> {
           body: JSON.stringify({ chat_id, text: html, parse_mode: "HTML", link_preview_options: { is_disabled: true } }),
           signal: AbortSignal.timeout(TIMEOUT_MS),
         });
-        if (!res.ok) console.error(`[telegram] ส่งไม่สำเร็จ (${res.status}):`, (await res.text()).slice(0, 200));
-        return res.ok;
+        if (!res.ok) {
+          const detail = (await res.text()).slice(0, 200);
+          console.error(`[telegram] ส่งไม่สำเร็จ (${res.status}):`, detail);
+          return describeError(res.status, detail);
+        }
+        return null;
       } catch (error) {
         console.error("[telegram] ส่งไม่สำเร็จ:", error instanceof Error ? error.message : error);
-        return false;
+        return "เชื่อมต่อ Telegram ไม่ได้ (เครือข่ายหรือไฟร์วอลล์ของเซิร์ฟเวอร์)";
       }
     })
   );
-  return results.some(Boolean);
+  const failed = results.filter((r): r is string => r !== null);
+  const ok = failed.length < results.length;
+  lastDelivery = { at: new Date().toISOString(), ok, error: failed[0] ?? null };
+  return ok;
+}
+
+/** แปลงข้อผิดพลาดจาก Telegram เป็นภาษาที่เจ้าหน้าที่เข้าใจ */
+function describeError(status: number, detail: string): string {
+  if (status === 401) return "Token ของบอทไม่ถูกต้อง (ตรวจ TELEGRAM_BOT_TOKEN)";
+  if (status === 400 && /chat not found/i.test(detail)) return "ไม่พบห้องแชต (ตรวจ TELEGRAM_CHAT_ID)";
+  if (status === 403) return "บอทถูกนำออกจากห้อง หรือยังไม่ได้เพิ่มบอทเข้าห้อง";
+  if (status === 429) return "ส่งข้อความถี่เกินไป Telegram ให้รอสักครู่";
+  return `Telegram ตอบกลับผิดพลาด (${status})`;
+}
+
+/** ข้อความทดสอบจากหน้าตั้งค่า */
+export function sendTelegramTest(by: string) {
+  return sendTelegram(
+    [`✅ <b>ทดสอบการแจ้งเตือน</b>`, `ระบบหลังบ้านเว็บสหกรณ์ส่งข้อความถึงห้องนี้ได้ปกติ`, `ทดสอบโดย ${esc(by)}`, adminLink("/admin/settings", "เปิดหน้าตั้งค่า →")]
+      .filter(Boolean)
+      .join("\n")
+  );
 }
 
 /* ═════════ เหตุการณ์ ═════════ */
@@ -81,7 +149,8 @@ const COMPLAINT_LABELS: Record<string, string> = {
   inquiry: "สอบถาม",
 };
 
-export function notifyNewComplaint(c: { trackingCode: string; category: string; subject: string | null }) {
+export async function notifyNewComplaint(c: { trackingCode: string; category: string; subject: string | null }) {
+  if (!(await enabled("complaint"))) return false;
   return sendTelegram(
     [
       `📮 <b>เรื่อง${COMPLAINT_LABELS[c.category] ?? "ร้องเรียน"}ใหม่</b>`,
@@ -92,7 +161,8 @@ export function notifyNewComplaint(c: { trackingCode: string; category: string; 
   );
 }
 
-export function notifyNewQuestion(q: { id: number; title: string }) {
+export async function notifyNewQuestion(q: { id: number; title: string }) {
+  if (!(await enabled("question"))) return false;
   return sendTelegram(
     [
       `💬 <b>คำถามใหม่ในกระดานถาม-ตอบ</b>`,
@@ -102,7 +172,8 @@ export function notifyNewQuestion(q: { id: number; title: string }) {
   );
 }
 
-export function notifyMemberReply(q: { id: number; title: string }) {
+export async function notifyMemberReply(q: { id: number; title: string }) {
+  if (!(await enabled("reply"))) return false;
   return sendTelegram(
     [
       `↩️ <b>สมาชิกถามต่อในกระทู้</b>`,
@@ -114,8 +185,8 @@ export function notifyMemberReply(q: { id: number; title: string }) {
 
 /* ═════════ สรุปงานค้างประจำวัน ═════════ */
 
-const DIGEST_KEY = "telegram_digest_last";
-const DIGEST_HOUR = 8; // หลัง 08:00 น. วันทำการ
+export const DIGEST_KEY = "telegram_digest_last";
+export const DIGEST_HOUR = 8; // หลัง 08:00 น. วันทำการ
 const CHECK_EVERY_MS = 10 * 60 * 1000;
 const TH = 7 * 60 * 60 * 1000;
 
@@ -138,6 +209,7 @@ export async function maybeSendDailyDigest(): Promise<void> {
 
   running = true;
   try {
+    if (!(await enabled("digest"))) return;
     const last = await prisma.siteSetting.findUnique({ where: { key: DIGEST_KEY }, select: { value: true } });
     if (last?.value === today) return;
     // จองวันนี้ก่อนส่ง — ถ้าส่งล้มเหลวก็ไม่วนส่งซ้ำทั้งวัน

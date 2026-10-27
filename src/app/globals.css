@@ -1,8 +1,54 @@
-﻿/* DOHSaving V2 โ€” Global Styles */
+/* DOHSaving V2 โ€” Global Styles */
 
 :root {
+  /* ═══ ชุดสีแบรนด์ (design tokens) ═══
+     ทุกหน้าสาธารณะอ่านสีจากชุดนี้ — ธีมเทศกาลเปลี่ยนสีทั้งเว็บได้ด้วยการสลับค่าชุดนี้ชุดเดียว
+     *-rgb ใช้กับสีโปร่งใส เช่น rgb(var(--brand-orange-500-rgb) / 0.3)
+     หน้า admin ไม่ใช้ชุดนี้ (ตั้งใจให้ไม่เปลี่ยนตามธีม) */
+  --brand-navy-950: #0a1628;
+  --brand-navy-950-rgb: 10 22 40;
+  --brand-navy-925: #0b172d;
+  --brand-navy-925-rgb: 11 23 45;
+  --brand-navy-900: #0f1d36;
+  --brand-navy-900-rgb: 15 29 54;
+  --brand-navy-850: #13274a;
+  --brand-navy-850-rgb: 19 39 74;
+  --brand-navy-800: #16294a;
+  --brand-navy-800-rgb: 22 41 74;
+  --brand-navy-750: #172c52;
+  --brand-navy-750-rgb: 23 44 82;
+  --brand-navy-700: #1c3157;
+  --brand-navy-700-rgb: 28 49 87;
+  --brand-navy-600: #22406f;
+  --brand-navy-600-rgb: 34 64 111;
+
+  --brand-orange-400: #f0883f;
+  --brand-orange-400-rgb: 240 136 63;
+  --brand-orange-450: #f0803f;
+  --brand-orange-450-rgb: 240 128 63;
+  --brand-orange-500: #e8652b;
+  --brand-orange-500-rgb: 232 101 43;
+  --brand-orange-550: #d45a24;
+  --brand-orange-550-rgb: 212 90 36;
+  --brand-orange-600: #d4541a;
+  --brand-orange-600-rgb: 212 84 26;
+  --brand-orange-700: #c24a15;
+  --brand-orange-700-rgb: 194 74 21;
+
+  --brand-gold-200: #f7e3a1;
+  --brand-gold-200-rgb: 247 227 161;
+  --brand-gold-300: #e3c169;
+  --brand-gold-300-rgb: 227 193 105;
+  --brand-gold-400: #d8ae3f;
+  --brand-gold-400-rgb: 216 174 63;
+  --brand-gold-700: #8a6520;
+  --brand-gold-700-rgb: 138 101 32;
+
+  /* ตัวหนังสือสีอ่อนบนพื้นน้ำเงิน */
+  --brand-on-navy-rgb: 232 240 252;
+
   /* Brand Colors */
-  --color-primary: #E8652B;
+  --color-primary: var(--brand-orange-500);
   --color-primary-hover: #D4551D;
   --color-primary-light: #f09060;
   --color-secondary: #1a4b8c;
@@ -12,11 +58,11 @@
   --color-text-secondary: #666666;
   --color-border: #e8e8e8;
   /* Layout dark backgrounds */
-  --color-topbar-bg: #0a1628;
-  --color-navbar-bg: #0f1d36;
+  --color-topbar-bg: var(--brand-navy-950);
+  --color-navbar-bg: var(--brand-navy-900);
   --color-navbar-bg-end: #162544;
   --color-footer-bg: #0c1829;
-  --color-footer-bg-end: #0f1d36;
+  --color-footer-bg-end: var(--brand-navy-900);
 }
 
 * {
@@ -97,7 +143,7 @@ a.topbar-text {
 }
 
 a.topbar-text:hover {
-  color: #f7e3a1 !important;
+  color: var(--brand-gold-200) !important;
 }
 
 .topbar .anticon {
@@ -188,10 +234,10 @@ a.topbar-text:hover {
 }
 
 .navbar-login-btn:hover {
-  background: #d45a24;
+  background: var(--brand-orange-550);
   color: #ffffff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(232, 101, 43, 0.35);
+  box-shadow: 0 4px 12px rgb(var(--brand-orange-500-rgb) / 0.35);
 }
 
 /* โ”€โ”€ Desktop menu bar โ”€โ”€ */
@@ -328,7 +374,7 @@ a.topbar-text:hover {
   margin: 0;
   font-size: 16px;
   font-weight: 800;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
 }
 
 .mega-panel-image-text {
@@ -383,7 +429,7 @@ a.topbar-text:hover {
 .mega-column-title {
   font-size: 14px;
   font-weight: 700;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   margin: 0 0 10px 0;
   padding: 0 0 8px 0;
   display: flex;
@@ -433,7 +479,7 @@ a.topbar-text:hover {
 
 .mega-link:hover {
   background: #f7f8fa;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   padding-left: 12px;
 }
 
@@ -599,7 +645,7 @@ a.topbar-text:hover {
   text-align: center;
   font-size: 28px;
   font-weight: 700;
-  color: #0f1d36;
+  color: var(--brand-navy-900);
   margin: 0 0 14px 0;
   position: relative;
   padding-bottom: 16px;
@@ -675,7 +721,7 @@ a.topbar-text:hover {
   width: 160px;
   height: 160px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(232, 101, 43, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgb(var(--brand-orange-500-rgb) / 0.15) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -848,13 +894,13 @@ a.topbar-text:hover {
   border-radius: 12px;
   text-decoration: none;
   transition: all 0.25s;
-  box-shadow: 0 4px 16px rgba(232, 101, 43, 0.3);
+  box-shadow: 0 4px 16px rgb(var(--brand-orange-500-rgb) / 0.3);
 }
 
 .drawer-login-btn:hover {
-  background: linear-gradient(135deg, #d45a24 0%, #e07040 100%);
+  background: linear-gradient(135deg, var(--brand-orange-550) 0%, #e07040 100%);
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(232, 101, 43, 0.4);
+  box-shadow: 0 6px 20px rgb(var(--brand-orange-500-rgb) / 0.4);
   color: #ffffff !important;
 }
 

@@ -16,7 +16,7 @@
 }
 
 .viewAll {
-  color: #E8652B;
+  color: var(--brand-orange-500);
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
@@ -27,7 +27,7 @@
 }
 
 .viewAll:hover {
-  color: #d45a24;
+  color: var(--brand-orange-550);
   gap: 9px;
 }
 
@@ -63,7 +63,7 @@
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
-  border-color: #E8652B;
+  border-color: var(--brand-orange-500);
 }
 
 .imgWrap {
@@ -123,7 +123,7 @@
 }
 
 .card:hover .title {
-  color: #E8652B;
+  color: var(--brand-orange-500);
 }
 
 @media (max-width: 900px) {
