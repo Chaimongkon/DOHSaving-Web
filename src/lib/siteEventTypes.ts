@@ -22,6 +22,7 @@ export const FORM_GROUP_LABELS: Record<string, string> = {
 
 /** หน้าที่มีช่องค้นหา — ค่า meta ของ search_miss */
 export const SEARCH_PAGES: Record<string, { label: string; href: string }> = {
+  home: { label: "หน้าหลัก", href: "/" },
   forms: { label: "ดาวน์โหลดแบบฟอร์ม", href: "/forms" },
   "regulations:statute": { label: "ข้อบังคับ", href: "/regulations/statute" },
   "regulations:rules": { label: "ระเบียบ", href: "/regulations/rules" },

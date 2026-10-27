@@ -18,7 +18,8 @@ const CONCEPTS: string[][] = [
   // อยู่ก่อนกลุ่มแต่งงาน — "คู่สมรส" ไม่ใช่เรื่องสวัสดิการมงคลสมรส
   ["คู่สมรส", "สามี", "ภรรยา", "ภริยา"],
   ["มงคลสมรส", "สมรส", "แต่งงาน"],
-  ["ลายเซ็น", "ลงนาม", "ลงชื่อ", "เซ็นต์", "เซ็น"],
+  // ไม่ใส่ "ลงชื่อ" — ซ้อนอยู่ในคำว่า "เปลี่ยนแปลงชื่อ"
+  ["ลายเซ็น", "ลงนาม", "เซ็นต์", "เซ็น"],
   ["เงินเดือน", "สลิป"],
   ["ดอกเบี้ย", "ปันผล", "เฉลี่ยคืน"],
   ["รับขวัญบุตร", "คลอดบุตร", "คลอด", "ลูกเกิด", "บุตรเกิด", "มีลูก"],
@@ -60,8 +61,10 @@ export function normalizeText(s: string): string {
   return s
     .normalize("NFC")
     .toLowerCase()
-    .replace(/[​-‍﻿ฯ]/g, "")
-    .replace(/ํา/g, "ำ")
+    .replace(/[\u200b-\u200d\ufeff\u0e2f]/g, "")
+    .replace(/\u0e4d\u0e32/g, "\u0e33")
+    // "กู้เงินสามัญ" กับ "กู้สามัญ" คือเรื่องเดียวกัน — ชื่อแบบฟอร์มใช้ทั้งสองแบบ
+    .replace(/กู้เงิน/g, "กู้")
     .replace(
       /(หนึ่ง|สอง|ยี่|สาม|สี่|ห้า|หก|เจ็ด|แปด|เก้า)?สิบ(เอ็ด|สอง|สาม|สี่|ห้า|หก|เจ็ด|แปด|เก้า)?/g,
       (_, tens?: string, ones?: string) => String((tens ? DIGIT[tens] : 1) * 10 + (ones ? DIGIT[ones] : 0))
@@ -148,16 +151,21 @@ export function createSmartSearch<T>(items: T[], textOf: (item: T) => string) {
     });
     const terms = [...new Set(words(rest))].filter((w) => w.length >= 2 && !STOP.has(w));
 
+    // จำนวนรายการที่มีคำนั้น · คำที่มีเกินครึ่งของรายการ (เช่น "สมาชิก") ไม่ช่วยแยก — ไม่นับ
+    // (ถ้าทุกคำในคำค้นเป็นคำทั่วไปหมด ก็ยังใช้ — เช่น "อนุมัติสมาชิก" ในข่าวที่ส่วนใหญ่เป็นประกาศอนุมัติ)
+    const generic = (df: number) => N >= 10 && df > N / 2;
+    // คำที่มีแทบทุกรายการ (เกิน 90% เช่น "สมาชิก" ในแบบฟอร์ม) ไม่นับเลย
+    const useless = (df: number) => df === 0 || (N >= 10 && df > N * 0.9);
+    const allConcepts = concepts.map((c) => ({ c, df: index.filter((x) => x.concepts.has(c)).length })).filter((x) => !useless(x.df));
+    const allTerms = terms.map((w) => ({ w, df: index.filter((x) => matchesWord(x, w)).length })).filter((x) => !useless(x.df));
+    const hasSpecific = [...allConcepts, ...allTerms].some((x) => !generic(x.df));
+    const conceptDf = hasSpecific ? allConcepts.filter((x) => !generic(x.df)) : allConcepts;
+    const termDf = hasSpecific ? allTerms.filter((x) => !generic(x.df)) : allTerms;
+
     const scores = index.map((d) => {
       let score = 0;
-      for (const c of concepts) {
-        if (!d.concepts.has(c)) continue;
-        score += 1.5 * weight(index.filter((x) => x.concepts.has(c)).length);
-      }
-      for (const w of terms) {
-        if (!matchesWord(d, w)) continue;
-        score += weight(index.filter((x) => matchesWord(x, w)).length);
-      }
+      for (const { c, df } of conceptDf) if (d.concepts.has(c)) score += 1.5 * weight(df);
+      for (const { w, df } of termDf) if (matchesWord(d, w)) score += weight(df);
       return score;
     });
 

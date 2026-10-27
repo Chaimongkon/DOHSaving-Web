@@ -2,7 +2,7 @@
    Quick Links / Services Section — Colorful & Engaging
    ============================================================ */
 .quickLinksSection {
-  padding: 44px 24px 48px;
+  padding: 34px 24px 36px;
   background: #f8f6f3;
 }
 
@@ -24,10 +24,10 @@
   font-size: 13px;
   color: #9ca3af;
   text-align: center;
-  margin: 0 0 28px;
+  margin: 0 0 18px;
 }
 
-/* ── Grid: single row 9 cols ── */
+/* ── Grid: 10 การ์ด (9 บริการ + ร้องเรียน) แถวเดียวบนจอใหญ่ ── */
 .grid {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
@@ -41,8 +41,8 @@
   align-items: center;
   text-align: center;
   text-decoration: none;
-  padding: 36px 14px 28px;
-  border-radius: 20px;
+  padding: 22px 12px 18px;
+  border-radius: 18px;
   background: var(--bg, #fff);
   border: 1px solid transparent;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -81,14 +81,19 @@
 
 /* ── Icon ── */
 .iconWrap {
-  width: 72px;
-  height: 72px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   transition: transform 0.3s ease;
   animation: float 6s ease-in-out infinite;
+}
+
+.iconWrap svg {
+  width: 100%;
+  height: 100%;
 }
 
 .card:nth-child(even) .iconWrap {
@@ -107,6 +112,11 @@
 }
 
 /* ── Text ── */
+/* ห่อชื่อ+คำอธิบาย — จอใหญ่ไม่มีผลกับการจัดวาง · มือถือใช้จัดข้อความข้างไอคอน */
+.cardText {
+  display: contents;
+}
+
 .cardTitle {
   font-size: 15px;
   font-weight: 700;
@@ -123,20 +133,22 @@
 .cardDesc {
   font-size: 11px;
   color: #6b7280;
-  margin: 0 0 16px 0;
+  margin: 0 0 10px 0;
   line-height: 1.5;
 }
 
-/* ── CTA arrow pill ── */
+/* ── CTA arrow pill (ลอยมุมขวาล่าง โผล่ตอนชี้เมาส์ — ไม่จองความสูงการ์ด) ── */
 .cta {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: var(--accent, var(--brand-orange-500));
-  margin-top: auto;
   opacity: 0;
   transform: translateY(4px);
   transition: all 0.3s ease;
@@ -158,9 +170,10 @@
 }
 
 /* ── Responsive ── */
+/* จอกลาง: 5 คอลัมน์ = 2 แถวเต็มพอดี (4 คอลัมน์จะเหลือแถวสุดท้าย 2 ใบ) */
 @media (max-width: 1100px) {
   .grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 
@@ -218,5 +231,66 @@
 
   .card {
     padding: 18px 6px 12px;
+  }
+}
+
+/* ── มือถือ: การ์ดแนวนอน (ไอคอนซ้าย ข้อความขวา) — 10 บริการเหลือ 5 แถวเตี้ย ๆ เลื่อนน้อยลงมาก ── */
+@media (max-width: 768px) {
+  .card {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 10px;
+    text-align: left;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+
+  .iconWrap {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    animation: none;
+  }
+
+  .iconWrap svg {
+    width: 44px;
+    height: 44px;
+  }
+
+  .cardText {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .cardTitle {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.35;
+  }
+
+  .cardDesc {
+    margin: 2px 0 0;
+    font-size: 11px;
+  }
+
+  .cta {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconWrap {
+    animation: none;
+  }
+
+  .card,
+  .card:hover {
+    transition: none;
+    transform: none;
   }
 }

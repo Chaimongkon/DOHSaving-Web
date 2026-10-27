@@ -22,9 +22,19 @@ import VideoAndRateSection from "@/components/home/VideoAndRateSection";
 import PhotoGallerySection from "@/components/home/PhotoGallerySection";
 import PromoDialog from "@/components/home/PromoDialog";
 import ComplaintPopup from "@/components/home/ComplaintPopup";
+import { HomeSearch, PopularForms } from "@/components/home/HomeFinder";
 import css from "./page.module.css";
 
 const quickLinks = [
+  // เรียงตามที่สมาชิกเข้าใช้จริง (สถิติการเข้าชม 90 วัน) — แบบฟอร์มมากที่สุด
+  {
+    icon: <FormIcon size={56} />,
+    title: "ดาวน์โหลดแบบฟอร์ม",
+    desc: "แบบฟอร์มทุกประเภท",
+    href: "/forms",
+    color: "#0369a1",
+    bg: "#f0f9ff",
+  },
   {
     icon: <InterestRateIcon size={56} />,
     title: "อัตราดอกเบี้ย",
@@ -42,12 +52,12 @@ const quickLinks = [
     bg: "#f0f4f8",
   },
   {
-    icon: <DepositIcon size={56} />,
-    title: "เงินฝาก",
-    desc: "ออมทรัพย์ ประจำ พิเศษ",
-    href: "/services/deposit",
-    color: "#16a34a",
-    bg: "#f0fdf4",
+    icon: <LoanCalcIcon size={56} />,
+    title: "คำนวณเงินกู้",
+    desc: "ประมาณการผ่อนชำระ",
+    href: "/services/loan-calculator",
+    color: "#d97706",
+    bg: "#fffbeb",
   },
   {
     icon: <WelfareIcon size={56} />,
@@ -58,12 +68,12 @@ const quickLinks = [
     bg: "#f5f3ff",
   },
   {
-    icon: <FormIcon size={56} />,
-    title: "ดาวน์โหลดแบบฟอร์ม",
-    desc: "แบบฟอร์มทุกประเภท",
-    href: "/forms",
-    color: "#0369a1",
-    bg: "#f0f9ff",
+    icon: <DepositIcon size={56} />,
+    title: "เงินฝาก",
+    desc: "ออมทรัพย์ ประจำ พิเศษ",
+    href: "/services/deposit",
+    color: "#16a34a",
+    bg: "#f0fdf4",
   },
   {
     icon: <QnAIcon size={56} />,
@@ -89,14 +99,6 @@ const quickLinks = [
     color: "#0d9488",
     bg: "#f0fdfa",
   },
-  {
-    icon: <LoanCalcIcon size={56} />,
-    title: "คำนวณเงินกู้",
-    desc: "ประมาณการผ่อนชำระ",
-    href: "/services/loan-calculator",
-    color: "#d97706",
-    bg: "#fffbeb",
-  },
 ];
 
 export default function HomePage() {
@@ -118,8 +120,9 @@ export default function HomePage() {
         <div className={css.quickLinksInner}>
           <h2 className={css.sectionTitle}>บริการของเรา</h2>
           <p className={css.sectionSub}>
-            เข้าถึงบริการต่างๆ ของสหกรณ์ออมทรัพย์กรมทางหลวง ได้อย่างสะดวกรวดเร็ว
+            ค้นหาสิ่งที่ต้องการ หรือเลือกบริการด้านล่าง
           </p>
+          <HomeSearch />
           <div className={css.grid}>
             {quickLinks.map((item, i) => (
               <Link
@@ -131,8 +134,10 @@ export default function HomePage() {
                 <div className={css.iconWrap}>
                   {item.icon}
                 </div>
-                <h3 className={css.cardTitle}>{item.title}</h3>
-                <p className={css.cardDesc}>{item.desc}</p>
+                <div className={css.cardText}>
+                  <h3 className={css.cardTitle}>{item.title}</h3>
+                  <p className={css.cardDesc}>{item.desc}</p>
+                </div>
                 <span className={css.cta}>
                   <ArrowRightOutlined className={css.ctaArrow} />
                 </span>
@@ -148,13 +153,17 @@ export default function HomePage() {
               <div className={css.iconWrap}>
                 <AlertIcon size={56} />
               </div>
-              <h3 className={css.cardTitle}>ร้องเรียน / เสนอแนะ</h3>
-              <p className={css.cardDesc}>แจ้งเรื่องหรือเสนอแนะ</p>
+              <div className={css.cardText}>
+                <h3 className={css.cardTitle}>ร้องเรียน / เสนอแนะ</h3>
+                <p className={css.cardDesc}>แจ้งเรื่องหรือเสนอแนะ</p>
+              </div>
               <span className={css.cta}>
                 <ArrowRightOutlined className={css.ctaArrow} />
               </span>
             </button>
           </div>
+
+          <PopularForms />
         </div>
       </section>
 

@@ -1,0 +1,525 @@
+/* ============================================================
+   ส่วน "บริการของเรา" (หน้าหลัก)
+   ช่องค้นหา (ใต้หัวข้อ) · แถบแบบฟอร์มยอดนิยม (ใต้การ์ดบริการ) · ปุ่มดาวน์โหลดตามประเภทสมาชิก
+   ============================================================ */
+
+/* ── ช่องค้นหา ── */
+.search {
+  position: relative;
+  z-index: 20;
+  max-width: 680px;
+  margin: 0 auto 20px;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 10px 0 18px;
+  background: #fff;
+  border: 1.5px solid #e6e1d8;
+  border-radius: 999px;
+  box-shadow: 0 10px 26px -20px rgba(15, 29, 54, 0.5);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.searchBox:focus-within {
+  border-color: #E8652B;
+  box-shadow: 0 0 0 4px rgba(232, 101, 43, 0.14);
+}
+
+.searchIcon {
+  flex-shrink: 0;
+  color: #E8652B;
+}
+
+.searchBox input {
+  flex: 1;
+  min-width: 0;
+  font-family: inherit;
+  font-size: 15.5px;
+  color: #0f1d36;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.searchBox input::placeholder {
+  color: #a3a9b5;
+}
+
+.searchBox input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.clear {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: #5b6474;
+  cursor: pointer;
+  background: #f1f3f7;
+  border: none;
+  border-radius: 50%;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: #9ca3af;
+}
+
+.chip {
+  padding: 3px 11px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #5b6474;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid #e3ddd3;
+  border-radius: 999px;
+}
+
+.chip:hover {
+  color: #E8652B;
+  border-color: #E8652B;
+  background: #fff;
+}
+
+/* ผลค้นหา — แผงลอยใต้ช่องค้นหา (ทับการ์ดบริการ) */
+.results {
+  position: absolute;
+  top: 56px;
+  right: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: min(70vh, 560px);
+  padding: 12px;
+  overflow-y: auto;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #e3e7ee;
+  border-radius: 16px;
+  box-shadow: 0 24px 50px -18px rgba(15, 29, 54, 0.45);
+}
+
+.group + .group {
+  padding-top: 8px;
+  border-top: 1px solid #f1f3f7;
+}
+
+.groupHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 4px 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #5b6474;
+}
+
+.groupHead span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.groupHead a {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1F5C9E;
+}
+
+.formList,
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.formList li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 10px;
+  padding: 8px 6px;
+  border-radius: 10px;
+}
+
+.formList li:hover {
+  background: #f8fafc;
+}
+
+.formTitle {
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #0f1d36;
+}
+
+.linkList a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 6px;
+  font-size: 14px;
+  color: #0f1d36;
+  border-radius: 10px;
+}
+
+.linkList a:hover {
+  color: #0f1d36;
+  background: #f8fafc;
+}
+
+.linkList a span {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.linkList small {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: #8a93a3;
+  white-space: nowrap;
+}
+
+.linkList .answered {
+  color: #15803d;
+}
+
+.linkList .waiting {
+  color: #b45309;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 8px;
+  font-size: 14px;
+  color: #5b6474;
+  text-align: center;
+}
+
+.empty p {
+  margin: 0;
+}
+
+.askLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  background: #E8652B;
+  border-radius: 10px;
+}
+
+.askLink:hover {
+  color: #fff;
+  background: #d4541a;
+}
+
+/* ── ปุ่มดาวน์โหลด ── */
+.dlRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dlBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 0 11px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0f1d36;
+  white-space: nowrap;
+  background: #fff;
+  border: 1px solid #d6dce6;
+  border-radius: 9px;
+  transition: all 0.15s;
+}
+
+.dlBtn:hover {
+  color: #E8652B;
+  border-color: #E8652B;
+}
+
+.dlBtnMain {
+  color: #fff;
+  background: #E8652B;
+  border-color: #E8652B;
+}
+
+.dlBtnMain:hover {
+  color: #fff;
+  background: #d4541a;
+}
+
+.dlMine {
+  padding: 0 6px;
+  font-size: 10.5px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+}
+
+/* ── แถบแบบฟอร์มยอดนิยม (ใต้การ์ดบริการ — แถวเดียว ไม่แย่งความเด่น) ── */
+.strip {
+  display: flex;
+  align-items: stretch;
+  margin-top: 16px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #ece7df;
+  border-radius: 16px;
+  box-shadow: 0 8px 22px -20px rgba(15, 29, 54, 0.45);
+}
+
+.stripLabel {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: #fff7f2;
+  border-right: 1px solid #f6e3d7;
+}
+
+.stripLabel > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.stripLabel strong {
+  font-size: 14px;
+  color: #0f1d36;
+  white-space: nowrap;
+}
+
+.stripLabel a {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #E8652B;
+}
+
+.stripIcon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: #fff;
+  background: #E8652B;
+  border-radius: 10px;
+}
+
+.stripList {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stripItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px 14px;
+}
+
+.stripItem + .stripItem {
+  border-left: 1px solid #f1ece4;
+}
+
+.stripTitle {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #0f1d36;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.strip .dlRow {
+  flex-wrap: nowrap;
+  gap: 4px;
+}
+
+.strip .dlBtn {
+  min-height: 26px;
+  padding: 0 8px;
+  font-size: 11.5px;
+  border-radius: 7px;
+}
+
+.strip .dlMine {
+  display: none;
+}
+
+.spin {
+  flex-shrink: 0;
+  color: #8a93a3;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.chip:focus-visible,
+.clear:focus-visible,
+.dlBtn:focus-visible,
+.groupHead a:focus-visible,
+.linkList a:focus-visible,
+.stripLabel a:focus-visible,
+.askLink:focus-visible {
+  outline: 3px solid rgba(232, 101, 43, 0.55);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1100px) {
+  .stripList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stripItem:nth-child(3) {
+    border-left: none;
+  }
+
+  .stripItem:nth-child(n + 3) {
+    border-top: 1px solid #f1ece4;
+  }
+}
+
+/* มือถือ: หัวแถบอยู่บน รายการเป็นการ์ดเล็กเลื่อนแนวนอน */
+@media (max-width: 768px) {
+  .search {
+    margin-bottom: 20px;
+  }
+
+  .searchBox {
+    min-height: 48px;
+  }
+
+  .searchBox input {
+    font-size: 15px;
+  }
+
+  .results {
+    top: 56px;
+    max-height: 65vh;
+  }
+
+  .strip {
+    flex-direction: column;
+    margin-top: 16px;
+    overflow: visible;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  .stripLabel {
+    justify-content: space-between;
+    padding: 0 2px 8px;
+    background: none;
+    border: none;
+  }
+
+  .stripLabel > div {
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .stripIcon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .stripList {
+    display: flex;
+    gap: 10px;
+    margin: 0 -16px;
+    padding: 2px 16px 6px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    /* การ์ดใบแรกเว้นจากขอบจอเท่าขอบหน้าส่วนอื่น */
+    scroll-padding-inline: 16px;
+    scrollbar-width: none;
+  }
+
+  .stripList::-webkit-scrollbar {
+    display: none;
+  }
+
+  .stripItem,
+  .stripItem + .stripItem,
+  .stripItem:nth-child(n + 3) {
+    flex: 0 0 72%;
+    padding: 12px 14px;
+    scroll-snap-align: start;
+    background: #fff;
+    border: 1px solid #ece7df;
+    border-radius: 14px;
+  }
+
+  .stripTitle {
+    white-space: normal;
+  }
+
+  .strip .dlBtn {
+    min-height: 32px;
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+
+  .searchBox,
+  .dlBtn {
+    transition: none;
+  }
+}
